@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ManpWinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "ManpWinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
