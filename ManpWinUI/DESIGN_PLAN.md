@@ -741,7 +741,7 @@ main (or master)
 ├── Production-ready code (C++ ManpWIN64)
 └── Stable releases only (tagged: v1.0.0, v1.1.0, etc.)
 
-develop ⭐ INTEGRATION/TESTING BRANCH
+development ⭐ INTEGRATION/TESTING BRANCH
 ├── All completed work merges here FIRST
 ├── C++ bugfixes go here
 ├── Test integration before releasing to main
@@ -749,18 +749,18 @@ develop ⭐ INTEGRATION/TESTING BRANCH
 
 feature/add-winui-interface (your current branch)
 ├── Long-running feature branch for WinUI development
-├── Based on develop
-├── Regularly merges FROM develop (to get C++ fixes)
-└── Merges TO develop when phases complete
+├── Based on development
+├── Regularly merges FROM development (to get C++ fixes)
+└── Merges TO development when phases complete
 ```
 
 **🎯 Key Workflow:**
 ```
-1. C++ bugfix → commit to develop
-2. develop → merge into feature/add-winui-interface (you get the fix)
+1. C++ bugfix → commit to development
+2. development → merge into feature/add-winui-interface (you get the fix)
 3. Work on WinUI → commit to feature/add-winui-interface
-4. Phase complete → merge feature/add-winui-interface → develop (integration test)
-5. All phases done → merge develop → main (production release)
+4. Phase complete → merge feature/add-winui-interface → development (integration test)
+5. All phases done → merge development → main (production release)
 ```
 
 #### Feature Branch Naming Convention
@@ -780,7 +780,7 @@ hotfix/*                             # Critical C++ fixes during development
 docs/*                               # Documentation updates
 ```
 
-#### 🚀 Setting Up `develop` Branch (If Not Created Yet)
+#### 🚀 Setting Up `development` Branch (If Not Created Yet)
 
 **First-Time Setup:**
 ```powershell
@@ -788,25 +788,25 @@ docs/*                               # Documentation updates
 git checkout main
 git pull origin main
 
-# 2. Create develop from main
-git checkout -b develop
-git push origin develop
+# 2. Create development from main
+git checkout -b development
+git push origin development
 
-# 3. Rebase your feature branch on develop
+# 3. Rebase your feature branch on development
 git checkout feature/add-winui-interface
-git rebase develop
+git rebase development
 
-# 4. Set develop as default base for future branches
-git config branch.feature/add-winui-interface.merge refs/heads/develop
+# 4. Set development as default base for future branches
+git config branch.feature/add-winui-interface.merge refs/heads/development
 ```
 
-**If `develop` Already Exists:**
+**If `development` Already Exists:**
 ```powershell
 # Just rebase your feature branch
-git checkout develop
-git pull origin develop
+git checkout development
+git pull origin development
 git checkout feature/add-winui-interface
-git rebase develop
+git rebase development
 ```
 
 ### Commit Strategy by Phase
@@ -825,14 +825,14 @@ Commit examples:
 Commit pattern: docs: <what was documented>
 ```
 
-**Merge point:** After Phase 1 complete → merge to `develop` with tag `v0.1.0-planning`
+**Merge point:** After Phase 1 complete → merge to `development` with tag `v0.1.0-planning`
 
 ```powershell
 # After Phase 1 complete
-git checkout develop
+git checkout development
 git merge feature/add-winui-interface
 git tag v0.1.0-planning
-git push origin develop --tags
+git push origin development --tags
 
 # Continue working on feature branch
 git checkout feature/add-winui-interface
@@ -899,10 +899,10 @@ git merge feature/phase3-mvvm-foundation
 git tag v0.3.0-foundation
 git push origin feature/add-winui-interface --tags
 
-# Then merge to develop for integration testing
-git checkout develop
+# Then merge to development for integration testing
+git checkout development
 git merge feature/add-winui-interface
-git push origin develop
+git push origin development
 ```
 
 ---
@@ -939,10 +939,10 @@ git merge feature/phase4-core-ui
 git tag v0.4.0-core-ui
 git push origin feature/add-winui-interface --tags
 
-# Merge to develop for integration testing
-git checkout develop
+# Merge to development for integration testing
+git checkout development
 git merge feature/add-winui-interface
-git push origin develop
+git push origin development
 ```
 
 ---
@@ -999,10 +999,10 @@ git merge feature/phase6-file-operations
 git tag v0.6.0-files
 git push origin feature/add-winui-interface --tags
 
-# Merge to develop
-git checkout develop
+# Merge to development
+git checkout development
 git merge feature/add-winui-interface
-git push origin develop
+git push origin development
 ```
 
 ---
@@ -1064,10 +1064,10 @@ git merge feature/phase8-testing
 git tag v0.8.0-tested
 git push origin feature/add-winui-interface --tags
 
-# Final merge to develop for pre-release testing
-git checkout develop
+# Final merge to development for pre-release testing
+git checkout development
 git merge feature/add-winui-interface
-git push origin develop
+git push origin development
 ```
 
 ---
@@ -1094,7 +1094,7 @@ Commit pattern:
 - release: <release prep>
 ```
 
-**Merge point:** After Phase 9 complete → merge to `develop` then to `main` with tag `v1.0.0`
+**Merge point:** After Phase 9 complete → merge to `development` then to `main` with tag `v1.0.0`
 
 **Milestone:** 🎉 **Version 1.0 Release** - Production ready!
 
@@ -1242,22 +1242,22 @@ Related: #feature/add-winui-interface"
 #### Syncing ManpWIN64 Improvements
 ```bash
 # Apply C++ fixes to both codebases
-git checkout develop
-git pull origin develop
+git checkout development
+git pull origin development
 
 # Make fix to ManpWIN64
 git commit -m "fix(cpp): resolve parser memory leak"
-git push origin develop
+git push origin development
 
 # Ensure it's available for WinUI branch
 git checkout feature/add-winui-interface
-git merge develop  # Pull C++ fix into your feature branch
+git merge development  # Pull C++ fix into your feature branch
 git push origin feature/add-winui-interface
 ```
 
 **Why This Matters:**
-- C++ fixes go to `develop` (affects both old and new code)
-- You merge `develop` into your feature branch to get those fixes
+- C++ fixes go to `development` (affects both old and new code)
+- You merge `development` into your feature branch to get those fixes
 - Keeps your WinUI work up-to-date with C++ improvements
 
 ---
@@ -1269,11 +1269,11 @@ git push origin feature/add-winui-interface
 git checkout feature/add-winui-interface
 git pull origin feature/add-winui-interface
 
-# Get any new C++ fixes from develop
-git checkout develop
-git pull origin develop
+# Get any new C++ fixes from development
+git checkout development
+git pull origin development
 git checkout feature/add-winui-interface
-git merge develop  # Integrate C++ fixes
+git merge development  # Integrate C++ fixes
 
 # Create sub-branch for specific work (optional)
 git checkout -b feature/phase4-parameter-panel
@@ -1296,8 +1296,8 @@ git push origin feature/add-winui-interface
 
 **Daily Sync Checklist:**
 - ✅ Pull latest feature/add-winui-interface
-- ✅ Check develop for new C++ fixes
-- ✅ Merge develop if needed
+- ✅ Check development for new C++ fixes
+- ✅ Merge development if needed
 - ✅ Work on feature
 - ✅ Commit frequently (every 15-30 min)
 - ✅ Push at end of session
@@ -1306,7 +1306,7 @@ git push origin feature/add-winui-interface
 
 ### Milestone Checklist
 
-**Before Each Merge to `develop`:**
+**Before Each Merge to `development`:**
 - [ ] All phase tasks checked off in DESIGN_PLAN.md
 - [ ] Code builds without errors
 - [ ] Tests pass (if tests exist for that phase)
@@ -1405,11 +1405,11 @@ DESIGN_PLAN.md (overview + links)
 git checkout feature/add-winui-interface
 git pull origin feature/add-winui-interface
 
-# 2. Sync with develop (get C++ fixes)
-git checkout develop
-git pull origin develop
+# 2. Sync with development (get C++ fixes)
+git checkout development
+git pull origin development
 git checkout feature/add-winui-interface
-git merge develop
+git merge development
 
 # 3. Create session branch (optional but recommended)
 git checkout -b session/2025-01-15-phase2-work
@@ -1674,11 +1674,11 @@ git push --force origin feature/add-winui-interface  # ⚠️ Use with caution
 
 ```bash
 # MORNING: Start fresh
-git checkout develop
-git pull origin develop
+git checkout development
+git pull origin development
 git checkout feature/add-winui-interface
 git pull origin feature/add-winui-interface
-git merge develop  # Get latest C++ fixes
+git merge development  # Get latest C++ fixes
 
 git checkout -b session/2025-01-15-am
 
