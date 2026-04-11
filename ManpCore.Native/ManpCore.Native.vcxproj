@@ -16,8 +16,8 @@
     <ProjectGuid>{A8BC1234-5678-9ABC-DEF0-123456789ABC}</ProjectGuid>
     <Keyword>NetCoreCProj</Keyword>
     <RootNamespace>ManpCoreNative</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
   </PropertyGroup>
   
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
