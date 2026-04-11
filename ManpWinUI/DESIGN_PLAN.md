@@ -76,7 +76,8 @@ This document is the master index for the ManpLab WinUI modernization project. T
 ### ✅ Phase 1: Planning & Analysis - COMPLETE
 **Git Tags:**
 - `v0.1.0-planning` - Planning phase complete (merged to development)
-- `v0.1.1-docs-split` - Documentation split into modular files (current)
+- `v0.1.1-docs-split` - Documentation split into modular files
+- `v0.1.2-android-requirement` - Android portability formalized as mandatory
 
 **Completed Tasks:**
 - [x] Document existing C++ interface features
@@ -89,15 +90,45 @@ This document is the master index for the ManpLab WinUI modernization project. T
 - [x] Document file format specifications
 - [x] Identify pain points and improvement opportunities
 - [x] Split documentation into modular files for safety
+- [x] Formalize Android portability as mandatory design requirement
 
 **Branch:** `feature/add-winui-interface` (on `development`)
 
-### ⏳ Next: Phase 2 - C++ Core Preparation
+### ⏳ Phase 2: C++ Core Preparation - IN PROGRESS (~40% Complete)
 **Focus:** Create C++/CLI wrapper layer
-- Extract computation code from UI dependencies
-- Define managed/unmanaged type marshalling
-- Test interop performance
-- Document C++ API for C# consumers
+
+**Completed Tasks:**
+- [x] Create C++/CLI wrapper project structure (`ManpCore.Native`)
+- [x] Define managed classes (FractalParameters, FractalResult, ProgressEventArgs)
+- [x] Implement event-based progress reporting
+- [x] Build C++/CLI project successfully (v145 toolset, .NET 10)
+- [x] Create C# console test project (`ManpCore.Tests`)
+- [x] Validate managed/native interop works (49.6ms for 800x600 test)
+- [x] Verify progress events fire correctly (60 updates)
+- [x] Confirm pixel data transfers successfully (1.92 MB RGBA)
+
+**Current Milestone:** Interop validation successful! ✅
+
+**Test Results:**
+```
+✓ C++/CLI DLL loads in .NET 10 process
+✓ Managed classes instantiate correctly
+✓ Events cross managed/native boundary
+✓ 800x600 gradient: 49.6ms render time
+✓ 1,920,000 bytes pixel data (RGBA)
+✓ Zero WinUI dependencies (Android-ready)
+✓ PPM image output verified
+```
+
+**Remaining Tasks:**
+- [ ] Connect wrapper to existing C++ fractal engine
+- [ ] Implement type marshalling for Complex numbers
+- [ ] Implement type marshalling for BigDouble (high precision)
+- [ ] Profile performance of C++/C# boundary (<5% overhead target)
+- [ ] Document C++ API for C# consumers
+- [ ] Add XML documentation comments
+
+**Next Step:** Replace test gradient with actual Mandelbrot calculation from ManpWIN64 engine
 
 See [Implementation Phases](docs/03-implementation-phases.md) for full roadmap.
 
