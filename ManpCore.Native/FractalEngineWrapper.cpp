@@ -1,5 +1,6 @@
 #include "FractalEngineWrapper.h"
-#include <msclr/marshal_cppstd.h>
+// TODO: Re-enable when needed for string marshalling
+// #include <msclr/marshal_cppstd.h>
 
 using namespace System;
 using namespace System::Diagnostics;
