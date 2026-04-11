@@ -927,6 +927,106 @@ public class FractalEngineIntegrationTests
 
 ---
 
+## Android Portability Constraints (MANDATORY)
+
+**These are NOT optional guidelines - every design decision must validate against these constraints.**
+
+The architecture is designed for future .NET MAUI Android portability with minimal effort (6-8 weeks migration timeline). All code written during Windows development MUST follow these rules to ensure 90%+ code reuse for mobile versions.
+
+### ✅ DO (Required for All New Code):
+
+**ViewModels:**
+- ✅ Zero platform-specific dependencies (no `Microsoft.UI.Xaml.*` namespaces)
+- ✅ Use `CommunityToolkit.Mvvm` exclusively (cross-platform compatible)
+- ✅ Accept platform services via constructor injection (`IFileService`, `IBitmapService`, etc.)
+- ✅ Keep ViewModels in separate project/folder that could compile without WinUI references
+
+**Platform Services:**
+- ✅ Define interfaces for ALL platform-specific functionality:
+  - `IFileService` - File picking, saving, directory access
+  - `IBitmapService` - Bitmap creation, WriteableBitmap abstraction
+  - `INavigationService` - Page navigation, modal dialogs
+  - `IDispatcherService` - UI thread dispatching
+  - `IShareService` - Social media sharing (future Android feature)
+- ✅ Implement services in platform-specific projects (`ManpWinUI`, future `ManpAndroid`)
+- ✅ Register services via dependency injection
+
+**Business Logic:**
+- ✅ Keep fractal calculation, file I/O, and algorithms in shared code
+- ✅ Use standard .NET types (`Stream`, `byte[]`, not platform-specific types)
+- ✅ Separate data models from UI controls
+
+**Data Binding:**
+- ✅ Use MVVM patterns compatible with both WinUI and MAUI
+- ✅ Observable properties with `[ObservableProperty]` attribute
+- ✅ Commands with `[RelayCommand]` attribute
+- ✅ Avoid code-behind in views (except platform-specific gestures)
+
+### ❌ DON'T (Prohibited - Will Break Android Portability):
+
+**ViewModels:**
+- ❌ `DispatcherQueue` in ViewModels → Use `IDispatcherService` interface
+- ❌ `WriteableBitmap` in business logic → Use `IBitmapService.CreateBitmap(byte[])`
+- ❌ `ContentDialog` in ViewModels → Use `IDialogService.ShowAsync()`
+- ❌ `Microsoft.UI.Xaml.*` references in ViewModels
+
+**Platform APIs:**
+- ❌ `Windows.Storage.*` in shared code → Use `IFileService`
+- ❌ `Windows.System.*` in business logic → Use abstractions
+- ❌ Direct WinUI control references in models/services
+
+**C++/CLI for Android:**
+- ❌ C++/CLI is Windows-only - Android requires different strategy:
+  - **Option 1 (Recommended):** Cloud rendering (Azure VM hosts C++ engine, Android displays results)
+  - **Option 2:** Cross-compile C++ with Android NDK + JNI wrapper (complex)
+  - **Option 3:** Simplified C# engine for mobile (limited features)
+
+### 📋 Android Portability Validation Checklist
+
+**Before merging any code to `development`, verify:**
+
+- [ ] All ViewModels have zero `Microsoft.UI.*` or `Windows.*` namespace references
+- [ ] Platform-specific functionality uses interface abstractions
+- [ ] Services registered via dependency injection (can be swapped for Android implementations)
+- [ ] Business logic could compile in hypothetical `ManpLab.Core` shared library
+- [ ] No `DispatcherQueue`, `WriteableBitmap`, or `ContentDialog` in non-UI code
+- [ ] Code follows patterns from `07-maui-compatibility.md`
+
+### 🎯 Android Migration Strategy (Post-v1.0)
+
+**Timeline:** 6-8 weeks after Windows v1.0 completion
+
+**Approach (Recommended):**
+1. **Cloud Rendering Architecture:**
+   - C++ math engine remains on Azure Windows VM (~$20/month)
+   - Android app sends parameters via REST API
+   - Server returns rendered images (JPEG compressed)
+   - Local caching for offline browsing of previous renders
+
+2. **Code Reuse Breakdown:**
+   - **90% reusable:** ViewModels, business logic, data models, services (interfaces)
+   - **10% platform-specific:** XAML → MAUI XAML, `WriteableBitmap` → MAUI `ImageSource`, file pickers
+
+3. **New Platform Services for Android:**
+   - `AndroidFileService : IFileService` (uses Android file picker)
+   - `AndroidBitmapService : IBitmapService` (uses MAUI `ImageSource`)
+   - `AndroidNavigationService : INavigationService` (uses MAUI `Shell`)
+   - `AndroidDispatcherService : IDispatcherService` (uses `MainThread.BeginInvokeOnMainThread`)
+
+**Alternative (If Cloud Not Desired):**
+- Cross-compile C++ with Android NDK (ARM64)
+- Create JNI wrapper (Java Native Interface)
+- Much more complex, 2-3 months effort
+
+### 🔒 Enforcement
+
+**All code reviews must validate Android portability.**  
+Violations of these constraints will block merge to `development` branch.
+
+See [07-maui-compatibility.md](07-maui-compatibility.md) for complete cross-platform implementation patterns.
+
+---
+
 ## Summary
 
 This architecture provides:
@@ -934,10 +1034,13 @@ This architecture provides:
 - ✅ Modern MVVM pattern with data binding
 - ✅ Testable ViewModels and services
 - ✅ Efficient C++/C# interop
-- ✅ Platform-agnostic design for future MAUI expansion
+- ✅ **Platform-agnostic design ensuring 90% code reuse for Android (MANDATORY)**
 - ✅ Proper async/await patterns
 - ✅ Dependency injection for loose coupling
+- ✅ **Service abstractions enabling 6-8 week Android migration**
 
 For implementation details by phase, see [Implementation Phases](03-implementation-phases.md).
 
 For technology stack specifics, see [Technology Stack](04-technology-stack.md).
+
+**For mandatory cross-platform compliance, see [MAUI Compatibility](07-maui-compatibility.md).**

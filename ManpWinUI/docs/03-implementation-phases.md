@@ -67,6 +67,12 @@ This document outlines the detailed implementation plan for the ManpLab WinUI mo
 
 **Git Milestone:** `v0.2.0-interop`
 
+**Android Portability Validation:**
+- [ ] C++/CLI wrapper designed knowing it's Windows-only (cloud rendering planned for Android)
+- [ ] Core C++ math engine has no Windows dependencies (could compile on Linux if needed)
+- [ ] API designed to work with future REST/gRPC cloud rendering service
+- [ ] Data structures serializable for network transfer (parameter JSON, image bytes)
+
 ---
 
 ## Phase 3: WinUI Foundation
@@ -112,6 +118,15 @@ dotnet add package Serilog.Sinks.File
 **Estimated Duration:** 2-3 weeks part-time
 
 **Git Milestone:** `v0.3.0-foundation`
+
+**✅ Android Portability Validation (MANDATORY):**
+- [ ] All ViewModels have zero `Microsoft.UI.Xaml.*` references
+- [ ] `CommunityToolkit.Mvvm` used exclusively (cross-platform compatible)
+- [ ] Platform services defined as interfaces (`IFileService`, `IBitmapService`, `INavigationService`, `IDispatcherService`)
+- [ ] Dependency injection configured for service abstraction (can swap implementations for Android)
+- [ ] Settings service uses standard `System.Text.Json` (MAUI compatible)
+- [ ] Logging uses Serilog interfaces (can redirect to Android logcat later)
+- [ ] ViewModels could compile in separate project without WinUI references
 
 ---
 
@@ -160,6 +175,15 @@ dotnet add package Serilog.Sinks.File
 
 **Git Milestone:** `v0.4.0-core-ui`
 
+**✅ Android Portability Validation (MANDATORY):**
+- [ ] `FractalParametersViewModel` has no WinUI dependencies (only MVVM toolkit)
+- [ ] `WriteableBitmap` abstracted behind `IBitmapService.CreateBitmap(byte[])`
+- [ ] `DispatcherQueue` calls use `IDispatcherService` interface, not direct WinUI API
+- [ ] Fractal calculation logic in separate service (not in ViewModel)
+- [ ] Color palette using standard .NET `System.Drawing.Color` or custom struct (not WinUI `Microsoft.UI.Color`)
+- [ ] Navigation using `INavigationService`, not direct `Frame.Navigate()`
+- [ ] All business logic could run in .NET Standard 2.1 / .NET 10 class library
+
 **🎉 Milestone:** First usable prototype - can render basic fractals!
 
 ---
@@ -200,6 +224,14 @@ dotnet add package Serilog.Sinks.File
 **Estimated Duration:** 4-6 weeks part-time
 
 **Git Milestone:** `v0.5.0-advanced`
+
+**✅ Android Portability Validation (MANDATORY):**
+- [ ] Perturbation calculation logic platform-agnostic
+- [ ] BLA algorithm implementation has no WinUI dependencies
+- [ ] Animation keyframe system uses standard .NET types (could serialize to JSON)
+- [ ] Video encoding abstracted behind `IVideoService` interface (different impl for Android)
+- [ ] Color gradient calculations use platform-agnostic math
+- [ ] All advanced algorithms testable without UI (unit tests with mock services)
 
 ---
 
@@ -247,6 +279,15 @@ dotnet add package Serilog.Sinks.File
 **Estimated Duration:** 3-4 weeks part-time
 
 **Git Milestone:** `v0.6.0-files`
+
+**✅ Android Portability Validation (MANDATORY):**
+- [ ] `IFileService` interface used exclusively (no direct `Windows.Storage.*`)
+- [ ] File parsers (.MAP, .PAR, .KFR) use `Stream` and `byte[]` (MAUI compatible)
+- [ ] PNG export uses standard image libraries (not WinUI-specific bitmap APIs)
+- [ ] Video encoding behind `IVideoService` (can swap for Android FFmpeg wrapper)
+- [ ] Drag-and-drop in UI layer only (ViewModels accept file paths via interface)
+- [ ] Recent files logic platform-agnostic (uses `IFileService` for path persistence)
+- [ ] All file I/O testable with mock `IFileService` implementation
 
 **🎉 Milestone:** Feature complete - all major functionality implemented!
 
@@ -299,6 +340,15 @@ dotnet add package Serilog.Sinks.File
 **Estimated Duration:** 3-4 weeks part-time
 
 **Git Milestone:** `v0.7.0-polish`
+
+**✅ Android Portability Validation (MANDATORY):**
+- [ ] Undo/redo system uses platform-agnostic command pattern
+- [ ] Preset gallery data models have no WinUI dependencies
+- [ ] Share functionality abstracted behind `IShareService` (different impl for Android)
+- [ ] Touch/pen gestures in View layer only (ViewModels receive results via commands)
+- [ ] Theme switching uses abstract `IThemeService` (can map to Android Material themes)
+- [ ] Localization uses standard .NET resources (MAUI compatible)
+- [ ] Accessibility patterns don't break MAUI compatibility
 
 ---
 
@@ -367,6 +417,15 @@ dotnet add package Serilog.Sinks.File
 **Estimated Duration:** 3-4 weeks part-time
 
 **Git Milestone:** `v0.8.0-tested`
+
+**✅ Android Portability Validation (MANDATORY):**
+- [ ] Run full test suite to verify zero WinUI dependencies in ViewModels/business logic
+- [ ] Verify all platform services use interfaces (can be mocked for unit tests)
+- [ ] Confirm no `Windows.*` or `Microsoft.UI.*` in shared code (except Views)
+- [ ] Test that ViewModels/services could compile in .NET Standard 2.1 library
+- [ ] Validate service abstractions are complete (no direct platform API calls)
+- [ ] Document any platform-specific code that would need Android equivalents
+- [ ] Create "Android Readiness Report" summarizing portability validation results
 
 **🎉 Milestone:** Release Candidate - ready for beta testing!
 
@@ -439,7 +498,18 @@ dotnet add package Serilog.Sinks.File
 
 **Git Milestone:** `v1.0.0`
 
+**✅ Android Portability Validation (MANDATORY):**
+- [ ] Document which code is platform-agnostic (ViewModels, services, business logic)
+- [ ] Document platform-specific implementations (IFileService, IBitmapService, etc.)
+- [ ] Create Android migration guide referencing service abstractions
+- [ ] List all WinUI dependencies that need Android equivalents
+- [ ] Verify 07-maui-compatibility.md is up-to-date with final architecture
+- [ ] Document cloud rendering strategy for Android (REST API, image transfer)
+- [ ] Estimate Android migration effort based on actual architecture (target: 6-8 weeks)
+
 **🎉 Milestone:** Version 1.0 Release - Production ready!
+
+**📱 Next Step:** Android Migration (Post-v1.0, 6-8 weeks if constraints followed)
 
 ---
 

@@ -1,19 +1,44 @@
-# MAUI Compatibility Considerations
+# MAUI Compatibility - MANDATORY REQUIREMENTS
+
+## ⚠️ IMPORTANT: This is NOT Optional Guidance
+
+**These are MANDATORY architectural constraints, not suggestions.**  
+All code must follow these patterns to ensure Android/iOS portability with minimal effort (6-8 weeks post-v1.0).
+
+**Code reviews will REJECT any violations of these requirements.**
+
+---
 
 ## Overview
-While the immediate target is **Windows via WinUI 3**, designing with **.NET MAUI** (Multi-platform App UI) in mind will enable future expansion to macOS, iOS, Android, and Linux with minimal refactoring.
 
-## Why MAUI-Ready Architecture Matters
-- **Code Reuse:** Share 90%+ of business logic, ViewModels, and models
-- **Platform Expansion:** Easier path to mobile/tablet versions
+While the immediate target is **Windows via WinUI 3**, the architecture is **designed for .NET MAUI** (Multi-platform App UI) expansion to Android, iOS, macOS, and Linux. This is a **hard requirement**, not a "nice to have."
+
+## Why MAUI-Ready Architecture is Mandatory
+
+- **Code Reuse:** Ensures 90%+ of business logic, ViewModels, and models are reusable
+- **Android Migration:** Enables 6-8 week Android version (vs 2-3 month refactoring if ignored)
+- **Platform Expansion:** Opens path to iOS/macOS tablet versions
 - **Future-Proofing:** Microsoft is unifying around MAUI for cross-platform
-- **Cloud Rendering:** Mobile clients could leverage desktop/cloud for heavy calculations
+- **Cloud Rendering:** Mobile clients leverage Azure VM for C++ engine (Windows-only interop acceptable)
+- **Market Opportunity:** Fractal apps rare on mobile - potential market expansion
+
+---
+
+## Compliance Enforcement
+
+**Every pull request must pass Android portability validation:**
+- [ ] ViewModels have zero `Microsoft.UI.*` or `Windows.*` dependencies
+- [ ] Platform services use interface abstractions
+- [ ] Business logic testable without WinUI references
+- [ ] Service registrations support dependency injection swapping
+
+**See phase checklists in `03-implementation-phases.md` for detailed validation per phase.**
 
 ---
 
 ## Architecture Decisions for MAUI Compatibility
 
-### ✅ **DO: Write Platform-Agnostic Code**
+### ✅ **DO: Write Platform-Agnostic Code (MANDATORY)**
 
 **1. Separate Business Logic from UI**
 ```csharp

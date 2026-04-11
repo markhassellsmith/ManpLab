@@ -10,6 +10,7 @@ This document is the master index for the ManpLab WinUI modernization project. T
 - **Replatform**: User interface from C++ to WinUI 3 / .NET 10
 - **Redesign**: Clunky workflows, outdated patterns, and pain points
 - **Architecture**: Hybrid C++/C# with C++/CLI interop layer
+- **Future-Proof**: Architecture designed for .NET MAUI portability to Android/iOS (6-8 week migration path after Windows completion)
 
 ---
 
@@ -54,12 +55,13 @@ This document is the master index for the ManpLab WinUI modernization project. T
   - Recovery procedures
   - Session management strategy
 
-### Cross-Platform
-- **[07 - MAUI Compatibility](docs/07-maui-compatibility.md)** - Future cross-platform expansion
-  - Platform-agnostic architecture patterns
-  - Service abstractions (IFileService, IBitmapService, etc.)
+### Cross-Platform (MANDATORY REQUIREMENTS)
+- **[07 - MAUI Compatibility](docs/07-maui-compatibility.md)** - **REQUIRED** cross-platform architecture
+  - Platform-agnostic code patterns (enforced, not optional)
+  - Service abstractions for all platform APIs (mandatory for all new code)
   - WinUI vs MAUI control mapping
-  - Migration path to mobile/macOS (2-4 weeks if architecture is ready)
+  - Android migration timeline: 6-8 weeks if constraints followed
+  - Cloud rendering strategy for mobile (C++ engine on Azure VM)
 
 ### Resources
 - **[08 - References](docs/08-references.md)** - Documentation links and external resources
@@ -121,10 +123,12 @@ See [Implementation Phases](docs/03-implementation-phases.md) for full roadmap.
 - Preserve all 240+ fractal types
 - Keep existing formula parser unchanged
 
-✅ **MAUI-Ready Architecture**
-- Platform-agnostic ViewModels (no WinUI dependencies)
-- Service abstractions for file I/O, bitmaps, navigation
-- 90%+ code reuse for future mobile/macOS versions
+✅ **MAUI-Ready Architecture (MANDATORY)**
+- Platform-agnostic ViewModels (zero WinUI dependencies)
+- Service abstractions for all platform APIs (IFileService, IBitmapService, INavigationService)
+- 90%+ code reuse target for Android/iOS versions
+- Cloud rendering strategy for mobile devices (Azure VM hosts C++ engine)
+- All code must validate against cross-platform constraints (see 07-maui-compatibility.md)
 
 ✅ **GPU Acceleration Decision**
 - **Display rendering:** Automatic GPU via WinUI 3 (free benefit)
