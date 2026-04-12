@@ -126,6 +126,17 @@ namespace Native {
         /// </summary>
         array<String^>^ GetAvailableFractalTypes();
 
+        /// <summary>
+        /// Run native C++ baseline benchmark (no C++/CLI overhead)
+        /// Used to measure wrapper overhead
+        /// </summary>
+        /// <param name="width">Image width</param>
+        /// <param name="height">Image height</param>
+        /// <param name="maxIterations">Maximum iterations</param>
+        /// <param name="runs">Number of benchmark runs</param>
+        /// <returns>Average time in milliseconds</returns>
+        double RunNativeBaselineBenchmark(int width, int height, int maxIterations, int runs);
+
     protected:
         /// <summary>
         /// Report progress to managed event handlers

@@ -1,5 +1,6 @@
 #include "FractalEngineWrapper.h"
 #include "MandelbrotCalculator.h"
+#include "NativePerformanceBaseline.h"
 // TODO: Re-enable when needed for string marshalling
 // #include <msclr/marshal_cppstd.h>
 
@@ -159,6 +160,15 @@ array<String^>^ FractalEngineWrapper::GetAvailableFractalTypes()
     types[2] = "Burning Ship";
     types[3] = "Newton";
     types[4] = "Lyapunov";
-    
+
     return types;
+}
+
+// Run native baseline benchmark
+double FractalEngineWrapper::RunNativeBaselineBenchmark(int width, int height, int maxIterations, int runs)
+{
+    auto result = ::Native::NativePerformanceBaseline::RunMandelbrotBenchmark(
+        width, height, maxIterations, runs);
+
+    return result.averageTimeMs;
 }

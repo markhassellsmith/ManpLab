@@ -90,6 +90,7 @@
     <ClInclude Include="ColorPalette.h" />
     <ClInclude Include="FractalEngineWrapper.h" />
     <ClInclude Include="MandelbrotCalculator.h" />
+    <ClInclude Include="NativePerformanceBaseline.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />

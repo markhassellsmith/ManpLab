@@ -9,7 +9,15 @@ namespace ManpCore.Tests
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("=== ManpCore.Native C++/CLI Wrapper Test ===\n");
+            // Check for benchmark flag
+            if (args.Length > 0 && args[0] == "--benchmark")
+            {
+                PerformanceBenchmark.Run();
+                return;
+            }
+
+            Console.WriteLine("=== ManpCore.Native C++/CLI Wrapper Test ===");
+            Console.WriteLine("Run with --benchmark flag for performance analysis\n");
 
             try
             {
