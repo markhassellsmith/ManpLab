@@ -94,7 +94,7 @@ This document is the master index for the ManpLab WinUI modernization project. T
 
 **Branch:** `feature/add-winui-interface` (on `development`)
 
-### ⏳ Phase 2: C++ Core Preparation - IN PROGRESS (~50% Complete)
+### ⏳ Phase 2: C++ Core Preparation - IN PROGRESS (~60% Complete)
 **Focus:** Create C++/CLI wrapper layer
 
 **Completed Tasks:**
@@ -109,25 +109,27 @@ This document is the master index for the ManpLab WinUI modernization project. T
 - [x] Replace test gradient with actual Mandelbrot calculation
 - [x] Implement native Complex number type (ComplexD)
 - [x] Create MandelbrotCalculator with smooth iteration algorithm
+- [x] Add Julia set support (validated with dual fractal test)
 
-**Current Milestone:** Basic Mandelbrot rendering works! ✅
+**Current Milestone:** Mandelbrot & Julia sets both render correctly! ✅
 
 **Test Results:**
 ```
 ✓ C++/CLI DLL loads in .NET 10 process
 ✓ Managed classes instantiate correctly
 ✓ Events cross managed/native boundary
-✓ 800x600 Mandelbrot: renders successfully
-✓ Smooth iteration algorithm implemented
+✓ Mandelbrot: 329ms render, 30M iterations
+✓ Julia: 187ms render, 13M iterations (c = -0.7 + 0.27015i)
+✓ Smooth iteration algorithm verified
+✓ Parameter marshalling works for different fractal modes
 ✓ Pixel data transfers correctly (RGBA)
 ✓ Zero WinUI dependencies (Android-ready)
-✓ PPM image output verified
+✓ PPM image outputs verified (both fractals)
 ```
 
 **Remaining Tasks:**
 - [ ] Connect to full ManpWIN64 fractal engine (240+ types)
 - [ ] Implement type marshalling for BigDouble (high precision)
-- [ ] Add support for Julia sets
 - [ ] Profile performance of C++/C# boundary (<5% overhead target)
 - [ ] Document C++ API for C# consumers
 - [ ] Add XML documentation comments
