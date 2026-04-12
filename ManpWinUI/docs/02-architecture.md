@@ -1027,6 +1027,500 @@ See [07-maui-compatibility.md](07-maui-compatibility.md) for complete cross-plat
 
 ---
 
+## Color Palette System Architecture
+
+### Overview
+
+The color palette system supports both **procedural** (math-generated) and **lookup table** (array-based) palettes, enabling flexibility for algorithmic color schemes and user-imported custom palettes.
+
+**Design Goals:**
+- Support both procedural and lookup table palettes
+- Flexible import/export with multiple format support
+- Community palette sharing capabilities
+- "Baking" procedural palettes to lookup tables for export
+- Extensible format provider architecture
+- Performance-optimized native C++ palette interpolation
+
+---
+
+### Palette Types
+
+**1. Procedural Palettes (Math-Generated)**
+
+Colors computed algorithmically using mathematical formulas:
+
+```cpp
+// Example: Rainbow palette using HSV to RGB conversion
+ColorRGB GetRainbowColor(double iteration, int maxIter)
+{
+    double t = (iteration / maxIter);
+    double hue = t * 360.0;  // Full spectrum
+    return HSVtoRGB(hue, 1.0, 1.0);
+}
+```
+
+**Characteristics:**
+- ✅ Infinite resolution (smooth at any zoom level)
+- ✅ Minimal memory footprint (just code, no data)
+- ✅ Mathematically precise gradients
+- ❌ Cannot be exported directly (requires "baking")
+- ❌ Limited to algorithmic patterns
+
+**Use Cases:**
+- Built-in classic palettes (Grayscale, Classic, Fire, Ocean, Rainbow, Psychedelic)
+- Algorithmic color schemes (wave functions, fractals, spectrums)
+- Real-time parameter-driven color generation
+
+---
+
+**2. Lookup Table Palettes (Array-Based)**
+
+Discrete color arrays with interpolation:
+
+```csharp
+// Example: User's Spectrum360 palette (360 HSL colors generated in Excel)
+public static ColorStruct[] Spectrum360 = {
+    new ColorStruct { Red = 255, Green = 0, Blue = 0 },      // Pure red
+    new ColorStruct { Red = 255, Green = 2, Blue = 0 },      // Red-orange
+    new ColorStruct { Red = 255, Green = 4, Blue = 0 },      // ...
+    // ... 360 total colors
+};
+```
+
+**Characteristics:**
+- ✅ Can represent any color sequence (not limited to formulas)
+- ✅ Easy import/export (JSON, CSV, images, .MAP files)
+- ✅ Consistent across platforms (exact RGB values)
+- ✅ Community sharing (palette galleries)
+- ❌ Fixed resolution (requires interpolation for smooth rendering)
+- ❌ Higher memory usage (array storage)
+
+**Use Cases:**
+- User-created palettes in external tools (Excel, Photoshop, GIMP)
+- Community-shared palettes (.MAP format from other fractal software)
+- Gradient images extracted from photographs
+- Classic fractal palette libraries
+
+---
+
+### Architecture Design
+
+**Core Interfaces:**
+
+```csharp
+// Unified palette abstraction
+public interface IPalette
+{
+    string Name { get; }
+    string Author { get; }
+    PaletteType Type { get; }  // Procedural or LookupTable
+
+    ColorRGB GetColor(double iteration, int maxIterations);
+    int GetColorCount();  // -1 for procedural (infinite)
+}
+
+// Procedural palette implementation
+public class ProceduralPalette : IPalette
+{
+    public PaletteType Type => PaletteType.Procedural;
+
+    private Func<double, int, ColorRGB> _colorFunction;
+
+    public ProceduralPalette(string name, Func<double, int, ColorRGB> colorFunc)
+    {
+        Name = name;
+        _colorFunction = colorFunc;
+    }
+
+    public ColorRGB GetColor(double iteration, int maxIterations)
+    {
+        return _colorFunction(iteration, maxIterations);
+    }
+
+    public int GetColorCount() => -1;  // Infinite resolution
+}
+
+// Lookup table palette implementation
+public class LookupTablePalette : IPalette
+{
+    public PaletteType Type => PaletteType.LookupTable;
+
+    private ColorRGB[] _colors;
+
+    public LookupTablePalette(string name, ColorRGB[] colors)
+    {
+        Name = name;
+        _colors = colors;
+    }
+
+    public ColorRGB GetColor(double iteration, int maxIterations)
+    {
+        // Smooth interpolation between discrete colors
+        double index = (iteration / maxIterations) * (_colors.Length - 1);
+        int i1 = (int)Math.Floor(index);
+        int i2 = Math.Min(i1 + 1, _colors.Length - 1);
+        double t = index - i1;
+
+        return InterpolateColors(_colors[i1], _colors[i2], t);
+    }
+
+    public int GetColorCount() => _colors.Length;
+}
+```
+
+---
+
+### Format Provider System
+
+**Extensible import/export architecture:**
+
+```csharp
+public interface IPaletteFormatProvider
+{
+    string Name { get; }                    // "JSON", "CSV", "Image", "MAP"
+    string[] FileExtensions { get; }         // [".json"], [".csv"], [".png", ".jpg"]
+    bool CanRead { get; }
+    bool CanWrite { get; }
+
+    Task<PaletteData> ImportAsync(Stream stream);
+    Task ExportAsync(PaletteData palette, Stream stream);
+}
+
+public class PaletteData
+{
+    public string Name { get; set; }
+    public string Author { get; set; }
+    public string Description { get; set; }
+    public string[] Tags { get; set; }          // "fire", "cool", "spectrum"
+    public DateTime CreatedDate { get; set; }
+    public ColorEntry[] Colors { get; set; }
+}
+
+public struct ColorEntry
+{
+    public byte R { get; set; }
+    public byte G { get; set; }
+    public byte B { get; set; }
+    public double Position { get; set; }  // 0.0 to 1.0 for gradient positions
+}
+```
+
+**Supported Formats:**
+
+| Format | Extension | Import | Export | Use Case |
+|--------|-----------|--------|--------|----------|
+| **JSON** | `.json` | ✅ | ✅ | Structured metadata, human-readable, web-friendly |
+| **CSV** | `.csv` | ✅ | ✅ | Excel import/export, simple text format |
+| **Image** | `.png`, `.jpg` | ✅ | ✅ | Extract colors from gradient images |
+| **MAP** | `.map` | ✅ | ✅ | UltraFractal/Fractal eXtreme compatibility |
+| **Photoshop ACO** | `.aco` | ✅ | ❌ | Import Photoshop swatches |
+
+**Format Provider Examples:**
+
+```csharp
+// JSON format provider
+public class JsonPaletteProvider : IPaletteFormatProvider
+{
+    public string Name => "JSON";
+    public string[] FileExtensions => new[] { ".json" };
+    public bool CanRead => true;
+    public bool CanWrite => true;
+
+    public async Task<PaletteData> ImportAsync(Stream stream)
+    {
+        return await JsonSerializer.DeserializeAsync<PaletteData>(stream);
+    }
+
+    public async Task ExportAsync(PaletteData palette, Stream stream)
+    {
+        await JsonSerializer.SerializeAsync(stream, palette, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+    }
+}
+
+// Image format provider (extract horizontal gradient)
+public class ImagePaletteProvider : IPaletteFormatProvider
+{
+    public async Task<PaletteData> ImportAsync(Stream stream)
+    {
+        var bitmap = await BitmapDecoder.CreateAsync(stream.AsRandomAccessStream());
+        var pixelProvider = await bitmap.GetPixelDataAsync();
+        byte[] pixels = pixelProvider.DetachPixelData();
+
+        // Sample colors from middle row of image
+        var colors = new List<ColorEntry>();
+        int width = (int)bitmap.PixelWidth;
+        int y = (int)bitmap.PixelHeight / 2;
+
+        for (int x = 0; x < width; x++)
+        {
+            int offset = (y * width + x) * 4;
+            colors.Add(new ColorEntry
+            {
+                R = pixels[offset],
+                G = pixels[offset + 1],
+                B = pixels[offset + 2],
+                Position = (double)x / width
+            });
+        }
+
+        return new PaletteData
+        {
+            Name = "Imported from Image",
+            Colors = colors.ToArray()
+        };
+    }
+}
+```
+
+---
+
+### Palette Manager
+
+**Central palette management service:**
+
+```csharp
+public class PaletteManager
+{
+    private readonly List<IPaletteFormatProvider> _formatProviders;
+    private readonly Dictionary<string, IPalette> _palettes;
+
+    public PaletteManager()
+    {
+        _formatProviders = new List<IPaletteFormatProvider>
+        {
+            new JsonPaletteProvider(),
+            new CsvPaletteProvider(),
+            new ImagePaletteProvider(),
+            new MapPaletteProvider()
+        };
+
+        _palettes = new Dictionary<string, IPalette>();
+        RegisterBuiltInPalettes();
+    }
+
+    // Auto-detect format and import
+    public async Task<IPalette> ImportPaletteAsync(string filePath)
+    {
+        string extension = Path.GetExtension(filePath).ToLowerInvariant();
+
+        var provider = _formatProviders.FirstOrDefault(p => 
+            p.CanRead && p.FileExtensions.Contains(extension));
+
+        if (provider == null)
+            throw new NotSupportedException($"No provider for {extension}");
+
+        using var stream = File.OpenRead(filePath);
+        var paletteData = await provider.ImportAsync(stream);
+
+        var palette = new LookupTablePalette(paletteData.Name, 
+            paletteData.Colors.Select(c => new ColorRGB(c.R, c.G, c.B)).ToArray());
+
+        _palettes[palette.Name] = palette;
+        return palette;
+    }
+
+    // Export palette (bake if procedural)
+    public async Task ExportPaletteAsync(IPalette palette, string filePath, int colorCount = 256)
+    {
+        string extension = Path.GetExtension(filePath).ToLowerInvariant();
+
+        var provider = _formatProviders.FirstOrDefault(p => 
+            p.CanWrite && p.FileExtensions.Contains(extension));
+
+        if (provider == null)
+            throw new NotSupportedException($"No provider for {extension}");
+
+        // "Bake" procedural palettes to lookup table for export
+        var paletteData = palette.Type == PaletteType.Procedural
+            ? BakePalette(palette, colorCount)
+            : ConvertToData(palette as LookupTablePalette);
+
+        using var stream = File.Create(filePath);
+        await provider.ExportAsync(paletteData, stream);
+    }
+
+    // Convert procedural palette to lookup table ("baking")
+    private PaletteData BakePalette(IPalette palette, int colorCount)
+    {
+        var colors = new ColorEntry[colorCount];
+
+        for (int i = 0; i < colorCount; i++)
+        {
+            double iteration = i;
+            var color = palette.GetColor(iteration, colorCount);
+
+            colors[i] = new ColorEntry
+            {
+                R = color.R,
+                G = color.G,
+                B = color.B,
+                Position = (double)i / (colorCount - 1)
+            };
+        }
+
+        return new PaletteData
+        {
+            Name = palette.Name,
+            Author = palette.Author,
+            Description = $"Baked from procedural palette with {colorCount} colors",
+            Colors = colors
+        };
+    }
+
+    private void RegisterBuiltInPalettes()
+    {
+        // Register procedural palettes
+        _palettes["Grayscale"] = new ProceduralPalette("Grayscale", 
+            (iter, max) => ColorPalette.GetGrayscaleColor(iter, max));
+
+        _palettes["Classic"] = new ProceduralPalette("Classic", 
+            (iter, max) => ColorPalette.GetClassicColor(iter, max));
+
+        _palettes["Fire"] = new ProceduralPalette("Fire", 
+            (iter, max) => ColorPalette.GetFireColor(iter, max));
+
+        _palettes["Ocean"] = new ProceduralPalette("Ocean", 
+            (iter, max) => ColorPalette.GetOceanColor(iter, max));
+
+        _palettes["Rainbow"] = new ProceduralPalette("Rainbow", 
+            (iter, max) => ColorPalette.GetRainbowColor(iter, max));
+
+        _palettes["Psychedelic"] = new ProceduralPalette("Psychedelic", 
+            (iter, max) => ColorPalette.GetPsychedelicColor(iter, max));
+    }
+}
+```
+
+---
+
+### Native C++ Palette Support
+
+**High-performance palette interpolation in native code:**
+
+```cpp
+// Native palette structure for C++
+struct NativePalette
+{
+    ColorRGB* colors;
+    int colorCount;
+
+    // Fast interpolated lookup
+    ColorRGB GetColor(double iteration, int maxIterations) const
+    {
+        double t = (iteration / maxIterations) * (colorCount - 1);
+        int i1 = static_cast<int>(t);
+        int i2 = std::min(i1 + 1, colorCount - 1);
+        double frac = t - i1;
+
+        // Linear interpolation
+        const ColorRGB& c1 = colors[i1];
+        const ColorRGB& c2 = colors[i2];
+
+        return ColorRGB(
+            static_cast<unsigned char>(c1.r + (c2.r - c1.r) * frac),
+            static_cast<unsigned char>(c1.g + (c2.g - c1.g) * frac),
+            static_cast<unsigned char>(c1.b + (c2.b - c1.b) * frac)
+        );
+    }
+};
+
+// C++/CLI marshalling
+void FractalEngine::SetPalette(array<Byte>^ colorData)
+{
+    pin_ptr<Byte> pinnedData = &colorData[0];
+
+    int colorCount = colorData->Length / 3;
+    m_palette.colors = new ColorRGB[colorCount];
+    m_palette.colorCount = colorCount;
+
+    for (int i = 0; i < colorCount; i++)
+    {
+        m_palette.colors[i].r = pinnedData[i * 3];
+        m_palette.colors[i].g = pinnedData[i * 3 + 1];
+        m_palette.colors[i].b = pinnedData[i * 3 + 2];
+    }
+}
+```
+
+---
+
+### "Baking" Concept
+
+**Converting procedural palettes to lookup tables for export:**
+
+Procedural palettes (like Rainbow) cannot be exported directly because they are mathematical formulas, not data. The "baking" process samples the procedural function at regular intervals to create a discrete lookup table:
+
+```csharp
+// Example: Bake Rainbow palette to 256 colors
+var rainbowPalette = paletteManager.GetPalette("Rainbow");  // Procedural
+
+// Sample at 256 points
+var bakedColors = new ColorRGB[256];
+for (int i = 0; i < 256; i++)
+{
+    bakedColors[i] = rainbowPalette.GetColor(i, 256);
+}
+
+// Now exportable as lookup table
+var lookupPalette = new LookupTablePalette("Rainbow (Baked)", bakedColors);
+await paletteManager.ExportPaletteAsync(lookupPalette, "rainbow.json");
+```
+
+**Baking Resolution:**
+- **Low (64 colors):** Fast, small files, visible banding
+- **Medium (256 colors):** Standard, good quality, reasonable size
+- **High (1024+ colors):** Smooth gradients, larger files, imperceptible banding
+
+---
+
+### Implementation Phases
+
+**Phase 2 (Current - Core Preparation):**
+- ✅ 6 procedural palettes (Grayscale, Classic, Fire, Ocean, Rainbow, Psychedelic)
+- ✅ Basic PaletteType enum in FractalParameters
+- ✅ Native C++ ColorPalette class with mathematical color generation
+
+**Phase 4 (WinUI Interface - Deferred):**
+- Palette picker UI component
+- Import palette from JSON/CSV/Image
+- Basic palette management (add, remove, rename)
+- Palette preview rendering
+
+**Phase 6 (File Operations - Deferred):**
+- Full format provider system
+- Export palettes (with baking for procedural)
+- .MAP format compatibility (UltraFractal/Fractal eXtreme)
+- Batch import/export
+
+**Phase 7 (Polish & Optimization - Deferred):**
+- Community palette gallery
+- Online palette sharing/download
+- Palette tags and search
+- Palette editor (gradient stops, color manipulation)
+- Advanced interpolation modes (cubic, cosine)
+
+---
+
+### Recommended Next Steps
+
+For **Phase 2**, keep implementation simple:
+- Use existing 6 procedural palettes
+- No import/export functionality yet
+- Focus on C++/CLI wrapper completion
+
+For **Phase 4+**, implement comprehensive palette system:
+- Build format provider infrastructure
+- Add palette import UI
+- Implement lookup table palette support
+- Add "bake and export" functionality
+
+**Documentation Complete:** This architecture design is preserved for future implementation. Phase 2 continues with current simple palette approach (procedural only).
+
+---
+
 ## Summary
 
 This architecture provides:
