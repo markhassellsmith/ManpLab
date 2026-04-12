@@ -7,6 +7,19 @@ namespace ManpCore {
 namespace Native {
 
     /// <summary>
+    /// Color palette types for fractal rendering
+    /// </summary>
+    public enum class ColorPalette
+    {
+        Grayscale = 0,
+        Classic = 1,
+        Fire = 2,
+        Ocean = 3,
+        Rainbow = 4,
+        Psychedelic = 5
+    };
+
+    /// <summary>
     /// Managed wrapper for fractal calculation parameters
     /// </summary>
     public ref class FractalParameters
@@ -17,17 +30,20 @@ namespace Native {
         property int MaxIterations;
         property int Width;
         property int Height;
-        
+
         // Complex plane coordinates
         property double CenterX;
         property double CenterY;
         property double ViewWidth;
         property double ViewHeight;
-        
+
         // Julia set parameters (if applicable)
         property bool IsJuliaSet;
         property double JuliaCX;
         property double JuliaCY;
+
+        // Color palette selection
+        property ColorPalette Palette;
 
         FractalParameters()
         {
@@ -43,6 +59,7 @@ namespace Native {
             IsJuliaSet = false;
             JuliaCX = 0.0;
             JuliaCY = 0.0;
+            Palette = ColorPalette::Classic;  // Default to classic fractal colors
         }
     };
 

@@ -31,8 +31,8 @@ namespace ManpCore.Tests
                 }
                 Console.WriteLine();
 
-                // Test 1: Mandelbrot Set
-                Console.WriteLine("=== Test 1: Mandelbrot Set ===\n");
+                // Test 1: Mandelbrot Set - Classic Colors
+                Console.WriteLine("=== Test 1: Mandelbrot Set (Classic Palette) ===\n");
                 var mandelbrotParams = new FractalParameters
                 {
                     FractalType = "Mandelbrot",
@@ -43,7 +43,8 @@ namespace ManpCore.Tests
                     CenterY = 0.0,
                     ViewWidth = 3.0,
                     ViewHeight = 2.25,
-                    IsJuliaSet = false
+                    IsJuliaSet = false,
+                    Palette = ColorPalette.Classic
                 };
 
                 Console.WriteLine($"Rendering {mandelbrotParams.Width}x{mandelbrotParams.Height} Mandelbrot set...\n");
@@ -64,8 +65,8 @@ namespace ManpCore.Tests
 
                 ValidatePixelData(mandelbrotResult.PixelData, mandelbrotResult.Width, mandelbrotResult.Height);
 
-                // Test 2: Julia Set
-                Console.WriteLine("\n\n=== Test 2: Julia Set ===\n");
+                // Test 2: Julia Set - Fire Palette
+                Console.WriteLine("\n\n=== Test 2: Julia Set (Fire Palette) ===\n");
                 var juliaParams = new FractalParameters
                 {
                     FractalType = "Julia",
@@ -78,7 +79,8 @@ namespace ManpCore.Tests
                     ViewHeight = 3.0,
                     IsJuliaSet = true,
                     JuliaCX = -0.7,      // Classic Julia set parameters
-                    JuliaCY = 0.27015    // Creates beautiful fractal pattern
+                    JuliaCY = 0.27015,   // Creates beautiful fractal pattern
+                    Palette = ColorPalette.Fire
                 };
 
                 Console.WriteLine($"Rendering {juliaParams.Width}x{juliaParams.Height} Julia set (c = {juliaParams.JuliaCX} + {juliaParams.JuliaCY}i)...\n");
@@ -99,10 +101,43 @@ namespace ManpCore.Tests
 
                 ValidatePixelData(juliaResult.PixelData, juliaResult.Width, juliaResult.Height);
 
+                // Test 3: Mandelbrot Zoom - Rainbow Palette
+                Console.WriteLine("\n\n=== Test 3: Mandelbrot Zoom (Rainbow Palette) ===\n");
+                var zoomParams = new FractalParameters
+                {
+                    FractalType = "Mandelbrot",
+                    Width = 800,
+                    Height = 600,
+                    MaxIterations = 512,
+                    CenterX = -0.7463,
+                    CenterY = 0.1102,
+                    ViewWidth = 0.005,
+                    ViewHeight = 0.00375,
+                    IsJuliaSet = false,
+                    Palette = ColorPalette.Rainbow
+                };
+
+                Console.WriteLine($"Rendering {zoomParams.Width}x{zoomParams.Height} Mandelbrot zoom (rainbow colors)...\n");
+
+                stopwatch.Restart();
+                var zoomResult = engine.Calculate(zoomParams);
+                stopwatch.Stop();
+
+                Console.WriteLine($"\n✓ Zoom calculation complete!");
+                Console.WriteLine($"  - Render time: {zoomResult.RenderTime.TotalMilliseconds:F2} ms");
+                Console.WriteLine($"  - Iteration count: {zoomResult.IterationCount:N0}");
+
+                var zoomPath = Path.Combine(Directory.GetCurrentDirectory(), "mandelbrot_zoom_rainbow.ppm");
+                SaveAsPPM(zoomPath, zoomResult.PixelData, zoomResult.Width, zoomResult.Height);
+                Console.WriteLine($"\n✓ Saved zoom image to: {zoomPath}");
+
+                ValidatePixelData(zoomResult.PixelData, zoomResult.Width, zoomResult.Height);
+
                 Console.WriteLine("\n=== All Tests Passed! ===");
                 Console.WriteLine($"\nGenerated files:");
-                Console.WriteLine($"  - {mandelbrotPath}");
-                Console.WriteLine($"  - {juliaPath}");
+                Console.WriteLine($"  - {mandelbrotPath} (Classic palette)");
+                Console.WriteLine($"  - {juliaPath} (Fire palette)");
+                Console.WriteLine($"  - {zoomPath} (Rainbow palette)");
                 Console.WriteLine("\nPress any key to exit...");
                 Console.ReadKey();
             }

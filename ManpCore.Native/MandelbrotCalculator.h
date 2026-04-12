@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include "ColorPalette.h"
 
 // Native C++ Mandelbrot calculator
 // Simple implementation for Phase 2 interop testing
@@ -159,22 +160,22 @@ namespace Native {
         }
 
         /// <summary>
-        /// Simple grayscale coloring based on iteration count
+        /// Color iteration using selected palette
+        /// </summary>
+        static ColorRGB IterationToColor(double iteration, int maxIter, PaletteType palette)
+        {
+            return ColorPalette::GetColor(iteration, maxIter, palette);
+        }
+
+        /// <summary>
+        /// Simple grayscale coloring based on iteration count (legacy)
         /// </summary>
         static void IterationToGrayscale(double iteration, int maxIter, unsigned char& r, unsigned char& g, unsigned char& b)
         {
-            if (iteration >= maxIter)
-            {
-                // In set - black
-                r = g = b = 0;
-            }
-            else
-            {
-                // Escaped - grayscale based on smooth iteration
-                double t = iteration / maxIter;
-                int gray = (int)(t * 255.0);
-                r = g = b = (unsigned char)gray;
-            }
+            ColorRGB color = ColorPalette::GetColor(iteration, maxIter, PaletteType::Grayscale);
+            r = color.r;
+            g = color.g;
+            b = color.b;
         }
     };
 

@@ -67,6 +67,9 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         nativeParams.juliaCX = parameters->JuliaCX;
         nativeParams.juliaCY = parameters->JuliaCY;
 
+        // Convert managed palette enum to native palette enum
+        ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
+
         long long totalIterations = 0;
 
         // Calculate Mandelbrot set using native C++ code
@@ -101,15 +104,18 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
 
                 totalIterations += (long long)iteration;
 
-                // Convert iteration to color
-                unsigned char r, g, b;
-                ::Native::MandelbrotCalculator::IterationToGrayscale(iteration, nativeParams.maxIterations, r, g, b);
+                // Convert iteration to color using selected palette
+                ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
+                    iteration, 
+                    nativeParams.maxIterations, 
+                    nativePalette
+                );
 
                 // Write RGBA pixel
                 int index = (y * width + x) * 4;
-                result->PixelData[index + 0] = r;
-                result->PixelData[index + 1] = g;
-                result->PixelData[index + 2] = b;
+                result->PixelData[index + 0] = color.r;
+                result->PixelData[index + 1] = color.g;
+                result->PixelData[index + 2] = color.b;
                 result->PixelData[index + 3] = 255;  // Full opacity
             }
         }
