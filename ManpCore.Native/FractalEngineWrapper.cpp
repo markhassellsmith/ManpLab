@@ -1,12 +1,182 @@
 #include "FractalEngineWrapper.h"
 #include "MandelbrotCalculator.h"
 #include "NativePerformanceBaseline.h"
-// TODO: Re-enable when needed for string marshalling
-// #include <msclr/marshal_cppstd.h>
+#include "BigDoubleMarshaller.h"
+#include <string>
 
 using namespace System;
 using namespace System::Diagnostics;
+using namespace System::Runtime::InteropServices;
 using namespace ManpCore::Native;
+
+// Helper function to convert managed string to std::string without msclr/marshal
+static std::string ManagedToStdString(String^ str)
+{
+    if (String::IsNullOrEmpty(str))
+        return std::string();
+
+    array<unsigned char>^ bytes = System::Text::Encoding::UTF8->GetBytes(str);
+    pin_ptr<unsigned char> pinnedBytes = &bytes[0];
+    return std::string(reinterpret_cast<char*>(pinnedBytes), bytes->Length);
+}
+
+// Helper function to convert std::string to managed String
+static String^ StdStringToManaged(const std::string& str)
+{
+    if (str.empty())
+        return String::Empty;
+
+    array<unsigned char>^ bytes = gcnew array<unsigned char>((int)str.size());
+    Marshal::Copy(IntPtr((void*)str.data()), bytes, 0, (int)str.size());
+    return System::Text::Encoding::UTF8->GetString(bytes);
+}
+
+//=============================================================================
+// BigDouble Implementation
+//=============================================================================
+
+// Constructor from double
+BigDouble::BigDouble(double value)
+{
+    m_nativeBigDouble = new ::Native::SimpleBigDouble(value);
+    m_precision = 16;
+}
+
+// Constructor with precision
+BigDouble::BigDouble(double value, int precision)
+{
+    m_nativeBigDouble = new ::Native::SimpleBigDouble(value, precision);
+    m_precision = precision;
+}
+
+// Copy constructor
+BigDouble::BigDouble(BigDouble^ other)
+{
+    if (other == nullptr)
+        throw gcnew ArgumentNullException("other");
+
+    auto nativeOther = static_cast<::Native::SimpleBigDouble*>(other->m_nativeBigDouble);
+    m_nativeBigDouble = new ::Native::SimpleBigDouble(*nativeOther);
+    m_precision = other->m_precision;
+}
+
+// Destructor
+BigDouble::~BigDouble()
+{
+    this->!BigDouble();
+}
+
+// Finalizer
+BigDouble::!BigDouble()
+{
+    if (m_nativeBigDouble != nullptr)
+    {
+        delete static_cast<::Native::SimpleBigDouble*>(m_nativeBigDouble);
+        m_nativeBigDouble = nullptr;
+    }
+}
+
+// Convert to double
+double BigDouble::ToDouble()
+{
+    auto native = static_cast<::Native::SimpleBigDouble*>(m_nativeBigDouble);
+    return native->ToDouble();
+}
+
+// Convert to string
+String^ BigDouble::ToString()
+{
+    auto native = static_cast<::Native::SimpleBigDouble*>(m_nativeBigDouble);
+    std::string str = native->ToString();
+    return gcnew String(str.c_str());
+}
+
+// Parse from string
+BigDouble^ BigDouble::Parse(String^ str)
+{
+    if (String::IsNullOrEmpty(str))
+        throw gcnew ArgumentNullException("str");
+
+    std::string nativeStr = ManagedToStdString(str);
+
+    auto native = ::Native::SimpleBigDouble::FromString(nativeStr);
+    return gcnew BigDouble(native.value, native.precision);
+}
+
+// Arithmetic operators
+BigDouble^ BigDouble::operator+(BigDouble^ a, BigDouble^ b)
+{
+    if (a == nullptr || b == nullptr)
+        throw gcnew ArgumentNullException();
+
+    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+
+    auto result = (*nativeA) + (*nativeB);
+    return gcnew BigDouble(result.value, result.precision);
+}
+
+BigDouble^ BigDouble::operator-(BigDouble^ a, BigDouble^ b)
+{
+    if (a == nullptr || b == nullptr)
+        throw gcnew ArgumentNullException();
+
+    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+
+    auto result = (*nativeA) - (*nativeB);
+    return gcnew BigDouble(result.value, result.precision);
+}
+
+BigDouble^ BigDouble::operator*(BigDouble^ a, BigDouble^ b)
+{
+    if (a == nullptr || b == nullptr)
+        throw gcnew ArgumentNullException();
+
+    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+
+    auto result = (*nativeA) * (*nativeB);
+    return gcnew BigDouble(result.value, result.precision);
+}
+
+BigDouble^ BigDouble::operator/(BigDouble^ a, BigDouble^ b)
+{
+    if (a == nullptr || b == nullptr)
+        throw gcnew ArgumentNullException();
+
+    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+
+    auto result = (*nativeA) / (*nativeB);
+    return gcnew BigDouble(result.value, result.precision);
+}
+
+bool BigDouble::operator<(BigDouble^ a, BigDouble^ b)
+{
+    if (a == nullptr || b == nullptr)
+        throw gcnew ArgumentNullException();
+
+    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+
+    return (*nativeA) < (*nativeB);
+}
+
+bool BigDouble::operator>(BigDouble^ a, BigDouble^ b)
+{
+    if (a == nullptr || b == nullptr)
+        throw gcnew ArgumentNullException();
+
+    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+
+    return (*nativeA) > (*nativeB);
+}
+
+//=============================================================================
+// FractalEngineWrapper Implementation
+//=============================================================================
 
 // Constructor
 FractalEngineWrapper::FractalEngineWrapper()

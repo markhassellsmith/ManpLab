@@ -9,15 +9,22 @@ namespace ManpCore.Tests
     {
         static void Main(string[] args)
         {
-            // Check for benchmark flag
+            // Check for test flags
             if (args.Length > 0 && args[0] == "--benchmark")
             {
                 PerformanceBenchmark.Run();
                 return;
             }
 
+            if (args.Length > 0 && args[0] == "--bigdouble")
+            {
+                BigDoubleTest.Run();
+                return;
+            }
+
             Console.WriteLine("=== ManpCore.Native C++/CLI Wrapper Test ===");
-            Console.WriteLine("Run with --benchmark flag for performance analysis\n");
+            Console.WriteLine("Run with --benchmark for performance analysis");
+            Console.WriteLine("Run with --bigdouble for BigDouble marshalling test\n");
 
             try
             {

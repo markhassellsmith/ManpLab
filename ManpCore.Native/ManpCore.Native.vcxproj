@@ -87,6 +87,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BigDoubleMarshaller.h" />
     <ClInclude Include="ColorPalette.h" />
     <ClInclude Include="FractalEngineWrapper.h" />
     <ClInclude Include="MandelbrotCalculator.h" />

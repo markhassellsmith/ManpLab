@@ -20,6 +20,75 @@ namespace Native {
     };
 
     /// <summary>
+    /// High-precision floating point number for deep zoom rendering
+    /// Wraps native SimpleBigDouble (Phase 2) or MPFR BigDouble (later phases)
+    /// </summary>
+    public ref class BigDouble
+    {
+    private:
+        void* m_nativeBigDouble;  // Pointer to native SimpleBigDouble
+        int m_precision;
+
+    public:
+        /// <summary>
+        /// Create BigDouble from regular double
+        /// </summary>
+        BigDouble(double value);
+
+        /// <summary>
+        /// Create BigDouble with specified precision (decimal digits)
+        /// </summary>
+        BigDouble(double value, int precision);
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        BigDouble(BigDouble^ other);
+
+        /// <summary>
+        /// Destructor
+        /// </summary>
+        ~BigDouble();
+
+        /// <summary>
+        /// Finalizer (cleanup native resources)
+        /// </summary>
+        !BigDouble();
+
+        /// <summary>
+        /// Convert to double (loses precision for very large/small numbers)
+        /// </summary>
+        double ToDouble();
+
+        /// <summary>
+        /// Get string representation with full precision
+        /// </summary>
+        String^ ToString() override;
+
+        /// <summary>
+        /// Parse BigDouble from string
+        /// </summary>
+        static BigDouble^ Parse(String^ str);
+
+        /// <summary>
+        /// Get/set precision in decimal digits
+        /// </summary>
+        property int Precision
+        {
+            int get() { return m_precision; }
+            void set(int value) { m_precision = value; }
+        }
+
+        // Arithmetic operators
+        static BigDouble^ operator+(BigDouble^ a, BigDouble^ b);
+        static BigDouble^ operator-(BigDouble^ a, BigDouble^ b);
+        static BigDouble^ operator*(BigDouble^ a, BigDouble^ b);
+        static BigDouble^ operator/(BigDouble^ a, BigDouble^ b);
+        static bool operator<(BigDouble^ a, BigDouble^ b);
+        static bool operator>(BigDouble^ a, BigDouble^ b);
+    };
+
+    /// <summary>
     /// Managed wrapper for fractal calculation parameters
     /// </summary>
     public ref class FractalParameters
@@ -36,6 +105,12 @@ namespace Native {
         property double CenterY;
         property double ViewWidth;
         property double ViewHeight;
+
+        // High-precision coordinates for deep zoom (optional - use when zoom > 10^15)
+        property BigDouble^ BigCenterX;
+        property BigDouble^ BigCenterY;
+        property BigDouble^ BigViewWidth;
+        property BigDouble^ BigViewHeight;
 
         // Julia set parameters (if applicable)
         property bool IsJuliaSet;
