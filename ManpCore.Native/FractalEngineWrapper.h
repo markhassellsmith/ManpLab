@@ -617,6 +617,19 @@ namespace Native {
         /// <returns>Average time in milliseconds</returns>
         double RunNativeBaselineBenchmark(int width, int height, int maxIterations, int runs);
 
+        /// <summary>
+        /// Proof-of-concept: Test ManpWIN64 engine integration by performing simple complex number arithmetic.
+        /// </summary>
+        /// <param name="real">Real part of complex number</param>
+        /// <param name="imaginary">Imaginary part of complex number</param>
+        /// <returns>Magnitude (absolute value) of the complex number</returns>
+        /// <remarks>
+        /// <para>POC for Phase 2: Validates that C++/CLI wrapper can link to and call ManpWIN64 native code.</para>
+        /// <para>Uses ManpWIN64::Complex class to calculate sqrt(real² + imaginary²).</para>
+        /// <para>Full fractal type integration will be completed in Phase 3 with UI testing framework.</para>
+        /// </remarks>
+        double TestManpWIN64Integration(double real, double imaginary);
+
     protected:
         /// <summary>
         /// Report progress to managed event handlers

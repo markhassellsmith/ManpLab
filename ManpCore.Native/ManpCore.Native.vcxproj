@@ -96,6 +96,9 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="FractalEngineWrapper.cpp" />
+    <ClCompile Include="..\ManpWIN64\Complex.cpp">
+      <CompileAsManaged>false</CompileAsManaged>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

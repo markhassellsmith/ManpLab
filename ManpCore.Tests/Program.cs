@@ -22,9 +22,16 @@ namespace ManpCore.Tests
                 return;
             }
 
+            if (args.Length > 0 && args[0] == "--manpwin64")
+            {
+                ManpWIN64IntegrationTest.Run();
+                return;
+            }
+
             Console.WriteLine("=== ManpCore.Native C++/CLI Wrapper Test ===");
             Console.WriteLine("Run with --benchmark for performance analysis");
-            Console.WriteLine("Run with --bigdouble for BigDouble marshalling test\n");
+            Console.WriteLine("Run with --bigdouble for BigDouble marshalling test");
+            Console.WriteLine("Run with --manpwin64 for ManpWIN64 integration POC\n");
 
             try
             {

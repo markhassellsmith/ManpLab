@@ -2,6 +2,7 @@
 #include "MandelbrotCalculator.h"
 #include "NativePerformanceBaseline.h"
 #include "BigDoubleMarshaller.h"
+#include "Complex.h"  // ManpWIN64 Complex class for POC
 #include <string>
 
 using namespace System;
@@ -341,4 +342,15 @@ double FractalEngineWrapper::RunNativeBaselineBenchmark(int width, int height, i
         width, height, maxIterations, runs);
 
     return result.averageTimeMs;
+}
+
+// Test ManpWIN64 integration (POC)
+double FractalEngineWrapper::TestManpWIN64Integration(double real, double imaginary)
+{
+    // Create a ManpWIN64 Complex number
+    Complex c(real, imaginary);
+
+    // Use ManpWIN64's CFabs method to calculate magnitude
+    // This proves we can link to and call ManpWIN64 code
+    return c.CFabs();
 }
