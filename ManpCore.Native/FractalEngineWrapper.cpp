@@ -1,4 +1,5 @@
 #include "FractalEngineWrapper.h"
+#include "MandelbrotCalculator.h"
 // TODO: Re-enable when needed for string marshalling
 // #include <msclr/marshal_cppstd.h>
 
@@ -44,9 +45,6 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
 
     try
     {
-        // TODO Phase 2: Call native C++ calculation
-        // For now, return dummy result for testing
-        
         int width = parameters->Width;
         int height = parameters->Height;
         int pixelCount = width * height * 4; // RGBA
@@ -55,8 +53,23 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         result->Width = width;
         result->Height = height;
         result->PixelData = gcnew array<Byte>(pixelCount);
-        
-        // Fill with test pattern (gradient)
+
+        // Setup native Mandelbrot parameters
+        ::Native::MandelbrotParams nativeParams;
+        nativeParams.width = width;
+        nativeParams.height = height;
+        nativeParams.maxIterations = parameters->MaxIterations;
+        nativeParams.centerX = parameters->CenterX;
+        nativeParams.centerY = parameters->CenterY;
+        nativeParams.viewWidth = parameters->ViewWidth;
+        nativeParams.viewHeight = parameters->ViewHeight;
+        nativeParams.isJulia = parameters->IsJuliaSet;
+        nativeParams.juliaCX = parameters->JuliaCX;
+        nativeParams.juliaCY = parameters->JuliaCY;
+
+        long long totalIterations = 0;
+
+        // Calculate Mandelbrot set using native C++ code
         for (int y = 0; y < height; y++)
         {
             // Report progress every 10 lines
@@ -75,19 +88,43 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
 
             for (int x = 0; x < width; x++)
             {
+                // Map pixel to complex plane
+                ::Native::ComplexD c = ::Native::MandelbrotCalculator::PixelToComplex(x, y, nativeParams);
+
+                // Calculate smooth iterations for better coloring
+                double iteration = ::Native::MandelbrotCalculator::CalculateSmoothIterations(
+                    c, 
+                    nativeParams.maxIterations,
+                    nativeParams.isJulia,
+                    ::Native::ComplexD(nativeParams.juliaCX, nativeParams.juliaCY)
+                );
+
+                totalIterations += (long long)iteration;
+
+                // Convert iteration to color
+                unsigned char r, g, b;
+                ::Native::MandelbrotCalculator::IterationToGrayscale(iteration, nativeParams.maxIterations, r, g, b);
+
+                // Write RGBA pixel
                 int index = (y * width + x) * 4;
-                
-                // Simple gradient test pattern
-                result->PixelData[index + 0] = (Byte)(x * 255 / width);      // R
-                result->PixelData[index + 1] = (Byte)(y * 255 / height);     // G
-                result->PixelData[index + 2] = 128;                          // B
-                result->PixelData[index + 3] = 255;                          // A
+                result->PixelData[index + 0] = r;
+                result->PixelData[index + 1] = g;
+                result->PixelData[index + 2] = b;
+                result->PixelData[index + 3] = 255;  // Full opacity
             }
         }
 
         stopwatch->Stop();
         result->RenderTime = stopwatch->Elapsed;
-        result->IterationCount = (long long)width * height * parameters->MaxIterations;
+        result->IterationCount = totalIterations;
+
+        // Final progress update
+        auto finalProgress = gcnew ProgressEventArgs();
+        finalProgress->Percentage = 100.0;
+        finalProgress->CurrentLine = height;
+        finalProgress->TotalLines = height;
+        finalProgress->StatusMessage = "Complete";
+        OnProgressChanged(finalProgress);
 
         return result;
     }

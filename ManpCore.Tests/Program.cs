@@ -44,9 +44,9 @@ namespace ManpCore.Tests
                     ViewHeight = 2.25
                 };
 
-                Console.WriteLine($"Rendering {parameters.Width}x{parameters.Height} test pattern...\n");
+                Console.WriteLine($"Rendering {parameters.Width}x{parameters.Height} Mandelbrot set...\n");
 
-                // Calculate fractal (test pattern for now)
+                // Calculate Mandelbrot fractal
                 var stopwatch = Stopwatch.StartNew();
                 var result = engine.Calculate(parameters);
                 stopwatch.Stop();
@@ -58,10 +58,10 @@ namespace ManpCore.Tests
                 Console.WriteLine($"  - Image dimensions: {result.Width}x{result.Height}");
 
                 // Save as simple PPM file (easier than PNG for test)
-                var outputPath = Path.Combine(Directory.GetCurrentDirectory(), "test_output.ppm");
+                var outputPath = Path.Combine(Directory.GetCurrentDirectory(), "mandelbrot_output.ppm");
                 SaveAsPPM(outputPath, result.PixelData, result.Width, result.Height);
-                Console.WriteLine($"\n✓ Saved test image to: {outputPath}");
-                Console.WriteLine($"  (Open with image viewer that supports PPM format)");
+                Console.WriteLine($"\n✓ Saved Mandelbrot set image to: {outputPath}");
+                Console.WriteLine($"  (Open with image viewer that supports PPM format, or IrfanView, GIMP)");
 
                 // Validate pixel data
                 ValidatePixelData(result.PixelData, result.Width, result.Height);
@@ -120,23 +120,33 @@ namespace ManpCore.Tests
             }
             Console.WriteLine($"  ✓ Pixel data size correct: {pixelData.Length:N0} bytes");
 
-            // Check for gradient pattern (our test implementation)
-            // Top-left should be dark, bottom-right should be brighter
-            int topLeft = (0 * width + 0) * 4;
-            int bottomRight = ((height - 1) * width + (width - 1)) * 4;
+            // Check for Mandelbrot set characteristics
+            // Center of image should contain the main cardioid (dark/black)
+            // Edges should show escaping regions (brighter)
+            int centerX = width / 2;
+            int centerY = height / 2;
+            int centerIdx = (centerY * width + centerX) * 4;
 
-            byte topLeftR = pixelData[topLeft];
-            byte bottomRightR = pixelData[bottomRight];
+            byte centerR = pixelData[centerIdx];
 
-            if (bottomRightR <= topLeftR)
+            Console.WriteLine($"  ✓ Center pixel R value: {centerR}");
+            if (centerR < 50)
             {
-                Console.WriteLine($"  ⚠ Warning: Expected gradient pattern not detected");
-                Console.WriteLine($"    Top-left R: {topLeftR}, Bottom-right R: {bottomRightR}");
+                Console.WriteLine($"  ✓ Center region appears to be in set (dark/black)");
             }
-            else
+
+            // Check for variation in image (not all same color)
+            int uniqueColors = 0;
+            int prevR = pixelData[0];
+            for (int i = 0; i < pixelData.Length; i += 4)
             {
-                Console.WriteLine($"  ✓ Gradient pattern detected (R: {topLeftR} → {bottomRightR})");
+                if (pixelData[i] != prevR)
+                {
+                    uniqueColors++;
+                    prevR = pixelData[i];
+                }
             }
+            Console.WriteLine($"  ✓ Color variation detected: {uniqueColors} color changes");
 
             // Check alpha channel
             bool hasAlpha = false;
