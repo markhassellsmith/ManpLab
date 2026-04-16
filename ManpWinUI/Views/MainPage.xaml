@@ -4,35 +4,173 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:ManpWinUI"
+    xmlns:local="using:ManpWinUI.Views"
+    xmlns:vm="using:ManpWinUI.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-    <Page.Content>
-        <StackPanel
-            HorizontalAlignment="Center"
-            Spacing="25"
-            VerticalAlignment="Center">
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Toolbar -->
+            <RowDefinition Height="*" />
+            <!-- Fractal Canvas -->
+            <RowDefinition Height="Auto" />
+            <!-- Status Bar -->
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <CommandBar Grid.Row="0" DefaultLabelPosition="Right">
+            <AppBarButton
+                Icon="Play"
+                Label="Render"
+                Command="{x:Bind ViewModel.RenderMandelbrotCommand}"
+                IsEnabled="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}" />
+            <AppBarButton
+                Icon="Refresh"
+                Label="Reset View"
+                Command="{x:Bind ViewModel.ResetViewCommand}" />
+            <AppBarSeparator />
+            <AppBarButton
+                Icon="ZoomIn"
+                Label="Zoom In"
+                Command="{x:Bind ViewModel.ZoomInCommand}" />
+            <AppBarButton
+                Icon="ZoomOut"
+                Label="Zoom Out"
+                Command="{x:Bind ViewModel.ZoomOutCommand}" />
+        </CommandBar>
+
+        <!-- Fractal Canvas Placeholder -->
+        <Grid Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="16">
+                <TextBlock
+                    Text="ManpLab - Fractal Explorer"
+                    FontSize="32"
+                    FontWeight="Bold"
+                    HorizontalAlignment="Center" />
+                <TextBlock
+                    Text="Phase 3: WinUI MVVM Architecture"
+                    FontSize="16"
+                    Opacity="0.7"
+                    HorizontalAlignment="Center" />
+                <TextBlock
+                    Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                    FontSize="14"
+                    Opacity="0.6"
+                    HorizontalAlignment="Center" />
+
+                <!-- Parameters Panel -->
+                <StackPanel
+                    Margin="0,32,0,0"
+                    Spacing="12"
+                    Width="400">
+                    <TextBlock Text="Rendering Parameters" FontWeight="SemiBold" FontSize="18" />
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Center X" />
+                        <NumberBox
+                            Value="{x:Bind ViewModel.CenterX, Mode=TwoWay}"
+                            SmallChange="0.1"
+                            LargeChange="1.0"
+                            SpinButtonPlacementMode="Inline" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Center Y" />
+                        <NumberBox
+                            Value="{x:Bind ViewModel.CenterY, Mode=TwoWay}"
+                            SmallChange="0.1"
+                            LargeChange="1.0"
+                            SpinButtonPlacementMode="Inline" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Zoom Level" />
+                        <NumberBox
+                            Value="{x:Bind ViewModel.Zoom, Mode=TwoWay}"
+                            SmallChange="0.5"
+                            LargeChange="2.0"
+                            Minimum="0.001"
+                            SpinButtonPlacementMode="Inline" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Max Iterations" />
+                        <NumberBox
+                            Value="{x:Bind ViewModel.MaxIterations, Mode=TwoWay}"
+                            SmallChange="50"
+                            LargeChange="500"
+                            Minimum="50"
+                            Maximum="10000"
+                            SpinButtonPlacementMode="Inline" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Color Palette" />
+                        <ComboBox
+                            SelectedItem="{x:Bind ViewModel.SelectedPalette, Mode=TwoWay}"
+                            HorizontalAlignment="Stretch">
+                            <x:String>Grayscale</x:String>
+                            <x:String>Classic</x:String>
+                            <x:String>Fire</x:String>
+                            <x:String>Ocean</x:String>
+                            <x:String>Rainbow</x:String>
+                            <x:String>Psychedelic</x:String>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Progress Overlay -->
+            <Grid
+                Background="{ThemeResource SystemControlAcrylicElementBrush}"
+                Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay}">
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="16">
+                    <ProgressRing
+                        IsActive="{x:Bind ViewModel.IsRendering, Mode=OneWay}"
+                        Width="60"
+                        Height="60" />
+                    <TextBlock
+                        Text="Rendering fractal..."
+                        FontSize="16"
+                        HorizontalAlignment="Center" />
+                    <ProgressBar
+                        Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
+                        Width="300"
+                        Maximum="100" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Grid Grid.Row="2"
+              Background="{ThemeResource SystemControlAcrylicElementBrush}"
+              Padding="16,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
             <TextBlock
-                FontSize="24"
-                HorizontalAlignment="Center"
-                Style="{StaticResource MyLabel}"
-                Text="Hello, World!" />
+                Grid.Column="0"
+                Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                VerticalAlignment="Center" />
+
             <TextBlock
-                FontSize="20"
-                HorizontalAlignment="Center"
-                Style="{StaticResource MyLabel}"
-                Text="Welcome to WinUI 3!" />
-            <TextBlock
-                x:Name="txtCount"
-                FontSize="16"
-                HorizontalAlignment="Center"
-                Style="{StaticResource MyLabel}"
-                Text="Current count: 0" />
-            <Button
-                Click="OnCountClicked"
-                Content="Click Me"
-                HorizontalAlignment="Center"
-                Style="{StaticResource PrimaryAction}" />
-        </StackPanel>
-    </Page.Content>
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Opacity="0.7">
+                <Run Text="Last render: " />
+                <Run Text="{x:Bind ViewModel.LastRenderTime, Mode=OneWay}" />
+            </TextBlock>
+        </Grid>
+    </Grid>
 </Page>

@@ -43,9 +43,33 @@
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.*" />
         <PackageReference Include="Microsoft.Web.WebView2" Version="1.*" />
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.*" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.*" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.*" />
+        <PackageReference Include="Serilog" Version="4.*" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="8.*" />
+        <PackageReference Include="Serilog.Sinks.File" Version="6.*" />
 
         <Manifest Include="$(ApplicationManifest)" />
     </ItemGroup>
+
+    <!-- 
+        C++/CLI Interop: Use direct assembly reference instead of ProjectReference
+        to avoid NU1105 error during NuGet restore. Build dependency is maintained
+        via solution-level project dependencies in Visual Studio.
+    -->
+    <ItemGroup>
+        <Reference Include="ManpCore.Native">
+            <HintPath>..\x64\$(Configuration)\ManpCore.Native.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+    </ItemGroup>
+
+    <!-- Copy ManpCore.Native.dll to output directory after build -->
+    <Target Name="CopyNativeWrapper" AfterTargets="Build">
+        <Copy SourceFiles="..\x64\$(Configuration)\ManpCore.Native.dll" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+        <Message Text="Copied ManpCore.Native.dll to $(OutDir)" Importance="high" />
+    </Target>
 
     <!-- 
         Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging

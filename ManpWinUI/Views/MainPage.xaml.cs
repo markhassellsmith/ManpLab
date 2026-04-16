@@ -1,18 +1,22 @@
+using ManpWinUI.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ManpWinUI.Views
 {
     /// <summary>
-    /// A simple page that can be used on its own or navigated to within a Frame.
+    /// Main fractal explorer page with MVVM architecture.
     /// </summary>
-    public partial class MainPage : Page
+    public sealed partial class MainPage : Page
     {
-        int count = 0;
+        public MainViewModel ViewModel { get; }
 
         public MainPage()
         {
             this.InitializeComponent();
-        }
 
-        private void OnCountClicked(object sender, RoutedEventArgs e)
-            => txtCount.Text = $"Current count: {count++}";
+            // Get ViewModel from DI container
+            ViewModel = App.Current.Services.GetRequiredService<MainViewModel>();
+            DataContext = ViewModel;
+        }
     }
 }

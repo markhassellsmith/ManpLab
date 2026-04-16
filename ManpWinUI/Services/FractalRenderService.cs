@@ -1,0 +1,195 @@
+using ManpCore.Native;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ManpWinUI.Services;
+
+/// <summary>
+/// Service implementation that wraps ManpCore.Native for fractal rendering.
+/// </summary>
+public class FractalRenderService : IFractalRenderService
+{
+    private readonly ILogger<FractalRenderService> _logger;
+    private readonly FractalEngineWrapper _engine;
+
+    public FractalRenderService(ILogger<FractalRenderService> logger)
+    {
+        _logger = logger;
+        _engine = new FractalEngineWrapper();
+        _logger.LogInformation("FractalRenderService initialized");
+    }
+
+    public async Task<byte[]> RenderMandelbrotAsync(
+        double centerX,
+        double centerY,
+        double zoom,
+        int width,
+        int height,
+        int maxIterations,
+        string palette,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(
+            "Rendering Mandelbrot: center=({CenterX}, {CenterY}), zoom={Zoom}, size={Width}x{Height}, iterations={MaxIterations}, palette={Palette}",
+            centerX, centerY, zoom, width, height, maxIterations, palette);
+
+        return await Task.Run(() =>
+        {
+            try
+            {
+                // Convert zoom to viewWidth (zoom of 1.0 = full Mandelbrot set width of 3.0)
+                double viewWidth = 3.0 / zoom;
+                double viewHeight = viewWidth * ((double)height / width);
+
+                // Parse palette string to enum
+                var paletteEnum = ParsePalette(palette);
+
+                // Create parameters for ManpCore.Native
+                var parameters = new FractalParameters
+                {
+                    FractalType = "Mandelbrot",
+                    CenterX = centerX,
+                    CenterY = centerY,
+                    ViewWidth = viewWidth,
+                    ViewHeight = viewHeight,
+                    Width = width,
+                    Height = height,
+                    MaxIterations = maxIterations,
+                    Palette = paletteEnum,
+                    IsJuliaSet = false
+                };
+
+                // Set up progress reporting
+                EventHandler<ProgressEventArgs>? progressHandler = null;
+                if (progress != null)
+                {
+                    progressHandler = (sender, args) =>
+                    {
+                        progress.Report(args.Percentage / 100.0);
+                    };
+                    _engine.ProgressChanged += progressHandler;
+                }
+
+                // Render the fractal using Calculate method
+                var result = _engine.Calculate(parameters);
+
+                // Clean up progress handler
+                if (progressHandler != null)
+                {
+                    _engine.ProgressChanged -= progressHandler;
+                }
+
+                _logger.LogInformation(
+                    "Mandelbrot render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations",
+                    result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount);
+
+                return result.PixelData;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error rendering Mandelbrot set");
+                throw;
+            }
+        }, cancellationToken);
+    }
+
+    public async Task<byte[]> RenderJuliaAsync(
+        double cReal,
+        double cImaginary,
+        double centerX,
+        double centerY,
+        double zoom,
+        int width,
+        int height,
+        int maxIterations,
+        string palette,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(
+            "Rendering Julia: c=({CReal}, {CImaginary}), center=({CenterX}, {CenterY}), zoom={Zoom}, size={Width}x{Height}",
+            cReal, cImaginary, centerX, centerY, zoom, width, height);
+
+        return await Task.Run(() =>
+        {
+            try
+            {
+                double viewWidth = 3.0 / zoom;
+                double viewHeight = viewWidth * ((double)height / width);
+                var paletteEnum = ParsePalette(palette);
+
+                var parameters = new FractalParameters
+                {
+                    FractalType = "Julia",
+                    IsJuliaSet = true,
+                    JuliaCX = cReal,
+                    JuliaCY = cImaginary,
+                    CenterX = centerX,
+                    CenterY = centerY,
+                    ViewWidth = viewWidth,
+                    ViewHeight = viewHeight,
+                    Width = width,
+                    Height = height,
+                    MaxIterations = maxIterations,
+                    Palette = paletteEnum
+                };
+
+                EventHandler<ProgressEventArgs>? progressHandler = null;
+                if (progress != null)
+                {
+                    progressHandler = (sender, args) => progress.Report(args.Percentage / 100.0);
+                    _engine.ProgressChanged += progressHandler;
+                }
+
+                var result = _engine.Calculate(parameters);
+
+                if (progressHandler != null)
+                {
+                    _engine.ProgressChanged -= progressHandler;
+                }
+
+                _logger.LogInformation(
+                    "Julia render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations",
+                    result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount);
+
+                return result.PixelData;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error rendering Julia set");
+                throw;
+            }
+        }, cancellationToken);
+    }
+
+    public string[] GetAvailablePalettes()
+    {
+        // These match the ColorPalette enum in ManpCore.Native
+        return new[]
+        {
+            "Grayscale",
+            "Classic",
+            "Fire",
+            "Ocean",
+            "Rainbow",
+            "Psychedelic"
+        };
+    }
+
+    private ColorPalette ParsePalette(string paletteName)
+    {
+        return paletteName switch
+        {
+            "Grayscale" => ColorPalette.Grayscale,
+            "Classic" => ColorPalette.Classic,
+            "Fire" => ColorPalette.Fire,
+            "Ocean" => ColorPalette.Ocean,
+            "Rainbow" => ColorPalette.Rainbow,
+            "Psychedelic" => ColorPalette.Psychedelic,
+            _ => ColorPalette.Classic // Default fallback
+        };
+    }
+}
