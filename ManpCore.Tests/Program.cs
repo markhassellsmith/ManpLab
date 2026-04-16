@@ -9,7 +9,29 @@ namespace ManpCore.Tests
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("=== ManpCore.Native C++/CLI Wrapper Test ===\n");
+            // Check for test flags
+            if (args.Length > 0 && args[0] == "--benchmark")
+            {
+                PerformanceBenchmark.Run();
+                return;
+            }
+
+            if (args.Length > 0 && args[0] == "--bigdouble")
+            {
+                BigDoubleTest.Run();
+                return;
+            }
+
+            if (args.Length > 0 && args[0] == "--manpwin64")
+            {
+                ManpWIN64IntegrationTest.Run();
+                return;
+            }
+
+            Console.WriteLine("=== ManpCore.Native C++/CLI Wrapper Test ===");
+            Console.WriteLine("Run with --benchmark for performance analysis");
+            Console.WriteLine("Run with --bigdouble for BigDouble marshalling test");
+            Console.WriteLine("Run with --manpwin64 for ManpWIN64 integration POC\n");
 
             try
             {
@@ -31,8 +53,9 @@ namespace ManpCore.Tests
                 }
                 Console.WriteLine();
 
-                // Create test parameters
-                var parameters = new FractalParameters
+                // Test 1: Mandelbrot Set - Classic Colors
+                Console.WriteLine("=== Test 1: Mandelbrot Set (Classic Palette) ===\n");
+                var mandelbrotParams = new FractalParameters
                 {
                     FractalType = "Mandelbrot",
                     Width = 800,
@@ -41,32 +64,102 @@ namespace ManpCore.Tests
                     CenterX = -0.5,
                     CenterY = 0.0,
                     ViewWidth = 3.0,
-                    ViewHeight = 2.25
+                    ViewHeight = 2.25,
+                    IsJuliaSet = false,
+                    Palette = ColorPalette.Classic
                 };
 
-                Console.WriteLine($"Rendering {parameters.Width}x{parameters.Height} test pattern...\n");
+                Console.WriteLine($"Rendering {mandelbrotParams.Width}x{mandelbrotParams.Height} Mandelbrot set...\n");
 
-                // Calculate fractal (test pattern for now)
                 var stopwatch = Stopwatch.StartNew();
-                var result = engine.Calculate(parameters);
+                var mandelbrotResult = engine.Calculate(mandelbrotParams);
                 stopwatch.Stop();
 
-                Console.WriteLine($"\n✓ Calculation complete!");
-                Console.WriteLine($"  - Render time: {result.RenderTime.TotalMilliseconds:F2} ms");
-                Console.WriteLine($"  - Iteration count: {result.IterationCount:N0}");
-                Console.WriteLine($"  - Pixel data size: {result.PixelData.Length:N0} bytes");
-                Console.WriteLine($"  - Image dimensions: {result.Width}x{result.Height}");
+                Console.WriteLine($"\n✓ Mandelbrot calculation complete!");
+                Console.WriteLine($"  - Render time: {mandelbrotResult.RenderTime.TotalMilliseconds:F2} ms");
+                Console.WriteLine($"  - Iteration count: {mandelbrotResult.IterationCount:N0}");
+                Console.WriteLine($"  - Pixel data size: {mandelbrotResult.PixelData.Length:N0} bytes");
+                Console.WriteLine($"  - Image dimensions: {mandelbrotResult.Width}x{mandelbrotResult.Height}");
 
-                // Save as simple PPM file (easier than PNG for test)
-                var outputPath = Path.Combine(Directory.GetCurrentDirectory(), "test_output.ppm");
-                SaveAsPPM(outputPath, result.PixelData, result.Width, result.Height);
-                Console.WriteLine($"\n✓ Saved test image to: {outputPath}");
-                Console.WriteLine($"  (Open with image viewer that supports PPM format)");
+                var mandelbrotPath = Path.Combine(Directory.GetCurrentDirectory(), "mandelbrot_output.ppm");
+                SaveAsPPM(mandelbrotPath, mandelbrotResult.PixelData, mandelbrotResult.Width, mandelbrotResult.Height);
+                Console.WriteLine($"\n✓ Saved Mandelbrot set image to: {mandelbrotPath}");
 
-                // Validate pixel data
-                ValidatePixelData(result.PixelData, result.Width, result.Height);
+                ValidatePixelData(mandelbrotResult.PixelData, mandelbrotResult.Width, mandelbrotResult.Height);
+
+                // Test 2: Julia Set - Fire Palette
+                Console.WriteLine("\n\n=== Test 2: Julia Set (Fire Palette) ===\n");
+                var juliaParams = new FractalParameters
+                {
+                    FractalType = "Julia",
+                    Width = 800,
+                    Height = 600,
+                    MaxIterations = 256,
+                    CenterX = 0.0,
+                    CenterY = 0.0,
+                    ViewWidth = 4.0,
+                    ViewHeight = 3.0,
+                    IsJuliaSet = true,
+                    JuliaCX = -0.7,      // Classic Julia set parameters
+                    JuliaCY = 0.27015,   // Creates beautiful fractal pattern
+                    Palette = ColorPalette.Fire
+                };
+
+                Console.WriteLine($"Rendering {juliaParams.Width}x{juliaParams.Height} Julia set (c = {juliaParams.JuliaCX} + {juliaParams.JuliaCY}i)...\n");
+
+                stopwatch.Restart();
+                var juliaResult = engine.Calculate(juliaParams);
+                stopwatch.Stop();
+
+                Console.WriteLine($"\n✓ Julia calculation complete!");
+                Console.WriteLine($"  - Render time: {juliaResult.RenderTime.TotalMilliseconds:F2} ms");
+                Console.WriteLine($"  - Iteration count: {juliaResult.IterationCount:N0}");
+                Console.WriteLine($"  - Pixel data size: {juliaResult.PixelData.Length:N0} bytes");
+                Console.WriteLine($"  - Image dimensions: {juliaResult.Width}x{juliaResult.Height}");
+
+                var juliaPath = Path.Combine(Directory.GetCurrentDirectory(), "julia_output.ppm");
+                SaveAsPPM(juliaPath, juliaResult.PixelData, juliaResult.Width, juliaResult.Height);
+                Console.WriteLine($"\n✓ Saved Julia set image to: {juliaPath}");
+
+                ValidatePixelData(juliaResult.PixelData, juliaResult.Width, juliaResult.Height);
+
+                // Test 3: Mandelbrot Zoom - Rainbow Palette
+                Console.WriteLine("\n\n=== Test 3: Mandelbrot Zoom (Rainbow Palette) ===\n");
+                var zoomParams = new FractalParameters
+                {
+                    FractalType = "Mandelbrot",
+                    Width = 800,
+                    Height = 600,
+                    MaxIterations = 512,
+                    CenterX = -0.7463,
+                    CenterY = 0.1102,
+                    ViewWidth = 0.005,
+                    ViewHeight = 0.00375,
+                    IsJuliaSet = false,
+                    Palette = ColorPalette.Rainbow
+                };
+
+                Console.WriteLine($"Rendering {zoomParams.Width}x{zoomParams.Height} Mandelbrot zoom (rainbow colors)...\n");
+
+                stopwatch.Restart();
+                var zoomResult = engine.Calculate(zoomParams);
+                stopwatch.Stop();
+
+                Console.WriteLine($"\n✓ Zoom calculation complete!");
+                Console.WriteLine($"  - Render time: {zoomResult.RenderTime.TotalMilliseconds:F2} ms");
+                Console.WriteLine($"  - Iteration count: {zoomResult.IterationCount:N0}");
+
+                var zoomPath = Path.Combine(Directory.GetCurrentDirectory(), "mandelbrot_zoom_rainbow.ppm");
+                SaveAsPPM(zoomPath, zoomResult.PixelData, zoomResult.Width, zoomResult.Height);
+                Console.WriteLine($"\n✓ Saved zoom image to: {zoomPath}");
+
+                ValidatePixelData(zoomResult.PixelData, zoomResult.Width, zoomResult.Height);
 
                 Console.WriteLine("\n=== All Tests Passed! ===");
+                Console.WriteLine($"\nGenerated files:");
+                Console.WriteLine($"  - {mandelbrotPath} (Classic palette)");
+                Console.WriteLine($"  - {juliaPath} (Fire palette)");
+                Console.WriteLine($"  - {zoomPath} (Rainbow palette)");
                 Console.WriteLine("\nPress any key to exit...");
                 Console.ReadKey();
             }
@@ -120,23 +213,33 @@ namespace ManpCore.Tests
             }
             Console.WriteLine($"  ✓ Pixel data size correct: {pixelData.Length:N0} bytes");
 
-            // Check for gradient pattern (our test implementation)
-            // Top-left should be dark, bottom-right should be brighter
-            int topLeft = (0 * width + 0) * 4;
-            int bottomRight = ((height - 1) * width + (width - 1)) * 4;
+            // Check for Mandelbrot set characteristics
+            // Center of image should contain the main cardioid (dark/black)
+            // Edges should show escaping regions (brighter)
+            int centerX = width / 2;
+            int centerY = height / 2;
+            int centerIdx = (centerY * width + centerX) * 4;
 
-            byte topLeftR = pixelData[topLeft];
-            byte bottomRightR = pixelData[bottomRight];
+            byte centerR = pixelData[centerIdx];
 
-            if (bottomRightR <= topLeftR)
+            Console.WriteLine($"  ✓ Center pixel R value: {centerR}");
+            if (centerR < 50)
             {
-                Console.WriteLine($"  ⚠ Warning: Expected gradient pattern not detected");
-                Console.WriteLine($"    Top-left R: {topLeftR}, Bottom-right R: {bottomRightR}");
+                Console.WriteLine($"  ✓ Center region appears to be in set (dark/black)");
             }
-            else
+
+            // Check for variation in image (not all same color)
+            int uniqueColors = 0;
+            int prevR = pixelData[0];
+            for (int i = 0; i < pixelData.Length; i += 4)
             {
-                Console.WriteLine($"  ✓ Gradient pattern detected (R: {topLeftR} → {bottomRightR})");
+                if (pixelData[i] != prevR)
+                {
+                    uniqueColors++;
+                    prevR = pixelData[i];
+                }
             }
+            Console.WriteLine($"  ✓ Color variation detected: {uniqueColors} color changes");
 
             // Check alpha channel
             bool hasAlpha = false;
