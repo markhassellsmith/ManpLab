@@ -291,13 +291,14 @@ namespace ManpWinUI.Views
 
         private void JuliaPreset1_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            // Classic Julia set - dragon-like shape
+            // Classic Julia set - beautiful spiral structure
             ViewModel.JuliaCX = -0.7;
             ViewModel.JuliaCY = 0.27015;
             ViewModel.CenterX = 0.0;
             ViewModel.CenterY = 0.0;
-            ViewModel.Zoom = 0.7;  // Wider view to see full shape
-            ViewModel.StatusMessage = "Julia preset: Classic (Douady's Rabbit)";
+            ViewModel.Zoom = 0.6;
+            ViewModel.MaxIterations = 256;
+            ViewModel.StatusMessage = "Julia preset: Classic Spiral";
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
                 ViewModel.RenderMandelbrotCommand.Execute(null);
@@ -306,13 +307,14 @@ namespace ManpWinUI.Views
 
         private void JuliaPreset2_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            // Douady Rabbit - connected fractal
-            ViewModel.JuliaCX = -0.12;
-            ViewModel.JuliaCY = 0.75;
+            // Dendrite - spectacular tree-like structure
+            ViewModel.JuliaCX = -0.8;
+            ViewModel.JuliaCY = 0.156;
             ViewModel.CenterX = 0.0;
             ViewModel.CenterY = 0.0;
-            ViewModel.Zoom = 0.6;  // Wider view for full rabbit shape
-            ViewModel.StatusMessage = "Julia preset: Douady Rabbit";
+            ViewModel.Zoom = 0.5;
+            ViewModel.MaxIterations = 256;
+            ViewModel.StatusMessage = "Julia preset: Dendrite";
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
                 ViewModel.RenderMandelbrotCommand.Execute(null);
@@ -321,13 +323,14 @@ namespace ManpWinUI.Views
 
         private void JuliaPreset3_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            // San Marco - circular dendrites
-            ViewModel.JuliaCX = -0.75;
-            ViewModel.JuliaCY = 0.0;
+            // San Marco Jewel - intricate circular pattern
+            ViewModel.JuliaCX = 0.285;
+            ViewModel.JuliaCY = 0.01;
             ViewModel.CenterX = 0.0;
             ViewModel.CenterY = 0.0;
-            ViewModel.Zoom = 0.5;  // Wide view to see dendrite structure
-            ViewModel.StatusMessage = "Julia preset: San Marco";
+            ViewModel.Zoom = 0.5;
+            ViewModel.MaxIterations = 256;
+            ViewModel.StatusMessage = "Julia preset: San Marco Jewel";
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
                 ViewModel.RenderMandelbrotCommand.Execute(null);
@@ -336,13 +339,14 @@ namespace ManpWinUI.Views
 
         private void JuliaPreset4_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            // Siegel Disk - quasi-circular with spirals
+            // Paisley/Swirl - organic flowing shapes
             ViewModel.JuliaCX = -0.4;
             ViewModel.JuliaCY = 0.6;
             ViewModel.CenterX = 0.0;
             ViewModel.CenterY = 0.0;
-            ViewModel.Zoom = 0.6;  // View to see spiral structure
-            ViewModel.StatusMessage = "Julia preset: Siegel Disk";
+            ViewModel.Zoom = 0.6;
+            ViewModel.MaxIterations = 256;
+            ViewModel.StatusMessage = "Julia preset: Paisley Swirl";
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
                 ViewModel.RenderMandelbrotCommand.Execute(null);

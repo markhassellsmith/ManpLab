@@ -195,10 +195,10 @@
                                         <!-- Preset Julia values -->
                                         <TextBlock Text="Presets:" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,8,0,0"/>
                                         <StackPanel Spacing="4">
-                                            <Button Content="Classic (-0.7, 0.27)" Click="JuliaPreset1_Click" HorizontalAlignment="Stretch"/>
-                                            <Button Content="Douady Rabbit (-0.12, 0.75)" Click="JuliaPreset2_Click" HorizontalAlignment="Stretch"/>
-                                            <Button Content="San Marco (-0.75, 0.0)" Click="JuliaPreset3_Click" HorizontalAlignment="Stretch"/>
-                                            <Button Content="Siegel Disk (-0.4, 0.6)" Click="JuliaPreset4_Click" HorizontalAlignment="Stretch"/>
+                                            <Button Content="Classic Spiral (-0.7, 0.27)" Click="JuliaPreset1_Click" HorizontalAlignment="Stretch"/>
+                                            <Button Content="Dendrite (-0.8, 0.156)" Click="JuliaPreset2_Click" HorizontalAlignment="Stretch"/>
+                                            <Button Content="San Marco Jewel (0.285, 0.01)" Click="JuliaPreset3_Click" HorizontalAlignment="Stretch"/>
+                                            <Button Content="Paisley Swirl (-0.4, 0.6)" Click="JuliaPreset4_Click" HorizontalAlignment="Stretch"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
