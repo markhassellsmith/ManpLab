@@ -154,8 +154,14 @@ namespace Native {
         static ComplexD PixelToComplex(int px, int py, const MandelbrotParams& params)
         {
             // Map pixel (px, py) to complex coordinates
+            // X: left to right in both screen and fractal coords
             double x = params.centerX - (params.viewWidth / 2.0) + (px * params.viewWidth / params.width);
-            double y = params.centerY - (params.viewHeight / 2.0) + (py * params.viewHeight / params.height);
+
+            // Y: screen coords go top-to-bottom, fractal coords go bottom-to-top
+            // py=0 (top) should map to centerY + viewHeight/2 (top of fractal)
+            // py=height (bottom) should map to centerY - viewHeight/2 (bottom of fractal)
+            double y = params.centerY + (params.viewHeight / 2.0) - (py * params.viewHeight / params.height);
+
             return ComplexD(x, y);
         }
 

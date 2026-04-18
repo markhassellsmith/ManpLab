@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto" />
             <!-- Toolbar -->
             <RowDefinition Height="*" />
-            <!-- Fractal Canvas -->
+            <!-- Main Content (Fractal + Side Panel) -->
             <RowDefinition Height="Auto" />
             <!-- Status Bar -->
         </Grid.RowDefinitions>
@@ -31,25 +31,54 @@
                 Icon="Refresh"
                 Label="Reset View"
                 Command="{x:Bind ViewModel.ResetViewCommand}" />
-            <AppBarSeparator />
-            <AppBarButton
-                Icon="ZoomIn"
-                Label="Zoom In"
-                Command="{x:Bind ViewModel.ZoomInCommand}" />
-            <AppBarButton
-                Icon="ZoomOut"
-                Label="Zoom Out"
-                Command="{x:Bind ViewModel.ZoomOutCommand}" />
         </CommandBar>
 
-        <!-- Fractal Canvas -->
-        <Grid Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <!-- Fractal Image Display -->
-            <Viewbox Stretch="Uniform">
-                <Image
-                    Source="{x:Bind ViewModel.FractalImage, Mode=OneWay}"
-                    Stretch="None" />
-            </Viewbox>
+        <!-- Main Content Area -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <!-- Fractal Display -->
+                <ColumnDefinition Width="300" />
+                <!-- Side Panel -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Fractal Canvas -->
+            <Grid Grid.Column="0"
+                  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+                  PointerPressed="FractalImage_PointerPressed"
+                  PointerMoved="FractalImage_PointerMoved"
+                  PointerReleased="FractalImage_PointerReleased"
+                  PointerWheelChanged="FractalImage_PointerWheelChanged">
+                <!-- Fractal Image Display -->
+                <Viewbox x:Name="FractalViewbox" Stretch="Uniform">
+                    <Image
+                        x:Name="FractalImage"
+                        Source="{x:Bind ViewModel.FractalImage, Mode=OneWay}"
+                        Stretch="None" />
+                </Viewbox>
+
+                <!-- Selection Rectangle Overlay -->
+                <Canvas x:Name="SelectionCanvas" Canvas.ZIndex="10">
+                    <Rectangle
+                        x:Name="SelectionRectangle"
+                        Stroke="Cyan"
+                        StrokeThickness="3"
+                        Fill="#40FFFFFF"
+                        Visibility="Collapsed"
+                        StrokeDashArray="5,3">
+                        <Rectangle.Shadow>
+                            <ThemeShadow />
+                        </Rectangle.Shadow>
+                </Rectangle>
+            </Canvas>
+
+            <!-- Coordinate Axes Overlay -->
+            <Canvas x:Name="CoordinateAxesCanvas" 
+                    Canvas.ZIndex="5"
+                    IsHitTestVisible="False"
+                    Visibility="{x:Bind ViewModel.ShowCoordinateAxes, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    SizeChanged="CoordinateAxesCanvas_SizeChanged">
+            </Canvas>
 
             <!-- Welcome Overlay (shown when no fractal is rendered) -->
             <StackPanel
@@ -68,118 +97,252 @@
                     Opacity="0.7"
                     HorizontalAlignment="Center" />
                 <TextBlock
-                    Text="Click 'Render' to generate your first fractal!"
+                    Text="Adjust parameters in the side panel and click 'Render' to generate your first fractal!"
                     FontSize="14"
                     Opacity="0.6"
-                    HorizontalAlignment="Center" />
-
-                <!-- Parameters Panel -->
-                <StackPanel
-                    Margin="0,32,0,0"
-                    Spacing="12"
-                    Width="400">
-                    <TextBlock Text="Rendering Parameters" FontWeight="SemiBold" FontSize="18" />
-
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="Center X" />
-                        <NumberBox
-                            Value="{x:Bind ViewModel.CenterX, Mode=TwoWay}"
-                            SmallChange="0.1"
-                            LargeChange="1.0"
-                            SpinButtonPlacementMode="Inline" />
-                    </StackPanel>
-
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="Center Y" />
-                        <NumberBox
-                            Value="{x:Bind ViewModel.CenterY, Mode=TwoWay}"
-                            SmallChange="0.1"
-                            LargeChange="1.0"
-                            SpinButtonPlacementMode="Inline" />
-                    </StackPanel>
-
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="Zoom Level" />
-                        <NumberBox
-                            Value="{x:Bind ViewModel.Zoom, Mode=TwoWay}"
-                            SmallChange="0.5"
-                            LargeChange="2.0"
-                            Minimum="0.001"
-                            SpinButtonPlacementMode="Inline" />
-                    </StackPanel>
-
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="Max Iterations" />
-                        <NumberBox
-                            Value="{x:Bind ViewModel.MaxIterations, Mode=TwoWay}"
-                            SmallChange="50"
-                            LargeChange="500"
-                            Minimum="50"
-                            Maximum="10000"
-                            SpinButtonPlacementMode="Inline" />
-                    </StackPanel>
-
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="Color Palette" />
-                        <ComboBox
-                            SelectedItem="{x:Bind ViewModel.SelectedPalette, Mode=TwoWay}"
-                            HorizontalAlignment="Stretch">
-                            <x:String>Grayscale</x:String>
-                            <x:String>Classic</x:String>
-                            <x:String>Fire</x:String>
-                            <x:String>Ocean</x:String>
-                            <x:String>Rainbow</x:String>
-                            <x:String>Psychedelic</x:String>
-                        </ComboBox>
-                    </StackPanel>
-                </StackPanel>
+                    HorizontalAlignment="Center"
+                    TextWrapping="Wrap"
+                    MaxWidth="400" />
             </StackPanel>
 
-            <!-- Progress Overlay -->
-            <Grid
-                Background="{ThemeResource SystemControlAcrylicElementBrush}"
-                Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay}">
-                <StackPanel
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Spacing="16">
-                    <ProgressRing
-                        IsActive="{x:Bind ViewModel.IsRendering, Mode=OneWay}"
-                        Width="60"
-                        Height="60" />
-                    <TextBlock
-                        Text="Rendering fractal..."
-                        FontSize="16"
-                        HorizontalAlignment="Center" />
-                    <ProgressBar
-                        Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
-                        Width="300"
-                        Maximum="100" />
-                </StackPanel>
-            </Grid>
-        </Grid>
+                            <!-- Progress Overlay -->
+                            <Grid
+                                Background="{ThemeResource SystemControlAcrylicElementBrush}"
+                                Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay}">
+                                <StackPanel
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="16">
+                                    <ProgressRing
+                                        IsActive="{x:Bind ViewModel.IsRendering, Mode=OneWay}"
+                                        Width="60"
+                                        Height="60" />
+                                    <TextBlock
+                                        Text="Rendering fractal..."
+                                        FontSize="16"
+                                        HorizontalAlignment="Center" />
+                                    <ProgressBar
+                                        Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
+                                        Width="300"
+                                        Maximum="100" />
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
 
-        <!-- Status Bar -->
-        <Grid Grid.Row="2"
-              Background="{ThemeResource SystemControlAcrylicElementBrush}"
-              Padding="16,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+                        <!-- Side Panel with Parameters -->
+                        <ScrollViewer Grid.Column="1" 
+                                      Background="{ThemeResource LayerFillColorDefaultBrush}"
+                                      Padding="16">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Parameters" 
+                                           FontWeight="SemiBold" 
+                                           FontSize="18" 
+                                           Margin="0,0,0,8" />
 
-            <TextBlock
-                Grid.Column="0"
-                Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
-                VerticalAlignment="Center" />
+                                <!-- Color Palette -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Color Palette" FontWeight="SemiBold" />
+                                    <ComboBox
+                                        SelectedItem="{x:Bind ViewModel.SelectedPalette, Mode=TwoWay}"
+                                        HorizontalAlignment="Stretch">
+                                        <x:String>Grayscale</x:String>
+                                        <x:String>Classic</x:String>
+                                        <x:String>Fire</x:String>
+                                        <x:String>Ocean</x:String>
+                                        <x:String>Rainbow</x:String>
+                                        <x:String>Psychedelic</x:String>
+                                    </ComboBox>
+                                </StackPanel>
 
-            <TextBlock
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                Opacity="0.7">
-                <Run Text="Last render: " />
-                <Run Text="{x:Bind ViewModel.LastRenderTime, Mode=OneWay}" />
-            </TextBlock>
-        </Grid>
-    </Grid>
-</Page>
+                                <MenuFlyoutSeparator />
+
+                                <!-- Coordinates -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Center X" />
+                                    <NumberBox
+                                        Value="{x:Bind ViewModel.CenterX, Mode=TwoWay}"
+                                        SmallChange="0.1"
+                                        LargeChange="1.0"
+                                        SpinButtonPlacementMode="Inline" />
+                                </StackPanel>
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Center Y" />
+                                    <NumberBox
+                                        Value="{x:Bind ViewModel.CenterY, Mode=TwoWay}"
+                                        SmallChange="0.1"
+                                        LargeChange="1.0"
+                                        SpinButtonPlacementMode="Inline" />
+                                </StackPanel>
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Zoom Level" />
+                                    <NumberBox
+                                        Value="{x:Bind ViewModel.Zoom, Mode=TwoWay}"
+                                        SmallChange="0.5"
+                                        LargeChange="2.0"
+                                        Minimum="0.001"
+                                        SpinButtonPlacementMode="Inline" />
+                                </StackPanel>
+
+                                <MenuFlyoutSeparator />
+
+                                <!-- Rendering Quality -->
+                                <TextBlock Text="Rendering Quality" FontWeight="SemiBold" />
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Max Iterations" />
+                                    <NumberBox
+                                        Value="{x:Bind ViewModel.MaxIterations, Mode=TwoWay}"
+                                        SmallChange="128"
+                                        LargeChange="1024"
+                                        Minimum="50"
+                                        Maximum="50000"
+                                        SpinButtonPlacementMode="Inline"
+                                        ToolTipService.ToolTip="Higher values show more detail at deep zoom levels" />
+                                </StackPanel>
+
+                                <CheckBox 
+                                    IsChecked="{x:Bind ViewModel.AutoScaleIterations, Mode=TwoWay}"
+                                    Content="Auto-scale iterations with zoom"
+                                    ToolTipService.ToolTip="Automatically increase iteration count as you zoom deeper" />
+
+                                <TextBlock 
+                                    Text="{x:Bind ViewModel.IterationSuggestion, Mode=OneWay}"
+                                    Foreground="{ThemeResource SystemFillColorAttentionBrush}"
+                                    TextWrapping="Wrap"
+                                    FontSize="12"
+                                    Visibility="{x:Bind ViewModel.IterationSuggestion, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
+
+                                <MenuFlyoutSeparator />
+
+                                <!-- Image Resolution -->
+                                <TextBlock Text="Image Resolution" FontWeight="SemiBold" />
+
+                                <Grid ColumnSpacing="4" RowSpacing="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Button Grid.Row="0" Grid.Column="0" 
+                                            Content="HD" 
+                                            Command="{x:Bind ViewModel.SetResolutionCommand}"
+                                            CommandParameter="HD"
+                                            ToolTipService.ToolTip="1280x720"
+                                            HorizontalAlignment="Stretch" />
+                                    <Button Grid.Row="0" Grid.Column="1" 
+                                            Content="FHD" 
+                                            Command="{x:Bind ViewModel.SetResolutionCommand}"
+                                            CommandParameter="FullHD"
+                                            ToolTipService.ToolTip="1920x1080"
+                                            HorizontalAlignment="Stretch" />
+                                    <Button Grid.Row="1" Grid.Column="0" 
+                                            Content="2K" 
+                                            Command="{x:Bind ViewModel.SetResolutionCommand}"
+                                            CommandParameter="2K"
+                                            ToolTipService.ToolTip="2560x1440"
+                                            HorizontalAlignment="Stretch" />
+                                    <Button Grid.Row="1" Grid.Column="1" 
+                                            Content="4K" 
+                                            Command="{x:Bind ViewModel.SetResolutionCommand}"
+                                            CommandParameter="4K"
+                                            ToolTipService.ToolTip="3840x2160"
+                                            Style="{StaticResource AccentButtonStyle}"
+                                            HorizontalAlignment="Stretch" />
+                                </Grid>
+
+                                <Button Content="📐 Match Window" 
+                                        Click="MatchWindowSize_Click"
+                                        ToolTipService.ToolTip="Set resolution to match window size"
+                                        HorizontalAlignment="Stretch" />
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Width" FontSize="12" />
+                                    <NumberBox
+                                        Value="{x:Bind ViewModel.ImageWidth, Mode=TwoWay}"
+                                        SmallChange="100"
+                                        LargeChange="640"
+                                        Minimum="320"
+                                        Maximum="7680"
+                                        SpinButtonPlacementMode="Compact" />
+                                </StackPanel>
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Height" FontSize="12" />
+                                    <NumberBox
+                                        Value="{x:Bind ViewModel.ImageHeight, Mode=TwoWay}"
+                                        SmallChange="100"
+                                        LargeChange="480"
+                                        Minimum="240"
+                                        Maximum="4320"
+                                        SpinButtonPlacementMode="Compact" />
+                                </StackPanel>
+
+                                <TextBlock FontSize="11" Opacity="0.7" TextWrapping="Wrap">
+                                    <Run Text="{x:Bind ViewModel.ImageWidth, Mode=OneWay}" />
+                                    <Run Text="×" />
+                                    <Run Text="{x:Bind ViewModel.ImageHeight, Mode=OneWay}" />
+                                    <Run Text=" (" />
+                                    <Run Text="{x:Bind ViewModel.TotalPixels, Mode=OneWay}" />
+                                    <Run Text=" MP)" />
+                                </TextBlock>
+
+                                <MenuFlyoutSeparator />
+
+                                <!-- Display Options -->
+                                <TextBlock Text="Display Options" FontWeight="SemiBold" />
+
+                                <ToggleSwitch 
+                                    IsOn="{x:Bind ViewModel.ShowCoordinateAxes, Mode=TwoWay}"
+                                    Header="Show Coordinate Axes"
+                                    OnContent="Visible"
+                                    OffContent="Hidden"
+                                    ToolTipService.ToolTip="Display tick marks and coordinate labels on image borders" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <!-- Streamlined Status Bar -->
+                    <Grid Grid.Row="2"
+                          Background="{ThemeResource SystemControlAcrylicElementBrush}"
+                          Padding="12,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left: Status message -->
+                        <TextBlock Grid.Column="0" 
+                                   VerticalAlignment="Center" 
+                                   Margin="0,0,16,0"
+                                   Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
+
+                        <!-- Center: View dimensions in fractal coordinates -->
+                        <TextBlock Grid.Column="1" 
+                                   VerticalAlignment="Center" 
+                                   Opacity="0.8"
+                                   FontSize="12">
+                            <Run Text="View: " />
+                            <Run Text="{x:Bind ViewModel.CurrentViewWidth, Mode=OneWay}" />
+                            <Run Text=" × " />
+                            <Run Text="{x:Bind ViewModel.CurrentViewHeight, Mode=OneWay}" />
+                            <Run Text=" (fractal units)" />
+                        </TextBlock>
+
+                        <!-- Right: Render time -->
+                        <TextBlock Grid.Column="2" 
+                                   VerticalAlignment="Center" 
+                                   Opacity="0.7"
+                                   FontSize="12">
+                            <Run Text="⏱️ " />
+                            <Run Text="{x:Bind ViewModel.LastRenderTime, Mode=OneWay}" />
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </Page>

@@ -21,8 +21,8 @@ public interface IFractalRenderService
     /// <param name="palette">Color palette name</param>
     /// <param name="progress">Progress callback (0.0 to 1.0)</param>
     /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>Rendered fractal image data</returns>
-    Task<byte[]> RenderMandelbrotAsync(
+    /// <returns>Rendered fractal with diagnostic information</returns>
+    Task<FractalRenderResult> RenderMandelbrotAsync(
         double centerX,
         double centerY,
         double zoom,
@@ -36,7 +36,7 @@ public interface IFractalRenderService
     /// <summary>
     /// Renders the Julia set with the specified parameters.
     /// </summary>
-    Task<byte[]> RenderJuliaAsync(
+    Task<FractalRenderResult> RenderJuliaAsync(
         double cReal,
         double cImaginary,
         double centerX,

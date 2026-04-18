@@ -14,55 +14,81 @@ namespace ManpWinUI.ViewModels;
 /// Main view model for the fractal explorer interface.
 /// Manages fractal rendering parameters, UI state, and coordinates with the fractal engine.
 /// </summary>
-public partial class MainViewModel : ObservableObject
+public partial class MainViewModel(IFractalRenderService renderService) : ObservableObject
 {
-    private readonly DispatcherQueue _dispatcherQueue;
-    private readonly IFractalRenderService _renderService;
+    private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+    private readonly IFractalRenderService _renderService = renderService;
 
     // Fractal rendering parameters
     [ObservableProperty]
-    private double _centerX = -0.5;
+    public partial double CenterX { get; set; } = -0.5;
 
     [ObservableProperty]
-    private double _centerY = 0.0;
+    public partial double CenterY { get; set; } = 0.0;
 
     [ObservableProperty]
-    private double _zoom = 1.0;
+    public partial double Zoom { get; set; } = 1.0;
 
     [ObservableProperty]
-    private int _maxIterations = 256;
+    public partial int MaxIterations { get; set; } = 512;
 
     [ObservableProperty]
-    private int _imageWidth = 800;
+    public partial bool AutoScaleIterations { get; set; } = true;
 
     [ObservableProperty]
-    private int _imageHeight = 600;
+    public partial string IterationSuggestion { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string _selectedPalette = "Classic";
+    public partial int ImageWidth { get; set; } = 1200;
+
+    [ObservableProperty]
+    public partial int ImageHeight { get; set; } = 900;
+
+    [ObservableProperty]
+    public partial string SelectedPalette { get; set; } = "Classic";
+
+    // Computed property for total megapixels
+    public string TotalPixels => $"{(ImageWidth * ImageHeight / 1_000_000.0):F2}";
+
+    // Computed properties for current view dimensions in fractal coordinates
+    public string CurrentViewWidth
+    {
+        get
+        {
+            var width = 3.0 / Zoom;
+            return $"{width:F10}";
+        }
+    }
+
+    public string CurrentViewHeight
+    {
+        get
+        {
+            var width = 3.0 / Zoom;
+            var height = width * ((double)ImageHeight / ImageWidth);
+            return $"{height:F10}";
+        }
+    }
 
     // UI state
     [ObservableProperty]
-    private bool _isRendering;
+    public partial bool IsRendering { get; set; }
 
     [ObservableProperty]
-    private double _renderProgress;
+    public partial double RenderProgress { get; set; }
 
     [ObservableProperty]
-    private string _statusMessage = "Ready";
+    public partial bool ShowCoordinateAxes { get; set; } = true;
 
     [ObservableProperty]
-    private TimeSpan _lastRenderTime;
+    public partial string StatusMessage { get; set; } = "Ready";
+
+    [ObservableProperty]
+    public partial TimeSpan LastRenderTime { get; set; }
 
     // Fractal image
     [ObservableProperty]
-    private WriteableBitmap? _fractalImage;
-
-    public MainViewModel(IFractalRenderService renderService)
-    {
-        _renderService = renderService;
-        _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-    }
+    public partial WriteableBitmap? FractalImage { get; set; }
 
     /// <summary>
     /// Renders the Mandelbrot set with current parameters.
@@ -73,6 +99,35 @@ public partial class MainViewModel : ObservableObject
         IsRendering = true;
         RenderProgress = 0;
         StatusMessage = "Rendering Mandelbrot set...";
+
+        // Auto-scale iterations based on zoom if enabled
+        if (AutoScaleIterations)
+        {
+            var recommendedIterations = CalculateRecommendedIterations(Zoom);
+            if (MaxIterations < recommendedIterations)
+            {
+                var oldIterations = MaxIterations;
+                MaxIterations = recommendedIterations;
+                IterationSuggestion = $"Auto-increased iterations: {oldIterations} → {MaxIterations} for zoom {Zoom:F2}x";
+            }
+            else
+            {
+                IterationSuggestion = $"Using {MaxIterations} iterations at zoom {Zoom:F2}x";
+            }
+        }
+        else
+        {
+            // Check if user might need more iterations
+            var recommendedIterations = CalculateRecommendedIterations(Zoom);
+            if (MaxIterations < recommendedIterations)
+            {
+                IterationSuggestion = $"⚠️ Consider increasing iterations to ~{recommendedIterations} for better detail at zoom {Zoom:F2}x (currently {MaxIterations})";
+            }
+            else
+            {
+                IterationSuggestion = string.Empty;
+            }
+        }
 
         try
         {
@@ -88,7 +143,7 @@ public partial class MainViewModel : ObservableObject
             });
 
             // Call FractalRenderService to render the fractal
-            var pixelData = await _renderService.RenderMandelbrotAsync(
+            var result = await _renderService.RenderMandelbrotAsync(
                 CenterX,
                 CenterY,
                 Zoom,
@@ -101,11 +156,42 @@ public partial class MainViewModel : ObservableObject
             // Convert byte[] to WriteableBitmap on UI thread
             _dispatcherQueue.TryEnqueue(() =>
             {
-                ConvertPixelDataToBitmap(pixelData, ImageWidth, ImageHeight);
+                ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
             });
 
             LastRenderTime = DateTime.Now - startTime;
-            StatusMessage = $"Rendered in {LastRenderTime.TotalMilliseconds:F0} ms";
+
+            // Show diagnostic info if escape percentage is very low
+            var escapePercent = result.EscapePercentage;
+
+            // DETAILED DIAGNOSTIC LOGGING
+            var logMessage = $@"
+───────────────────────────────────────────────────────────────
+RENDER COMPLETE - DIAGNOSTIC INFO
+───────────────────────────────────────────────────────────────
+Resolution: {ImageWidth} × {ImageHeight} ({result.TotalIterations:N0} total iterations)
+Render time: {LastRenderTime.TotalMilliseconds:F0} ms
+Escape stats: {result.EscapedPixels:N0} / {ImageWidth * ImageHeight:N0} pixels ({escapePercent:F2}%)
+Max iterations: {MaxIterations}
+Zoom: {Zoom:F4}x
+Center: ({CenterX:F10}, {CenterY:F10})
+View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / ImageWidth):F10}
+───────────────────────────────────────────────────────────────
+";
+            System.Diagnostics.Debug.WriteLine(logMessage);
+
+            if (escapePercent < 1.0)
+            {
+                StatusMessage = $"⚠️ Only {escapePercent:F2}% of pixels escaped - You're inside the Mandelbrot set! Zoom to the boundary for detail.";
+            }
+            else if (escapePercent < 10.0)
+            {
+                StatusMessage = $"Low detail: {escapePercent:F1}% escaped - Try zooming to colorful boundaries";
+            }
+            else
+            {
+                StatusMessage = $"Rendered in {LastRenderTime.TotalMilliseconds:F0} ms ({escapePercent:F1}% escaped)";
+            }
         }
         catch (Exception ex)
         {
@@ -123,51 +209,166 @@ public partial class MainViewModel : ObservableObject
     /// Resets view to default Mandelbrot parameters.
     /// </summary>
     [RelayCommand]
-    private void ResetView()
+    private async Task ResetViewAsync()
     {
         CenterX = -0.5;
         CenterY = 0.0;
         Zoom = 1.0;
-        MaxIterations = 256;
-        StatusMessage = "View reset to default";
+        MaxIterations = 512;
+        StatusMessage = "Resetting to full Mandelbrot view...";
+
+        // Auto-render after reset
+        await Task.Delay(10); // Small delay to ensure UI updates
+        if (RenderMandelbrotCommand.CanExecute(null))
+        {
+            await RenderMandelbrotCommand.ExecuteAsync(null);
+        }
     }
 
     /// <summary>
     /// Zooms in on the current center point.
     /// </summary>
     [RelayCommand]
-    private void ZoomIn()
+    private async Task ZoomInAsync()
     {
         Zoom *= 2.0;
-        StatusMessage = $"Zoom: {Zoom:F2}x";
+        StatusMessage = $"Zooming in to {Zoom:F2}x...";
+
+        // Auto-render after zoom
+        await Task.Delay(10); // Small delay to ensure UI updates
+        if (RenderMandelbrotCommand.CanExecute(null))
+        {
+            await RenderMandelbrotCommand.ExecuteAsync(null);
+        }
     }
 
     /// <summary>
     /// Zooms out from the current center point.
     /// </summary>
     [RelayCommand]
-    private void ZoomOut()
+    private async Task ZoomOutAsync()
     {
         Zoom /= 2.0;
-        StatusMessage = $"Zoom: {Zoom:F2}x";
+        StatusMessage = $"Zooming out to {Zoom:F2}x...";
+
+        // Auto-render after zoom
+        await Task.Delay(10); // Small delay to ensure UI updates
+        if (RenderMandelbrotCommand.CanExecute(null))
+        {
+            await RenderMandelbrotCommand.ExecuteAsync(null);
+        }
+    }
+
+    /// <summary>
+    /// Sets image resolution to a preset value.
+    /// </summary>
+    [RelayCommand]
+    private void SetResolution(string preset)
+    {
+        switch (preset)
+        {
+            case "HD":
+                ImageWidth = 1280;
+                ImageHeight = 720;
+                StatusMessage = "Resolution set to HD (1280×720)";
+                break;
+            case "FullHD":
+                ImageWidth = 1920;
+                ImageHeight = 1080;
+                StatusMessage = "Resolution set to Full HD (1920×1080)";
+                break;
+            case "2K":
+                ImageWidth = 2560;
+                ImageHeight = 1440;
+                StatusMessage = "Resolution set to 2K (2560×1440)";
+                break;
+            case "4K":
+                ImageWidth = 3840;
+                ImageHeight = 2160;
+                StatusMessage = "Resolution set to 4K (3840×2160)";
+                break;
+            default:
+                StatusMessage = "Unknown resolution preset";
+                break;
+        }
+
+        // Notify that TotalPixels has changed
+        OnPropertyChanged(nameof(TotalPixels));
+        OnPropertyChanged(nameof(CurrentViewWidth));
+        OnPropertyChanged(nameof(CurrentViewHeight));
     }
 
     partial void OnMaxIterationsChanged(int value)
     {
         // Clamp max iterations to reasonable range
+        // Allow higher values for very deep zooms into nodules and mini-brots
         if (value < 50) MaxIterations = 50;
-        if (value > 10000) MaxIterations = 10000;
+        if (value > 50000) MaxIterations = 50000;
+    }
+
+    /// <summary>
+    /// Calculates recommended iteration count based on zoom level.
+    /// Uses logarithmic scaling: more zoom requires exponentially more iterations.
+    /// Based on fractal depth complexity - deeper zooms need far more iterations.
+    /// </summary>
+    private static int CalculateRecommendedIterations(double zoom)
+    {
+        // Base iterations for zoom level 1.0
+        const int baseIterations = 512;
+
+        // More aggressive scaling for deep zooms
+        // Every 10x zoom needs roughly 2x more iterations (empirically determined)
+        // This ensures detail visibility even at nodules and mini-brots
+        var logZoom = Math.Log10(Math.Max(zoom, 1.0));
+        var scaleFactor = Math.Pow(2.0, logZoom);
+
+        var recommended = (int)(baseIterations * scaleFactor);
+
+        // Round to nearest 128 for cleaner numbers
+        recommended = ((recommended + 63) / 128) * 128;
+
+        // Clamp to reasonable range (allow up to 20000 for very deep zooms)
+        return Math.Clamp(recommended, 512, 20000);
     }
 
     partial void OnZoomChanged(double value)
     {
         // Prevent zoom from going negative or too small
         if (value < 0.001) Zoom = 0.001;
+
+        // Update computed view dimensions
+        OnPropertyChanged(nameof(CurrentViewWidth));
+        OnPropertyChanged(nameof(CurrentViewHeight));
+
+        System.Diagnostics.Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
+    }
+
+    partial void OnCenterXChanged(double value)
+    {
+        System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
+    }
+
+    partial void OnCenterYChanged(double value)
+    {
+        System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
+    }
+
+    partial void OnImageWidthChanged(int value)
+    {
+        OnPropertyChanged(nameof(TotalPixels));
+        OnPropertyChanged(nameof(CurrentViewHeight));
+    }
+
+    partial void OnImageHeightChanged(int value)
+    {
+        OnPropertyChanged(nameof(TotalPixels));
+        OnPropertyChanged(nameof(CurrentViewHeight));
     }
 
     /// <summary>
     /// Converts pixel data byte array to WriteableBitmap for display.
-    /// PixelData format is BGRA (4 bytes per pixel).
+    /// PixelData format is BGRA (Blue, Green, Red, Alpha - 4 bytes per pixel).
+    /// This is the native format for WinUI WriteableBitmap.
     /// </summary>
     private void ConvertPixelDataToBitmap(byte[] pixelData, int width, int height)
     {

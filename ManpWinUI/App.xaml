@@ -18,7 +18,9 @@
 
             <!-- Converters -->
             <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
 
             <Color x:Key="Primary">#512BD4</Color>
 

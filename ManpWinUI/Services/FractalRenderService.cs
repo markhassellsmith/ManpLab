@@ -21,7 +21,7 @@ public class FractalRenderService : IFractalRenderService
         _logger.LogInformation("FractalRenderService initialized");
     }
 
-    public async Task<byte[]> RenderMandelbrotAsync(
+    public async Task<FractalRenderResult> RenderMandelbrotAsync(
         double centerX,
         double centerY,
         double zoom,
@@ -43,6 +43,34 @@ public class FractalRenderService : IFractalRenderService
                 // Convert zoom to viewWidth (zoom of 1.0 = full Mandelbrot set width of 3.0)
                 double viewWidth = 3.0 / zoom;
                 double viewHeight = viewWidth * ((double)height / width);
+
+                // Calculate boundaries for logging
+                double left = centerX - viewWidth / 2.0;
+                double right = centerX + viewWidth / 2.0;
+                double top = centerY + viewHeight / 2.0;
+                double bottom = centerY - viewHeight / 2.0;
+
+                System.Diagnostics.Debug.WriteLine($@"
+═══════════════════════════════════════════════════════════════
+FRACTAL RENDER SERVICE - STARTING RENDER
+═══════════════════════════════════════════════════════════════
+Input Parameters:
+  Center: ({centerX:F10}, {centerY:F10})
+  Zoom: {zoom:F4}x
+  Size: {width}×{height}
+  Max Iterations: {maxIterations}
+  Palette: {palette}
+
+Calculated View:
+  ViewWidth: {viewWidth:F10}
+  ViewHeight: {viewHeight:F10}
+  Boundaries:
+    Left   = {left:F10}
+    Right  = {right:F10}
+    Top    = {top:F10}
+    Bottom = {bottom:F10}
+═══════════════════════════════════════════════════════════════
+");
 
                 // Parse palette string to enum
                 var paletteEnum = ParsePalette(palette);
@@ -83,10 +111,20 @@ public class FractalRenderService : IFractalRenderService
                 }
 
                 _logger.LogInformation(
-                    "Mandelbrot render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations",
-                    result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount);
+                    "Mandelbrot render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations, {Escaped}/{Total} pixels escaped ({Percent:F1}%)",
+                    result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount, 
+                    result.EscapedPixelCount, result.Width * result.Height, 
+                    (double)result.EscapedPixelCount / (result.Width * result.Height) * 100.0);
 
-                return result.PixelData;
+                return new FractalRenderResult
+                {
+                    PixelData = result.PixelData,
+                    Width = result.Width,
+                    Height = result.Height,
+                    RenderTime = result.RenderTime,
+                    TotalIterations = result.IterationCount,
+                    EscapedPixels = result.EscapedPixelCount
+                };
             }
             catch (Exception ex)
             {
@@ -96,7 +134,7 @@ public class FractalRenderService : IFractalRenderService
         }, cancellationToken);
     }
 
-    public async Task<byte[]> RenderJuliaAsync(
+    public async Task<FractalRenderResult> RenderJuliaAsync(
         double cReal,
         double cImaginary,
         double centerX,
@@ -152,10 +190,20 @@ public class FractalRenderService : IFractalRenderService
                 }
 
                 _logger.LogInformation(
-                    "Julia render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations",
-                    result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount);
+                    "Julia render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations, {Escaped}/{Total} pixels escaped ({Percent:F1}%)",
+                    result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount,
+                    result.EscapedPixelCount, result.Width * result.Height,
+                    (double)result.EscapedPixelCount / (result.Width * result.Height) * 100.0);
 
-                return result.PixelData;
+                return new FractalRenderResult
+                {
+                    PixelData = result.PixelData,
+                    Width = result.Width,
+                    Height = result.Height,
+                    RenderTime = result.RenderTime,
+                    TotalIterations = result.IterationCount,
+                    EscapedPixels = result.EscapedPixelCount
+                };
             }
             catch (Exception ex)
             {

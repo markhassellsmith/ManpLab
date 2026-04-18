@@ -243,6 +243,7 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
 
         long long totalIterations = 0;
+        int escapedPixels = 0;
 
         // Calculate Mandelbrot set using native C++ code
         for (int y = 0; y < height; y++)
@@ -276,6 +277,12 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
 
                 totalIterations += (long long)iteration;
 
+                // Track if pixel escaped (for diagnostics)
+                if (iteration < nativeParams.maxIterations)
+                {
+                    escapedPixels++;
+                }
+
                 // Convert iteration to color using selected palette
                 ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
                     iteration, 
@@ -283,18 +290,19 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
                     nativePalette
                 );
 
-                // Write RGBA pixel
+                // Write BGRA pixel (WinUI WriteableBitmap format)
                 int index = (y * width + x) * 4;
-                result->PixelData[index + 0] = color.r;
-                result->PixelData[index + 1] = color.g;
-                result->PixelData[index + 2] = color.b;
-                result->PixelData[index + 3] = 255;  // Full opacity
+                result->PixelData[index + 0] = color.b;  // Blue
+                result->PixelData[index + 1] = color.g;  // Green
+                result->PixelData[index + 2] = color.r;  // Red
+                result->PixelData[index + 3] = 255;      // Alpha (full opacity)
             }
         }
 
         stopwatch->Stop();
         result->RenderTime = stopwatch->Elapsed;
         result->IterationCount = totalIterations;
+        result->EscapedPixelCount = escapedPixels;
 
         // Final progress update
         auto finalProgress = gcnew ProgressEventArgs();
