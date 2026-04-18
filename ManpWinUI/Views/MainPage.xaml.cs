@@ -33,7 +33,8 @@ namespace ManpWinUI.Views
                     e.PropertyName == nameof(ViewModel.CenterY) ||
                     e.PropertyName == nameof(ViewModel.Zoom) ||
                     e.PropertyName == nameof(ViewModel.ImageWidth) ||
-                    e.PropertyName == nameof(ViewModel.ImageHeight))
+                    e.PropertyName == nameof(ViewModel.ImageHeight) ||
+                    e.PropertyName == nameof(ViewModel.FractalImage))
                 {
                     UpdateCoordinateAxes();
                 }
@@ -52,15 +53,39 @@ namespace ManpWinUI.Views
             if (ViewModel.FractalImage == null || FractalViewbox?.Child is not FrameworkElement child)
                 return;
 
-            var displayWidth = child.ActualWidth;
-            var displayHeight = child.ActualHeight;
-
-            if (displayWidth <= 0 || displayHeight <= 0)
-                return;
-
-            // Calculate grid offset (Viewbox centering)
+            // Get the actual Grid dimensions
             var gridWidth = CoordinateAxesCanvas.ActualWidth;
             var gridHeight = CoordinateAxesCanvas.ActualHeight;
+
+            if (gridWidth <= 0 || gridHeight <= 0)
+                return;
+
+            // Get bitmap dimensions
+            var bitmapWidth = ViewModel.FractalImage.PixelWidth;
+            var bitmapHeight = ViewModel.FractalImage.PixelHeight;
+
+            if (bitmapWidth <= 0 || bitmapHeight <= 0)
+                return;
+
+            // Calculate actual displayed size based on Viewbox Uniform stretch behavior
+            var bitmapAspectRatio = (double)bitmapWidth / bitmapHeight;
+            var gridAspectRatio = gridWidth / gridHeight;
+
+            double displayWidth, displayHeight;
+            if (bitmapAspectRatio > gridAspectRatio)
+            {
+                // Image is wider than grid - constrained by width
+                displayWidth = gridWidth;
+                displayHeight = gridWidth / bitmapAspectRatio;
+            }
+            else
+            {
+                // Image is taller than grid - constrained by height
+                displayHeight = gridHeight;
+                displayWidth = gridHeight * bitmapAspectRatio;
+            }
+
+            // Calculate grid offset (Viewbox centering)
             var imageOffsetX = Math.Max(0, (gridWidth - displayWidth) / 2.0);
             var imageOffsetY = Math.Max(0, (gridHeight - displayHeight) / 2.0);
 
@@ -233,6 +258,16 @@ namespace ManpWinUI.Views
             else
             {
                 ViewModel.StatusMessage = "Window size not available yet";
+            }
+        }
+
+        private void JuliaModeToggle_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            // IsChecked is already bound TwoWay, so IsJuliaMode is updated automatically
+            // Just trigger the render
+            if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+            {
+                ViewModel.RenderMandelbrotCommand.Execute(null);
             }
         }
 

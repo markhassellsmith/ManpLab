@@ -163,7 +163,7 @@
                                     <ToggleButton x:Name="JuliaModeToggle"
                                                   IsChecked="{x:Bind ViewModel.IsJuliaMode, Mode=TwoWay}"
                                                   HorizontalAlignment="Stretch"
-                                                  Command="{x:Bind ViewModel.ToggleJuliaModeCommand}">
+                                                  Click="JuliaModeToggle_Click">
                                         <TextBlock Text="{x:Bind ViewModel.IsJuliaMode, Mode=OneWay, Converter={StaticResource JuliaModeTextConverter}}"/>
                                     </ToggleButton>
 
