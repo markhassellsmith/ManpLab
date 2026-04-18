@@ -21,6 +21,7 @@
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
             <converters:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
+            <converters:JuliaModeTextConverter x:Key="JuliaModeTextConverter"/>
 
             <Color x:Key="Primary">#512BD4</Color>
 

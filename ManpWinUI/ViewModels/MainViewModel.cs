@@ -47,6 +47,16 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
     [ObservableProperty]
     public partial string SelectedPalette { get; set; } = "Classic";
 
+    // Julia set parameters
+    [ObservableProperty]
+    public partial bool IsJuliaMode { get; set; } = false;
+
+    [ObservableProperty]
+    public partial double JuliaCX { get; set; } = -0.7;
+
+    [ObservableProperty]
+    public partial double JuliaCY { get; set; } = 0.27015;
+
     // Computed property for total megapixels
     public string TotalPixels => $"{(ImageWidth * ImageHeight / 1_000_000.0):F2}";
 
@@ -98,7 +108,9 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
     {
         IsRendering = true;
         RenderProgress = 0;
-        StatusMessage = "Rendering Mandelbrot set...";
+        StatusMessage = IsJuliaMode 
+            ? $"Rendering Julia set (c = {JuliaCX:F4}, {JuliaCY:F4})..." 
+            : "Rendering Mandelbrot set...";
 
         // Auto-scale iterations based on zoom if enabled
         if (AutoScaleIterations)
@@ -151,6 +163,9 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
                 ImageHeight,
                 MaxIterations,
                 SelectedPalette,
+                IsJuliaMode,
+                JuliaCX,
+                JuliaCY,
                 progress);
 
             // Convert byte[] to WriteableBitmap on UI thread
@@ -296,6 +311,31 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         OnPropertyChanged(nameof(TotalPixels));
         OnPropertyChanged(nameof(CurrentViewWidth));
         OnPropertyChanged(nameof(CurrentViewHeight));
+    }
+
+    /// <summary>
+    /// Toggles between Mandelbrot and Julia set modes.
+    /// </summary>
+    [RelayCommand]
+    private async Task ToggleJuliaModeAsync()
+    {
+        IsJuliaMode = !IsJuliaMode;
+
+        if (IsJuliaMode)
+        {
+            StatusMessage = $"Julia Mode: c = ({JuliaCX:F4}, {JuliaCY:F4})";
+        }
+        else
+        {
+            StatusMessage = "Mandelbrot Mode";
+        }
+
+        // Auto-render with new mode
+        await Task.Delay(10);
+        if (RenderMandelbrotCommand.CanExecute(null))
+        {
+            await RenderMandelbrotCommand.ExecuteAsync(null);
+        }
     }
 
     partial void OnMaxIterationsChanged(int value)

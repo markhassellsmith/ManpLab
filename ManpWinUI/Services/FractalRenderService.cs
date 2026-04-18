@@ -29,12 +29,21 @@ public class FractalRenderService : IFractalRenderService
         int height,
         int maxIterations,
         string palette,
+        bool isJuliaMode = false,
+        double juliaCX = 0.0,
+        double juliaCY = 0.0,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default)
     {
+        var fractalType = isJuliaMode ? "Julia" : "Mandelbrot";
         _logger.LogInformation(
-            "Rendering Mandelbrot: center=({CenterX}, {CenterY}), zoom={Zoom}, size={Width}x{Height}, iterations={MaxIterations}, palette={Palette}",
-            centerX, centerY, zoom, width, height, maxIterations, palette);
+            "Rendering {FractalType}: center=({CenterX}, {CenterY}), zoom={Zoom}, size={Width}x{Height}, iterations={MaxIterations}, palette={Palette}",
+            fractalType, centerX, centerY, zoom, width, height, maxIterations, palette);
+
+        if (isJuliaMode)
+        {
+            _logger.LogInformation("Julia parameters: c = ({JuliaCX}, {JuliaCY})", juliaCX, juliaCY);
+        }
 
         return await Task.Run(() =>
         {
@@ -78,7 +87,7 @@ Calculated View:
                 // Create parameters for ManpCore.Native
                 var parameters = new FractalParameters
                 {
-                    FractalType = "Mandelbrot",
+                    FractalType = isJuliaMode ? "Julia" : "Mandelbrot",
                     CenterX = centerX,
                     CenterY = centerY,
                     ViewWidth = viewWidth,
@@ -87,7 +96,9 @@ Calculated View:
                     Height = height,
                     MaxIterations = maxIterations,
                     Palette = paletteEnum,
-                    IsJuliaSet = false
+                    IsJuliaSet = isJuliaMode,
+                    JuliaCX = juliaCX,
+                    JuliaCY = juliaCY
                 };
 
                 // Set up progress reporting

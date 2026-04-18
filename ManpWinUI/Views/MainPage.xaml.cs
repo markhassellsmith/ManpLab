@@ -236,6 +236,50 @@ namespace ManpWinUI.Views
             }
         }
 
+        private void JuliaPreset1_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            ViewModel.JuliaCX = -0.7;
+            ViewModel.JuliaCY = 0.27015;
+            ViewModel.StatusMessage = "Julia preset: Classic";
+            if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+            {
+                ViewModel.RenderMandelbrotCommand.Execute(null);
+            }
+        }
+
+        private void JuliaPreset2_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            ViewModel.JuliaCX = -0.12;
+            ViewModel.JuliaCY = 0.75;
+            ViewModel.StatusMessage = "Julia preset: Douady Rabbit";
+            if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+            {
+                ViewModel.RenderMandelbrotCommand.Execute(null);
+            }
+        }
+
+        private void JuliaPreset3_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            ViewModel.JuliaCX = -0.75;
+            ViewModel.JuliaCY = 0.0;
+            ViewModel.StatusMessage = "Julia preset: San Marco";
+            if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+            {
+                ViewModel.RenderMandelbrotCommand.Execute(null);
+            }
+        }
+
+        private void JuliaPreset4_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            ViewModel.JuliaCX = -0.4;
+            ViewModel.JuliaCY = 0.6;
+            ViewModel.StatusMessage = "Julia preset: Siegel Disk";
+            if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+            {
+                ViewModel.RenderMandelbrotCommand.Execute(null);
+            }
+        }
+
         private void FractalImage_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (ViewModel.FractalImage == null)
