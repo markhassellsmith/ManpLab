@@ -18,6 +18,7 @@
 
             <!-- Converters -->
             <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
 
             <Color x:Key="Primary">#512BD4</Color>
 

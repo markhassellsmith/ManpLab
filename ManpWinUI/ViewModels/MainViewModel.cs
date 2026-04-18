@@ -1,8 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml.Media.Imaging;
+using ManpWinUI.Services;
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.Storage.Streams;
 
 namespace ManpWinUI.ViewModels;
 
@@ -13,6 +17,7 @@ namespace ManpWinUI.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private readonly DispatcherQueue _dispatcherQueue;
+    private readonly IFractalRenderService _renderService;
 
     // Fractal rendering parameters
     [ObservableProperty]
@@ -49,8 +54,13 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private TimeSpan _lastRenderTime;
 
-    public MainViewModel()
+    // Fractal image
+    [ObservableProperty]
+    private WriteableBitmap? _fractalImage;
+
+    public MainViewModel(IFractalRenderService renderService)
     {
+        _renderService = renderService;
         _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
     }
 
@@ -68,9 +78,31 @@ public partial class MainViewModel : ObservableObject
         {
             var startTime = DateTime.Now;
 
-            // TODO: Call ManpCore.Native FractalEngineWrapper
-            await Task.Delay(500); // Placeholder for actual rendering
-            RenderProgress = 100;
+            // Progress reporting callback
+            var progress = new Progress<double>(percentage =>
+            {
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    RenderProgress = percentage * 100.0;
+                });
+            });
+
+            // Call FractalRenderService to render the fractal
+            var pixelData = await _renderService.RenderMandelbrotAsync(
+                CenterX,
+                CenterY,
+                Zoom,
+                ImageWidth,
+                ImageHeight,
+                MaxIterations,
+                SelectedPalette,
+                progress);
+
+            // Convert byte[] to WriteableBitmap on UI thread
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                ConvertPixelDataToBitmap(pixelData, ImageWidth, ImageHeight);
+            });
 
             LastRenderTime = DateTime.Now - startTime;
             StatusMessage = $"Rendered in {LastRenderTime.TotalMilliseconds:F0} ms";
@@ -131,5 +163,27 @@ public partial class MainViewModel : ObservableObject
     {
         // Prevent zoom from going negative or too small
         if (value < 0.001) Zoom = 0.001;
+    }
+
+    /// <summary>
+    /// Converts pixel data byte array to WriteableBitmap for display.
+    /// PixelData format is BGRA (4 bytes per pixel).
+    /// </summary>
+    private void ConvertPixelDataToBitmap(byte[] pixelData, int width, int height)
+    {
+        // Create or reuse WriteableBitmap
+        if (FractalImage == null || FractalImage.PixelWidth != width || FractalImage.PixelHeight != height)
+        {
+            FractalImage = new WriteableBitmap(width, height);
+        }
+
+        // Write pixel data to bitmap
+        using (var stream = FractalImage.PixelBuffer.AsStream())
+        {
+            stream.Write(pixelData, 0, pixelData.Length);
+        }
+
+        // Invalidate the bitmap to trigger redraw
+        FractalImage.Invalidate();
     }
 }

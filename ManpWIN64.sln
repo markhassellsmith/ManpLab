@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.4.11605.240
@@ -103,7 +103,7 @@ Global
 		{A49E92F2-CDCF-45EE-BDBA-5991673C36B8}.Release|Any CPU.ActiveCfg = Release|x86
 		{A49E92F2-CDCF-45EE-BDBA-5991673C36B8}.Release|Any CPU.Build.0 = Release|x86
 		{A49E92F2-CDCF-45EE-BDBA-5991673C36B8}.Release|x64.ActiveCfg = Release|x64
-		{A49E92F2-CDCF-45EE-BDBA-5991673C36B8}.Release|x64.Build.0 = Release|x64
+		{A49E92F2-CDCF-45EE-BDBA-5991673C36B8}.Release|x64.Build.0 = Release|x64`r`n{A49E92F2-CDCF-45EE-BDBA-5991673C36B8}.Release|x64.Deploy.0 = Release|x64
 		{A49E92F2-CDCF-45EE-BDBA-5991673C36B8}.Release|x86.ActiveCfg = Release|x86
 		{A49E92F2-CDCF-45EE-BDBA-5991673C36B8}.Release|x86.Build.0 = Release|x86
 		{A8BC1234-5678-9ABC-DEF0-123456789ABC}.Debug|Any CPU.ActiveCfg = Debug|x64

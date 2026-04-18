@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+        <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
         <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
         <OutputType>WinExe</OutputType>
 
         <!-- WinUI 3 -->
         <UseWinUI>true</UseWinUI>
         <EnableMsixTooling>true</EnableMsixTooling>
-        <WindowsPackageType>None</WindowsPackageType>
+        <WindowsPackageType>MSIX</WindowsPackageType>
+        <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+        <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+        <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+        <AppxBundle>Never</AppxBundle>
+        <DefaultLanguage>en-US</DefaultLanguage>
 
         <!-- Project Options -->
         <Nullable>enable</Nullable>
@@ -53,22 +58,28 @@
         <Manifest Include="$(ApplicationManifest)" />
     </ItemGroup>
 
-    <!-- 
-        C++/CLI Interop: Use direct assembly reference instead of ProjectReference
-        to avoid NU1105 error during NuGet restore. Build dependency is maintained
-        via solution-level project dependencies in Visual Studio.
-    -->
     <ItemGroup>
-        <Reference Include="ManpCore.Native">
-            <HintPath>..\x64\$(Configuration)\ManpCore.Native.dll</HintPath>
-            <Private>true</Private>
-        </Reference>
+        <ProjectReference Include="..\ManpCore.Native\ManpCore.Native.vcxproj">
+            <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+        </ProjectReference>
     </ItemGroup>
 
-    <!-- Copy ManpCore.Native.dll to output directory after build -->
+    <!-- Copy ManpCore.Native.dll and its dependencies to output directory after build -->
     <Target Name="CopyNativeWrapper" AfterTargets="Build">
-        <Copy SourceFiles="..\x64\$(Configuration)\ManpCore.Native.dll" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
-        <Message Text="Copied ManpCore.Native.dll to $(OutDir)" Importance="high" />
+        <ItemGroup>
+            <NativeDlls Include="..\x64\$(Configuration)\*.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+        <Message Text="Copied native DLLs to $(OutDir)" Importance="high" />
+    </Target>
+
+    <!-- For MSIX packaging: Copy native DLLs to AppX folder before packaging -->
+    <Target Name="CopyNativeToAppX" AfterTargets="Build" Condition="'$(WindowsPackageType)'=='MSIX'">
+        <ItemGroup>
+            <NativeDlls Include="..\x64\$(Configuration)\*.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(OutDir)AppX\" SkipUnchangedFiles="true" />
+        <Message Text="Copied native DLLs to AppX folder" Importance="high" />
     </Target>
 
     <!-- 

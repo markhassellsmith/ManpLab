@@ -42,12 +42,21 @@
                 Command="{x:Bind ViewModel.ZoomOutCommand}" />
         </CommandBar>
 
-        <!-- Fractal Canvas Placeholder -->
+        <!-- Fractal Canvas -->
         <Grid Grid.Row="1" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <!-- Fractal Image Display -->
+            <Viewbox Stretch="Uniform">
+                <Image
+                    Source="{x:Bind ViewModel.FractalImage, Mode=OneWay}"
+                    Stretch="None" />
+            </Viewbox>
+
+            <!-- Welcome Overlay (shown when no fractal is rendered) -->
             <StackPanel
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Spacing="16">
+                Spacing="16"
+                Visibility="{x:Bind ViewModel.FractalImage, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
                 <TextBlock
                     Text="ManpLab - Fractal Explorer"
                     FontSize="32"
@@ -59,7 +68,7 @@
                     Opacity="0.7"
                     HorizontalAlignment="Center" />
                 <TextBlock
-                    Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                    Text="Click 'Render' to generate your first fractal!"
                     FontSize="14"
                     Opacity="0.6"
                     HorizontalAlignment="Center" />
