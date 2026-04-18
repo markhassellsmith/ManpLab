@@ -47,6 +47,10 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
     [ObservableProperty]
     public partial string SelectedPalette { get; set; } = "Classic";
 
+    // Fractal type selection
+    [ObservableProperty]
+    public partial string SelectedFractalType { get; set; } = "Mandelbrot";
+
     // Julia set parameters
     [ObservableProperty]
     public partial bool IsJuliaMode { get; set; } = false;
@@ -108,9 +112,10 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
     {
         IsRendering = true;
         RenderProgress = 0;
+        var fractalName = IsJuliaMode ? $"{SelectedFractalType} Julia" : SelectedFractalType;
         StatusMessage = IsJuliaMode 
-            ? $"Rendering Julia set (c = {JuliaCX:F4}, {JuliaCY:F4})..." 
-            : "Rendering Mandelbrot set...";
+            ? $"Rendering {fractalName} set (c = {JuliaCX:F4}, {JuliaCY:F4})..." 
+            : $"Rendering {fractalName} set...";
 
         // Auto-scale iterations based on zoom if enabled
         if (AutoScaleIterations)
@@ -163,6 +168,7 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
                 ImageHeight,
                 MaxIterations,
                 SelectedPalette,
+                SelectedFractalType,
                 IsJuliaMode,
                 JuliaCX,
                 JuliaCY,
@@ -344,6 +350,46 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         // Allow higher values for very deep zooms into nodules and mini-brots
         if (value < 50) MaxIterations = 50;
         if (value > 50000) MaxIterations = 50000;
+    }
+
+    partial void OnSelectedFractalTypeChanged(string value)
+    {
+        // Set appropriate default view parameters for each fractal type
+        switch (value)
+        {
+            case "Mandelbrot":
+                if (!IsJuliaMode)
+                {
+                    CenterX = -0.5;
+                    CenterY = 0.0;
+                    Zoom = 1.0;
+                }
+                break;
+            case "BurningShip":
+                if (!IsJuliaMode)
+                {
+                    CenterX = -0.5;
+                    CenterY = -0.5;
+                    Zoom = 0.8;
+                }
+                break;
+            case "Tricorn":
+                if (!IsJuliaMode)
+                {
+                    CenterX = 0.0;
+                    CenterY = 0.0;
+                    Zoom = 0.8;
+                }
+                break;
+            case "Phoenix":
+                if (!IsJuliaMode)
+                {
+                    CenterX = 0.0;
+                    CenterY = 0.0;
+                    Zoom = 0.6;
+                }
+                break;
+        }
     }
 
     /// <summary>

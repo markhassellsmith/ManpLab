@@ -156,6 +156,21 @@
 
                                 <MenuFlyoutSeparator />
 
+                                <!-- Fractal Type Selection -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Fractal Type" FontWeight="SemiBold" />
+                                    <ComboBox
+                                        SelectedItem="{x:Bind ViewModel.SelectedFractalType, Mode=TwoWay}"
+                                        HorizontalAlignment="Stretch">
+                                        <x:String>Mandelbrot</x:String>
+                                        <x:String>BurningShip</x:String>
+                                        <x:String>Tricorn</x:String>
+                                        <x:String>Phoenix</x:String>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <MenuFlyoutSeparator />
+
                                 <!-- Fractal Mode (Mandelbrot/Julia) -->
                                 <StackPanel Spacing="8">
                                     <TextBlock Text="Fractal Type" FontWeight="SemiBold"/>

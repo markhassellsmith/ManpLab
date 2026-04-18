@@ -19,6 +19,7 @@ public interface IFractalRenderService
     /// <param name="height">Image height in pixels</param>
     /// <param name="maxIterations">Maximum iteration count</param>
     /// <param name="palette">Color palette name</param>
+    /// <param name="fractalType">Fractal type (Mandelbrot, BurningShip, Tricorn, Phoenix)</param>
     /// <param name="isJuliaMode">True to render Julia set, false for Mandelbrot</param>
     /// <param name="juliaCX">Julia constant (real part)</param>
     /// <param name="juliaCY">Julia constant (imaginary part)</param>
@@ -33,6 +34,7 @@ public interface IFractalRenderService
         int height,
         int maxIterations,
         string palette,
+        string fractalType = "Mandelbrot",
         bool isJuliaMode = false,
         double juliaCX = 0.0,
         double juliaCY = 0.0,
