@@ -264,7 +264,25 @@ namespace ManpWinUI.Views
         private void JuliaModeToggle_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             // IsChecked is already bound TwoWay, so IsJuliaMode is updated automatically
-            // Just trigger the render
+
+            if (ViewModel.IsJuliaMode)
+            {
+                // Switching TO Julia mode - set appropriate defaults
+                ViewModel.CenterX = 0.0;
+                ViewModel.CenterY = 0.0;
+                ViewModel.Zoom = 0.7;  // Wider view for Julia sets
+                ViewModel.StatusMessage = $"Switched to Julia Mode: c = ({ViewModel.JuliaCX:F4}, {ViewModel.JuliaCY:F4})";
+            }
+            else
+            {
+                // Switching back to Mandelbrot - restore typical view
+                ViewModel.CenterX = -0.5;
+                ViewModel.CenterY = 0.0;
+                ViewModel.Zoom = 1.0;
+                ViewModel.StatusMessage = "Switched to Mandelbrot Mode";
+            }
+
+            // Trigger render with new settings
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
                 ViewModel.RenderMandelbrotCommand.Execute(null);
@@ -273,9 +291,13 @@ namespace ManpWinUI.Views
 
         private void JuliaPreset1_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
+            // Classic Julia set - dragon-like shape
             ViewModel.JuliaCX = -0.7;
             ViewModel.JuliaCY = 0.27015;
-            ViewModel.StatusMessage = "Julia preset: Classic";
+            ViewModel.CenterX = 0.0;
+            ViewModel.CenterY = 0.0;
+            ViewModel.Zoom = 0.7;  // Wider view to see full shape
+            ViewModel.StatusMessage = "Julia preset: Classic (Douady's Rabbit)";
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
                 ViewModel.RenderMandelbrotCommand.Execute(null);
@@ -284,8 +306,12 @@ namespace ManpWinUI.Views
 
         private void JuliaPreset2_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
+            // Douady Rabbit - connected fractal
             ViewModel.JuliaCX = -0.12;
             ViewModel.JuliaCY = 0.75;
+            ViewModel.CenterX = 0.0;
+            ViewModel.CenterY = 0.0;
+            ViewModel.Zoom = 0.6;  // Wider view for full rabbit shape
             ViewModel.StatusMessage = "Julia preset: Douady Rabbit";
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
@@ -295,8 +321,12 @@ namespace ManpWinUI.Views
 
         private void JuliaPreset3_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
+            // San Marco - circular dendrites
             ViewModel.JuliaCX = -0.75;
             ViewModel.JuliaCY = 0.0;
+            ViewModel.CenterX = 0.0;
+            ViewModel.CenterY = 0.0;
+            ViewModel.Zoom = 0.5;  // Wide view to see dendrite structure
             ViewModel.StatusMessage = "Julia preset: San Marco";
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
@@ -306,8 +336,12 @@ namespace ManpWinUI.Views
 
         private void JuliaPreset4_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
+            // Siegel Disk - quasi-circular with spirals
             ViewModel.JuliaCX = -0.4;
             ViewModel.JuliaCY = 0.6;
+            ViewModel.CenterX = 0.0;
+            ViewModel.CenterY = 0.0;
+            ViewModel.Zoom = 0.6;  // View to see spiral structure
             ViewModel.StatusMessage = "Julia preset: Siegel Disk";
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
