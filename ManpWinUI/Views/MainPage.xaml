@@ -72,6 +72,28 @@
                     <ToolTip Content="Pan view (Arrow keys or right-click drag)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
+            <AppBarSeparator />
+            <AppBarButton
+                Icon="Save"
+                Label="Save Image"
+                Click="SaveImage_Click"
+                IsEnabled="{x:Bind ViewModel.FractalImage, Mode=OneWay, Converter={StaticResource NullToBoolConverter}}">
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Save as PNG" Icon="Save" Click="SavePNG_Click" />
+                        <MenuFlyoutItem Text="Save as JPEG" Click="SaveJPEG_Click">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE91B;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem Text="Copy to Clipboard" Icon="Copy" Click="CopyToClipboard_Click" />
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Save or copy fractal image (Ctrl+S)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
         </CommandBar>
 
         <!-- Main Content Area -->

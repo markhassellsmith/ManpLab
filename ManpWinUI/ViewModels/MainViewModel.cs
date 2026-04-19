@@ -470,4 +470,26 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         // Invalidate the bitmap to trigger redraw
         FractalImage.Invalidate();
     }
+
+    /// <summary>
+    /// Creates metadata object from current fractal state.
+    /// </summary>
+    public Models.FractalMetadata CreateMetadata()
+    {
+        return Models.FractalMetadata.FromViewModel(
+            fractalType: SelectedFractalType,
+            iterationMode: SelectedIterationMode,
+            centerX: CenterX,
+            centerY: CenterY,
+            zoom: Zoom,
+            maxIterations: MaxIterations,
+            colorPalette: SelectedPalette,
+            imageWidth: ImageWidth,
+            imageHeight: ImageHeight,
+            autoScaleIterations: AutoScaleIterations,
+            juliaCX: IsJuliaMode ? JuliaCX : null,
+            juliaCY: IsJuliaMode ? JuliaCY : null,
+            renderTime: LastRenderTime
+        );
+    }
 }

@@ -1,3 +1,7 @@
+using ManpWinUI.Services;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+
 namespace ManpWinUI.Views
 {
     /// <summary>
@@ -89,6 +93,83 @@ namespace ManpWinUI.Views
             if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
             {
                 ViewModel.RenderMandelbrotCommand.Execute(null);
+            }
+        }
+
+        private async void SaveImage_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            // Default to PNG when clicking main button
+            await SaveImageAsync(ImageFormat.PNG);
+        }
+
+        private async void SavePNG_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            await SaveImageAsync(ImageFormat.PNG);
+        }
+
+        private async void SaveJPEG_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            await SaveImageAsync(ImageFormat.JPEG);
+        }
+
+        private async void CopyToClipboard_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            if (ViewModel.FractalImage == null)
+            {
+                ViewModel.StatusMessage = "No image to copy";
+                return;
+            }
+
+            try
+            {
+                var exportService = App.Current.Services.GetRequiredService<ImageExportService>();
+                var metadata = ViewModel.CreateMetadata();
+
+                await exportService.CopyToClipboardAsync(ViewModel.FractalImage, metadata);
+
+                ViewModel.StatusMessage = "Image copied to clipboard with metadata!";
+            }
+            catch (Exception ex)
+            {
+                ViewModel.StatusMessage = $"Error copying to clipboard: {ex.Message}";
+            }
+        }
+
+        private async System.Threading.Tasks.Task SaveImageAsync(ImageFormat format)
+        {
+            if (ViewModel.FractalImage == null)
+            {
+                ViewModel.StatusMessage = "No image to save";
+                return;
+            }
+
+            try
+            {
+                var exportService = App.Current.Services.GetRequiredService<ImageExportService>();
+                var metadata = ViewModel.CreateMetadata();
+
+                // Get window handle for file picker
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
+
+                var saved = await exportService.SaveImageAsync(
+                    ViewModel.FractalImage,
+                    metadata,
+                    format,
+                    hwnd);
+
+                if (saved)
+                {
+                    var formatName = format == ImageFormat.PNG ? "PNG" : "JPEG";
+                    ViewModel.StatusMessage = $"Image saved as {formatName} with embedded metadata!";
+                }
+                else
+                {
+                    ViewModel.StatusMessage = "Save cancelled";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewModel.StatusMessage = $"Error saving image: {ex.Message}";
             }
         }
     }

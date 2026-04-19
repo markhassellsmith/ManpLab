@@ -151,10 +151,9 @@ namespace ManpWinUI.Views
                     e.Handled = true;
                     break;
 
-                // Ctrl+S: Save Image (future)
+                // Ctrl+S: Save Image
                 case VirtualKey.S when ctrlPressed:
-                    // TODO: Implement save functionality
-                    ViewModel.StatusMessage = "Save functionality coming soon! (Next feature)";
+                    _ = SaveImageAsync(Services.ImageFormat.PNG);
                     e.Handled = true;
                     break;
             }

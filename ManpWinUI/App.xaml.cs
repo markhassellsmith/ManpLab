@@ -28,6 +28,11 @@ namespace ManpWinUI
         public IServiceProvider Services => _serviceProvider;
 
         /// <summary>
+        /// Gets the main application window.
+        /// </summary>
+        public Window? MainWindow => window;
+
+        /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
@@ -81,6 +86,7 @@ namespace ManpWinUI
 
             // Services
             services.AddSingleton<IFractalRenderService, FractalRenderService>();
+            services.AddSingleton<ImageExportService>();
 
             // ViewModels
             services.AddTransient<MainViewModel>();

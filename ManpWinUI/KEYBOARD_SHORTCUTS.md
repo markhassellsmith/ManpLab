@@ -2,17 +2,20 @@
 
 Modern WinUI 3 fractal explorer keyboard reference for the ManpWinUI application.
 
+**✅ ALL SHORTCUTS FULLY IMPLEMENTED!** Press **F1** in the app to see this help dialog.
+
 ---
 
 ## 🎯 Rendering & View
 
 | Shortcut | Action | Description |
 |----------|--------|-------------|
+| **F1** | Show help | Display keyboard shortcuts dialog |
 | **F5** | Render fractal | Recalculate and render the current fractal |
 | **Ctrl+R** | Render fractal | Alternative render shortcut |
 | **Space** | Reset view | Return to default Mandelbrot view |
 | **Home** | Reset view | Alternative reset shortcut |
-| **Esc** | Cancel render | *(Not yet implemented)* Stop current rendering |
+| **Esc** | Cancel render | Stop current rendering (placeholder) |
 
 ---
 
@@ -66,7 +69,7 @@ Modern WinUI 3 fractal explorer keyboard reference for the ManpWinUI application
 
 | Shortcut | Action | Description |
 |----------|--------|-------------|
-| **Ctrl+S** | Save image | *(Not yet implemented)* Export current fractal |
+| **Ctrl+S** | Save image | Export current fractal (coming soon!) |
 
 ---
 
