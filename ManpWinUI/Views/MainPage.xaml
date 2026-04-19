@@ -8,7 +8,8 @@
     xmlns:vm="using:ManpWinUI.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
+    d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+    KeyDown="Page_KeyDown">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -26,11 +27,51 @@
                 Icon="Play"
                 Label="Render"
                 Command="{x:Bind ViewModel.RenderMandelbrotCommand}"
-                IsEnabled="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}" />
+                IsEnabled="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Render fractal (Ctrl+R)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
             <AppBarButton
                 Icon="Refresh"
                 Label="Reset View"
-                Command="{x:Bind ViewModel.ResetViewCommand}" />
+                Command="{x:Bind ViewModel.ResetViewCommand}">
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Reset to default view (Space)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
+            <AppBarSeparator />
+            <AppBarButton
+                Icon="ZoomIn"
+                Label="Zoom In"
+                Command="{x:Bind ViewModel.ZoomInCommand}">
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Zoom in 2x (+)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
+            <AppBarButton
+                Icon="ZoomOut"
+                Label="Zoom Out"
+                Command="{x:Bind ViewModel.ZoomOutCommand}">
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Zoom out 2x (-)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
+            <AppBarButton Label="Pan">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE7C2;" />
+                </AppBarButton.Icon>
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Pan with arrow keys: ← → ↑ ↓" IsEnabled="False" />
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem Text="Or right-click and drag on image" IsEnabled="False" />
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Pan view (Arrow keys or right-click drag)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
         </CommandBar>
 
         <!-- Main Content Area -->
