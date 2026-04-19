@@ -1,5 +1,6 @@
 #include "FractalRegistry.h"
 #include "MandelbrotCalculator.h"
+#include <set>
 #include <stdexcept>
 
 namespace Native {
