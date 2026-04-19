@@ -149,6 +149,156 @@ namespace Native {
         }
 
         /// <summary>
+        /// Calculate Burning Ship fractal: z = (|Re(z)| + i|Im(z)|)^2 + c
+        /// </summary>
+        static double CalculateBurningShip(ComplexD c, int maxIter, bool isJulia = false, ComplexD juliaC = ComplexD())
+        {
+            ComplexD z;
+            ComplexD constant;
+
+            if (isJulia)
+            {
+                z = c;
+                constant = juliaC;
+            }
+            else
+            {
+                z = ComplexD(0.0, 0.0);
+                constant = c;
+            }
+
+            int iteration = 0;
+            double bailout = 256.0;
+
+            while (iteration < maxIter)
+            {
+                // Burning Ship: take absolute values before squaring
+                double zx_abs = fabs(z.x);
+                double zy_abs = fabs(z.y);
+
+                double x2 = zx_abs * zx_abs;
+                double y2 = zy_abs * zy_abs;
+                double magnitude2 = x2 + y2;
+
+                if (magnitude2 > bailout)
+                {
+                    double log_zn = log(magnitude2) / 2.0;
+                    double nu = log(log_zn / log(2.0)) / log(2.0);
+                    return iteration + 1.0 - nu;
+                }
+
+                double zx_new = x2 - y2 + constant.x;
+                double zy_new = 2.0 * zx_abs * zy_abs + constant.y;
+
+                z.x = zx_new;
+                z.y = zy_new;
+
+                iteration++;
+            }
+
+            return (double)maxIter;
+        }
+
+        /// <summary>
+        /// Calculate Tricorn (Mandelbar) fractal: z = conj(z)^2 + c
+        /// </summary>
+        static double CalculateTricorn(ComplexD c, int maxIter, bool isJulia = false, ComplexD juliaC = ComplexD())
+        {
+            ComplexD z;
+            ComplexD constant;
+
+            if (isJulia)
+            {
+                z = c;
+                constant = juliaC;
+            }
+            else
+            {
+                z = ComplexD(0.0, 0.0);
+                constant = c;
+            }
+
+            int iteration = 0;
+            double bailout = 256.0;
+
+            while (iteration < maxIter)
+            {
+                double x2 = z.x * z.x;
+                double y2 = z.y * z.y;
+                double magnitude2 = x2 + y2;
+
+                if (magnitude2 > bailout)
+                {
+                    double log_zn = log(magnitude2) / 2.0;
+                    double nu = log(log_zn / log(2.0)) / log(2.0);
+                    return iteration + 1.0 - nu;
+                }
+
+                // Tricorn: conjugate before squaring (negate imaginary part)
+                double zx_new = x2 - y2 + constant.x;
+                double zy_new = -2.0 * z.x * z.y + constant.y;
+
+                z.x = zx_new;
+                z.y = zy_new;
+
+                iteration++;
+            }
+
+            return (double)maxIter;
+        }
+
+        /// <summary>
+        /// Calculate Phoenix fractal: z = z^2 + Re(c) + Im(c)*p
+        /// where p is the previous z value
+        /// </summary>
+        static double CalculatePhoenix(ComplexD c, int maxIter, bool isJulia = false, ComplexD juliaC = ComplexD())
+        {
+            ComplexD z;
+            ComplexD constant;
+
+            if (isJulia)
+            {
+                z = c;
+                constant = juliaC;
+            }
+            else
+            {
+                z = ComplexD(0.0, 0.0);
+                constant = c;
+            }
+
+            ComplexD p(0.0, 0.0);  // Previous z value
+            int iteration = 0;
+            double bailout = 256.0;
+
+            while (iteration < maxIter)
+            {
+                double x2 = z.x * z.x;
+                double y2 = z.y * z.y;
+                double magnitude2 = x2 + y2;
+
+                if (magnitude2 > bailout)
+                {
+                    double log_zn = log(magnitude2) / 2.0;
+                    double nu = log(log_zn / log(2.0)) / log(2.0);
+                    return iteration + 1.0 - nu;
+                }
+
+                // Phoenix: z_new = z^2 + real(c) + imag(c)*previous_z
+                double zx_new = x2 - y2 + constant.x + constant.y * p.x;
+                double zy_new = 2.0 * z.x * z.y + constant.y * p.y;
+
+                p = z;  // Save current z as previous
+                z.x = zx_new;
+                z.y = zy_new;
+
+                iteration++;
+            }
+
+            return (double)maxIter;
+        }
+
+        /// <summary>
         /// Map pixel coordinates to complex plane
         /// </summary>
         static ComplexD PixelToComplex(int px, int py, const MandelbrotParams& params)

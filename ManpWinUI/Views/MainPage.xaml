@@ -171,50 +171,49 @@
 
                                 <MenuFlyoutSeparator />
 
-                                <!-- Fractal Mode (Mandelbrot/Julia) -->
-                                <StackPanel Spacing="8">
-                                    <TextBlock Text="Fractal Type" FontWeight="SemiBold"/>
+                                <!-- Iteration Mode (Standard/Julia) -->
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Iteration Mode" FontWeight="SemiBold" />
+                                    <ComboBox
+                                        SelectedItem="{x:Bind ViewModel.SelectedIterationMode, Mode=TwoWay}"
+                                        HorizontalAlignment="Stretch">
+                                        <x:String>Standard</x:String>
+                                        <x:String>Julia</x:String>
+                                    </ComboBox>
+                                </StackPanel>
 
-                                    <ToggleButton x:Name="JuliaModeToggle"
-                                                  IsChecked="{x:Bind ViewModel.IsJuliaMode, Mode=TwoWay}"
-                                                  HorizontalAlignment="Stretch"
-                                                  Click="JuliaModeToggle_Click">
-                                        <TextBlock Text="{x:Bind ViewModel.IsJuliaMode, Mode=OneWay, Converter={StaticResource JuliaModeTextConverter}}"/>
-                                    </ToggleButton>
+                                <!-- Julia Parameters (visible only when Iteration Mode = Julia) -->
+                                <StackPanel Spacing="8" 
+                                            Visibility="{x:Bind ViewModel.IsJuliaMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Text="Julia Constant (c)" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
-                                    <!-- Julia Parameters (visible only when IsJuliaMode = true) -->
-                                    <StackPanel Spacing="8" 
-                                                Visibility="{x:Bind ViewModel.IsJuliaMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Text="Julia Constant (c)" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Real Part (c_x)"/>
+                                        <NumberBox Value="{x:Bind ViewModel.JuliaCX, Mode=TwoWay}"
+                                                   SpinButtonPlacementMode="Inline"
+                                                   SmallChange="0.01"
+                                                   LargeChange="0.1"
+                                                   Minimum="-2"
+                                                   Maximum="2"/>
+                                    </StackPanel>
 
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="Real Part (c_x)"/>
-                                            <NumberBox Value="{x:Bind ViewModel.JuliaCX, Mode=TwoWay}"
-                                                       SpinButtonPlacementMode="Inline"
-                                                       SmallChange="0.01"
-                                                       LargeChange="0.1"
-                                                       Minimum="-2"
-                                                       Maximum="2"/>
-                                        </StackPanel>
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Imaginary Part (c_y)"/>
+                                        <NumberBox Value="{x:Bind ViewModel.JuliaCY, Mode=TwoWay}"
+                                                   SpinButtonPlacementMode="Inline"
+                                                   SmallChange="0.01"
+                                                   LargeChange="0.1"
+                                                   Minimum="-2"
+                                                   Maximum="2"/>
+                                    </StackPanel>
 
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="Imaginary Part (c_y)"/>
-                                            <NumberBox Value="{x:Bind ViewModel.JuliaCY, Mode=TwoWay}"
-                                                       SpinButtonPlacementMode="Inline"
-                                                       SmallChange="0.01"
-                                                       LargeChange="0.1"
-                                                       Minimum="-2"
-                                                       Maximum="2"/>
-                                        </StackPanel>
-
-                                        <!-- Preset Julia values -->
-                                        <TextBlock Text="Presets:" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,8,0,0"/>
-                                        <StackPanel Spacing="4">
-                                            <Button Content="Classic Spiral (-0.7, 0.27)" Click="JuliaPreset1_Click" HorizontalAlignment="Stretch"/>
-                                            <Button Content="Dendrite (-0.8, 0.156)" Click="JuliaPreset2_Click" HorizontalAlignment="Stretch"/>
-                                            <Button Content="San Marco Jewel (0.285, 0.01)" Click="JuliaPreset3_Click" HorizontalAlignment="Stretch"/>
-                                            <Button Content="Paisley Swirl (-0.4, 0.6)" Click="JuliaPreset4_Click" HorizontalAlignment="Stretch"/>
-                                        </StackPanel>
+                                    <!-- Preset Julia values -->
+                                    <TextBlock Text="Presets:" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,8,0,0"/>
+                                    <StackPanel Spacing="4">
+                                        <Button Content="Classic Spiral (-0.7, 0.27)" Click="JuliaPreset1_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="Dendrite (-0.8, 0.156)" Click="JuliaPreset2_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="San Marco Jewel (0.285, 0.01)" Click="JuliaPreset3_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="Paisley Swirl (-0.4, 0.6)" Click="JuliaPreset4_Click" HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                 </StackPanel>
 

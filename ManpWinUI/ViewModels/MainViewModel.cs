@@ -51,9 +51,12 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
     [ObservableProperty]
     public partial string SelectedFractalType { get; set; } = "Mandelbrot";
 
-    // Julia set parameters
+    // Iteration mode selection (Standard/Julia)
     [ObservableProperty]
-    public partial bool IsJuliaMode { get; set; } = false;
+    public partial string SelectedIterationMode { get; set; } = "Standard";
+
+    // Computed property: Julia mode is active when iteration mode is "Julia"
+    public bool IsJuliaMode => SelectedIterationMode == "Julia";
 
     [ObservableProperty]
     public partial double JuliaCX { get; set; } = -0.7;
@@ -319,29 +322,23 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         OnPropertyChanged(nameof(CurrentViewHeight));
     }
 
-    /// <summary>
-    /// Toggles between Mandelbrot and Julia set modes.
-    /// </summary>
-    [RelayCommand]
-    private async Task ToggleJuliaModeAsync()
+    partial void OnSelectedIterationModeChanged(string value)
     {
-        IsJuliaMode = !IsJuliaMode;
+        // Notify that IsJuliaMode computed property has changed
+        OnPropertyChanged(nameof(IsJuliaMode));
 
-        if (IsJuliaMode)
+        // Update status message to reflect the mode change
+        if (value == "Julia")
         {
-            StatusMessage = $"Julia Mode: c = ({JuliaCX:F4}, {JuliaCY:F4})";
+            StatusMessage = $"Julia Mode: c = ({JuliaCX:F4}, {JuliaCY:F4}) - Click Render to generate";
         }
         else
         {
-            StatusMessage = "Mandelbrot Mode";
+            StatusMessage = "Standard Mode - Click Render to generate";
         }
 
-        // Auto-render with new mode
-        await Task.Delay(10);
-        if (RenderMandelbrotCommand.CanExecute(null))
-        {
-            await RenderMandelbrotCommand.ExecuteAsync(null);
-        }
+        // Ensure render command updates its CanExecute state
+        RenderMandelbrotCommand.NotifyCanExecuteChanged();
     }
 
     partial void OnMaxIterationsChanged(int value)

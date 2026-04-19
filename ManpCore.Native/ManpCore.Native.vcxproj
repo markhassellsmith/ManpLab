@@ -90,15 +90,21 @@
     <ClInclude Include="BigDoubleMarshaller.h" />
     <ClInclude Include="ColorPalette.h" />
     <ClInclude Include="FractalEngineWrapper.h" />
+    <ClInclude Include="FractalRegistry.h" />
     <ClInclude Include="MandelbrotCalculator.h" />
     <ClInclude Include="NativePerformanceBaseline.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="FractalEngineWrapper.cpp" />
     <ClCompile Include="..\ManpWIN64\Complex.cpp">
       <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
+    <ClCompile Include="FractalRegistry.cpp" />
+    <ClCompile Include="MandelbrotFamily.cpp" />
+    <ClCompile Include="PhoenixFamily.cpp" />
+    <ClCompile Include="TricornFamily.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -55,6 +55,38 @@ This document is the master index for the ManpLab WinUI modernization project. T
   - Recovery procedures
   - Session management strategy
 
+### Current Status & Progress
+- **[🎯 ROADMAP](docs/ROADMAP.md)** - **START HERE!** Your clear path forward ⭐⭐⭐
+  - Where you are now
+  - What to work on next (prioritized!)
+  - Decision tree for task selection
+  - Anti-patterns to avoid
+  - Weekly goals and milestones
+
+- **[PROJECT_STATUS](docs/PROJECT_STATUS.md)** - Current phase progress and metrics
+  - Phase completion percentages
+  - Working features
+  - Next priorities
+  - Code architecture overview
+
+- **[QUICK_RECAP](docs/QUICK_RECAP.md)** - Session recap and quick reference
+  - What works now
+  - What's next
+  - Quick start commands
+  - Token optimization tips
+
+### Code Organization
+- **[MODULARIZATION_SUMMARY](docs/MODULARIZATION_SUMMARY.md)** - MainPage refactoring details
+  - Partial class split rationale
+  - File responsibilities
+  - Testing strategy
+
+- **[LEGACY_MODERNIZATION](docs/LEGACY_MODERNIZATION.md)** - Future C++ refactoring plan
+  - ⚠️ **DO NOT START YET!** (Phase 4+ only)
+  - Oscillators.cpp split strategy (42K lines → 40-50 files)
+  - Surfaces.cpp, fractalp.cpp refactoring
+  - Timeline and risk assessment
+
 ### Cross-Platform (MANDATORY REQUIREMENTS)
 - **[07 - MAUI Compatibility](docs/07-maui-compatibility.md)** - **REQUIRED** cross-platform architecture
   - Platform-agnostic code patterns (enforced, not optional)
