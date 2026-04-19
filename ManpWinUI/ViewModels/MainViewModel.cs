@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using ManpWinUI.Services;
+using ManpWinUI.Models;
 using System;
+using System.Collections.ObjectModel;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
@@ -14,10 +16,11 @@ namespace ManpWinUI.ViewModels;
 /// Main view model for the fractal explorer interface.
 /// Manages fractal rendering parameters, UI state, and coordinates with the fractal engine.
 /// </summary>
-public partial class MainViewModel(IFractalRenderService renderService) : ObservableObject
+public partial class MainViewModel(IFractalRenderService renderService, BookmarkService bookmarkService) : ObservableObject
 {
     private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
     private readonly IFractalRenderService _renderService = renderService;
+    private readonly BookmarkService _bookmarkService = bookmarkService;
 
     // Fractal rendering parameters
     [ObservableProperty]
@@ -106,6 +109,37 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
     // Fractal image
     [ObservableProperty]
     public partial WriteableBitmap? FractalImage { get; set; }
+
+    // Bookmarks
+    public ObservableCollection<FractalBookmark> Bookmarks { get; } = new();
+
+    [ObservableProperty]
+    public partial FractalBookmark? SelectedBookmark { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsBookmarksPanelOpen { get; set; }
+
+    /// <summary>
+    /// Initializes bookmarks from storage.
+    /// Call this after construction to load saved bookmarks.
+    /// </summary>
+    public async Task InitializeAsync()
+    {
+        await _bookmarkService.LoadBookmarksAsync();
+        RefreshBookmarks();
+    }
+
+    /// <summary>
+    /// Refreshes the bookmarks collection from the service.
+    /// </summary>
+    private void RefreshBookmarks()
+    {
+        Bookmarks.Clear();
+        foreach (var bookmark in _bookmarkService.Bookmarks)
+        {
+            Bookmarks.Add(bookmark);
+        }
+    }
 
     /// <summary>
     /// Renders the Mandelbrot set with current parameters.
@@ -491,5 +525,109 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             juliaCY: IsJuliaMode ? JuliaCY : null,
             renderTime: LastRenderTime
         );
+    }
+
+    /// <summary>
+    /// Loads a bookmark and navigates to that fractal location.
+    /// </summary>
+    [RelayCommand]
+    private async Task LoadBookmarkAsync(FractalBookmark? bookmark)
+    {
+        if (bookmark == null)
+            return;
+
+        // Set all parameters from bookmark
+        SelectedFractalType = bookmark.FractalType;
+        SelectedIterationMode = bookmark.IterationMode;
+        CenterX = bookmark.CenterX;
+        CenterY = bookmark.CenterY;
+        Zoom = bookmark.Zoom;
+        MaxIterations = bookmark.MaxIterations;
+        SelectedPalette = bookmark.ColorPalette;
+
+        if (bookmark.JuliaC != null)
+        {
+            JuliaCX = bookmark.JuliaC.Real;
+            JuliaCY = bookmark.JuliaC.Imaginary;
+        }
+
+        StatusMessage = $"Loaded bookmark: {bookmark.Name}";
+
+        // Auto-render
+        await Task.Delay(10);
+        if (RenderMandelbrotCommand.CanExecute(null))
+        {
+            await RenderMandelbrotCommand.ExecuteAsync(null);
+        }
+    }
+
+    /// <summary>
+    /// Saves current view as a new bookmark.
+    /// </summary>
+    [RelayCommand]
+    private async Task SaveCurrentAsBookmarkAsync(string? bookmarkName)
+    {
+        if (string.IsNullOrWhiteSpace(bookmarkName))
+        {
+            StatusMessage = "Please enter a bookmark name";
+            return;
+        }
+
+        var bookmark = FractalBookmark.FromCurrentState(
+            name: bookmarkName,
+            description: $"Saved on {DateTime.Now:g}",
+            fractalType: SelectedFractalType,
+            iterationMode: SelectedIterationMode,
+            centerX: CenterX,
+            centerY: CenterY,
+            zoom: Zoom,
+            maxIterations: MaxIterations,
+            colorPalette: SelectedPalette,
+            juliaCX: IsJuliaMode ? JuliaCX : null,
+            juliaCY: IsJuliaMode ? JuliaCY : null,
+            isFavorite: false
+        );
+
+        await _bookmarkService.AddBookmarkAsync(bookmark);
+        RefreshBookmarks();
+
+        StatusMessage = $"Bookmark saved: {bookmarkName}";
+    }
+
+    /// <summary>
+    /// Deletes a bookmark.
+    /// </summary>
+    [RelayCommand]
+    private async Task DeleteBookmarkAsync(FractalBookmark? bookmark)
+    {
+        if (bookmark == null || bookmark.IsPreset)
+            return;
+
+        await _bookmarkService.RemoveBookmarkAsync(bookmark.Id);
+        RefreshBookmarks();
+
+        StatusMessage = $"Deleted bookmark: {bookmark.Name}";
+    }
+
+    /// <summary>
+    /// Toggles favorite status of a bookmark.
+    /// </summary>
+    [RelayCommand]
+    private async Task ToggleBookmarkFavoriteAsync(FractalBookmark? bookmark)
+    {
+        if (bookmark == null)
+            return;
+
+        await _bookmarkService.ToggleFavoriteAsync(bookmark.Id);
+        RefreshBookmarks();
+    }
+
+    /// <summary>
+    /// Toggles the bookmarks panel visibility.
+    /// </summary>
+    [RelayCommand]
+    private void ToggleBookmarksPanel()
+    {
+        IsBookmarksPanelOpen = !IsBookmarksPanelOpen;
     }
 }

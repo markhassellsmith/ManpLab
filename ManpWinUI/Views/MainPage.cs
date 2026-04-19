@@ -26,6 +26,9 @@ namespace ManpWinUI.Views
             ViewModel = App.Current.Services.GetRequiredService<MainViewModel>();
             DataContext = ViewModel;
 
+            // Initialize ViewModel asynchronously
+            _ = InitializeViewModelAsync();
+
             // Subscribe to property changes to update coordinate axes
             ViewModel.PropertyChanged += (s, e) =>
             {
@@ -39,6 +42,11 @@ namespace ManpWinUI.Views
                     UpdateCoordinateAxes();
                 }
             };
+        }
+
+        private async System.Threading.Tasks.Task InitializeViewModelAsync()
+        {
+            await ViewModel.InitializeAsync();
         }
     }
 }
