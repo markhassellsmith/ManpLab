@@ -1,7 +1,7 @@
 # ManpWIN64 Keyboard Shortcuts Quick Reference
 
 > **Note:** This documents the **C++ ManpWIN64** application shortcuts.  
-> For the modern **WinUI 3 ManpWinUI** app, see [ManpWinUI/KEYBOARD_SHORTCUTS.md](ManpWinUI/KEYBOARD_SHORTCUTS.md)
+> For the modern **WinUI 3 ManpWinUI** app, see [../ManpWinUI/KEYBOARD_SHORTCUTS.md](../ManpWinUI/KEYBOARD_SHORTCUTS.md)
 
 ## 🎨 Color & Palette Controls
 

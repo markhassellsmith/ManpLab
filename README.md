@@ -23,7 +23,7 @@ Perfect for students and beginners learning fractals:
 
 ---
 
-### 🔬 ManpWIN64 - Research & Advanced Features
+### 🔬 [ManpWIN64](ManpWIN64/) - Research & Advanced Features
 **Windows 10/11 | C++17 | CMake**
 
 For researchers and advanced users needing maximum capability:
@@ -32,6 +32,9 @@ For researchers and advanced users needing maximum capability:
 - 🧮 **Arbitrary precision** arithmetic (MPFR, QD libraries)
 - ⚡ **BLA acceleration** for extreme performance
 - 🎨 Advanced coloring with Fractint palette support
+- ⌨️ [Full keyboard shortcuts](ManpWIN64/KEYBOARD_SHORTCUTS.md)
+
+👉 **[Get Started with ManpWIN64 →](ManpWIN64/README.md)**
 
 **This README documents ManpWIN64.** An educational C++ fractal rendering application featuring deep-zoom technology, BLA acceleration, and arbitrary-precision arithmetic. This self-contained fork includes all dependencies and requires no configuration.
 
