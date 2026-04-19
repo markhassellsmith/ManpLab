@@ -91,7 +91,7 @@ That's it. I'll guide you step-by-step to add the ability to save and navigate t
 - Main app: `ManpWinUI/MainPage.xaml` and `MainPage.*.cs` files
 - C++ wrapper: `ManpWIN64/` (already works, don't touch)
 
-**Branch:** `feature/phase3-winui-project`  
+**Branch:** `feature/phase4-ui-polish` ✨ NEW!  
 **Status:** Phase 3 complete, Phase 4 in progress (85% done - save feature just finished!)
 
 ---
