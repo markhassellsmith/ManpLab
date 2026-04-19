@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:ManpWinUI.Views"
     xmlns:vm="using:ManpWinUI.ViewModels"
+    xmlns:models="using:ManpWinUI.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -94,10 +95,132 @@
                     <ToolTip Content="Save or copy fractal image (Ctrl+S)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
+            <AppBarSeparator />
+            <AppBarButton
+                Label="Bookmarks"
+                Command="{x:Bind ViewModel.ToggleBookmarksPanelCommand}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE734;" />
+                </AppBarButton.Icon>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="View and manage fractal bookmarks (B)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
         </CommandBar>
 
         <!-- Main Content Area -->
-        <Grid Grid.Row="1">
+        <SplitView Grid.Row="1" 
+                   IsPaneOpen="{x:Bind ViewModel.IsBookmarksPanelOpen, Mode=TwoWay}"
+                   DisplayMode="Overlay"
+                   PanePlacement="Left"
+                   OpenPaneLength="350"
+                   CompactPaneLength="0">
+
+            <!-- Bookmarks Panel (Pane) -->
+            <SplitView.Pane>
+                <Grid Background="{ThemeResource LayerFillColorDefaultBrush}">
+                    <ScrollViewer Padding="16">
+                        <StackPanel Spacing="12">
+                            <Grid>
+                                <TextBlock Text="Bookmarks" 
+                                          FontWeight="Bold" 
+                                          FontSize="20" 
+                                          VerticalAlignment="Center"/>
+                                <Button Content="&#xE711;" 
+                                       FontFamily="Segoe MDL2 Assets"
+                                       Command="{x:Bind ViewModel.ToggleBookmarksPanelCommand}"
+                                       HorizontalAlignment="Right"
+                                       Style="{StaticResource SubtleButtonStyle}"
+                                       ToolTipService.ToolTip="Close bookmarks"/>
+                            </Grid>
+
+                            <MenuFlyoutSeparator />
+
+                            <!-- Save Current View -->
+                            <StackPanel Spacing="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="12" CornerRadius="8">
+                                <TextBlock Text="Save Current View" FontWeight="SemiBold" />
+                                <TextBox x:Name="NewBookmarkNameTextBox" 
+                                        PlaceholderText="Enter bookmark name..."
+                                        Header="Name"/>
+                                <Button Command="{x:Bind ViewModel.SaveCurrentAsBookmarkCommand}"
+                                       CommandParameter="{x:Bind NewBookmarkNameTextBox.Text, Mode=OneWay}"
+                                       HorizontalAlignment="Stretch">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE710;" FontSize="16"/>
+                                        <TextBlock Text="Save Bookmark"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <MenuFlyoutSeparator />
+
+                            <!-- Bookmarks List -->
+                            <TextBlock Text="Saved Locations" FontWeight="SemiBold" />
+
+                            <ListView ItemsSource="{x:Bind ViewModel.Bookmarks, Mode=OneWay}"
+                                     SelectedItem="{x:Bind ViewModel.SelectedBookmark, Mode=TwoWay}"
+                                     SelectionMode="Single">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:FractalBookmark">
+                                        <Grid Padding="8" ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Favorite Star -->
+                                            <FontIcon Grid.Column="0"
+                                                     Glyph="{x:Bind IsFavorite, Mode=OneWay, Converter={StaticResource BoolToStarGlyphConverter}}"
+                                                     FontSize="16"
+                                                     Foreground="{x:Bind IsFavorite, Mode=OneWay, Converter={StaticResource BoolToStarColorConverter}}"/>
+
+                                            <!-- Bookmark Info -->
+                                            <StackPanel Grid.Column="1" Spacing="2">
+                                                <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{x:Bind CoordinateDisplay}" 
+                                                          FontSize="11" 
+                                                          Opacity="0.7"
+                                                          TextWrapping="Wrap"/>
+                                                <TextBlock Text="{x:Bind Description}" 
+                                                          FontSize="10" 
+                                                          Opacity="0.6"
+                                                          TextWrapping="Wrap"
+                                                          Visibility="{x:Bind Description, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                            </StackPanel>
+
+                                            <!-- Load Button -->
+                                            <Button Grid.Column="2"
+                                                   Content="&#xE768;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   Command="{Binding ElementName=Page, Path=ViewModel.LoadBookmarkCommand}"
+                                                   CommandParameter="{x:Bind}"
+                                                   Style="{StaticResource SubtleButtonStyle}"
+                                                   ToolTipService.ToolTip="Load this bookmark"/>
+
+                                            <!-- Delete Button (not for presets) -->
+                                            <Button Grid.Column="3"
+                                                   Content="&#xE74D;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   Command="{Binding ElementName=Page, Path=ViewModel.DeleteBookmarkCommand}"
+                                                   CommandParameter="{x:Bind}"
+                                                   Style="{StaticResource SubtleButtonStyle}"
+                                                   Visibility="{x:Bind IsPreset, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
+                                                   ToolTipService.ToolTip="Delete bookmark"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </SplitView.Pane>
+
+            <!-- Main Content (Content) -->
+            <SplitView.Content>
+            <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <!-- Fractal Display -->
@@ -431,10 +554,12 @@
                                     ToolTipService.ToolTip="Display tick marks and coordinate labels on image borders" />
                             </StackPanel>
                         </ScrollViewer>
-                    </Grid>
+            </Grid>
+            </SplitView.Content>
+        </SplitView>
 
-                    <!-- Streamlined Status Bar -->
-                    <Grid Grid.Row="2"
+        <!-- Streamlined Status Bar -->
+        <Grid Grid.Row="2"
                           Background="{ThemeResource SystemControlAcrylicElementBrush}"
                           Padding="12,6">
                         <Grid.ColumnDefinitions>

@@ -23,6 +23,8 @@
             <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
             <converters:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
             <converters:JuliaModeTextConverter x:Key="JuliaModeTextConverter"/>
+            <converters:BoolToStarGlyphConverter x:Key="BoolToStarGlyphConverter"/>
+            <converters:BoolToStarColorConverter x:Key="BoolToStarColorConverter"/>
 
             <Color x:Key="Primary">#512BD4</Color>
 
@@ -53,6 +55,14 @@
                         Value="8" />
                 <Setter Property="Foreground"
                         Value="{StaticResource WhiteBrush}" />
+            </Style>
+
+            <Style x:Key="SubtleButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="8,6" />
+                <Setter Property="MinWidth" Value="0" />
+                <Setter Property="MinHeight" Value="0" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>
