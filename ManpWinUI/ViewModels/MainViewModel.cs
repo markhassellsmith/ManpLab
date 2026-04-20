@@ -190,32 +190,69 @@ public partial class MainViewModel(IFractalRenderService renderService, Bookmark
             // Progress reporting callback
             var progress = new Progress<double>(percentage =>
             {
-                _dispatcherQueue.TryEnqueue(() =>
+                try
                 {
-                    RenderProgress = percentage * 100.0;
-                });
+                    _dispatcherQueue.TryEnqueue(() =>
+                    {
+                        RenderProgress = percentage * 100.0;
+                    });
+                }
+                catch (InvalidCastException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"InvalidCastException in Progress callback: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                }
             });
 
             // Call FractalRenderService to render the fractal
-            var result = await _renderService.RenderMandelbrotAsync(
-                CenterX,
-                CenterY,
-                Zoom,
-                ImageWidth,
-                ImageHeight,
-                MaxIterations,
-                SelectedPalette,
-                SelectedFractalType,
-                IsJuliaMode,
-                JuliaCX,
-                JuliaCY,
-                progress);
+            FractalRenderResult result;
+            try
+            {
+                result = await _renderService.RenderMandelbrotAsync(
+                    CenterX,
+                    CenterY,
+                    Zoom,
+                    ImageWidth,
+                    ImageHeight,
+                    MaxIterations,
+                    SelectedPalette,
+                    SelectedFractalType,
+                    IsJuliaMode,
+                    JuliaCX,
+                    JuliaCY,
+                    progress);
+            }
+            catch (InvalidCastException ex)
+            {
+                StatusMessage = $"InvalidCastException during render: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"InvalidCastException in RenderMandelbrotAsync: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                return;
+            }
 
             // Convert byte[] to WriteableBitmap on UI thread
-            _dispatcherQueue.TryEnqueue(() =>
+            try
             {
-                ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
-            });
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    try
+                    {
+                        ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
+                    }
+                    catch (InvalidCastException ex)
+                    {
+                        StatusMessage = $"InvalidCastException in ConvertPixelDataToBitmap: {ex.Message}";
+                        System.Diagnostics.Debug.WriteLine($"InvalidCastException in ConvertPixelDataToBitmap: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                    }
+                });
+            }
+            catch (InvalidCastException ex)
+            {
+                StatusMessage = $"InvalidCastException in TryEnqueue: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"InvalidCastException in TryEnqueue: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
 
             LastRenderTime = DateTime.Now - startTime;
 
@@ -495,11 +532,8 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             FractalImage = new WriteableBitmap(width, height);
         }
 
-        // Write pixel data to bitmap
-        using (var stream = FractalImage.PixelBuffer.AsStream())
-        {
-            stream.Write(pixelData, 0, pixelData.Length);
-        }
+        // Write pixel data to bitmap buffer using WindowsRuntimeBufferExtensions
+        WindowsRuntimeBufferExtensions.CopyTo(pixelData, 0, FractalImage.PixelBuffer, 0, pixelData.Length);
 
         // Invalidate the bitmap to trigger redraw
         FractalImage.Invalidate();

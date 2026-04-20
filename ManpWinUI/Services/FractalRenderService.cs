@@ -103,7 +103,7 @@ Calculated View:
                 };
 
                 // Set up progress reporting
-                EventHandler<ProgressEventArgs>? progressHandler = null;
+                EventHandler<ManpCore.Native.ProgressEventArgs>? progressHandler = null;
                 if (progress != null)
                 {
                     progressHandler = (sender, args) =>
@@ -187,7 +187,7 @@ Calculated View:
                     Palette = paletteEnum
                 };
 
-                EventHandler<ProgressEventArgs>? progressHandler = null;
+                EventHandler<ManpCore.Native.ProgressEventArgs>? progressHandler = null;
                 if (progress != null)
                 {
                     progressHandler = (sender, args) => progress.Report(args.Percentage / 100.0);

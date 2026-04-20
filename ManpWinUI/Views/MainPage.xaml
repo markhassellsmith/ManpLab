@@ -294,7 +294,7 @@
                             <!-- Progress Overlay -->
                             <Grid
                                 Background="{ThemeResource SystemControlAcrylicElementBrush}"
-                                Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay}">
+                                Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <StackPanel
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
