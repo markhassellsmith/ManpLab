@@ -82,13 +82,13 @@ namespace ManpWinUI.Views
                         var scaleX = fractalWidth / displayWidth;
                         var scaleY = fractalHeight / displayHeight;
 
-                        // Update center coordinates (grab-and-drag: drag right to see what's on the left)
-                        // X: drag right (positive deltaX) means move view left (negative centerX change)
+                        // Update center coordinates (paper-on-desk: drag right to move image right)
+                        // X: drag right (positive deltaX) shifts image right, revealing left side
                         ViewModel.CenterX -= deltaX * scaleX;
 
-                        // Y: drag down (positive deltaY) means move view down in screen coords
-                        // But fractal Y increases upward, so we SUBTRACT to move fractal view down
-                        ViewModel.CenterY -= deltaY * scaleY;
+                        // Y: drag down (positive deltaY) shifts image down, revealing top side
+                        // Fractal Y increases upward (opposite of screen Y), so ADD to move image down with mouse
+                        ViewModel.CenterY += deltaY * scaleY;
                     }
                 }
 
@@ -212,7 +212,7 @@ namespace ManpWinUI.Views
             var rectHeight = SelectionRectangle.Height;
 
             // Get the Viewbox child (Border or Image container)
-            if (FractalViewbox?.Child is FrameworkElement child && 
+            if (FractalViewbox?.Child is FrameworkElement child &&
                 ViewModel.FractalImage is Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap bitmap)
             {
                 // Get actual bitmap dimensions (not scaled)
