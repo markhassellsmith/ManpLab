@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using ManpWinUI.Services;
+using ManpWinUI.Models;
 using System;
+using System.Collections.ObjectModel;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
@@ -11,81 +13,42 @@ using Windows.Storage.Streams;
 namespace ManpWinUI.ViewModels;
 
 /// <summary>
-/// Main view model for the fractal explorer interface.
-/// Manages fractal rendering parameters, UI state, and coordinates with the fractal engine.
+/// Main view model for the fractal explorer interface (Core).
+/// Manages rendering state, image output, bookmarks, and coordinates with services.
+/// 
+/// Split into partial classes for maintainability:
+/// - MainViewModel.cs (this file): Core state, rendering, bookmarks
+/// - MainViewModel.StandardFractals.cs: Mandelbrot/Julia parameters
+/// - MainViewModel.Hailstone.cs: Hailstone sequence parameters
 /// </summary>
-public partial class MainViewModel(IFractalRenderService renderService) : ObservableObject
+public partial class MainViewModel(
+    IFractalRenderService renderService, 
+    BookmarkService bookmarkService,
+    IHailstoneService hailstoneService) : ObservableObject
 {
     private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
     private readonly IFractalRenderService _renderService = renderService;
+    private readonly BookmarkService _bookmarkService = bookmarkService;
+    private readonly IHailstoneService _hailstoneService = hailstoneService;
+    private readonly HailstoneRenderService _hailstoneRenderService = new();
 
-    // Fractal rendering parameters
-    [ObservableProperty]
-    public partial double CenterX { get; set; } = -0.5;
-
-    [ObservableProperty]
-    public partial double CenterY { get; set; } = 0.0;
-
-    [ObservableProperty]
-    public partial double Zoom { get; set; } = 1.0;
-
-    [ObservableProperty]
-    public partial int MaxIterations { get; set; } = 512;
-
-    [ObservableProperty]
-    public partial bool AutoScaleIterations { get; set; } = true;
-
-    [ObservableProperty]
-    public partial string IterationSuggestion { get; set; } = string.Empty;
-
+    // Image resolution
     [ObservableProperty]
     public partial int ImageWidth { get; set; } = 1200;
 
     [ObservableProperty]
     public partial int ImageHeight { get; set; } = 900;
 
+    // Computed property for total megapixels
+    public string TotalPixels => $"{(ImageWidth * ImageHeight / 1_000_000.0):F2}";
+
+    // Color palette
     [ObservableProperty]
     public partial string SelectedPalette { get; set; } = "Classic";
 
     // Fractal type selection
     [ObservableProperty]
     public partial string SelectedFractalType { get; set; } = "Mandelbrot";
-
-    // Iteration mode selection (Standard/Julia)
-    [ObservableProperty]
-    public partial string SelectedIterationMode { get; set; } = "Standard";
-
-    // Computed property: Julia mode is active when iteration mode is "Julia"
-    public bool IsJuliaMode => SelectedIterationMode == "Julia";
-
-    [ObservableProperty]
-    public partial double JuliaCX { get; set; } = -0.7;
-
-    [ObservableProperty]
-    public partial double JuliaCY { get; set; } = 0.27015;
-
-    // Computed property for total megapixels
-    public string TotalPixels => $"{(ImageWidth * ImageHeight / 1_000_000.0):F2}";
-
-    // Computed properties for current view dimensions in fractal coordinates
-    public string CurrentViewWidth
-    {
-        get
-        {
-            var width = 3.0 / Zoom;
-            return $"{width:F10}";
-        }
-    }
-
-    public string CurrentViewHeight
-    {
-        get
-        {
-            var width = 3.0 / Zoom;
-            var height = width * ((double)ImageHeight / ImageWidth);
-            return $"{height:F10}";
-        }
-    }
 
     // UI state
     [ObservableProperty]
@@ -97,6 +60,12 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
     [ObservableProperty]
     public partial bool ShowCoordinateAxes { get; set; } = true;
 
+    partial void OnShowCoordinateAxesChanged(bool value)
+    {
+        // Notify computed property
+        OnPropertyChanged(nameof(ShowMandelbrotAxes));
+    }
+
     [ObservableProperty]
     public partial string StatusMessage { get; set; } = "Ready";
 
@@ -106,6 +75,37 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
     // Fractal image
     [ObservableProperty]
     public partial WriteableBitmap? FractalImage { get; set; }
+
+    // Bookmarks
+    public ObservableCollection<FractalBookmark> Bookmarks { get; } = new();
+
+    [ObservableProperty]
+    public partial FractalBookmark? SelectedBookmark { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsBookmarksPanelOpen { get; set; }
+
+    /// <summary>
+    /// Initializes bookmarks from storage.
+    /// Call this after construction to load saved bookmarks.
+    /// </summary>
+    public async Task InitializeAsync()
+    {
+        await _bookmarkService.LoadBookmarksAsync();
+        RefreshBookmarks();
+    }
+
+    /// <summary>
+    /// Refreshes the bookmarks collection from the service.
+    /// </summary>
+    private void RefreshBookmarks()
+    {
+        Bookmarks.Clear();
+        foreach (var bookmark in _bookmarkService.Bookmarks)
+        {
+            Bookmarks.Add(bookmark);
+        }
+    }
 
     /// <summary>
     /// Renders the Mandelbrot set with current parameters.
@@ -156,32 +156,69 @@ public partial class MainViewModel(IFractalRenderService renderService) : Observ
             // Progress reporting callback
             var progress = new Progress<double>(percentage =>
             {
-                _dispatcherQueue.TryEnqueue(() =>
+                try
                 {
-                    RenderProgress = percentage * 100.0;
-                });
+                    _dispatcherQueue.TryEnqueue(() =>
+                    {
+                        RenderProgress = percentage * 100.0;
+                    });
+                }
+                catch (InvalidCastException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"InvalidCastException in Progress callback: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                }
             });
 
             // Call FractalRenderService to render the fractal
-            var result = await _renderService.RenderMandelbrotAsync(
-                CenterX,
-                CenterY,
-                Zoom,
-                ImageWidth,
-                ImageHeight,
-                MaxIterations,
-                SelectedPalette,
-                SelectedFractalType,
-                IsJuliaMode,
-                JuliaCX,
-                JuliaCY,
-                progress);
+            FractalRenderResult result;
+            try
+            {
+                result = await _renderService.RenderMandelbrotAsync(
+                    CenterX,
+                    CenterY,
+                    Zoom,
+                    ImageWidth,
+                    ImageHeight,
+                    MaxIterations,
+                    SelectedPalette,
+                    SelectedFractalType,
+                    IsJuliaMode,
+                    JuliaCX,
+                    JuliaCY,
+                    progress);
+            }
+            catch (InvalidCastException ex)
+            {
+                StatusMessage = $"InvalidCastException during render: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"InvalidCastException in RenderMandelbrotAsync: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                return;
+            }
 
             // Convert byte[] to WriteableBitmap on UI thread
-            _dispatcherQueue.TryEnqueue(() =>
+            try
             {
-                ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
-            });
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    try
+                    {
+                        ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
+                    }
+                    catch (InvalidCastException ex)
+                    {
+                        StatusMessage = $"InvalidCastException in ConvertPixelDataToBitmap: {ex.Message}";
+                        System.Diagnostics.Debug.WriteLine($"InvalidCastException in ConvertPixelDataToBitmap: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                    }
+                });
+            }
+            catch (InvalidCastException ex)
+            {
+                StatusMessage = $"InvalidCastException in TryEnqueue: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"InvalidCastException in TryEnqueue: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
 
             LastRenderTime = DateTime.Now - startTime;
 
@@ -228,6 +265,95 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     }
 
     private bool CanRender() => !IsRendering;
+
+    /// <summary>
+    /// Unified render command that routes to the appropriate render method.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRender))]
+    private async Task RenderAsync()
+    {
+        if (IsHailstoneMode)
+        {
+            await RenderHailstoneAsync();
+        }
+        else
+        {
+            await RenderMandelbrotAsync();
+        }
+    }
+
+    /// <summary>
+    /// Renders the Hailstone 2D sequence with current parameters.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRender))]
+    private async Task RenderHailstoneAsync()
+    {
+        if (!IsHailstoneMode)
+        {
+            StatusMessage = "Please select Hailstone fractal type first.";
+            return;
+        }
+
+        IsRendering = true;
+        RenderProgress = 0;
+        StatusMessage = $"Calculating Hailstone sequence from ({HailstoneStartX}, {HailstoneStartY})...";
+
+        try
+        {
+            var startTime = DateTime.Now;
+
+            // Calculate sequence with color spread and optional CSV export
+            var result = await _hailstoneService.CalculateSequenceAsync(
+                HailstoneStartX,
+                HailstoneStartY,
+                HailstoneMaxIterations,
+                colorSpread: 7,  // Default color spread
+                exportToCsv: false);  // Set to true if you want CSV export
+
+            StatusMessage = $"Rendering Hailstone sequence ({result.Sequence.Count} points)...";
+            RenderProgress = 50;
+
+            // Render to bitmap
+            var renderResult = await _hailstoneRenderService.RenderSequenceAsync(
+                result,
+                ImageWidth,
+                ImageHeight,
+                ShowHailstoneAxes,
+                ShowHailstonePoints,
+                ShowHailstoneLabels,
+                UseFixedHailstoneViewport);
+
+            // Update UI on dispatcher thread
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                FractalImage = renderResult.Bitmap;
+                CurrentHailstoneResult = result;
+                HailstoneScaleX = renderResult.ScaleX;
+                HailstoneScaleY = renderResult.ScaleY;
+                HailstoneOffsetX = renderResult.OffsetX;
+                HailstoneOffsetY = renderResult.OffsetY;
+            });
+
+            LastRenderTime = DateTime.Now - startTime;
+            RenderProgress = 100;
+
+            // Build status message
+            string cycleInfo = result.HasCycle
+                ? $" | Cycle detected at step {result.CycleStartIndex} (length {result.CycleLength})"
+                : " | No cycle detected";
+
+            StatusMessage = $"Rendered {result.Sequence.Count} points in {LastRenderTime.TotalMilliseconds:F0} ms{cycleInfo}";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"Hailstone render error: {ex}");
+        }
+        finally
+        {
+            IsRendering = false;
+        }
+    }
 
     /// <summary>
     /// Resets view to default Mandelbrot parameters.
@@ -322,35 +448,26 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         OnPropertyChanged(nameof(CurrentViewHeight));
     }
 
-    partial void OnSelectedIterationModeChanged(string value)
-    {
-        // Notify that IsJuliaMode computed property has changed
-        OnPropertyChanged(nameof(IsJuliaMode));
-
-        // Update status message to reflect the mode change
-        if (value == "Julia")
-        {
-            StatusMessage = $"Julia Mode: c = ({JuliaCX:F4}, {JuliaCY:F4}) - Click Render to generate";
-        }
-        else
-        {
-            StatusMessage = "Standard Mode - Click Render to generate";
-        }
-
-        // Ensure render command updates its CanExecute state
-        RenderMandelbrotCommand.NotifyCanExecuteChanged();
-    }
-
-    partial void OnMaxIterationsChanged(int value)
-    {
-        // Clamp max iterations to reasonable range
-        // Allow higher values for very deep zooms into nodules and mini-brots
-        if (value < 50) MaxIterations = 50;
-        if (value > 50000) MaxIterations = 50000;
-    }
-
     partial void OnSelectedFractalTypeChanged(string value)
     {
+        // Notify that computed properties have changed
+        OnPropertyChanged(nameof(IsHailstoneMode));
+        OnPropertyChanged(nameof(ShowMandelbrotAxes));
+
+        // Clear Hailstone-specific data when switching away from Hailstone mode
+        if (value != "Hailstone")
+        {
+            CurrentHailstoneResult = null;
+            HailstoneScaleX = 0;
+            HailstoneScaleY = 0;
+            HailstoneOffsetX = 0;
+            HailstoneOffsetY = 0;
+        }
+
+        // Clear the current fractal image to avoid showing stale data from previous fractal type
+        FractalImage = null;
+        StatusMessage = $"Switched to {value} - Click Render to generate";
+
         // Set appropriate default view parameters for each fractal type
         switch (value)
         {
@@ -386,66 +503,14 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                     Zoom = 0.6;
                 }
                 break;
+            case "Hailstone":
+                // Set default Hailstone parameters (classic starting point)
+                HailstoneStartX = -10;
+                HailstoneStartY = 6;
+                HailstoneMaxIterations = 150;
+                StatusMessage = "Hailstone Mode - Click Render to generate sequence";
+                break;
         }
-    }
-
-    /// <summary>
-    /// Calculates recommended iteration count based on zoom level.
-    /// Uses logarithmic scaling: more zoom requires exponentially more iterations.
-    /// Based on fractal depth complexity - deeper zooms need far more iterations.
-    /// </summary>
-    private static int CalculateRecommendedIterations(double zoom)
-    {
-        // Base iterations for zoom level 1.0
-        const int baseIterations = 512;
-
-        // More aggressive scaling for deep zooms
-        // Every 10x zoom needs roughly 2x more iterations (empirically determined)
-        // This ensures detail visibility even at nodules and mini-brots
-        var logZoom = Math.Log10(Math.Max(zoom, 1.0));
-        var scaleFactor = Math.Pow(2.0, logZoom);
-
-        var recommended = (int)(baseIterations * scaleFactor);
-
-        // Round to nearest 128 for cleaner numbers
-        recommended = ((recommended + 63) / 128) * 128;
-
-        // Clamp to reasonable range (allow up to 20000 for very deep zooms)
-        return Math.Clamp(recommended, 512, 20000);
-    }
-
-    partial void OnZoomChanged(double value)
-    {
-        // Prevent zoom from going negative or too small
-        if (value < 0.001) Zoom = 0.001;
-
-        // Update computed view dimensions
-        OnPropertyChanged(nameof(CurrentViewWidth));
-        OnPropertyChanged(nameof(CurrentViewHeight));
-
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
-    }
-
-    partial void OnCenterXChanged(double value)
-    {
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
-    }
-
-    partial void OnCenterYChanged(double value)
-    {
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
-    }
-
-    partial void OnImageWidthChanged(int value)
-    {
-        OnPropertyChanged(nameof(TotalPixels));
-        OnPropertyChanged(nameof(CurrentViewHeight));
-    }
-
-    partial void OnImageHeightChanged(int value)
-    {
-        OnPropertyChanged(nameof(TotalPixels));
-        OnPropertyChanged(nameof(CurrentViewHeight));
     }
 
     /// <summary>
@@ -461,11 +526,8 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             FractalImage = new WriteableBitmap(width, height);
         }
 
-        // Write pixel data to bitmap
-        using (var stream = FractalImage.PixelBuffer.AsStream())
-        {
-            stream.Write(pixelData, 0, pixelData.Length);
-        }
+        // Write pixel data to bitmap buffer using WindowsRuntimeBufferExtensions
+        WindowsRuntimeBufferExtensions.CopyTo(pixelData, 0, FractalImage.PixelBuffer, 0, pixelData.Length);
 
         // Invalidate the bitmap to trigger redraw
         FractalImage.Invalidate();
@@ -476,6 +538,28 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     /// </summary>
     public Models.FractalMetadata CreateMetadata()
     {
+        Models.HailstoneParameters? hailstoneParams = null;
+
+        // Include Hailstone parameters if in Hailstone mode
+        if (IsHailstoneMode && CurrentHailstoneResult != null)
+        {
+            hailstoneParams = new Models.HailstoneParameters
+            {
+                StartX = HailstoneStartX,
+                StartY = HailstoneStartY,
+                MaxIterations = HailstoneMaxIterations,
+                TotalPoints = CurrentHailstoneResult.Sequence.Count,
+                HasCycle = CurrentHailstoneResult.HasCycle,
+                CycleStartIndex = CurrentHailstoneResult.HasCycle ? CurrentHailstoneResult.CycleStartIndex : null,
+                CycleLength = CurrentHailstoneResult.HasCycle ? CurrentHailstoneResult.CycleLength : null,
+                BoundsMinX = CurrentHailstoneResult.MinX,
+                BoundsMaxX = CurrentHailstoneResult.MaxX,
+                BoundsMinY = CurrentHailstoneResult.MinY,
+                BoundsMaxY = CurrentHailstoneResult.MaxY,
+                UseFixedViewport = UseFixedHailstoneViewport
+            };
+        }
+
         return Models.FractalMetadata.FromViewModel(
             fractalType: SelectedFractalType,
             iterationMode: SelectedIterationMode,
@@ -489,7 +573,112 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             autoScaleIterations: AutoScaleIterations,
             juliaCX: IsJuliaMode ? JuliaCX : null,
             juliaCY: IsJuliaMode ? JuliaCY : null,
-            renderTime: LastRenderTime
+            renderTime: LastRenderTime,
+            hailstone: hailstoneParams
         );
+    }
+
+    /// <summary>
+    /// Loads a bookmark and navigates to that fractal location.
+    /// </summary>
+    [RelayCommand]
+    private async Task LoadBookmarkAsync(FractalBookmark? bookmark)
+    {
+        if (bookmark == null)
+            return;
+
+        // Set all parameters from bookmark
+        SelectedFractalType = bookmark.FractalType;
+        SelectedIterationMode = bookmark.IterationMode;
+        CenterX = bookmark.CenterX;
+        CenterY = bookmark.CenterY;
+        Zoom = bookmark.Zoom;
+        MaxIterations = bookmark.MaxIterations;
+        SelectedPalette = bookmark.ColorPalette;
+
+        if (bookmark.JuliaC != null)
+        {
+            JuliaCX = bookmark.JuliaC.Real;
+            JuliaCY = bookmark.JuliaC.Imaginary;
+        }
+
+        StatusMessage = $"Loaded bookmark: {bookmark.Name}";
+
+        // Auto-render
+        await Task.Delay(10);
+        if (RenderMandelbrotCommand.CanExecute(null))
+        {
+            await RenderMandelbrotCommand.ExecuteAsync(null);
+        }
+    }
+
+    /// <summary>
+    /// Saves current view as a new bookmark.
+    /// </summary>
+    [RelayCommand]
+    private async Task SaveCurrentAsBookmarkAsync(string? bookmarkName)
+    {
+        if (string.IsNullOrWhiteSpace(bookmarkName))
+        {
+            StatusMessage = "Please enter a bookmark name";
+            return;
+        }
+
+        var bookmark = FractalBookmark.FromCurrentState(
+            name: bookmarkName,
+            description: $"Saved on {DateTime.Now:g}",
+            fractalType: SelectedFractalType,
+            iterationMode: SelectedIterationMode,
+            centerX: CenterX,
+            centerY: CenterY,
+            zoom: Zoom,
+            maxIterations: MaxIterations,
+            colorPalette: SelectedPalette,
+            juliaCX: IsJuliaMode ? JuliaCX : null,
+            juliaCY: IsJuliaMode ? JuliaCY : null,
+            isFavorite: false
+        );
+
+        await _bookmarkService.AddBookmarkAsync(bookmark);
+        RefreshBookmarks();
+
+        StatusMessage = $"Bookmark saved: {bookmarkName}";
+    }
+
+    /// <summary>
+    /// Deletes a bookmark.
+    /// </summary>
+    [RelayCommand]
+    private async Task DeleteBookmarkAsync(FractalBookmark? bookmark)
+    {
+        if (bookmark == null || bookmark.IsPreset)
+            return;
+
+        await _bookmarkService.RemoveBookmarkAsync(bookmark.Id);
+        RefreshBookmarks();
+
+        StatusMessage = $"Deleted bookmark: {bookmark.Name}";
+    }
+
+    /// <summary>
+    /// Toggles favorite status of a bookmark.
+    /// </summary>
+    [RelayCommand]
+    private async Task ToggleBookmarkFavoriteAsync(FractalBookmark? bookmark)
+    {
+        if (bookmark == null)
+            return;
+
+        await _bookmarkService.ToggleFavoriteAsync(bookmark.Id);
+        RefreshBookmarks();
+    }
+
+    /// <summary>
+    /// Toggles the bookmarks panel visibility.
+    /// </summary>
+    [RelayCommand]
+    private void ToggleBookmarksPanel()
+    {
+        IsBookmarksPanelOpen = !IsBookmarksPanelOpen;
     }
 }

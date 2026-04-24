@@ -185,7 +185,8 @@ FractalEngineWrapper::FractalEngineWrapper()
 {
     m_nativeEngine = nullptr;
     m_cancelled = false;
-    
+    m_progressChangedDelegate = nullptr;
+
     // TODO Phase 2: Initialize native C++ fractal engine
     // m_nativeEngine = CreateNativeFractalEngine();
 }

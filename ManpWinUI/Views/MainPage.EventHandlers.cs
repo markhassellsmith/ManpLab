@@ -96,6 +96,42 @@ namespace ManpWinUI.Views
             }
         }
 
+        private void HailstonePreset1_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            // Classic cycle - known to produce a cycle
+            ViewModel.HailstoneStartX = -10;
+            ViewModel.HailstoneStartY = 6;
+            ViewModel.HailstoneMaxIterations = 150;
+            ViewModel.StatusMessage = "Hailstone preset: Classic Cycle (-10, 6)";
+        }
+
+        private void HailstonePreset2_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            // Origin - fixed point
+            ViewModel.HailstoneStartX = 0;
+            ViewModel.HailstoneStartY = 0;
+            ViewModel.HailstoneMaxIterations = 150;
+            ViewModel.StatusMessage = "Hailstone preset: Origin (0, 0) - Fixed point";
+        }
+
+        private void HailstonePreset3_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            // Large test case
+            ViewModel.HailstoneStartX = 100;
+            ViewModel.HailstoneStartY = 100;
+            ViewModel.HailstoneMaxIterations = 500;
+            ViewModel.StatusMessage = "Hailstone preset: Large Test (100, 100)";
+        }
+
+        private void HailstonePreset4_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            // Negative coordinates
+            ViewModel.HailstoneStartX = -20;
+            ViewModel.HailstoneStartY = -30;
+            ViewModel.HailstoneMaxIterations = 200;
+            ViewModel.StatusMessage = "Hailstone preset: Negative (-20, -30)";
+        }
+
         private async void SaveImage_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             // Default to PNG when clicking main button
@@ -110,6 +146,61 @@ namespace ManpWinUI.Views
         private async void SaveJPEG_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             await SaveImageAsync(ImageFormat.JPEG);
+        }
+
+        private async void SaveSVG_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            if (!ViewModel.IsHailstoneMode || ViewModel.CurrentHailstoneResult == null)
+            {
+                ViewModel.StatusMessage = "SVG export is only available for Hailstone sequences";
+                return;
+            }
+
+            try
+            {
+                var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
+                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+
+                savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+                savePicker.SuggestedFileName = $"Hailstone_{DateTime.Now:yyyyMMdd_HHmmss}";
+                savePicker.FileTypeChoices.Add("SVG Image", new[] { ".svg" });
+
+                var file = await savePicker.PickSaveFileAsync();
+                if (file != null)
+                {
+                    var exportService = new HailstoneExportService();
+                    var metadata = ViewModel.CreateMetadata();
+
+                    var success = await exportService.ExportAsSvgAsync(
+                        ViewModel.CurrentHailstoneResult,
+                        ViewModel.HailstoneScaleX,
+                        ViewModel.HailstoneScaleY,
+                        ViewModel.HailstoneOffsetX,
+                        ViewModel.HailstoneOffsetY,
+                        ViewModel.ImageWidth,
+                        ViewModel.ImageHeight,
+                        file.Path,
+                        metadata);
+
+                    if (success)
+                    {
+                        ViewModel.StatusMessage = $"Hailstone sequence saved as SVG with metadata: {file.Name}";
+                    }
+                    else
+                    {
+                        ViewModel.StatusMessage = "Error saving SVG file";
+                    }
+                }
+                else
+                {
+                    ViewModel.StatusMessage = "Save cancelled";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewModel.StatusMessage = $"Error saving SVG: {ex.Message}";
+            }
         }
 
         private async void CopyToClipboard_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
@@ -171,6 +262,18 @@ namespace ManpWinUI.Views
             {
                 ViewModel.StatusMessage = $"Error saving image: {ex.Message}";
             }
+        }
+
+        private void FractalViewbox_SizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs e)
+        {
+            // Update Hailstone labels when the viewbox size changes
+            UpdateHailstoneLabels();
+        }
+
+        private void HailstoneLabelsCanvas_SizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs e)
+        {
+            // Update Hailstone labels when the canvas size changes (window resize)
+            UpdateHailstoneLabels();
         }
     }
 }

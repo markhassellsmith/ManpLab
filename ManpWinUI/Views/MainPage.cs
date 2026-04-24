@@ -26,6 +26,9 @@ namespace ManpWinUI.Views
             ViewModel = App.Current.Services.GetRequiredService<MainViewModel>();
             DataContext = ViewModel;
 
+            // Initialize ViewModel asynchronously
+            _ = InitializeViewModelAsync();
+
             // Subscribe to property changes to update coordinate axes
             ViewModel.PropertyChanged += (s, e) =>
             {
@@ -38,7 +41,27 @@ namespace ManpWinUI.Views
                 {
                     UpdateCoordinateAxes();
                 }
+
+                // Update Hailstone labels when relevant properties change
+                if (e.PropertyName == nameof(ViewModel.ShowHailstoneLabels) ||
+                    e.PropertyName == nameof(ViewModel.CurrentHailstoneResult) ||
+                    e.PropertyName == nameof(ViewModel.HailstoneScaleX))
+                {
+                    UpdateHailstoneLabels();
+                }
+
+                // Update Hailstone info panel when result changes
+                if (e.PropertyName == nameof(ViewModel.CurrentHailstoneResult) ||
+                    e.PropertyName == nameof(ViewModel.IsHailstoneMode))
+                {
+                    UpdateHailstoneInfo();
+                }
             };
+        }
+
+        private async System.Threading.Tasks.Task InitializeViewModelAsync()
+        {
+            await ViewModel.InitializeAsync();
         }
     }
 }

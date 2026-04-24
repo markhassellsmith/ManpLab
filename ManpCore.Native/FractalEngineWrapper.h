@@ -542,6 +542,9 @@ namespace Native {
         void* m_nativeEngine;
         bool m_cancelled;
 
+        // Event backing delegate
+        EventHandler<ProgressEventArgs^>^ m_progressChangedDelegate;
+
     public:
         /// <summary>
         /// Event fired periodically during calculation to report progress.
@@ -551,7 +554,29 @@ namespace Native {
         /// <para>Subscribe to update UI progress bars and status text.</para>
         /// <para>Event handler runs on calculation thread - marshal to UI thread for UI updates.</para>
         /// </remarks>
-        event EventHandler<ProgressEventArgs^>^ ProgressChanged;
+        event EventHandler<ProgressEventArgs^>^ ProgressChanged
+        {
+            void add(EventHandler<ProgressEventArgs^>^ handler)
+            {
+                m_progressChangedDelegate = static_cast<EventHandler<ProgressEventArgs^>^>(
+                    System::Delegate::Combine(m_progressChangedDelegate, handler));
+            }
+
+            void remove(EventHandler<ProgressEventArgs^>^ handler)
+            {
+                m_progressChangedDelegate = static_cast<EventHandler<ProgressEventArgs^>^>(
+                    System::Delegate::Remove(m_progressChangedDelegate, handler));
+            }
+
+            void raise(Object^ sender, ProgressEventArgs^ args)
+            {
+                EventHandler<ProgressEventArgs^>^ temp = m_progressChangedDelegate;
+                if (temp != nullptr)
+                {
+                    temp(sender, args);
+                }
+            }
+        }
 
         /// <summary>
         /// Create a new fractal engine wrapper instance.

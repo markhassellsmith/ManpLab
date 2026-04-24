@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:ManpWinUI.Views"
     xmlns:vm="using:ManpWinUI.ViewModels"
+    xmlns:models="using:ManpWinUI.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -26,7 +27,7 @@
             <AppBarButton
                 Icon="Play"
                 Label="Render"
-                Command="{x:Bind ViewModel.RenderMandelbrotCommand}"
+                Command="{x:Bind ViewModel.RenderCommand}"
                 IsEnabled="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
                 <ToolTipService.ToolTip>
                     <ToolTip Content="Render fractal (Ctrl+R)" />
@@ -86,6 +87,13 @@
                                 <FontIcon Glyph="&#xE91B;" />
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Save as SVG (Hailstone only)" 
+                                       Click="SaveSVG_Click"
+                                       Visibility="{x:Bind ViewModel.IsHailstoneMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE7C3;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
                         <MenuFlyoutSeparator />
                         <MenuFlyoutItem Text="Copy to Clipboard" Icon="Copy" Click="CopyToClipboard_Click" />
                     </MenuFlyout>
@@ -94,14 +102,136 @@
                     <ToolTip Content="Save or copy fractal image (Ctrl+S)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
+            <AppBarSeparator />
+            <AppBarButton
+                Label="Bookmarks"
+                Command="{x:Bind ViewModel.ToggleBookmarksPanelCommand}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE734;" />
+                </AppBarButton.Icon>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="View and manage fractal bookmarks (B)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
         </CommandBar>
 
         <!-- Main Content Area -->
-        <Grid Grid.Row="1">
+        <SplitView Grid.Row="1" 
+                   IsPaneOpen="{x:Bind ViewModel.IsBookmarksPanelOpen, Mode=TwoWay}"
+                   DisplayMode="Overlay"
+                   PanePlacement="Left"
+                   OpenPaneLength="350"
+                   CompactPaneLength="0">
+
+            <!-- Bookmarks Panel (Pane) -->
+            <SplitView.Pane>
+                <Grid Background="{ThemeResource LayerFillColorDefaultBrush}">
+                    <ScrollViewer Padding="16">
+                        <StackPanel Spacing="12">
+                            <Grid>
+                                <TextBlock Text="Bookmarks" 
+                                          FontWeight="Bold" 
+                                          FontSize="20" 
+                                          VerticalAlignment="Center"/>
+                                <Button Content="&#xE711;" 
+                                       FontFamily="Segoe MDL2 Assets"
+                                       Command="{x:Bind ViewModel.ToggleBookmarksPanelCommand}"
+                                       HorizontalAlignment="Right"
+                                       Style="{StaticResource SubtleButtonStyle}"
+                                       ToolTipService.ToolTip="Close bookmarks"/>
+                            </Grid>
+
+                            <MenuFlyoutSeparator />
+
+                            <!-- Save Current View -->
+                            <StackPanel Spacing="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="12" CornerRadius="8">
+                                <TextBlock Text="Save Current View" FontWeight="SemiBold" />
+                                <TextBox x:Name="NewBookmarkNameTextBox" 
+                                        PlaceholderText="Enter bookmark name..."
+                                        Header="Name"/>
+                                <Button Command="{x:Bind ViewModel.SaveCurrentAsBookmarkCommand}"
+                                       CommandParameter="{x:Bind NewBookmarkNameTextBox.Text, Mode=OneWay}"
+                                       HorizontalAlignment="Stretch">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE710;" FontSize="16"/>
+                                        <TextBlock Text="Save Bookmark"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <MenuFlyoutSeparator />
+
+                            <!-- Bookmarks List -->
+                            <TextBlock Text="Saved Locations" FontWeight="SemiBold" />
+
+                            <ListView ItemsSource="{x:Bind ViewModel.Bookmarks, Mode=OneWay}"
+                                     SelectedItem="{x:Bind ViewModel.SelectedBookmark, Mode=TwoWay}"
+                                     SelectionMode="Single">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:FractalBookmark">
+                                        <Grid Padding="8" ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Favorite Star -->
+                                            <FontIcon Grid.Column="0"
+                                                     Glyph="{x:Bind IsFavorite, Mode=OneWay, Converter={StaticResource BoolToStarGlyphConverter}}"
+                                                     FontSize="16"
+                                                     Foreground="{x:Bind IsFavorite, Mode=OneWay, Converter={StaticResource BoolToStarColorConverter}}"/>
+
+                                            <!-- Bookmark Info -->
+                                            <StackPanel Grid.Column="1" Spacing="2">
+                                                <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{x:Bind CoordinateDisplay}" 
+                                                          FontSize="11" 
+                                                          Opacity="0.7"
+                                                          TextWrapping="Wrap"/>
+                                                <TextBlock Text="{x:Bind Description}" 
+                                                          FontSize="10" 
+                                                          Opacity="0.6"
+                                                          TextWrapping="Wrap"
+                                                          Visibility="{x:Bind Description, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}"/>
+                                            </StackPanel>
+
+                                            <!-- Load Button -->
+                                            <Button Grid.Column="2"
+                                                   Content="&#xE768;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   Command="{Binding ElementName=Page, Path=ViewModel.LoadBookmarkCommand}"
+                                                   CommandParameter="{x:Bind}"
+                                                   Style="{StaticResource SubtleButtonStyle}"
+                                                   ToolTipService.ToolTip="Load this bookmark"/>
+
+                                            <!-- Delete Button (not for presets) -->
+                                            <Button Grid.Column="3"
+                                                   Content="&#xE74D;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   Command="{Binding ElementName=Page, Path=ViewModel.DeleteBookmarkCommand}"
+                                                   CommandParameter="{x:Bind}"
+                                                   Style="{StaticResource SubtleButtonStyle}"
+                                                   Visibility="{x:Bind IsPreset, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
+                                                   ToolTipService.ToolTip="Delete bookmark"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </SplitView.Pane>
+
+            <!-- Main Content (Content) -->
+            <SplitView.Content>
+            <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <!-- Fractal Display -->
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="350" />
                 <!-- Side Panel -->
             </Grid.ColumnDefinitions>
 
@@ -113,7 +243,7 @@
                   PointerReleased="FractalImage_PointerReleased"
                   PointerWheelChanged="FractalImage_PointerWheelChanged">
                 <!-- Fractal Image Display -->
-                <Viewbox x:Name="FractalViewbox" Stretch="Uniform">
+                <Viewbox x:Name="FractalViewbox" Stretch="Fill" SizeChanged="FractalViewbox_SizeChanged">
                     <Image
                         x:Name="FractalImage"
                         Source="{x:Bind ViewModel.FractalImage, Mode=OneWay}"
@@ -135,12 +265,20 @@
                 </Rectangle>
             </Canvas>
 
-            <!-- Coordinate Axes Overlay -->
+            <!-- Coordinate Axes Overlay (for Mandelbrot/Julia only, not for Hailstone) -->
             <Canvas x:Name="CoordinateAxesCanvas" 
                     Canvas.ZIndex="5"
                     IsHitTestVisible="False"
-                    Visibility="{x:Bind ViewModel.ShowCoordinateAxes, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Visibility="{x:Bind ViewModel.ShowMandelbrotAxes, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     SizeChanged="CoordinateAxesCanvas_SizeChanged">
+            </Canvas>
+
+            <!-- Hailstone Labels Overlay -->
+            <Canvas x:Name="HailstoneLabelsCanvas" 
+                    Canvas.ZIndex="6"
+                    IsHitTestVisible="False"
+                    Visibility="{x:Bind ViewModel.ShowHailstoneLabels, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    SizeChanged="HailstoneLabelsCanvas_SizeChanged">
             </Canvas>
 
             <!-- Welcome Overlay (shown when no fractal is rendered) -->
@@ -171,7 +309,7 @@
                             <!-- Progress Overlay -->
                             <Grid
                                 Background="{ThemeResource SystemControlAcrylicElementBrush}"
-                                Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay}">
+                                Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <StackPanel
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
@@ -229,6 +367,7 @@
                                         <x:String>BurningShip</x:String>
                                         <x:String>Tricorn</x:String>
                                         <x:String>Phoenix</x:String>
+                                        <x:String>Hailstone</x:String>
                                     </ComboBox>
                                 </StackPanel>
 
@@ -277,6 +416,71 @@
                                         <Button Content="Dendrite (-0.8, 0.156)" Click="JuliaPreset2_Click" HorizontalAlignment="Stretch"/>
                                         <Button Content="San Marco Jewel (0.285, 0.01)" Click="JuliaPreset3_Click" HorizontalAlignment="Stretch"/>
                                         <Button Content="Paisley Swirl (-0.4, 0.6)" Click="JuliaPreset4_Click" HorizontalAlignment="Stretch"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Hailstone Parameters (visible only when Fractal Type = Hailstone) -->
+                                <StackPanel Spacing="8" 
+                                            Visibility="{x:Bind ViewModel.IsHailstoneMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Text="Hailstone Sequence" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Starting Point X"/>
+                                        <NumberBox Value="{x:Bind ViewModel.HailstoneStartX, Mode=TwoWay}"
+                                                   SpinButtonPlacementMode="Inline"
+                                                   SmallChange="1"
+                                                   LargeChange="10"
+                                                   Minimum="-1000"
+                                                   Maximum="1000"/>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Starting Point Y"/>
+                                        <NumberBox Value="{x:Bind ViewModel.HailstoneStartY, Mode=TwoWay}"
+                                                   SpinButtonPlacementMode="Inline"
+                                                   SmallChange="1"
+                                                   LargeChange="10"
+                                                   Minimum="-1000"
+                                                   Maximum="1000"/>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Max Iterations"/>
+                                        <NumberBox Value="{x:Bind ViewModel.HailstoneMaxIterations, Mode=TwoWay}"
+                                                   SpinButtonPlacementMode="Inline"
+                                                   SmallChange="10"
+                                                   LargeChange="100"
+                                                   Minimum="10"
+                                                   Maximum="10000"
+                                                   ToolTipService.ToolTip="Maximum steps to calculate before stopping"/>
+                                    </StackPanel>
+
+                                    <!-- Display Options -->
+                                    <TextBlock Text="Display Options:" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,8,0,0"/>
+
+                                    <CheckBox IsChecked="{x:Bind ViewModel.ShowHailstoneAxes, Mode=TwoWay}"
+                                              Content="Axes"
+                                              ToolTipService.ToolTip="Display coordinate axes and integer lattice grid"/>
+
+                                    <CheckBox IsChecked="{x:Bind ViewModel.ShowHailstonePoints, Mode=TwoWay}"
+                                              Content="Dots"
+                                              ToolTipService.ToolTip="Display dots at trajectory points where segments meet"/>
+
+                                    <CheckBox IsChecked="{x:Bind ViewModel.ShowHailstoneLabels, Mode=TwoWay}"
+                                              Content="Point Labels"
+                                              ToolTipService.ToolTip="Display (N, X, Y) coordinates at each point"/>
+
+                                    <CheckBox IsChecked="{x:Bind ViewModel.UseFixedHailstoneViewport, Mode=TwoWay}"
+                                              Content="Use Fixed Viewport (±40, ±30)"
+                                              ToolTipService.ToolTip="Use standard fixed bounds centered on origin, instead of fitting to sequence data"/>
+
+                                    <!-- Preset starting points -->
+                                    <TextBlock Text="Presets:" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,8,0,0"/>
+                                    <StackPanel Spacing="4">
+                                        <Button Content="Classic Cycle (-10, 6)" Click="HailstonePreset1_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="Origin (0, 0)" Click="HailstonePreset2_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="Large Test (100, 100)" Click="HailstonePreset3_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="Negative (-20, -30)" Click="HailstonePreset4_Click" HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                 </StackPanel>
 
@@ -431,10 +635,12 @@
                                     ToolTipService.ToolTip="Display tick marks and coordinate labels on image borders" />
                             </StackPanel>
                         </ScrollViewer>
-                    </Grid>
+            </Grid>
+            </SplitView.Content>
+        </SplitView>
 
-                    <!-- Streamlined Status Bar -->
-                    <Grid Grid.Row="2"
+        <!-- Streamlined Status Bar -->
+        <Grid Grid.Row="2"
                           Background="{ThemeResource SystemControlAcrylicElementBrush}"
                           Padding="12,6">
                         <Grid.ColumnDefinitions>

@@ -82,13 +82,13 @@ namespace ManpWinUI.Views
                         var scaleX = fractalWidth / displayWidth;
                         var scaleY = fractalHeight / displayHeight;
 
-                        // Update center coordinates (grab-and-drag: drag right to see what's on the left)
-                        // X: drag right (positive deltaX) means move view left (negative centerX change)
+                        // Update center coordinates (paper-on-desk: drag right to move image right)
+                        // X: drag right (positive deltaX) shifts image right, revealing left side
                         ViewModel.CenterX -= deltaX * scaleX;
 
-                        // Y: drag down (positive deltaY) means move view down in screen coords
-                        // But fractal Y increases upward, so we SUBTRACT to move fractal view down
-                        ViewModel.CenterY -= deltaY * scaleY;
+                        // Y: drag down (positive deltaY) shifts image down, revealing top side
+                        // Fractal Y increases upward (opposite of screen Y), so ADD to move image down with mouse
+                        ViewModel.CenterY += deltaY * scaleY;
                     }
                 }
 
@@ -142,10 +142,14 @@ namespace ManpWinUI.Views
 
                 if (_isPanning)
                 {
-                    // Pan complete - auto-render the new view
-                    if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+                    // Pan complete - auto-render the new view (Mandelbrot/Julia only)
+                    if (!ViewModel.IsHailstoneMode && ViewModel.RenderMandelbrotCommand.CanExecute(null))
                     {
                         ViewModel.RenderMandelbrotCommand.Execute(null);
+                    }
+                    else if (ViewModel.IsHailstoneMode)
+                    {
+                        ViewModel.StatusMessage = "Panning not supported for Hailstone sequences";
                     }
                 }
                 else
@@ -172,6 +176,14 @@ namespace ManpWinUI.Views
         {
             if (ViewModel.FractalImage == null)
                 return;
+
+            // Mouse wheel zoom only applies to Mandelbrot/Julia fractals, not Hailstone
+            if (ViewModel.IsHailstoneMode)
+            {
+                ViewModel.StatusMessage = "Mouse wheel zoom not supported for Hailstone sequences";
+                e.Handled = true;
+                return;
+            }
 
             var delta = e.GetCurrentPoint(null).Properties.MouseWheelDelta;
 
@@ -205,6 +217,13 @@ namespace ManpWinUI.Views
 
         private void ZoomToRectangle()
         {
+            // Zoom rectangle only applies to Mandelbrot/Julia, not Hailstone
+            if (ViewModel.IsHailstoneMode)
+            {
+                ViewModel.StatusMessage = "Rectangle zoom not supported for Hailstone sequences";
+                return;
+            }
+
             // Get the selection rectangle bounds in screen coordinates
             var rectLeft = Canvas.GetLeft(SelectionRectangle);
             var rectTop = Canvas.GetTop(SelectionRectangle);
@@ -212,7 +231,7 @@ namespace ManpWinUI.Views
             var rectHeight = SelectionRectangle.Height;
 
             // Get the Viewbox child (Border or Image container)
-            if (FractalViewbox?.Child is FrameworkElement child && 
+            if (FractalViewbox?.Child is FrameworkElement child &&
                 ViewModel.FractalImage is Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap bitmap)
             {
                 // Get actual bitmap dimensions (not scaled)
