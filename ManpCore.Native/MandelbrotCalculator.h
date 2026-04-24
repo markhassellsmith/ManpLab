@@ -1,0 +1,183 @@
+#pragma once
+
+#include <cmath>
+#include "ColorPalette.h"
+
+// Native C++ Mandelbrot calculator
+// Simple implementation for Phase 2 interop testing
+// Will be replaced with full ManpWIN64 engine integration later
+
+namespace Native {
+
+    // Simple complex number structure for C++ calculations
+    struct ComplexD
+    {
+        double x;  // real
+        double y;  // imaginary
+
+        ComplexD() : x(0.0), y(0.0) {}
+        ComplexD(double real, double imag) : x(real), y(imag) {}
+    };
+
+    /// <summary>
+    /// Parameters for Mandelbrot calculation
+    /// </summary>
+    struct MandelbrotParams
+    {
+        int width;
+        int height;
+        int maxIterations;
+        double centerX;
+        double centerY;
+        double viewWidth;
+        double viewHeight;
+        bool isJulia;
+        double juliaCX;
+        double juliaCY;
+    };
+
+    /// <summary>
+    /// Simple Mandelbrot calculator
+    /// Based on classic algorithm: z = z^2 + c
+    /// </summary>
+    class MandelbrotCalculator
+    {
+    public:
+        /// <summary>
+        /// Calculate Mandelbrot/Julia set iteration count for a point
+        /// </summary>
+        /// <param name="c">Complex point to test</param>
+        /// <param name="maxIter">Maximum iterations</param>
+        /// <param name="isJulia">If true, use Julia set mode with fixed c</param>
+        /// <param name="juliaC">Fixed c value for Julia set</param>
+        /// <returns>Iteration count (maxIter if in set)</returns>
+        static int CalculateIterations(ComplexD c, int maxIter, bool isJulia = false, ComplexD juliaC = ComplexD())
+        {
+            ComplexD z;
+            ComplexD constant;
+
+            if (isJulia)
+            {
+                // Julia set: z starts at pixel location, c is fixed
+                z = c;
+                constant = juliaC;
+            }
+            else
+            {
+                // Mandelbrot: z starts at origin, c is pixel location
+                z = ComplexD(0.0, 0.0);
+                constant = c;
+            }
+
+            int iteration = 0;
+            double bailout = 4.0;  // Standard bailout radius^2
+
+            // Main iteration loop: z = z^2 + c
+            while (iteration < maxIter)
+            {
+                // Calculate z^2
+                double x2 = z.x * z.x;
+                double y2 = z.y * z.y;
+
+                // Bailout test: |z|^2 > 4
+                if (x2 + y2 > bailout)
+                    break;
+
+                // z = z^2 + c
+                // real part: z.x^2 - z.y^2 + c.x
+                // imag part: 2*z.x*z.y + c.y
+                double zx_new = x2 - y2 + constant.x;
+                double zy_new = 2.0 * z.x * z.y + constant.y;
+
+                z.x = zx_new;
+                z.y = zy_new;
+
+                iteration++;
+            }
+
+            return iteration;
+        }
+
+        /// <summary>
+        /// Calculate smooth iteration count for better coloring
+        /// Uses continuous potential method
+        /// </summary>
+        static double CalculateSmoothIterations(ComplexD c, int maxIter, bool isJulia = false, ComplexD juliaC = ComplexD())
+        {
+            ComplexD z;
+            ComplexD constant;
+
+            if (isJulia)
+            {
+                z = c;
+                constant = juliaC;
+            }
+            else
+            {
+                z = ComplexD(0.0, 0.0);
+                constant = c;
+            }
+
+            int iteration = 0;
+            double bailout = 256.0;  // Higher bailout for smooth coloring
+
+            while (iteration < maxIter)
+            {
+                double x2 = z.x * z.x;
+                double y2 = z.y * z.y;
+                double magnitude2 = x2 + y2;
+
+                if (magnitude2 > bailout)
+                {
+                    // Smooth iteration using log formula
+                    // n + 1 - log(log|z|) / log(2)
+                    double log_zn = log(magnitude2) / 2.0;  // log(|z|)
+                    double nu = log(log_zn / log(2.0)) / log(2.0);
+                    return iteration + 1.0 - nu;
+                }
+
+                double zx_new = x2 - y2 + constant.x;
+                double zy_new = 2.0 * z.x * z.y + constant.y;
+
+                z.x = zx_new;
+                z.y = zy_new;
+
+                iteration++;
+            }
+
+            return (double)maxIter;  // Point is in the set
+        }
+
+        /// <summary>
+        /// Map pixel coordinates to complex plane
+        /// </summary>
+        static ComplexD PixelToComplex(int px, int py, const MandelbrotParams& params)
+        {
+            // Map pixel (px, py) to complex coordinates
+            double x = params.centerX - (params.viewWidth / 2.0) + (px * params.viewWidth / params.width);
+            double y = params.centerY - (params.viewHeight / 2.0) + (py * params.viewHeight / params.height);
+            return ComplexD(x, y);
+        }
+
+        /// <summary>
+        /// Color iteration using selected palette
+        /// </summary>
+        static ColorRGB IterationToColor(double iteration, int maxIter, PaletteType palette)
+        {
+            return ColorPalette::GetColor(iteration, maxIter, palette);
+        }
+
+        /// <summary>
+        /// Simple grayscale coloring based on iteration count (legacy)
+        /// </summary>
+        static void IterationToGrayscale(double iteration, int maxIter, unsigned char& r, unsigned char& g, unsigned char& b)
+        {
+            ColorRGB color = ColorPalette::GetColor(iteration, maxIter, PaletteType::Grayscale);
+            r = color.r;
+            g = color.g;
+            b = color.b;
+        }
+    };
+
+} // namespace Native
+
