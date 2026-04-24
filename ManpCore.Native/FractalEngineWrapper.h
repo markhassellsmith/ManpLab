@@ -447,6 +447,17 @@ namespace Native {
         /// IterationCount / PixelCount = average iterations per pixel.
         /// </remarks>
         property long long IterationCount;
+
+        /// <summary>
+        /// Number of pixels that escaped (diverged) rather than stayed in the set.
+        /// </summary>
+        /// <value>Count of pixels with iteration < MaxIterations</value>
+        /// <remarks>
+        /// Useful for diagnosing "black screen" issues.
+        /// If EscapedPixelCount is very low, you're looking at the interior of the set.
+        /// Percentage escaped = (EscapedPixelCount / TotalPixels) * 100
+        /// </remarks>
+        property int EscapedPixelCount;
     };
 
     /// <summary>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -90,20 +90,21 @@
     <ClInclude Include="BigDoubleMarshaller.h" />
     <ClInclude Include="ColorPalette.h" />
     <ClInclude Include="FractalEngineWrapper.h" />
+    <ClInclude Include="FractalRegistry.h" />
     <ClInclude Include="MandelbrotCalculator.h" />
     <ClInclude Include="NativePerformanceBaseline.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="FractalEngineWrapper.cpp" />
     <ClCompile Include="..\ManpWIN64\Complex.cpp">
       <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <ClCompile Include="FractalRegistry.cpp" />
+    <ClCompile Include="MandelbrotFamily.cpp" />
+    <ClCompile Include="PhoenixFamily.cpp" />
+    <ClCompile Include="TricornFamily.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

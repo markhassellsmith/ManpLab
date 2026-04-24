@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:ManpWinUI"
+    xmlns:converters="using:ManpWinUI.Converters"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Application.Resources>
@@ -14,6 +15,15 @@
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
+
+            <!-- Converters -->
+            <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
+            <converters:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
+            <converters:JuliaModeTextConverter x:Key="JuliaModeTextConverter"/>
+
             <Color x:Key="Primary">#512BD4</Color>
 
             <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}" />

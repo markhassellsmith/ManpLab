@@ -1,12 +1,42 @@
-# ManpWIN - Advanced Fractal Explorer
+# ManpLab - Fractal Explorer Suite
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
-![CMake](https://img.shields.io/badge/CMake-3.23+-blue.svg)
+![.NET](https://img.shields.io/badge/.NET-10-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Visual Studio](https://img.shields.io/badge/Visual%20Studio-2022-purple.svg)
 
-An educational C++ fractal rendering application featuring 240+ fractal types, deep-zoom technology with perturbation theory, BLA acceleration, and arbitrary-precision arithmetic. This self-contained fork includes all dependencies and requires no configuration.
+**Two complementary fractal applications for education and research:**
+
+## 🎯 Choose Your Application
+
+### 🚀 [ManpWinUI](ManpWinUI/) - Modern Learning Tool (NEW)
+**Windows 11 | WinUI 3 | .NET 10**
+
+Perfect for students and beginners learning fractals:
+- ✨ Modern, clean interface with MVVM architecture
+- 🎨 Interactive exploration with mouse & keyboard
+- 📚 Educational focus with comprehensive documentation
+- ⌨️ [Full keyboard shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
+- 🎯 2 core fractals (Mandelbrot, Julia) - more coming soon
+
+👉 **[Get Started with ManpWinUI →](ManpWinUI/README.md)**
+
+---
+
+### 🔬 [ManpWIN64](ManpWIN64/) - Research & Advanced Features
+**Windows 10/11 | C++17 | CMake**
+
+For researchers and advanced users needing maximum capability:
+- 🌌 **240+ fractal types** (Mandelbrot variants, Julia sets, Newton, IFS, attractors)
+- 🔭 **Deep zoom** with perturbation theory (magnification > 10^100)
+- 🧮 **Arbitrary precision** arithmetic (MPFR, QD libraries)
+- ⚡ **BLA acceleration** for extreme performance
+- 🎨 Advanced coloring with Fractint palette support
+- ⌨️ [Full keyboard shortcuts](ManpWIN64/KEYBOARD_SHORTCUTS.md)
+
+👉 **[Get Started with ManpWIN64 →](ManpWIN64/README.md)**
+
+**This README documents ManpWIN64.** An educational C++ fractal rendering application featuring deep-zoom technology, BLA acceleration, and arbitrary-precision arithmetic. This self-contained fork includes all dependencies and requires no configuration.
 
 ---
 

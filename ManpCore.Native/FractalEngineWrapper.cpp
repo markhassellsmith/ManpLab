@@ -1,5 +1,6 @@
 #include "FractalEngineWrapper.h"
 #include "MandelbrotCalculator.h"
+#include "FractalRegistry.h"
 #include "NativePerformanceBaseline.h"
 #include "BigDoubleMarshaller.h"
 #include "Complex.h"  // ManpWIN64 Complex class for POC
@@ -242,7 +243,32 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         // Convert managed palette enum to native palette enum
         ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
 
+        // Convert fractal type string and get calculator from registry
+        std::string fractalType = ManagedToStdString(parameters->FractalType);
+
+        // Initialize registry if not already done
+        static bool registryInitialized = false;
+        if (!registryInitialized)
+        {
+            ::Native::FractalRegistry::InitializeBuiltins();
+            registryInitialized = true;
+        }
+
+        // Get calculator from registry
+        auto calculator = ::Native::FractalRegistry::GetCalculator(fractalType);
+
+        // Fallback to Mandelbrot if type not found
+        if (!calculator)
+        {
+            fractalType = "Mandelbrot";
+            calculator = ::Native::FractalRegistry::GetCalculator(fractalType);
+        }
+
+        // Prepare parameter map for extensibility (currently empty, but ready for custom params)
+        ::Native::ParamMap customParams;
+
         long long totalIterations = 0;
+        int escapedPixels = 0;
 
         // Calculate Mandelbrot set using native C++ code
         for (int y = 0; y < height; y++)
@@ -266,15 +292,22 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
                 // Map pixel to complex plane
                 ::Native::ComplexD c = ::Native::MandelbrotCalculator::PixelToComplex(x, y, nativeParams);
 
-                // Calculate smooth iterations for better coloring
-                double iteration = ::Native::MandelbrotCalculator::CalculateSmoothIterations(
+                // Calculate using registry dispatcher - single line replaces entire if-else chain!
+                double iteration = calculator(
                     c, 
                     nativeParams.maxIterations,
                     nativeParams.isJulia,
-                    ::Native::ComplexD(nativeParams.juliaCX, nativeParams.juliaCY)
+                    ::Native::ComplexD(nativeParams.juliaCX, nativeParams.juliaCY),
+                    customParams
                 );
 
                 totalIterations += (long long)iteration;
+
+                // Track if pixel escaped (for diagnostics)
+                if (iteration < nativeParams.maxIterations)
+                {
+                    escapedPixels++;
+                }
 
                 // Convert iteration to color using selected palette
                 ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
@@ -283,18 +316,19 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
                     nativePalette
                 );
 
-                // Write RGBA pixel
+                // Write BGRA pixel (WinUI WriteableBitmap format)
                 int index = (y * width + x) * 4;
-                result->PixelData[index + 0] = color.r;
-                result->PixelData[index + 1] = color.g;
-                result->PixelData[index + 2] = color.b;
-                result->PixelData[index + 3] = 255;  // Full opacity
+                result->PixelData[index + 0] = color.b;  // Blue
+                result->PixelData[index + 1] = color.g;  // Green
+                result->PixelData[index + 2] = color.r;  // Red
+                result->PixelData[index + 3] = 255;      // Alpha (full opacity)
             }
         }
 
         stopwatch->Stop();
         result->RenderTime = stopwatch->Elapsed;
         result->IterationCount = totalIterations;
+        result->EscapedPixelCount = escapedPixels;
 
         // Final progress update
         auto finalProgress = gcnew ProgressEventArgs();

@@ -1,0 +1,143 @@
+#include "FractalRegistry.h"
+#include "MandelbrotCalculator.h"
+#include <set>
+#include <stdexcept>
+
+namespace Native {
+
+// Static initialization
+bool FractalRegistry::s_initialized = false;
+
+// Singleton registry storage
+std::map<std::string, FractalSpec>& FractalRegistry::GetRegistry()
+{
+    static std::map<std::string, FractalSpec> registry;
+    return registry;
+}
+
+//=============================================================================
+// Registration
+//=============================================================================
+
+void FractalRegistry::Register(const FractalSpec& spec)
+{
+    if (spec.name.empty())
+        throw std::invalid_argument("Fractal name cannot be empty");
+
+    if (!spec.calculator)
+        throw std::invalid_argument("Fractal calculator function is required");
+
+    auto& registry = GetRegistry();
+    registry[spec.name] = spec;
+}
+
+//=============================================================================
+// Lookup
+//=============================================================================
+
+const FractalSpec* FractalRegistry::GetSpec(const std::string& name)
+{
+    auto& registry = GetRegistry();
+    auto it = registry.find(name);
+
+    if (it != registry.end())
+        return &it->second;
+
+    return nullptr;
+}
+
+FractalCalculator FractalRegistry::GetCalculator(const std::string& name)
+{
+    const FractalSpec* spec = GetSpec(name);
+
+    if (spec)
+        return spec->calculator;
+
+    return nullptr;
+}
+
+bool FractalRegistry::IsRegistered(const std::string& name)
+{
+    return GetSpec(name) != nullptr;
+}
+
+//=============================================================================
+// Enumeration
+//=============================================================================
+
+std::vector<std::string> FractalRegistry::GetRegisteredNames()
+{
+    std::vector<std::string> names;
+    auto& registry = GetRegistry();
+
+    for (const auto& pair : registry)
+    {
+        names.push_back(pair.first);
+    }
+
+    return names;
+}
+
+std::vector<std::string> FractalRegistry::GetFractalsByCategory(const std::string& category)
+{
+    std::vector<std::string> names;
+    auto& registry = GetRegistry();
+
+    for (const auto& pair : registry)
+    {
+        if (pair.second.category == category)
+        {
+            names.push_back(pair.first);
+        }
+    }
+
+    return names;
+}
+
+std::vector<std::string> FractalRegistry::GetCategories()
+{
+    std::vector<std::string> categories;
+    auto& registry = GetRegistry();
+
+    // Collect unique categories
+    std::set<std::string> uniqueCategories;
+    for (const auto& pair : registry)
+    {
+        uniqueCategories.insert(pair.second.category);
+    }
+
+    categories.assign(uniqueCategories.begin(), uniqueCategories.end());
+    return categories;
+}
+
+size_t FractalRegistry::GetCount()
+{
+    return GetRegistry().size();
+}
+
+//=============================================================================
+// Built-in Initialization
+// Forward declarations from family files
+//=============================================================================
+
+// These will be implemented in separate family files
+extern void RegisterMandelbrotFamily();
+extern void RegisterBurningShipFamily();
+extern void RegisterTricornFamily();
+extern void RegisterPhoenixFamily();
+
+void FractalRegistry::InitializeBuiltins()
+{
+    if (s_initialized)
+        return;
+
+    // Register all built-in fractal families
+    RegisterMandelbrotFamily();
+    RegisterBurningShipFamily();
+    RegisterTricornFamily();
+    RegisterPhoenixFamily();
+
+    s_initialized = true;
+}
+
+} // namespace Native
