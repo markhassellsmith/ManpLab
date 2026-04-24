@@ -36,9 +36,9 @@ namespace ManpWinUI.Views
                 // Ctrl+R or F5: Render
                 case VirtualKey.R when ctrlPressed:
                 case VirtualKey.F5:
-                    if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+                    if (ViewModel.RenderCommand.CanExecute(null))
                     {
-                        ViewModel.RenderMandelbrotCommand.Execute(null);
+                        ViewModel.RenderCommand.Execute(null);
                         e.Handled = true;
                     }
                     break;
@@ -53,42 +53,80 @@ namespace ManpWinUI.Views
                     }
                     break;
 
-                // + or = or Ctrl+Plus: Zoom In
+                // + or = or Ctrl+Plus: Zoom In (Mandelbrot/Julia only)
                 case VirtualKey.Add:
-                    if (ViewModel.ZoomInCommand.CanExecute(null))
+                    if (!ViewModel.IsHailstoneMode && ViewModel.ZoomInCommand.CanExecute(null))
                     {
                         ViewModel.ZoomInCommand.Execute(null);
                         e.Handled = true;
                     }
-                    break;
-
-                // - or _ or Ctrl+Minus: Zoom Out
-                case VirtualKey.Subtract:
-                    if (ViewModel.ZoomOutCommand.CanExecute(null))
+                    else if (ViewModel.IsHailstoneMode)
                     {
-                        ViewModel.ZoomOutCommand.Execute(null);
+                        ViewModel.StatusMessage = "Zoom commands not applicable to Hailstone sequences";
                         e.Handled = true;
                     }
                     break;
 
-                // Arrow Keys: Pan (Shift for faster panning)
+                // - or _ or Ctrl+Minus: Zoom Out (Mandelbrot/Julia only)
+                case VirtualKey.Subtract:
+                    if (!ViewModel.IsHailstoneMode && ViewModel.ZoomOutCommand.CanExecute(null))
+                    {
+                        ViewModel.ZoomOutCommand.Execute(null);
+                        e.Handled = true;
+                    }
+                    else if (ViewModel.IsHailstoneMode)
+                    {
+                        ViewModel.StatusMessage = "Zoom commands not applicable to Hailstone sequences";
+                        e.Handled = true;
+                    }
+                    break;
+
+                // Arrow Keys: Pan (Shift for faster panning) - Mandelbrot/Julia only
                 case VirtualKey.Up:
-                    PanView(0, shiftPressed ? -0.25 : -0.1); // Pan up
+                    if (!ViewModel.IsHailstoneMode)
+                    {
+                        PanView(0, shiftPressed ? -0.25 : -0.1); // Pan up
+                    }
+                    else
+                    {
+                        ViewModel.StatusMessage = "Arrow key panning not applicable to Hailstone sequences";
+                    }
                     e.Handled = true;
                     break;
 
                 case VirtualKey.Down:
-                    PanView(0, shiftPressed ? 0.25 : 0.1); // Pan down
+                    if (!ViewModel.IsHailstoneMode)
+                    {
+                        PanView(0, shiftPressed ? 0.25 : 0.1); // Pan down
+                    }
+                    else
+                    {
+                        ViewModel.StatusMessage = "Arrow key panning not applicable to Hailstone sequences";
+                    }
                     e.Handled = true;
                     break;
 
                 case VirtualKey.Left:
-                    PanView(shiftPressed ? -0.25 : -0.1, 0); // Pan left
+                    if (!ViewModel.IsHailstoneMode)
+                    {
+                        PanView(shiftPressed ? -0.25 : -0.1, 0); // Pan left
+                    }
+                    else
+                    {
+                        ViewModel.StatusMessage = "Arrow key panning not applicable to Hailstone sequences";
+                    }
                     e.Handled = true;
                     break;
 
                 case VirtualKey.Right:
-                    PanView(shiftPressed ? 0.25 : 0.1, 0); // Pan right
+                    if (!ViewModel.IsHailstoneMode)
+                    {
+                        PanView(shiftPressed ? 0.25 : 0.1, 0); // Pan right
+                    }
+                    else
+                    {
+                        ViewModel.StatusMessage = "Arrow key panning not applicable to Hailstone sequences";
+                    }
                     e.Handled = true;
                     break;
 
@@ -124,16 +162,31 @@ namespace ManpWinUI.Views
                     e.Handled = true;
                     break;
 
-                // A: Toggle coordinate axes
+                // A: Toggle coordinate axes (context-sensitive)
                 case VirtualKey.A when !ctrlPressed:
-                    ViewModel.ShowCoordinateAxes = !ViewModel.ShowCoordinateAxes;
-                    ViewModel.StatusMessage = $"Coordinate axes {(ViewModel.ShowCoordinateAxes ? "shown" : "hidden")}";
+                    if (ViewModel.IsHailstoneMode)
+                    {
+                        ViewModel.ShowHailstoneAxes = !ViewModel.ShowHailstoneAxes;
+                        ViewModel.StatusMessage = $"Hailstone axes {(ViewModel.ShowHailstoneAxes ? "shown" : "hidden")}";
+                    }
+                    else
+                    {
+                        ViewModel.ShowCoordinateAxes = !ViewModel.ShowCoordinateAxes;
+                        ViewModel.StatusMessage = $"Coordinate axes {(ViewModel.ShowCoordinateAxes ? "shown" : "hidden")}";
+                    }
                     e.Handled = true;
                     break;
 
-                // T: Toggle between Standard and Julia mode
+                // T: Toggle between Standard and Julia mode (Mandelbrot/Julia only)
                 case VirtualKey.T when !ctrlPressed:
-                    ToggleIterationMode();
+                    if (!ViewModel.IsHailstoneMode)
+                    {
+                        ToggleIterationMode();
+                    }
+                    else
+                    {
+                        ViewModel.StatusMessage = "'T' key toggles Julia mode (not applicable to Hailstone)";
+                    }
                     e.Handled = true;
                     break;
 

@@ -142,10 +142,14 @@ namespace ManpWinUI.Views
 
                 if (_isPanning)
                 {
-                    // Pan complete - auto-render the new view
-                    if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+                    // Pan complete - auto-render the new view (Mandelbrot/Julia only)
+                    if (!ViewModel.IsHailstoneMode && ViewModel.RenderMandelbrotCommand.CanExecute(null))
                     {
                         ViewModel.RenderMandelbrotCommand.Execute(null);
+                    }
+                    else if (ViewModel.IsHailstoneMode)
+                    {
+                        ViewModel.StatusMessage = "Panning not supported for Hailstone sequences";
                     }
                 }
                 else
@@ -172,6 +176,14 @@ namespace ManpWinUI.Views
         {
             if (ViewModel.FractalImage == null)
                 return;
+
+            // Mouse wheel zoom only applies to Mandelbrot/Julia fractals, not Hailstone
+            if (ViewModel.IsHailstoneMode)
+            {
+                ViewModel.StatusMessage = "Mouse wheel zoom not supported for Hailstone sequences";
+                e.Handled = true;
+                return;
+            }
 
             var delta = e.GetCurrentPoint(null).Properties.MouseWheelDelta;
 
@@ -205,6 +217,13 @@ namespace ManpWinUI.Views
 
         private void ZoomToRectangle()
         {
+            // Zoom rectangle only applies to Mandelbrot/Julia, not Hailstone
+            if (ViewModel.IsHailstoneMode)
+            {
+                ViewModel.StatusMessage = "Rectangle zoom not supported for Hailstone sequences";
+                return;
+            }
+
             // Get the selection rectangle bounds in screen coordinates
             var rectLeft = Canvas.GetLeft(SelectionRectangle);
             var rectTop = Canvas.GetTop(SelectionRectangle);

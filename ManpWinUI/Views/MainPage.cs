@@ -41,6 +41,21 @@ namespace ManpWinUI.Views
                 {
                     UpdateCoordinateAxes();
                 }
+
+                // Update Hailstone labels when relevant properties change
+                if (e.PropertyName == nameof(ViewModel.ShowHailstoneLabels) ||
+                    e.PropertyName == nameof(ViewModel.CurrentHailstoneResult) ||
+                    e.PropertyName == nameof(ViewModel.HailstoneScaleX))
+                {
+                    UpdateHailstoneLabels();
+                }
+
+                // Update Hailstone info panel when result changes
+                if (e.PropertyName == nameof(ViewModel.CurrentHailstoneResult) ||
+                    e.PropertyName == nameof(ViewModel.IsHailstoneMode))
+                {
+                    UpdateHailstoneInfo();
+                }
             };
         }
 

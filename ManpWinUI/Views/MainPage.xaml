@@ -27,7 +27,7 @@
             <AppBarButton
                 Icon="Play"
                 Label="Render"
-                Command="{x:Bind ViewModel.RenderMandelbrotCommand}"
+                Command="{x:Bind ViewModel.RenderCommand}"
                 IsEnabled="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
                 <ToolTipService.ToolTip>
                     <ToolTip Content="Render fractal (Ctrl+R)" />
@@ -85,6 +85,13 @@
                         <MenuFlyoutItem Text="Save as JPEG" Click="SaveJPEG_Click">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE91B;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Save as SVG (Hailstone only)" 
+                                       Click="SaveSVG_Click"
+                                       Visibility="{x:Bind ViewModel.IsHailstoneMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE7C3;" />
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator />
@@ -224,7 +231,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <!-- Fractal Display -->
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="350" />
                 <!-- Side Panel -->
             </Grid.ColumnDefinitions>
 
@@ -236,7 +243,7 @@
                   PointerReleased="FractalImage_PointerReleased"
                   PointerWheelChanged="FractalImage_PointerWheelChanged">
                 <!-- Fractal Image Display -->
-                <Viewbox x:Name="FractalViewbox" Stretch="Uniform">
+                <Viewbox x:Name="FractalViewbox" Stretch="Fill" SizeChanged="FractalViewbox_SizeChanged">
                     <Image
                         x:Name="FractalImage"
                         Source="{x:Bind ViewModel.FractalImage, Mode=OneWay}"
@@ -258,12 +265,20 @@
                 </Rectangle>
             </Canvas>
 
-            <!-- Coordinate Axes Overlay -->
+            <!-- Coordinate Axes Overlay (for Mandelbrot/Julia only, not for Hailstone) -->
             <Canvas x:Name="CoordinateAxesCanvas" 
                     Canvas.ZIndex="5"
                     IsHitTestVisible="False"
-                    Visibility="{x:Bind ViewModel.ShowCoordinateAxes, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Visibility="{x:Bind ViewModel.ShowMandelbrotAxes, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     SizeChanged="CoordinateAxesCanvas_SizeChanged">
+            </Canvas>
+
+            <!-- Hailstone Labels Overlay -->
+            <Canvas x:Name="HailstoneLabelsCanvas" 
+                    Canvas.ZIndex="6"
+                    IsHitTestVisible="False"
+                    Visibility="{x:Bind ViewModel.ShowHailstoneLabels, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    SizeChanged="HailstoneLabelsCanvas_SizeChanged">
             </Canvas>
 
             <!-- Welcome Overlay (shown when no fractal is rendered) -->
@@ -352,6 +367,7 @@
                                         <x:String>BurningShip</x:String>
                                         <x:String>Tricorn</x:String>
                                         <x:String>Phoenix</x:String>
+                                        <x:String>Hailstone</x:String>
                                     </ComboBox>
                                 </StackPanel>
 
@@ -400,6 +416,71 @@
                                         <Button Content="Dendrite (-0.8, 0.156)" Click="JuliaPreset2_Click" HorizontalAlignment="Stretch"/>
                                         <Button Content="San Marco Jewel (0.285, 0.01)" Click="JuliaPreset3_Click" HorizontalAlignment="Stretch"/>
                                         <Button Content="Paisley Swirl (-0.4, 0.6)" Click="JuliaPreset4_Click" HorizontalAlignment="Stretch"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Hailstone Parameters (visible only when Fractal Type = Hailstone) -->
+                                <StackPanel Spacing="8" 
+                                            Visibility="{x:Bind ViewModel.IsHailstoneMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Text="Hailstone Sequence" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Starting Point X"/>
+                                        <NumberBox Value="{x:Bind ViewModel.HailstoneStartX, Mode=TwoWay}"
+                                                   SpinButtonPlacementMode="Inline"
+                                                   SmallChange="1"
+                                                   LargeChange="10"
+                                                   Minimum="-1000"
+                                                   Maximum="1000"/>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Starting Point Y"/>
+                                        <NumberBox Value="{x:Bind ViewModel.HailstoneStartY, Mode=TwoWay}"
+                                                   SpinButtonPlacementMode="Inline"
+                                                   SmallChange="1"
+                                                   LargeChange="10"
+                                                   Minimum="-1000"
+                                                   Maximum="1000"/>
+                                    </StackPanel>
+
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Max Iterations"/>
+                                        <NumberBox Value="{x:Bind ViewModel.HailstoneMaxIterations, Mode=TwoWay}"
+                                                   SpinButtonPlacementMode="Inline"
+                                                   SmallChange="10"
+                                                   LargeChange="100"
+                                                   Minimum="10"
+                                                   Maximum="10000"
+                                                   ToolTipService.ToolTip="Maximum steps to calculate before stopping"/>
+                                    </StackPanel>
+
+                                    <!-- Display Options -->
+                                    <TextBlock Text="Display Options:" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,8,0,0"/>
+
+                                    <CheckBox IsChecked="{x:Bind ViewModel.ShowHailstoneAxes, Mode=TwoWay}"
+                                              Content="Axes"
+                                              ToolTipService.ToolTip="Display coordinate axes and integer lattice grid"/>
+
+                                    <CheckBox IsChecked="{x:Bind ViewModel.ShowHailstonePoints, Mode=TwoWay}"
+                                              Content="Dots"
+                                              ToolTipService.ToolTip="Display dots at trajectory points where segments meet"/>
+
+                                    <CheckBox IsChecked="{x:Bind ViewModel.ShowHailstoneLabels, Mode=TwoWay}"
+                                              Content="Point Labels"
+                                              ToolTipService.ToolTip="Display (N, X, Y) coordinates at each point"/>
+
+                                    <CheckBox IsChecked="{x:Bind ViewModel.UseFixedHailstoneViewport, Mode=TwoWay}"
+                                              Content="Use Fixed Viewport (±40, ±30)"
+                                              ToolTipService.ToolTip="Use standard fixed bounds centered on origin, instead of fitting to sequence data"/>
+
+                                    <!-- Preset starting points -->
+                                    <TextBlock Text="Presets:" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Margin="0,8,0,0"/>
+                                    <StackPanel Spacing="4">
+                                        <Button Content="Classic Cycle (-10, 6)" Click="HailstonePreset1_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="Origin (0, 0)" Click="HailstonePreset2_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="Large Test (100, 100)" Click="HailstonePreset3_Click" HorizontalAlignment="Stretch"/>
+                                        <Button Content="Negative (-20, -30)" Click="HailstonePreset4_Click" HorizontalAlignment="Stretch"/>
                                     </StackPanel>
                                 </StackPanel>
 

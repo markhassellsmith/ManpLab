@@ -86,6 +86,7 @@ namespace ManpWinUI
 
             // Services
             services.AddSingleton<IFractalRenderService, FractalRenderService>();
+            services.AddSingleton<IHailstoneService, HailstoneService>();
             services.AddSingleton<ImageExportService>();
             services.AddSingleton<BookmarkService>();
 
