@@ -275,5 +275,40 @@ namespace ManpWinUI.Views
             // Update Hailstone labels when the canvas size changes (window resize)
             UpdateHailstoneLabels();
         }
+
+        /// <summary>
+        /// Win2D validation test button handler.
+        /// Creates a test image to verify Win2D rendering is working.
+        /// This is a temporary button for validation during Win2D integration.
+        /// </summary>
+        private void TestWin2D_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("\n=== Win2D Test Button Clicked ===");
+            ViewModel.StatusMessage = "Testing Win2D rendering...";
+
+            try
+            {
+                // Create test bitmap
+                var testBitmap = Win2DValidationTest.CreateTestBitmap(800, 600);
+
+                if (testBitmap != null)
+                {
+                    // Display the test image
+                    ViewModel.FractalImage = testBitmap;
+                    ViewModel.StatusMessage = "✓ Win2D test passed! GPU-accelerated rendering working.";
+                    System.Diagnostics.Debug.WriteLine("✓ Win2D test image displayed successfully!");
+                }
+                else
+                {
+                    ViewModel.StatusMessage = "✗ Win2D test failed - check debug output";
+                    System.Diagnostics.Debug.WriteLine("✗ Win2D test failed!");
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewModel.StatusMessage = $"✗ Win2D test error: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"✗ Win2D test exception: {ex}");
+            }
+        }
     }
 }
