@@ -34,10 +34,13 @@ namespace ManpWinUI.Services
             Width = width;
             Height = height;
 
-            // Create Win2D render target
+            // Create Win2D render target with high-quality anti-aliasing
             var device = CanvasDevice.GetSharedDevice();
             _renderTarget = new CanvasRenderTarget(device, width, height, 96);
             _drawingSession = _renderTarget.CreateDrawingSession();
+
+            // Enable high-quality anti-aliasing for smooth lines
+            _drawingSession.Antialiasing = CanvasAntialiasing.Antialiased;
         }
 
         public void Clear(Color color)
@@ -66,6 +69,9 @@ namespace ManpWinUI.Services
             };
 
             var adjustedColor = Color.FromArgb(_currentAlpha, color.R, color.G, color.B);
+
+            // Use high-quality text anti-aliasing for smooth rendering
+            _drawingSession.TextAntialiasing = CanvasTextAntialiasing.Grayscale;
             _drawingSession.DrawText(text, x, y, adjustedColor, format);
         }
 
@@ -131,6 +137,7 @@ namespace ManpWinUI.Services
 
             // Recreate drawing session for potential future operations
             _drawingSession = _renderTarget.CreateDrawingSession();
+            _drawingSession.Antialiasing = CanvasAntialiasing.Antialiased;
 
             return bitmap;
         }
@@ -147,6 +154,7 @@ namespace ManpWinUI.Services
 
             // Recreate drawing session
             _drawingSession = _renderTarget.CreateDrawingSession();
+            _drawingSession.Antialiasing = CanvasAntialiasing.Antialiased;
         }
 
         public void Dispose()

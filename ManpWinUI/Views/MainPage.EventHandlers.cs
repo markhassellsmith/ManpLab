@@ -310,5 +310,62 @@ namespace ManpWinUI.Views
                 System.Diagnostics.Debug.WriteLine($"✗ Win2D test exception: {ex}");
             }
         }
+
+        /// <summary>
+        /// Test Win2D Hailstone rendering.
+        /// Renders current Hailstone sequence using Win2D renderer instead of legacy renderer.
+        /// </summary>
+        private async void TestWin2DHailstone_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("\n=== Testing Win2D Hailstone Rendering ===");
+            ViewModel.StatusMessage = "Testing Win2D Hailstone renderer...";
+
+            try
+            {
+                var win2dService = App.Current.Services.GetRequiredService<HailstoneRenderServiceWin2D>();
+                var hailstoneService = App.Current.Services.GetRequiredService<IHailstoneService>();
+
+                // Calculate sequence
+                var result = await hailstoneService.CalculateSequenceAsync(
+                    ViewModel.HailstoneStartX,
+                    ViewModel.HailstoneStartY,
+                    ViewModel.HailstoneMaxIterations,
+                    colorSpread: 7,
+                    exportToCsv: false);
+
+                ViewModel.StatusMessage = $"Rendering with Win2D ({result.Sequence.Count} points)...";
+
+                // Render with Win2D
+                var renderResult = await win2dService.RenderSequenceAsync(
+                    result,
+                    ViewModel.ImageWidth,
+                    ViewModel.ImageHeight,
+                    ViewModel.ShowHailstoneAxes,
+                    ViewModel.ShowHailstonePoints,
+                    ViewModel.ShowHailstoneLabels,
+                    ViewModel.UseFixedHailstoneViewport);
+
+                // Display result
+                ViewModel.FractalImage = renderResult.Bitmap;
+                ViewModel.CurrentHailstoneResult = result;
+                ViewModel.HailstoneScaleX = renderResult.ScaleX;
+                ViewModel.HailstoneScaleY = renderResult.ScaleY;
+                ViewModel.HailstoneOffsetX = renderResult.OffsetX;
+                ViewModel.HailstoneOffsetY = renderResult.OffsetY;
+
+                string cycleInfo = result.HasCycle
+                    ? $" | Cycle at step {result.CycleStartIndex} (length {result.CycleLength})"
+                    : " | No cycle";
+
+                ViewModel.StatusMessage = $"✓ Win2D Hailstone: {result.Sequence.Count} points{cycleInfo} | NO Canvas overlays needed!";
+                System.Diagnostics.Debug.WriteLine("✓ Win2D Hailstone rendering successful!");
+            }
+            catch (Exception ex)
+            {
+                ViewModel.StatusMessage = $"✗ Win2D Hailstone error: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"✗ Win2D Hailstone exception: {ex}");
+                System.Diagnostics.Debug.WriteLine($"Stack: {ex.StackTrace}");
+            }
+        }
     }
 }

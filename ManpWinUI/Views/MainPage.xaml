@@ -114,7 +114,7 @@
                 </ToolTipService.ToolTip>
             </AppBarButton>
 
-            <!-- Win2D Test Button (temporary for validation) -->
+            <!-- Win2D Test Buttons (temporary for validation) -->
             <AppBarSeparator />
             <AppBarButton
                 Label="Test Win2D"
@@ -124,6 +124,16 @@
                 </AppBarButton.Icon>
                 <ToolTipService.ToolTip>
                     <ToolTip Content="Test Win2D rendering (validation)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
+            <AppBarButton
+                Label="Test Win2D Hailstone"
+                Click="TestWin2DHailstone_Click">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE8FD;" FontFamily="Segoe MDL2 Assets" />
+                </AppBarButton.Icon>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Test Win2D Hailstone renderer (no Canvas overlays!)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
         </CommandBar>
