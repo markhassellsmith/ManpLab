@@ -292,8 +292,8 @@ public class HailstoneRenderServiceWin2D
 
             if (p1.IsInCycle)
             {
-                // Magenta for cycle - thicker line with smooth anti-aliasing
-                renderer.DrawLine(x1, y1, x2, y2, Colors.Magenta, 1.5f);
+                // Magenta for cycle - thicker line with smooth anti-aliasing (2.5x matches NumVis)
+                renderer.DrawLine(x1, y1, x2, y2, Colors.Magenta, 2.5f);
             }
             else
             {
