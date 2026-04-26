@@ -477,7 +477,8 @@ public class HailstoneRenderServiceWin2D
         for (int x = startX; x <= endX; x += tickSpacing)
         {
             var color = (x == 0) ? axesColor : gridColor;
-            renderer.DrawLine(x, yMin, x, yMax, color, 1.0f);
+            // Cast to float to invoke float overload for smooth rendering
+            renderer.DrawLine((float)x, yMin, (float)x, yMax, color, 1.0f);
         }
 
         // Draw horizontal grid lines in world coordinates
@@ -492,13 +493,15 @@ public class HailstoneRenderServiceWin2D
         for (int y = startY; y <= endY; y += tickSpacing)
         {
             var color = (y == 0) ? axesColor : gridColor;
-            renderer.DrawLine(xMin, y, xMax, y, color, 1.0f);
+            // Cast to float to invoke float overload for smooth rendering
+            renderer.DrawLine(xMin, (float)y, xMax, (float)y, color, 1.0f);
         }
     }
 
     /// <summary>
     /// Draws sequence trajectory path using world coordinates (transform handles conversion).
     /// This is the key improvement - drawing directly in mathematical coordinates!
+    /// Cast integers to float to ensure float overload is called for smooth rendering.
     /// </summary>
     private void DrawSequencePathWithTransform(IGraphicsRenderer renderer, List<HailstonePoint> sequence)
     {
@@ -512,19 +515,22 @@ public class HailstoneRenderServiceWin2D
             if (p1.IsInCycle)
             {
                 // Magenta for cycle - thicker line (2.5x matches NumVis)
-                renderer.DrawLine(p1.X, p1.Y, p2.X, p2.Y, Colors.Magenta, 2.5f);
+                // Cast to float to invoke float overload for smooth anti-aliasing
+                renderer.DrawLine((float)p1.X, (float)p1.Y, (float)p2.X, (float)p2.Y, Colors.Magenta, 2.5f);
             }
             else
             {
                 // Spectrum color from point data
                 var color = Color.FromArgb(255, p2.Color.R, p2.Color.G, p2.Color.B);
-                renderer.DrawLine(p1.X, p1.Y, p2.X, p2.Y, color, 1.2f);
+                // Cast to float to invoke float overload for smooth anti-aliasing
+                renderer.DrawLine((float)p1.X, (float)p1.Y, (float)p2.X, (float)p2.Y, color, 1.2f);
             }
         }
     }
 
     /// <summary>
     /// Draws points using world coordinates (transform handles conversion).
+    /// Cast integers to float for smooth rendering.
     /// </summary>
     private void DrawPointsWithTransform(IGraphicsRenderer renderer, List<HailstonePoint> sequence)
     {
@@ -535,23 +541,23 @@ public class HailstoneRenderServiceWin2D
             if (point.Step == 0)
             {
                 // Green square for start
-                renderer.DrawRectangle(point.X - 2, point.Y - 2, 4, 4, Colors.Green);
+                renderer.DrawRectangle((float)point.X - 2, (float)point.Y - 2, 4, 4, Colors.Green);
             }
             else if (point.IsInCycle && sequence.IndexOf(point) == cycleStartIndex)
             {
                 // Yellow diamond for cycle start
-                renderer.DrawCircle(point.X, point.Y, 3, Colors.Yellow);
+                renderer.DrawCircle((float)point.X, (float)point.Y, 3, Colors.Yellow);
             }
             else if (point.IsInCycle)
             {
                 // Magenta circles for cycle points
-                renderer.DrawCircle(point.X, point.Y, 3, Colors.Magenta);
+                renderer.DrawCircle((float)point.X, (float)point.Y, 3, Colors.Magenta);
             }
             else
             {
                 // Small colored dots for regular points
                 var color = Color.FromArgb(255, point.Color.R, point.Color.G, point.Color.B);
-                renderer.DrawCircle(point.X, point.Y, 2, color);
+                renderer.DrawCircle((float)point.X, (float)point.Y, 2, color);
             }
         }
     }
