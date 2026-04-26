@@ -396,8 +396,8 @@ public class HailstoneRenderServiceWin2D
             // textColor remains yellow
         }
 
-        // Draw text in top-left corner (no viewbox offset needed!)
-        renderer.DrawText(infoText, 0, 0, textColor, 3f, "Arial", true);
+        // Draw text in top-left corner (14pt bold for header - matches NumVis)
+        renderer.DrawText(infoText, 0, 0, textColor, 14f, "Arial", true);
     }
 
     // Helper methods
