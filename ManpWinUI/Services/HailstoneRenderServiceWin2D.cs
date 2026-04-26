@@ -145,8 +145,8 @@ public class HailstoneRenderServiceWin2D
         int minX, int maxX, int minY, int maxY,
         double scaleX, double scaleY, double offsetX, double offsetY)
     {
-        // Colors (subtle gray grid, slightly brighter axes)
-        var gridColor = Color.FromArgb(80, 50, 50, 50);      // Very subtle
+        // Colors (very subtle gray grid, slightly brighter axes - matches NumVis aesthetic)
+        var gridColor = Color.FromArgb(40, 50, 50, 50);      // More subtle (was 80)
         var axesColor = Color.FromArgb(150, 100, 100, 100);  // Distinguishable
 
         int range = Math.Max(maxX - minX, maxY - minY);
