@@ -28,6 +28,10 @@ public class HailstoneRenderService
     /// <param name="showPoints">Whether to draw dots at trajectory points.</param>
     /// <param name="showLabels">Whether to draw point labels (handled by overlay, not bitmap).</param>
     /// <param name="useFixedViewport">If true, uses fixed viewport bounds; if false, auto-scales to data.</param>
+    /// <param name="customViewportMinX">Custom viewport minimum X (overrides auto-scale/fixed).</param>
+    /// <param name="customViewportMaxX">Custom viewport maximum X (overrides auto-scale/fixed).</param>
+    /// <param name="customViewportMinY">Custom viewport minimum Y (overrides auto-scale/fixed).</param>
+    /// <param name="customViewportMaxY">Custom viewport maximum Y (overrides auto-scale/fixed).</param>
     /// <returns>A HailstoneRenderResult containing the bitmap and transform parameters.</returns>
     public async Task<HailstoneRenderResult> RenderSequenceAsync(
         HailstoneResult result,
@@ -36,7 +40,11 @@ public class HailstoneRenderService
         bool showAxes,
         bool showPoints,
         bool showLabels,
-        bool useFixedViewport = false)
+        bool useFixedViewport = false,
+        double? customViewportMinX = null,
+        double? customViewportMaxX = null,
+        double? customViewportMinY = null,
+        double? customViewportMaxY = null)
     {
         var stopwatch = Stopwatch.StartNew();
 
@@ -75,7 +83,24 @@ public class HailstoneRenderService
         {
             // Determine bounds to use for rendering
             int minX, maxX, minY, maxY;
-            if (useFixedViewport)
+
+            // Check if custom viewport is provided (takes highest priority)
+            bool hasCustomViewport = customViewportMinX.HasValue && 
+                                      customViewportMaxX.HasValue && 
+                                      customViewportMinY.HasValue && 
+                                      customViewportMaxY.HasValue;
+
+            if (hasCustomViewport)
+            {
+                // Use custom viewport (from interactive zoom/pan)
+                minX = (int)Math.Floor(customViewportMinX!.Value);
+                maxX = (int)Math.Ceiling(customViewportMaxX!.Value);
+                minY = (int)Math.Floor(customViewportMinY!.Value);
+                maxY = (int)Math.Ceiling(customViewportMaxY!.Value);
+                Debug.WriteLine($"Using CUSTOM viewport: X=[{customViewportMinX:F2}, {customViewportMaxX:F2}], Y=[{customViewportMinY:F2}, {customViewportMaxY:F2}]");
+                Debug.WriteLine($"  Rounded to integers: X=[{minX}, {maxX}], Y=[{minY}, {maxY}]");
+            }
+            else if (useFixedViewport)
             {
                 // Use fixed viewport bounds
                 minX = DefaultMinX;
@@ -104,10 +129,10 @@ public class HailstoneRenderService
                 Debug.WriteLine($"  With {PaddingPercent*100}% padding: viewport will be X=[{minX-paddingX:F1}, {maxX+paddingX:F1}], Y=[{minY-paddingY:F1}, {maxY+paddingY:F1}]");
             }
 
-            // Calculate scaling (with padding only for auto-scale mode)
+            // Calculate scaling (with padding only for auto-scale mode, not for custom viewport)
             (scaleX, scaleY, offsetX, offsetY) = CalculateTransform(
                 minX, maxX, minY, maxY,
-                width, height, useFixedViewport);
+                width, height, useFixedViewport || hasCustomViewport);
 
             Debug.WriteLine($"Transform: scaleX={scaleX:F4}, scaleY={scaleY:F4}, offsetX={offsetX:F2}, offsetY={offsetY:F2}");
 
@@ -368,6 +393,7 @@ public class HailstoneRenderService
                 if (x == 0) continue; // Skip origin (already marked by axes intersection)
 
                 var (screenX, _) = WorldToScreen(x, 0, scaleX, scaleY, offsetX, offsetY);
+
                 if (screenX >= 0 && screenX < width)
                 {
                     // Draw vertical tick mark

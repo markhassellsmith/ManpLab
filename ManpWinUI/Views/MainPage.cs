@@ -49,7 +49,11 @@ namespace ManpWinUI.Views
                     e.PropertyName == nameof(ViewModel.CurrentHailstoneResult) ||
                     e.PropertyName == nameof(ViewModel.HailstoneScaleX))
                 {
-                    UpdateHailstoneLabels();
+                    // Only update labels after rendering completes (not during viewport changes)
+                    if (!ViewModel.IsRendering)
+                    {
+                        UpdateHailstoneLabels();
+                    }
                 }
 
                 // Update Hailstone info panel when result changes

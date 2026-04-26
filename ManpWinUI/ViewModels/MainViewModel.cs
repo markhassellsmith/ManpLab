@@ -313,7 +313,7 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             StatusMessage = $"Rendering Hailstone sequence ({result.Sequence.Count} points)...";
             RenderProgress = 50;
 
-            // Render to bitmap
+            // Render to bitmap with optional custom viewport
             var renderResult = await _hailstoneRenderService.RenderSequenceAsync(
                 result,
                 ImageWidth,
@@ -321,7 +321,11 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 ShowHailstoneAxes,
                 ShowHailstonePoints,
                 ShowHailstoneLabels,
-                UseFixedHailstoneViewport);
+                UseFixedHailstoneViewport,
+                HailstoneViewportMinX,
+                HailstoneViewportMaxX,
+                HailstoneViewportMinY,
+                HailstoneViewportMaxY);
 
             // Update UI on dispatcher thread
             _dispatcherQueue.TryEnqueue(() =>
@@ -356,56 +360,84 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     }
 
     /// <summary>
-    /// Resets view to default Mandelbrot parameters.
+    /// Resets view to default parameters based on current fractal type.
     /// </summary>
     [RelayCommand]
     private async Task ResetViewAsync()
     {
-        CenterX = -0.5;
-        CenterY = 0.0;
-        Zoom = 1.0;
-        MaxIterations = 512;
-        StatusMessage = "Resetting to full Mandelbrot view...";
+        if (IsHailstoneMode)
+        {
+            // Reset Hailstone parameters to default starting point
+            HailstoneStartX = -10;
+            HailstoneStartY = 6;
+            HailstoneMaxIterations = 150;
+            UseFixedHailstoneViewport = false; // Use auto-scale
+            ResetHailstoneViewport(); // Clear any custom viewport
+            StatusMessage = "Resetting to default Hailstone view...";
+        }
+        else
+        {
+            // Reset standard fractal parameters to default Mandelbrot view
+            CenterX = -0.5;
+            CenterY = 0.0;
+            Zoom = 1.0;
+            MaxIterations = 512;
+            StatusMessage = "Resetting to full Mandelbrot view...";
+        }
 
         // Auto-render after reset
         await Task.Delay(10); // Small delay to ensure UI updates
-        if (RenderMandelbrotCommand.CanExecute(null))
+        if (RenderCommand.CanExecute(null))
         {
-            await RenderMandelbrotCommand.ExecuteAsync(null);
+            await RenderCommand.ExecuteAsync(null);
         }
     }
 
     /// <summary>
-    /// Zooms in on the current center point.
+    /// Zooms in on the current center point (for standard fractals only).
+    /// Hailstone doesn't support zoom - it's determined by the sequence itself.
     /// </summary>
     [RelayCommand]
     private async Task ZoomInAsync()
     {
+        if (IsHailstoneMode)
+        {
+            StatusMessage = "Zoom not applicable to Hailstone sequences - adjust starting point or iterations instead";
+            return;
+        }
+
         Zoom *= 2.0;
         StatusMessage = $"Zooming in to {Zoom:F2}x...";
 
         // Auto-render after zoom
         await Task.Delay(10); // Small delay to ensure UI updates
-        if (RenderMandelbrotCommand.CanExecute(null))
+        if (RenderCommand.CanExecute(null))
         {
-            await RenderMandelbrotCommand.ExecuteAsync(null);
+            await RenderCommand.ExecuteAsync(null);
         }
     }
 
     /// <summary>
-    /// Zooms out from the current center point.
+    /// Zooms out from the current center point (for standard fractals only).
+    /// Hailstone doesn't support zoom - it's determined by the sequence itself.
     /// </summary>
     [RelayCommand]
     private async Task ZoomOutAsync()
     {
+        if (IsHailstoneMode)
+        {
+            StatusMessage = "Zoom not applicable to Hailstone sequences - adjust starting point or iterations instead";
+            return;
+        }
+
         Zoom /= 2.0;
         StatusMessage = $"Zooming out to {Zoom:F2}x...";
 
         // Auto-render after zoom
         await Task.Delay(10); // Small delay to ensure UI updates
-        if (RenderMandelbrotCommand.CanExecute(null))
+        if (RenderCommand.CanExecute(null))
         {
-            await RenderMandelbrotCommand.ExecuteAsync(null);
+            await RenderCommand.ExecuteAsync(null);
         }
     }
 
@@ -462,6 +494,7 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             HailstoneScaleY = 0;
             HailstoneOffsetX = 0;
             HailstoneOffsetY = 0;
+            ResetHailstoneViewport(); // Clear custom viewport
         }
 
         // Clear the current fractal image to avoid showing stale data from previous fractal type

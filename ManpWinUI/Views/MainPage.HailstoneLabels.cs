@@ -19,81 +19,106 @@ namespace ManpWinUI.Views
         {
             HailstoneLabelsCanvas.Children.Clear();
 
-            // Only render labels if we have a current result and labels are enabled
-            if (!ViewModel.ShowHailstoneLabels || ViewModel.CurrentHailstoneResult == null)
+            // Only render point labels if we have a current result and labels are enabled
+            if (ViewModel.ShowHailstoneLabels && ViewModel.CurrentHailstoneResult != null)
             {
-                return;
-            }
+                var result = ViewModel.CurrentHailstoneResult;
 
-            var result = ViewModel.CurrentHailstoneResult;
-            var scaleX = ViewModel.HailstoneScaleX;
-            var scaleY = ViewModel.HailstoneScaleY;
-            var offsetX = ViewModel.HailstoneOffsetX;
-            var offsetY = ViewModel.HailstoneOffsetY;
+                // Get transform parameters - use current viewport if set, otherwise use stored values
+                double scaleX, scaleY, offsetX, offsetY;
 
-            // Get the actual display size and offset from the Viewbox
-            var imageSize = GetDisplayedImageSize();
-            if (imageSize.Width == 0 || imageSize.Height == 0)
-            {
-                return;
-            }
-
-            // Calculate the offset caused by Viewbox centering
-            double viewboxOffsetX = (HailstoneLabelsCanvas.ActualWidth - imageSize.Width) / 2.0;
-            double viewboxOffsetY = (HailstoneLabelsCanvas.ActualHeight - imageSize.Height) / 2.0;
-
-            // Calculate scale factors for label positioning
-            double displayScaleX = imageSize.Width / ViewModel.ImageWidth;
-            double displayScaleY = imageSize.Height / ViewModel.ImageHeight;
-
-            // Convert all points to display coordinates for spatial analysis
-            var displayPoints = new List<(double x, double y, int index)>();
-            for (int i = 0; i < result.Sequence.Count; i++)
-            {
-                var point = result.Sequence[i];
-
-                // Transform world coordinates to bitmap coordinates
-                int screenX = (int)(point.X * scaleX + offsetX);
-                int screenY = (int)(point.Y * scaleY + offsetY);
-
-                if (screenX >= 0 && screenX < ViewModel.ImageWidth &&
-                    screenY >= 0 && screenY < ViewModel.ImageHeight)
+                if (ViewModel.HasCustomHailstoneViewport)
                 {
-                    // Scale to display size and add viewbox offset
-                    double displayX = screenX * displayScaleX + viewboxOffsetX;
-                    double displayY = screenY * displayScaleY + viewboxOffsetY;
-                    displayPoints.Add((displayX, displayY, i));
+                    // Recalculate transform for current custom viewport
+                    (scaleX, scaleY, offsetX, offsetY) = CalculateHailstoneTransform(
+                        ViewModel.HailstoneViewportMinX!.Value,
+                        ViewModel.HailstoneViewportMaxX!.Value,
+                        ViewModel.HailstoneViewportMinY!.Value,
+                        ViewModel.HailstoneViewportMaxY!.Value);
                 }
-            }
-
-            // Label each point with smart placement
-            foreach (var (pointX, pointY, index) in displayPoints)
-            {
-                var point = result.Sequence[index];
-
-                // Create label with format (N, x, y) where N is the step number (0-based)
-                var label = new TextBlock
+                else
                 {
-                    Text = $"({point.Step}, {point.X}, {point.Y})",
-                    FontSize = 2.5,  // Very small, subtle labels
-                    Foreground = point.IsInCycle
-                        ? new SolidColorBrush(Colors.Magenta)
-                        : new SolidColorBrush(Colors.Cyan),
-                    FontWeight = Microsoft.UI.Text.FontWeights.Light,  // Thinner weight
-                    Opacity = 0.85  // Slightly transparent for subtlety
-                };
+                    // Use stored transform from last render
+                    scaleX = ViewModel.HailstoneScaleX;
+                    scaleY = ViewModel.HailstoneScaleY;
+                    offsetX = ViewModel.HailstoneOffsetX;
+                    offsetY = ViewModel.HailstoneOffsetY;
+                }
 
-                // Find best label position to avoid line segments
-                var (labelX, labelY) = FindBestLabelPosition(
-                    pointX, pointY, index, displayPoints, result.Sequence);
+                // Get the actual display size and offset from the Viewbox
+                var imageSize = GetDisplayedImageSize();
+                if (imageSize.Width > 0 && imageSize.Height > 0)
+                {
+                    // Calculate the offset caused by Viewbox centering
+                    double viewboxOffsetX = (HailstoneLabelsCanvas.ActualWidth - imageSize.Width) / 2.0;
+                    double viewboxOffsetY = (HailstoneLabelsCanvas.ActualHeight - imageSize.Height) / 2.0;
 
-                Canvas.SetLeft(label, labelX);
-                Canvas.SetTop(label, labelY);
+                    // Calculate scale factors for label positioning
+                    double displayScaleX = imageSize.Width / ViewModel.ImageWidth;
+                    double displayScaleY = imageSize.Height / ViewModel.ImageHeight;
 
-                HailstoneLabelsCanvas.Children.Add(label);
-            }
+                    // Convert all points to display coordinates for spatial analysis
+                    var displayPoints = new List<(double x, double y, int index)>();
+                    for (int i = 0; i < result.Sequence.Count; i++)
+                    {
+                        var point = result.Sequence[i];
 
-            // After rendering point labels, add info text and axis labels to the same canvas
+                        // Transform world coordinates to bitmap coordinates
+                        int screenX = (int)(point.X * scaleX + offsetX);
+                        int screenY = (int)(point.Y * scaleY + offsetY);
+
+                        if (screenX >= 0 && screenX < ViewModel.ImageWidth &&
+                            screenY >= 0 && screenY < ViewModel.ImageHeight)
+                        {
+                            // Scale to display size and add viewbox offset
+                            double displayX = screenX * displayScaleX + viewboxOffsetX;
+                            double displayY = screenY * displayScaleY + viewboxOffsetY;
+                            displayPoints.Add((displayX, displayY, i));
+                        }
+                    }
+
+                    // Label each point with smart placement
+                    // Track placed label bounds to avoid overlaps
+                    var placedLabels = new List<(double left, double top, double right, double bottom)>();
+
+                    foreach (var (pointX, pointY, index) in displayPoints)
+                    {
+                        var point = result.Sequence[index];
+
+                        // Create label with format (N, x, y) where N is the step number (0-based)
+                        var label = new TextBlock
+                        {
+                            Text = $"({point.Step}, {point.X}, {point.Y})",
+                            FontSize = 0.5,  // Extremely small labels (half the previous size)
+                            Foreground = point.IsInCycle
+                                ? new SolidColorBrush(Colors.Magenta)
+                                : new SolidColorBrush(Colors.Cyan),
+                            FontWeight = Microsoft.UI.Text.FontWeights.ExtraLight,  // Thinnest weight
+                            Opacity = 0.7  // More transparent for even more subtlety
+                        };
+
+                        // Measure label size for accurate overlap detection
+                        label.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+                        double labelWidth = label.DesiredSize.Width;
+                        double labelHeight = label.DesiredSize.Height;
+
+                        // Find best label position to avoid line segments and other labels
+                        var (labelX, labelY) = FindBestLabelPosition(
+                            pointX, pointY, index, displayPoints, result.Sequence, 
+                            placedLabels, labelWidth, labelHeight);
+
+                        Canvas.SetLeft(label, labelX);
+                        Canvas.SetTop(label, labelY);
+
+                        // Track this label's bounds
+                        placedLabels.Add((labelX, labelY, labelX + labelWidth, labelY + labelHeight));
+
+                        HailstoneLabelsCanvas.Children.Add(label);
+                    }
+                } // End of if (imageSize.Width > 0)
+            } // End of if (ShowHailstoneLabels)
+
+            // Always render info text and axis labels (independently of point labels)
             UpdateHailstoneInfo();
             UpdateAxisLabels();
         }
@@ -140,25 +165,45 @@ namespace ManpWinUI.Views
             // Calculate appropriate tick spacing
             int rangeX = maxX - minX;
             int rangeY = maxY - minY;
+
+            // Handle single-point case
+            if (rangeX == 0) rangeX = 2;
+            if (rangeY == 0) rangeY = 2;
+
+            // Apply 15% padding to match the viewport used for tick mark rendering
+            const double PaddingPercent = 0.15;
+            double paddingX = rangeX * PaddingPercent;
+            double paddingY = rangeY * PaddingPercent;
+
+            double viewMinX = minX - paddingX;
+            double viewMaxX = maxX + paddingX;
+            double viewMinY = minY - paddingY;
+            double viewMaxY = maxY + paddingY;
+
             int range = Math.Max(rangeX, rangeY);
 
             int tickSpacing = CalculateTickSpacing(range);
 
-            // Calculate label spacing - show labels less frequently
+            // Place labels at EVERY tick mark for clarity
             int labelSpacing = tickSpacing;
-            if (range > 100) labelSpacing = tickSpacing * 5; // Every 5th tick
-            else if (range > 50) labelSpacing = tickSpacing * 2; // Every 2nd tick
 
             // World-to-screen conversion helper
+            // Must match RenderService's WorldToScreen which truncates to int
             (double, double) WorldToScreen(int worldX, int worldY)
             {
-                double screenX = worldX * scaleX + offsetX;
-                double screenY = worldY * scaleY + offsetY;
-                return (viewboxOffsetX + screenX * displayScaleX, viewboxOffsetY + screenY * displayScaleY);
+                // Calculate bitmap coordinates and truncate to int (matching RenderService)
+                int bitmapX = (int)(worldX * scaleX + offsetX);
+                int bitmapY = (int)(worldY * scaleY + offsetY);
+
+                // Then convert to display coordinates
+                return (viewboxOffsetX + bitmapX * displayScaleX, viewboxOffsetY + bitmapY * displayScaleY);
             }
 
             // Draw X-axis labels (at y=0)
             var (_, axisY) = WorldToScreen(0, 0);
+
+            // Calculate label positions to match tick marks (which use raw bounds, not padded viewport)
+            // This matches the logic in HailstoneRenderService.DrawAxisTickMarks
             int startX = (minX / labelSpacing) * labelSpacing;
             if (startX > minX) startX -= labelSpacing;
             int endX = (maxX / labelSpacing) * labelSpacing;
@@ -181,9 +226,14 @@ namespace ManpWinUI.Views
                         FontWeight = Microsoft.UI.Text.FontWeights.Light
                     };
 
-                    // Position directly below the tick mark, centered
-                    Canvas.SetLeft(label, screenX - 5);
-                    Canvas.SetTop(label, axisY + 6);
+                    // Measure text to center it horizontally on the tick mark
+                    label.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+                    double labelWidth = label.DesiredSize.Width;
+
+                    // Position centered horizontally on tick mark, directly below with 1px gap
+                    double labelLeft = screenX - labelWidth / 2;
+                    Canvas.SetLeft(label, labelLeft);
+                    Canvas.SetTop(label, axisY + 1);
 
                     HailstoneLabelsCanvas.Children.Add(label);
                 }
@@ -191,6 +241,9 @@ namespace ManpWinUI.Views
 
             // Draw Y-axis labels (at x=0)
             var (axisX, _) = WorldToScreen(0, 0);
+
+            // Calculate label positions to match tick marks (which use raw bounds, not padded viewport)
+            // This matches the logic in HailstoneRenderService.DrawAxisTickMarks
             int startY = (minY / labelSpacing) * labelSpacing;
             if (startY > minY) startY -= labelSpacing;
             int endY = (maxY / labelSpacing) * labelSpacing;
@@ -213,9 +266,14 @@ namespace ManpWinUI.Views
                         FontWeight = Microsoft.UI.Text.FontWeights.Light
                     };
 
-                    // Position directly to the right of the tick mark
-                    Canvas.SetLeft(label, axisX + 6);
-                    Canvas.SetTop(label, screenY - 4);
+                    // Measure text to position it to the left of the tick mark
+                    label.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+                    double labelWidth = label.DesiredSize.Width;
+                    double labelHeight = label.DesiredSize.Height;
+
+                    // Position directly to the LEFT of the tick mark, centered vertically
+                    Canvas.SetLeft(label, axisX - labelWidth - 2);
+                    Canvas.SetTop(label, screenY - labelHeight / 2);
 
                     HailstoneLabelsCanvas.Children.Add(label);
                 }
@@ -237,94 +295,106 @@ namespace ManpWinUI.Views
         }
 
         /// <summary>
-        /// Finds the best position for a label to minimize overlap with line segments.
-        /// Tests 8 positions around the point (cardinal and diagonal directions).
+        /// Finds the best position for a point label to avoid overlaps with other labels.
+        /// Tries multiple candidate positions around the point and selects the one with minimal overlap.
         /// </summary>
         private (double x, double y) FindBestLabelPosition(
             double pointX, double pointY, int pointIndex,
             List<(double x, double y, int index)> displayPoints,
-            List<ManpWinUI.Models.HailstonePoint> sequence)
+            List<ManpWinUI.Models.HailstonePoint> sequence,
+            List<(double left, double top, double right, double bottom)> placedLabels,
+            double labelWidth, double labelHeight)
         {
-            // Define candidate positions: right, bottom-right, bottom, bottom-left, left, top-left, top, top-right
-            var offsets = new[]
+            // Define candidate positions around the point (8 directions + center-right)
+            var candidates = new List<(double x, double y, int priority)>
             {
-                (dx: 2.0, dy: 0.0),      // Right (preferred - most readable)
-                (dx: 2.0, dy: 2.0),      // Bottom-right
-                (dx: 0.0, dy: 2.0),      // Bottom
-                (dx: -12.0, dy: 2.0),    // Bottom-left (offset left by approx label width)
-                (dx: -12.0, dy: 0.0),    // Left
-                (dx: -12.0, dy: -4.0),   // Top-left
-                (dx: 0.0, dy: -4.0),     // Top
-                (dx: 2.0, dy: -4.0)      // Top-right
+                // Priority 0: Preferred position (right and slightly above)
+                (pointX + 2, pointY - labelHeight / 2, 0),
+
+                // Priority 1: Alternative horizontal positions
+                (pointX - labelWidth - 2, pointY - labelHeight / 2, 1), // Left
+
+                // Priority 2: Vertical positions
+                (pointX - labelWidth / 2, pointY - labelHeight - 2, 2), // Above
+                (pointX - labelWidth / 2, pointY + 2, 2), // Below
+
+                // Priority 3: Diagonal positions
+                (pointX + 2, pointY - labelHeight - 2, 3), // Top-right
+                (pointX + 2, pointY + 2, 3), // Bottom-right
+                (pointX - labelWidth - 2, pointY - labelHeight - 2, 3), // Top-left
+                (pointX - labelWidth - 2, pointY + 2, 3), // Bottom-left
             };
 
+            // Find the candidate with the least overlap
             double bestScore = double.MaxValue;
-            var bestPosition = (x: pointX + offsets[0].dx, y: pointY + offsets[0].dy);
+            (double x, double y) bestPosition = (candidates[0].x, candidates[0].y);
 
-            foreach (var (dx, dy) in offsets)
+            foreach (var (candX, candY, priority) in candidates)
             {
-                double labelX = pointX + dx;
-                double labelY = pointY + dy;
-
-                // Calculate score based on potential overlaps
-                double score = CalculateLabelScore(labelX, labelY, pointX, pointY, 
-                    pointIndex, displayPoints);
+                double score = CalculateOverlapScore(candX, candY, labelWidth, labelHeight, 
+                    placedLabels, priority);
 
                 if (score < bestScore)
                 {
                     bestScore = score;
-                    bestPosition = (labelX, labelY);
+                    bestPosition = (candX, candY);
                 }
+
+                // If we found a perfect spot (no overlap), use it
+                if (score == 0)
+                    break;
             }
 
             return bestPosition;
         }
 
         /// <summary>
-        /// Calculates a score for a label position based on proximity to line segments.
-        /// Lower score is better (less overlap risk).
+        /// Calculates an overlap score for a candidate label position.
+        /// Lower score is better (less overlap).
         /// </summary>
-        private double CalculateLabelScore(
-            double labelX, double labelY, double pointX, double pointY,
-            int pointIndex, List<(double x, double y, int index)> displayPoints)
+        private double CalculateOverlapScore(
+            double labelX, double labelY, double labelWidth, double labelHeight,
+            List<(double left, double top, double right, double bottom)> placedLabels,
+            int priority)
         {
-            double score = 0.0;
+            double score = priority * 10; // Base score based on position priority
 
-            // Approximate label dimensions (2.5px font, roughly 8-12 characters)
-            double labelWidth = 18.0;  // Smaller estimate for 2.5px font
-            double labelHeight = 4.0;
-
-            // Label bounding box
-            double labelLeft = labelX;
             double labelRight = labelX + labelWidth;
-            double labelTop = labelY;
             double labelBottom = labelY + labelHeight;
 
-            // Check proximity to adjacent line segments (previous and next connections)
-            for (int offset = -1; offset <= 1; offset += 2)  // Check prev and next
+            // Add penalty for each overlapping label
+            foreach (var placed in placedLabels)
             {
-                int adjacentIndex = pointIndex + offset;
-                if (adjacentIndex >= 0 && adjacentIndex < displayPoints.Count)
+                // Check for overlap
+                bool overlaps = !(labelRight < placed.left || 
+                                 labelX > placed.right ||
+                                 labelBottom < placed.top ||
+                                 labelY > placed.bottom);
+
+                if (overlaps)
                 {
-                    var adjacentPoint = displayPoints.FirstOrDefault(p => p.index == adjacentIndex);
-                    if (adjacentPoint != default)
-                    {
-                        // Calculate distance from label center to line segment
-                        double labelCenterX = labelX + labelWidth / 2;
-                        double labelCenterY = labelY + labelHeight / 2;
+                    // Calculate overlap area
+                    double overlapWidth = Math.Min(labelRight, placed.right) - Math.Max(labelX, placed.left);
+                    double overlapHeight = Math.Min(labelBottom, placed.bottom) - Math.Max(labelY, placed.top);
+                    double overlapArea = overlapWidth * overlapHeight;
 
-                        double distance = DistanceToLineSegment(
-                            labelCenterX, labelCenterY,
-                            pointX, pointY,
-                            adjacentPoint.x, adjacentPoint.y);
+                    // Heavy penalty for overlaps (overlap area normalized by label area)
+                    score += (overlapArea / (labelWidth * labelHeight)) * 1000;
+                }
+                else
+                {
+                    // Small bonus for being close but not overlapping (encourages compact layout)
+                    double centerX = labelX + labelWidth / 2;
+                    double centerY = labelY + labelHeight / 2;
+                    double placedCenterX = (placed.left + placed.right) / 2;
+                    double placedCenterY = (placed.top + placed.bottom) / 2;
+                    double distance = Math.Sqrt(
+                        Math.Pow(centerX - placedCenterX, 2) + 
+                        Math.Pow(centerY - placedCenterY, 2));
 
-                        // Penalize positions closer to line segments
-                        // Use inverse square to heavily penalize very close positions
-                        if (distance < 20.0)  // Only penalize if within 20 pixels
-                        {
-                            score += 100.0 / (distance + 1.0);
-                        }
-                    }
+                    // Very small penalty for being far from other labels
+                    if (distance > 50)
+                        score += (distance - 50) * 0.01;
                 }
             }
 
@@ -332,34 +402,30 @@ namespace ManpWinUI.Views
         }
 
         /// <summary>
-        /// Calculates the perpendicular distance from a point to a line segment.
+        /// Calculates coordinate transformation parameters for the given viewport bounds.
+        /// This mirrors the logic in HailstoneRenderService.CalculateTransform.
         /// </summary>
-        private double DistanceToLineSegment(
-            double px, double py,
-            double x1, double y1,
-            double x2, double y2)
+        private (double scaleX, double scaleY, double offsetX, double offsetY) CalculateHailstoneTransform(
+            double viewMinX, double viewMaxX, double viewMinY, double viewMaxY)
         {
-            double dx = x2 - x1;
-            double dy = y2 - y1;
-            double lengthSquared = dx * dx + dy * dy;
+            var width = ViewModel.ImageWidth;
+            var height = ViewModel.ImageHeight;
 
-            if (lengthSquared == 0.0)
-            {
-                // Line segment is a point
-                return Math.Sqrt((px - x1) * (px - x1) + (py - y1) * (py - y1));
-            }
+            // Calculate the viewport dimensions
+            double viewRangeX = viewMaxX - viewMinX;
+            double viewRangeY = viewMaxY - viewMinY;
 
-            // Calculate projection parameter t
-            double t = Math.Max(0.0, Math.Min(1.0, 
-                ((px - x1) * dx + (py - y1) * dy) / lengthSquared));
+            // Calculate scale (negative Y to flip for screen coordinates)
+            double scaleX = width / viewRangeX;
+            double scaleY = -height / viewRangeY; // Negative to flip Y axis
 
-            // Find closest point on segment
-            double closestX = x1 + t * dx;
-            double closestY = y1 + t * dy;
+            // Calculate offset to map world coordinates to screen
+            // For X: viewMinX should map to screen x=0
+            // For Y: viewMaxY should map to screen y=0 (top), viewMinY to y=height (bottom)
+            double offsetX = -viewMinX * scaleX;
+            double offsetY = -viewMaxY * scaleY;  // Use viewMaxY, not viewMinY
 
-            // Return distance to closest point
-            return Math.Sqrt((px - closestX) * (px - closestX) + 
-                           (py - closestY) * (py - closestY));
+            return (scaleX, scaleY, offsetX, offsetY);
         }
 
         /// <summary>
@@ -372,26 +438,10 @@ namespace ManpWinUI.Views
                 return new Windows.Foundation.Size(0, 0);
             }
 
-            // The Viewbox uses Uniform stretch, so we need to calculate the actual displayed size
-            double imageAspectRatio = ViewModel.ImageWidth / (double)ViewModel.ImageHeight;
-            double viewboxAspectRatio = FractalViewbox.ActualWidth / FractalViewbox.ActualHeight;
-
-            double displayWidth, displayHeight;
-
-            if (imageAspectRatio > viewboxAspectRatio)
-            {
-                // Image is wider relative to viewbox - width is constrained
-                displayWidth = FractalViewbox.ActualWidth;
-                displayHeight = displayWidth / imageAspectRatio;
-            }
-            else
-            {
-                // Image is taller relative to viewbox - height is constrained
-                displayHeight = FractalViewbox.ActualHeight;
-                displayWidth = displayHeight * imageAspectRatio;
-            }
-
-            return new Windows.Foundation.Size(displayWidth, displayHeight);
+            // The Viewbox uses Fill stretch (from XAML), which means the image fills the entire viewbox
+            // without maintaining aspect ratio. Therefore, the displayed size equals the viewbox size
+            // and there is NO centering offset (viewboxOffset should be 0,0)
+            return new Windows.Foundation.Size(FractalViewbox.ActualWidth, FractalViewbox.ActualHeight);
         }
     }
 }
