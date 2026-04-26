@@ -343,6 +343,8 @@ public class HailstoneRenderServiceWin2D
     /// <summary>
     /// Draws text labels at each point showing (Step, X, Y).
     /// NOW RENDERED DIRECTLY ON BITMAP - no Canvas overlay needed!
+    /// Uses 8pt Arial font, cyan for normal points, magenta for cycle points.
+    /// NumVis uses white with semi-transparent background; we use cyan for better visibility.
     /// </summary>
     private void DrawPointLabels(IGraphicsRenderer renderer, List<HailstonePoint> sequence,
         double scaleX, double scaleY, double offsetX, double offsetY)
