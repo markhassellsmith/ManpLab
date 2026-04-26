@@ -231,7 +231,7 @@ public class HailstoneRenderServiceWin2D
                     if (x % labelSpacing == 0)
                     {
                         renderer.DrawText(x.ToString(), screenX - 5, axisY + 6, 
-                            tickColor, 3f, "Arial", false);
+                            tickColor, 9f, "Arial", false);
                     }
                 }
             }
@@ -267,7 +267,7 @@ public class HailstoneRenderServiceWin2D
                     if (y % labelSpacing == 0)
                     {
                         renderer.DrawText(y.ToString(), axisX + 6, screenY - 4, 
-                            tickColor, 3f, "Arial", false);
+                            tickColor, 9f, "Arial", false);
                     }
                 }
             }
@@ -354,8 +354,8 @@ public class HailstoneRenderServiceWin2D
             string labelText = $"({point.Step},{point.X},{point.Y})";
             var color = point.IsInCycle ? Colors.Magenta : Colors.Cyan;
 
-            // Draw label near point (offset 2px right to avoid overlap)
-            renderer.DrawText(labelText, screenX + 2, screenY - 1, color, 2.5f, "Arial", false);
+            // Draw label near point (offset 8px right, 2px down - matches NumVis positioning)
+            renderer.DrawText(labelText, screenX + 8, screenY + 2, color, 8f, "Arial", false);
         }
     }
 
