@@ -217,13 +217,13 @@ public class HailstoneRenderServiceWin2D
                 var (screenX, _) = WorldToScreen(x, 0, scaleX, scaleY, offsetX, offsetY);
                 if (screenX >= 0 && screenX < width)
                 {
-                    // Draw tick mark
+                    // Draw tick mark (cast to int for pixel operations)
                     for (int dy = -tickLength; dy <= tickLength; dy++)
                     {
-                        int y = axisY + dy;
+                        int y = (int)axisY + dy;
                         if (y >= 0 && y < height)
                         {
-                            renderer.SetPixel(screenX, y, tickColor);
+                            renderer.SetPixel((int)screenX, y, tickColor);
                         }
                     }
 
@@ -253,13 +253,13 @@ public class HailstoneRenderServiceWin2D
                 var (_, screenY) = WorldToScreen(0, y, scaleX, scaleY, offsetX, offsetY);
                 if (screenY >= 0 && screenY < height)
                 {
-                    // Draw tick mark
+                    // Draw tick mark (cast to int for pixel operations)
                     for (int dx = -tickLength; dx <= tickLength; dx++)
                     {
-                        int x = axisX + dx;
+                        int x = (int)axisX + dx;
                         if (x >= 0 && x < width)
                         {
-                            renderer.SetPixel(x, screenY, tickColor);
+                            renderer.SetPixel(x, (int)screenY, tickColor);
                         }
                     }
 
@@ -444,11 +444,15 @@ public class HailstoneRenderServiceWin2D
         return (scaleX, scaleY, offsetX, offsetY);
     }
 
-    private (int x, int y) WorldToScreen(int worldX, int worldY,
+    /// <summary>
+    /// Converts world coordinates to screen coordinates using floating-point precision.
+    /// Preserves sub-pixel accuracy for smooth anti-aliased line rendering.
+    /// </summary>
+    private (float x, float y) WorldToScreen(int worldX, int worldY,
         double scaleX, double scaleY, double offsetX, double offsetY)
     {
-        int screenX = (int)(worldX * scaleX + offsetX);
-        int screenY = (int)(worldY * scaleY + offsetY);
+        float screenX = (float)(worldX * scaleX + offsetX);
+        float screenY = (float)(worldY * scaleY + offsetY);
         return (screenX, screenY);
     }
 

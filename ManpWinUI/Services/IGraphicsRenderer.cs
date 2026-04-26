@@ -25,8 +25,15 @@ namespace ManpWinUI.Services
 
         /// <summary>
         /// Draws a line from (x1, y1) to (x2, y2) with the specified color and thickness.
+        /// Integer coordinates version for grid/axis rendering.
         /// </summary>
         void DrawLine(int x1, int y1, int x2, int y2, Color color, float thickness = 1.0f);
+
+        /// <summary>
+        /// Draws a line from (x1, y1) to (x2, y2) with the specified color and thickness.
+        /// Floating-point version for smooth anti-aliased rendering.
+        /// </summary>
+        void DrawLine(float x1, float y1, float x2, float y2, Color color, float thickness = 1.0f);
 
         /// <summary>
         /// Draws text at the specified position with the given font parameters.

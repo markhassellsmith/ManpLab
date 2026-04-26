@@ -56,6 +56,15 @@ namespace ManpWinUI.Services
             _drawingSession.DrawLine(x1, y1, x2, y2, adjustedColor, thickness);
         }
 
+        public void DrawLine(float x1, float y1, float x2, float y2, Color color, float thickness = 1.0f)
+        {
+            if (_drawingSession == null) return;
+
+            var adjustedColor = Color.FromArgb(_currentAlpha, color.R, color.G, color.B);
+            // Win2D supports sub-pixel rendering for smooth anti-aliased lines
+            _drawingSession.DrawLine(x1, y1, x2, y2, adjustedColor, thickness);
+        }
+
         public void DrawText(string text, float x, float y, Color color, float fontSize,
             string fontFamily = "Arial", bool bold = false)
         {

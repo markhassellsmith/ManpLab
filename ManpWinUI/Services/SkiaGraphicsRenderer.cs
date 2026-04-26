@@ -50,6 +50,13 @@ namespace ManpWinUI.Services
             // _canvas.DrawLine(x1, y1, x2, y2, paint);
         }
 
+        public void DrawLine(float x1, float y1, float x2, float y2, Color color, float thickness = 1.0f)
+        {
+            throw new NotImplementedException();
+            // var paint = new SKPaint { Color = ..., StrokeWidth = thickness, IsAntialias = true };
+            // _canvas.DrawLine(x1, y1, x2, y2, paint);
+        }
+
         public void DrawText(string text, float x, float y, Color color, float fontSize,
             string fontFamily = "Arial", bool bold = false)
         {
