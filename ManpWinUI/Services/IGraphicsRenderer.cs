@@ -69,6 +69,24 @@ namespace ManpWinUI.Services
         void SetAlpha(byte alpha);
 
         /// <summary>
+        /// Sets a 2D coordinate transformation matrix for all subsequent drawing operations.
+        /// This allows drawing in world/mathematical coordinates while the renderer handles
+        /// the conversion to screen coordinates (matching GDI+ Graphics.Transform behavior).
+        /// </summary>
+        /// <param name="m11">Scale X component</param>
+        /// <param name="m12">Skew Y component</param>
+        /// <param name="m21">Skew X component</param>
+        /// <param name="m22">Scale Y component</param>
+        /// <param name="m31">Translate X component</param>
+        /// <param name="m32">Translate Y component</param>
+        void SetTransform(float m11, float m12, float m21, float m22, float m31, float m32);
+
+        /// <summary>
+        /// Resets the transformation matrix to identity (no transformation).
+        /// </summary>
+        void ResetTransform();
+
+        /// <summary>
         /// Gets the rendered image as a WriteableBitmap for display in WinUI.
         /// </summary>
         Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap ToWriteableBitmap();

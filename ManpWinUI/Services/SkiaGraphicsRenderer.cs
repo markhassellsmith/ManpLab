@@ -101,6 +101,19 @@ namespace ManpWinUI.Services
             // Store alpha value for use in subsequent draw calls
         }
 
+        public void SetTransform(float m11, float m12, float m21, float m22, float m31, float m32)
+        {
+            throw new NotImplementedException();
+            // var matrix = new SKMatrix { ... };
+            // _canvas.SetMatrix(matrix);
+        }
+
+        public void ResetTransform()
+        {
+            throw new NotImplementedException();
+            // _canvas.ResetMatrix();
+        }
+
         public WriteableBitmap ToWriteableBitmap()
         {
             throw new NotImplementedException();

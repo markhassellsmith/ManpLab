@@ -83,29 +83,36 @@ public class HailstoneRenderServiceWin2D
                 // 1. Clear background
                 renderer.Clear(Colors.Black);
 
-                // 2. Draw grid and axes (if enabled)
+                // 2. Set up coordinate transform (matches GDI+ approach in NumericalVisualizations)
+                // This allows drawing in world coordinates while Win2D handles screen conversion
+                SetupCoordinateTransform(renderer, width, height, minX, maxX, minY, maxY, 
+                    scaleX, scaleY, offsetX, offsetY);
+
+                // 3. Draw grid and axes (if enabled) - now in world coordinates!
                 if (showAxes)
                 {
-                    DrawGridAndAxes(renderer, width, height, minX, maxX, minY, maxY, 
-                        scaleX, scaleY, offsetX, offsetY);
+                    DrawGridAndAxesWithTransform(renderer, minX, maxX, minY, maxY);
                 }
 
-                // 3. Draw sequence trajectory path
-                DrawSequencePath(renderer, result.Sequence, scaleX, scaleY, offsetX, offsetY);
+                // 4. Draw sequence trajectory path - now in world coordinates!
+                DrawSequencePathWithTransform(renderer, result.Sequence);
 
-                // 4. Draw points at each position (if enabled)
+                // 5. Draw points at each position (if enabled) - now in world coordinates!
                 if (showPoints)
                 {
-                    DrawPoints(renderer, result.Sequence, scaleX, scaleY, offsetX, offsetY);
+                    DrawPointsWithTransform(renderer, result.Sequence);
                 }
 
-                // 5. Draw point labels directly on bitmap (if enabled)
+                // 6. Reset transform for screen-space rendering (labels and info)
+                renderer.ResetTransform();
+
+                // 7. Draw point labels directly on bitmap (if enabled) - screen coordinates
                 if (showLabels)
                 {
                     DrawPointLabels(renderer, result.Sequence, scaleX, scaleY, offsetX, offsetY);
                 }
 
-                // 6. Draw info text in corner
+                // 8. Draw info text in corner - screen coordinates
                 DrawInfoText(renderer, result);
 
                 // Convert to WriteableBitmap
@@ -403,6 +410,151 @@ public class HailstoneRenderServiceWin2D
     }
 
     // Helper methods
+
+    /// <summary>
+    /// Sets up Win2D coordinate transform to match GDI+ approach from NumericalVisualizations.
+    /// Allows drawing in world/mathematical coordinates while Win2D handles screen conversion.
+    /// Transform sequence matches GDI+: Translate(center) -> Scale -> Translate(-dataCenter)
+    /// </summary>
+    private void SetupCoordinateTransform(IGraphicsRenderer renderer, int width, int height,
+        int minX, int maxX, int minY, int maxY,
+        double scaleX, double scaleY, double offsetX, double offsetY)
+    {
+        // Calculate data center point in world coordinates
+        double centerX = (minX + maxX) / 2.0;
+        double centerY = (minY + maxY) / 2.0;
+
+        // Calculate pixels per unit (for display purposes)
+        double viewRangeX = maxX - minX + 2 * (maxX - minX) * PaddingPercent;
+        double viewRangeY = maxY - minY + 2 * (maxY - minY) * PaddingPercent;
+        float pixelsPerUnitX = (float)(width / viewRangeX);
+        float pixelsPerUnitY = (float)(height / viewRangeY);
+
+        // Build transformation matrix (applied right-to-left):
+        // 1. Translate to center data at origin: T(-centerX, -centerY)
+        // 2. Scale and flip Y: S(pixelsPerUnitX, -pixelsPerUnitY) 
+        // 3. Translate to screen center: T(width/2, height/2)
+        //
+        // Matrix layout: [ m11 m12 ]  = [ scaleX      0         ]
+        //                [ m21 m22 ]    [ 0           scaleY    ]
+        //                [ m31 m32 ]    [ translateX  translateY]
+
+        float m11 = (float)scaleX;           // Scale X
+        float m12 = 0;                        // No skew
+        float m21 = 0;                        // No skew
+        float m22 = (float)scaleY;           // Scale Y (negative for Y-flip)
+        float m31 = (float)offsetX;          // Translate X
+        float m32 = (float)offsetY;          // Translate Y
+
+        renderer.SetTransform(m11, m12, m21, m22, m31, m32);
+
+        Debug.WriteLine($"Transform matrix: [{m11:F2}, {m12}, {m21}, {m22:F2}, {m31:F2}, {m32:F2}]");
+    }
+
+    /// <summary>
+    /// Draws grid and axes using world coordinates (transform handles conversion).
+    /// Simplified version without manual WorldToScreen conversion.
+    /// </summary>
+    private void DrawGridAndAxesWithTransform(IGraphicsRenderer renderer,
+        int minX, int maxX, int minY, int maxY)
+    {
+        var gridColor = Color.FromArgb(40, 50, 50, 50);
+        var axesColor = Color.FromArgb(150, 100, 100, 100);
+
+        int range = Math.Max(maxX - minX, maxY - minY);
+        int tickSpacing = CalculateTickSpacing(range);
+
+        // Draw vertical grid lines in world coordinates
+        int startX = (minX / tickSpacing) * tickSpacing;
+        if (startX > minX) startX -= tickSpacing;
+        int endX = (maxX / tickSpacing) * tickSpacing;
+        if (endX < maxX) endX += tickSpacing;
+
+        // Extend grid lines beyond visible range for better coverage
+        float yMin = minY - range * 0.5f;
+        float yMax = maxY + range * 0.5f;
+
+        for (int x = startX; x <= endX; x += tickSpacing)
+        {
+            var color = (x == 0) ? axesColor : gridColor;
+            renderer.DrawLine(x, yMin, x, yMax, color, 1.0f);
+        }
+
+        // Draw horizontal grid lines in world coordinates
+        int startY = (minY / tickSpacing) * tickSpacing;
+        if (startY > minY) startY -= tickSpacing;
+        int endY = (maxY / tickSpacing) * tickSpacing;
+        if (endY < maxY) endY += tickSpacing;
+
+        float xMin = minX - range * 0.5f;
+        float xMax = maxX + range * 0.5f;
+
+        for (int y = startY; y <= endY; y += tickSpacing)
+        {
+            var color = (y == 0) ? axesColor : gridColor;
+            renderer.DrawLine(xMin, y, xMax, y, color, 1.0f);
+        }
+    }
+
+    /// <summary>
+    /// Draws sequence trajectory path using world coordinates (transform handles conversion).
+    /// This is the key improvement - drawing directly in mathematical coordinates!
+    /// </summary>
+    private void DrawSequencePathWithTransform(IGraphicsRenderer renderer, List<HailstonePoint> sequence)
+    {
+        if (sequence.Count < 2) return;
+
+        for (int i = 0; i < sequence.Count - 1; i++)
+        {
+            var p1 = sequence[i];
+            var p2 = sequence[i + 1];
+
+            if (p1.IsInCycle)
+            {
+                // Magenta for cycle - thicker line (2.5x matches NumVis)
+                renderer.DrawLine(p1.X, p1.Y, p2.X, p2.Y, Colors.Magenta, 2.5f);
+            }
+            else
+            {
+                // Spectrum color from point data
+                var color = Color.FromArgb(255, p2.Color.R, p2.Color.G, p2.Color.B);
+                renderer.DrawLine(p1.X, p1.Y, p2.X, p2.Y, color, 1.2f);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Draws points using world coordinates (transform handles conversion).
+    /// </summary>
+    private void DrawPointsWithTransform(IGraphicsRenderer renderer, List<HailstonePoint> sequence)
+    {
+        int cycleStartIndex = sequence.FindIndex(p => p.IsInCycle);
+
+        foreach (var point in sequence)
+        {
+            if (point.Step == 0)
+            {
+                // Green square for start
+                renderer.DrawRectangle(point.X - 2, point.Y - 2, 4, 4, Colors.Green);
+            }
+            else if (point.IsInCycle && sequence.IndexOf(point) == cycleStartIndex)
+            {
+                // Yellow diamond for cycle start
+                renderer.DrawCircle(point.X, point.Y, 3, Colors.Yellow);
+            }
+            else if (point.IsInCycle)
+            {
+                // Magenta circles for cycle points
+                renderer.DrawCircle(point.X, point.Y, 3, Colors.Magenta);
+            }
+            else
+            {
+                // Small colored dots for regular points
+                var color = Color.FromArgb(255, point.Color.R, point.Color.G, point.Color.B);
+                renderer.DrawCircle(point.X, point.Y, 2, color);
+            }
+        }
+    }
 
     private (double scaleX, double scaleY, double offsetX, double offsetY) CalculateTransform(
         int minX, int maxX, int minY, int maxY, int width, int height, bool useFixedViewport)
