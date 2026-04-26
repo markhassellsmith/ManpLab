@@ -164,7 +164,7 @@ public class HailstoneRenderServiceWin2D
         {
             var (screenX, _) = WorldToScreen(x, 0, scaleX, scaleY, offsetX, offsetY);
             var color = (x == 0) ? axesColor : gridColor;
-            renderer.DrawLine(screenX, 0, screenX, height - 1, color, 1.0f);
+            renderer.DrawLine(screenX, 0f, screenX, (float)(height - 1), color, 1.0f);
         }
 
         // Draw horizontal grid lines
@@ -177,7 +177,7 @@ public class HailstoneRenderServiceWin2D
         {
             var (_, screenY) = WorldToScreen(0, y, scaleX, scaleY, offsetX, offsetY);
             var color = (y == 0) ? axesColor : gridColor;
-            renderer.DrawLine(0, screenY, width - 1, screenY, color, 1.0f);
+            renderer.DrawLine(0f, screenY, (float)(width - 1), screenY, color, 1.0f);
         }
 
         // Draw tick marks on axes
