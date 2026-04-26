@@ -376,7 +376,7 @@ public class HailstoneRenderServiceWin2D
 
         infoText += $"Total points: {result.Sequence.Count}";
 
-        // Determine color
+        // Determine color - use yellow for base info, magenta specifically for cycle details (matches NumVis)
         var textColor = Colors.Yellow;
 
         if (result.HasCycle && result.CycleStartIndex >= 0)
@@ -392,7 +392,8 @@ public class HailstoneRenderServiceWin2D
             infoText += $"\nDuplicate of: ({cycleStartPoint.Step}, {cycleStartPoint.X}, {cycleStartPoint.Y})";
             infoText += $"\nCycle length: {result.CycleLength}";
 
-            textColor = Colors.Magenta;
+            // Keep yellow for consistency with NumVis (magenta is for cycle lines, not text)
+            // textColor remains yellow
         }
 
         // Draw text in top-left corner (no viewbox offset needed!)
