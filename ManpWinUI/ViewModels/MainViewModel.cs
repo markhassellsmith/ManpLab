@@ -32,15 +32,13 @@ public partial class MainViewModel(
     private readonly IHailstoneService _hailstoneService = hailstoneService;
     private readonly HailstoneRenderServiceWin2D _hailstoneRenderService = new();
 
-    // Image resolution
-    [ObservableProperty]
-    public partial int ImageWidth { get; set; } = 1200;
-
-    [ObservableProperty]
-    public partial int ImageHeight { get; set; } = 900;
-
-    // Computed property for total megapixels
-    public string TotalPixels => $"{(ImageWidth * ImageHeight / 1_000_000.0):F2}";
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // RENDERING STATE & IMAGE OUTPUT
+    // Moved to: MainViewModel.Rendering.cs
+    // - ImageWidth, ImageHeight, TotalPixels
+    // - IsRendering, RenderProgress, LastRenderTime
+    // - FractalImage, ConvertPixelDataToBitmap()
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     // Color palette
     [ObservableProperty]
@@ -52,12 +50,6 @@ public partial class MainViewModel(
 
     // UI state
     [ObservableProperty]
-    public partial bool IsRendering { get; set; }
-
-    [ObservableProperty]
-    public partial double RenderProgress { get; set; }
-
-    [ObservableProperty]
     public partial bool ShowCoordinateAxes { get; set; } = true;
 
     partial void OnShowCoordinateAxesChanged(bool value)
@@ -68,13 +60,6 @@ public partial class MainViewModel(
 
     [ObservableProperty]
     public partial string StatusMessage { get; set; } = "Ready";
-
-    [ObservableProperty]
-    public partial TimeSpan LastRenderTime { get; set; }
-
-    // Fractal image
-    [ObservableProperty]
-    public partial WriteableBitmap? FractalImage { get; set; }
 
     // Bookmarks
     public ObservableCollection<FractalBookmark> Bookmarks { get; } = new();
@@ -264,7 +249,10 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         }
     }
 
-    private bool CanRender() => !IsRendering;
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // NOTE: CanRender() moved to MainViewModel.Rendering.cs
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
     /// Unified render command that routes to the appropriate render method.
@@ -588,25 +576,9 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         }
     }
 
-    /// <summary>
-    /// Converts pixel data byte array to WriteableBitmap for display.
-    /// PixelData format is BGRA (Blue, Green, Red, Alpha - 4 bytes per pixel).
-    /// This is the native format for WinUI WriteableBitmap.
-    /// </summary>
-    private void ConvertPixelDataToBitmap(byte[] pixelData, int width, int height)
-    {
-        // Create or reuse WriteableBitmap
-        if (FractalImage == null || FractalImage.PixelWidth != width || FractalImage.PixelHeight != height)
-        {
-            FractalImage = new WriteableBitmap(width, height);
-        }
-
-        // Write pixel data to bitmap buffer using WindowsRuntimeBufferExtensions
-        WindowsRuntimeBufferExtensions.CopyTo(pixelData, 0, FractalImage.PixelBuffer, 0, pixelData.Length);
-
-        // Invalidate the bitmap to trigger redraw
-        FractalImage.Invalidate();
-    }
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // NOTE: ConvertPixelDataToBitmap() moved to MainViewModel.Rendering.cs
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
     /// Creates metadata object from current fractal state.
