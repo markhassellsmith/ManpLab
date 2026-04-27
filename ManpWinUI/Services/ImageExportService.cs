@@ -16,7 +16,7 @@ namespace ManpWinUI.Services;
 /// Service for exporting fractal images with embedded metadata.
 /// Supports PNG (with tEXt chunks), JPEG (with EXIF), and future SVG support.
 /// </summary>
-public class ImageExportService
+public class ImageExportService : IImageExportService
 {
     /// <summary>
     /// Saves a fractal image to a file with embedded metadata.

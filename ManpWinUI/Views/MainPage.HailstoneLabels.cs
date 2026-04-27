@@ -2,6 +2,7 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using ManpCore.Services.Models;
 
 namespace ManpWinUI.Views
 {
@@ -301,7 +302,7 @@ namespace ManpWinUI.Views
         private (double x, double y) FindBestLabelPosition(
             double pointX, double pointY, int pointIndex,
             List<(double x, double y, int index)> displayPoints,
-            List<ManpWinUI.Models.HailstonePoint> sequence,
+            List<HailstonePoint> sequence,
             List<(double left, double top, double right, double bottom)> placedLabels,
             double labelWidth, double labelHeight)
         {

@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using ManpCore.Services.Models;
 using ManpWinUI.Models;
 
 namespace ManpWinUI.ViewModels;

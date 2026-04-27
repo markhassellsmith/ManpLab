@@ -1,4 +1,4 @@
-namespace ManpWinUI.Models;
+namespace ManpCore.Services.Models;
 
 /// <summary>
 /// Represents a single point in a 2D Hailstone sequence.
@@ -29,9 +29,4 @@ public class HailstonePoint
     /// Color for this point/segment (R, G, B).
     /// </summary>
     public (byte R, byte G, byte B) Color { get; set; }
-
-    /// <summary>
-    /// Returns a string representation of this point.
-    /// </summary>
-    public override string ToString() => $"({Step}, {X}, {Y})";
 }

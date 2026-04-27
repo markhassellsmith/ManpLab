@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ManpWinUI.Services;
 using ManpWinUI.ViewModels;
+using ManpCore.Services.Algorithms;
+using ManpCore.Services.Color;
 using Serilog;
 using System;
 using System.IO;
@@ -84,13 +86,17 @@ namespace ManpWinUI
                 builder.AddSerilog(dispose: true);
             });
 
-            // Services
+            // Shared Core Services (platform-agnostic)
+            services.AddSingleton<IColorPalette, HsvColorPalette>();
+            services.AddSingleton<IHailstoneCalculator, HailstoneCalculator>();
+
+            // WinUI-Specific Services
             services.AddSingleton<IFractalRenderService, FractalRenderService>();
             services.AddSingleton<IHailstoneService, HailstoneService>();
-            services.AddSingleton<HailstoneRenderService>();
-            services.AddSingleton<HailstoneRenderServiceWin2D>();
-            services.AddSingleton<ImageExportService>();
-            services.AddSingleton<BookmarkService>();
+            services.AddSingleton<IHailstoneRenderService, HailstoneRenderServiceWin2D>(); // Default: Win2D backend
+            services.AddSingleton<IImageExportService, ImageExportService>();
+            services.AddSingleton<IHailstoneExportService, HailstoneExportService>();
+            services.AddSingleton<IBookmarkService, BookmarkService>();
 
             // ViewModels
             services.AddTransient<MainViewModel>();

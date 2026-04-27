@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Imaging;
 using ManpWinUI.Services;
+using ManpCore.Services.Models;
 using ManpWinUI.Models;
 using System;
 using System.Collections.ObjectModel;
@@ -29,8 +30,9 @@ namespace ManpWinUI.ViewModels;
 /// </summary>
 public partial class MainViewModel(
     IFractalRenderService renderService, 
-    BookmarkService bookmarkService,
-    IHailstoneService hailstoneService) : ObservableObject
+    IBookmarkService bookmarkService,
+    IHailstoneService hailstoneService,
+    IHailstoneRenderService hailstoneRenderService) : ObservableObject
 {
     // ═══════════════════════════════════════════════════════════════════════════════
     // SERVICE DEPENDENCIES
@@ -38,9 +40,9 @@ public partial class MainViewModel(
 
     private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
     private readonly IFractalRenderService _renderService = renderService;
-    private readonly BookmarkService _bookmarkService = bookmarkService;
+    private readonly IBookmarkService _bookmarkService = bookmarkService;
     private readonly IHailstoneService _hailstoneService = hailstoneService;
-    private readonly HailstoneRenderServiceWin2D _hailstoneRenderService = new();
+    private readonly IHailstoneRenderService _hailstoneRenderService = hailstoneRenderService;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // INITIALIZATION

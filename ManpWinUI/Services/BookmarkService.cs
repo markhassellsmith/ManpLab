@@ -13,7 +13,7 @@ namespace ManpWinUI.Services;
 /// Service for managing fractal bookmarks.
 /// Handles saving/loading bookmarks from local storage and provides famous presets.
 /// </summary>
-public class BookmarkService
+public class BookmarkService : IBookmarkService
 {
     private const string BookmarksFileName = "bookmarks.json";
     private List<FractalBookmark> _bookmarks = new();

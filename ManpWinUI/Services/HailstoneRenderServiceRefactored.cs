@@ -1,3 +1,4 @@
+using ManpCore.Services.Models;
 using ManpWinUI.Models;
 using Microsoft.UI;
 using System.Diagnostics;
@@ -8,7 +9,7 @@ namespace ManpWinUI.Services
     /// Example of how to refactor HailstoneRenderService to use the graphics abstraction.
     /// This allows swapping Win2D ↔ SkiaSharp without changing business logic.
     /// </summary>
-    public class HailstoneRenderServiceRefactored
+    public class HailstoneRenderServiceRefactored : IHailstoneRenderService
     {
         /// <summary>
         /// Renders a Hailstone sequence using the abstracted graphics renderer.
@@ -19,7 +20,12 @@ namespace ManpWinUI.Services
             int height,
             bool showAxes,
             bool showPoints,
-            bool showLabels)
+            bool showLabels,
+            bool useFixedViewport = false,
+            double? customViewportMinX = null,
+            double? customViewportMaxX = null,
+            double? customViewportMinY = null,
+            double? customViewportMaxY = null)
         {
             var stopwatch = Stopwatch.StartNew();
 

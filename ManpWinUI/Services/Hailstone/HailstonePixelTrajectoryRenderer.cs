@@ -1,4 +1,4 @@
-using ManpWinUI.Models;
+using ManpCore.Services.Models;
 using Microsoft.UI;
 using Windows.UI;
 

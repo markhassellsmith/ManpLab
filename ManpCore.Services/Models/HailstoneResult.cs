@@ -1,4 +1,4 @@
-namespace ManpWinUI.Models;
+namespace ManpCore.Services.Models;
 
 /// <summary>
 /// Represents the result of a 2D Hailstone sequence calculation.

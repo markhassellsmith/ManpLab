@@ -1,3 +1,4 @@
+using ManpCore.Services.Models;
 using ManpWinUI.Models;
 using ManpWinUI.Services.Hailstone;
 using Microsoft.UI;
@@ -15,7 +16,7 @@ namespace ManpWinUI.Services;
 /// - HailstoneTrajectoryRenderer: Path/points drawing
 /// - HailstoneRenderHelpers: Utility functions
 /// </summary>
-public class HailstoneRenderServiceWin2D
+public class HailstoneRenderServiceWin2D : IHailstoneRenderService
 {
     private readonly HailstoneCoordinateTransform _transform;
     private readonly HailstoneGridRenderer _gridRenderer;

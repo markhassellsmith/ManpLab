@@ -9,12 +9,7 @@
 
 This solution contains **TWO DISTINCT UI PROJECTS** with different rendering requirements:
 
-### 1. **NumericalVisualizations** (WinForms)
-- **UI Framework:** Windows Forms (.NET 10)
-- **Rendering:** Direct `System.Drawing.Bitmap` manipulation
-- **Pattern:** `IVisualization` interface with `Bitmap Render(...)` contract
-- **Visualizations:** Newton fractals, Mandelbrot, Hailstone
-- **Architecture:** Factory pattern + immutable configs
+### 1. **ManpWIN64 C++ backend/WinForms UI for ManpWin
 
 ### 2. **ManpWinUI** (WinUI 3)
 - **UI Framework:** WinUI 3 (.NET 10)

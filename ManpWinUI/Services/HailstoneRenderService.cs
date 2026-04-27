@@ -1,3 +1,4 @@
+using ManpCore.Services.Models;
 using ManpWinUI.Models;
 using ManpWinUI.Services.Hailstone;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -17,7 +18,7 @@ namespace ManpWinUI.Services;
 /// - HailstonePixelRenderer: Low-level pixel operations
 /// - HailstoneRenderHelpers: Utility functions (shared with Win2D)
 /// </summary>
-public class HailstoneRenderService
+public class HailstoneRenderService : IHailstoneRenderService
 {
     private readonly HailstoneCoordinateTransform _transform;
     private readonly HailstonePixelGridRenderer _gridRenderer;

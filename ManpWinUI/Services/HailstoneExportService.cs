@@ -2,6 +2,7 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using ManpCore.Services.Models;
 using System;
 using System.IO;
 using System.Text;
@@ -15,14 +16,14 @@ namespace ManpWinUI.Services
     /// <summary>
     /// Service for exporting Hailstone visualizations with overlays to various formats.
     /// </summary>
-    public class HailstoneExportService
+    public class HailstoneExportService : IHailstoneExportService
     {
         /// <summary>
         /// Creates a composite bitmap that includes the Hailstone visualization with info overlay.
         /// </summary>
         public async Task<WriteableBitmap> CreateExportBitmapAsync(
             WriteableBitmap baseBitmap,
-            Models.HailstoneResult result)
+            HailstoneResult result)
         {
             if (baseBitmap == null || result == null)
                 return baseBitmap;
@@ -53,7 +54,7 @@ namespace ManpWinUI.Services
         /// Exports the Hailstone visualization as SVG with embedded metadata.
         /// </summary>
         public async Task<bool> ExportAsSvgAsync(
-            Models.HailstoneResult result,
+            HailstoneResult result,
             double scaleX, double scaleY,
             double offsetX, double offsetY,
             int width, int height,
@@ -76,7 +77,7 @@ namespace ManpWinUI.Services
         /// Generates SVG markup for the Hailstone sequence with optional metadata.
         /// </summary>
         private string GenerateSvg(
-            Models.HailstoneResult result,
+            HailstoneResult result,
             double scaleX, double scaleY,
             double offsetX, double offsetY,
             int width, int height,
@@ -191,7 +192,7 @@ namespace ManpWinUI.Services
         /// Draws info text onto the pixel buffer (simplified - draws basic rectangles and would need font rendering).
         /// For now, this is a placeholder - actual implementation would need proper text rendering.
         /// </summary>
-        private void DrawInfoText(byte[] pixels, int width, int height, Models.HailstoneResult result)
+        private void DrawInfoText(byte[] pixels, int width, int height, HailstoneResult result)
         {
             // Draw a semi-transparent black rectangle with magenta border in upper left
             // This is a simplified version - actual text rendering would require more work

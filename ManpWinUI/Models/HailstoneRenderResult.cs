@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Media.Imaging;
+using ManpCore.Services.Models;
 
 namespace ManpWinUI.Models;
 
