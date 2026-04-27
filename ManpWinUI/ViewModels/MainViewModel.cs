@@ -40,26 +40,14 @@ public partial class MainViewModel(
     // - FractalImage, ConvertPixelDataToBitmap()
     // ═══════════════════════════════════════════════════════════════════════════════
 
-    // Color palette
-    [ObservableProperty]
-    public partial string SelectedPalette { get; set; } = "Classic";
-
-    // Fractal type selection
-    [ObservableProperty]
-    public partial string SelectedFractalType { get; set; } = "Mandelbrot";
-
-    // UI state
-    [ObservableProperty]
-    public partial bool ShowCoordinateAxes { get; set; } = true;
-
-    partial void OnShowCoordinateAxesChanged(bool value)
-    {
-        // Notify computed property
-        OnPropertyChanged(nameof(ShowMandelbrotAxes));
-    }
-
-    [ObservableProperty]
-    public partial string StatusMessage { get; set; } = "Ready";
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // UI STATE & VISUAL SETTINGS
+    // Moved to: MainViewModel.UI.cs
+    // - SelectedPalette
+    // - SelectedFractalType
+    // - ShowCoordinateAxes, OnShowCoordinateAxesChanged()
+    // - StatusMessage
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     // Bookmarks
     public ObservableCollection<FractalBookmark> Bookmarks { get; } = new();
