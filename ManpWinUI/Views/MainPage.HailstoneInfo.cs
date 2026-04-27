@@ -44,9 +44,10 @@ namespace ManpWinUI.Views
             double viewboxOffsetX = (HailstoneLabelsCanvas.ActualWidth - imageSize.Width) / 2.0;
             double viewboxOffsetY = (HailstoneLabelsCanvas.ActualHeight - imageSize.Height) / 2.0;
 
-            // Fixed position at upper-left corner, absolute top-left
-            double textX = viewboxOffsetX;
-            double textY = viewboxOffsetY;
+            // Fixed position at upper-left corner, absolute top-left (at very edge)
+            // Add small offset to move text down into the visible black screen area
+            double textX = 0;
+            double textY = viewboxOffsetY + 10;
 
             // Build info text (matching NumericalVisualizations format exactly)
             string infoText = "Hailstone Sequence (N,X,Y)\n";
@@ -86,11 +87,11 @@ namespace ManpWinUI.Views
                 Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(220, 0, 0, 0))
             };
 
-            // Create text block with Arial 3pt Bold for very subtle info display
+            // Create text block with Arial 1.5pt Bold for very subtle info display
             var textBlock = new TextBlock
             {
                 Text = infoText,
-                FontSize = 3,
+                FontSize = 1.5,
                 FontWeight = Microsoft.UI.Text.FontWeights.Bold,
                 FontFamily = new FontFamily("Arial"),
                 Foreground = new SolidColorBrush(textColor),

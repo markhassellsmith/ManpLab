@@ -50,6 +50,13 @@ namespace ManpWinUI.Services
             // _canvas.DrawLine(x1, y1, x2, y2, paint);
         }
 
+        public void DrawLine(float x1, float y1, float x2, float y2, Color color, float thickness = 1.0f)
+        {
+            throw new NotImplementedException();
+            // var paint = new SKPaint { Color = ..., StrokeWidth = thickness, IsAntialias = true };
+            // _canvas.DrawLine(x1, y1, x2, y2, paint);
+        }
+
         public void DrawText(string text, float x, float y, Color color, float fontSize,
             string fontFamily = "Arial", bool bold = false)
         {
@@ -92,6 +99,26 @@ namespace ManpWinUI.Services
         {
             throw new NotImplementedException();
             // Store alpha value for use in subsequent draw calls
+        }
+
+        public void SetTransform(float m11, float m12, float m21, float m22, float m31, float m32)
+        {
+            throw new NotImplementedException();
+            // var matrix = new SKMatrix { ... };
+            // _canvas.SetMatrix(matrix);
+        }
+
+        public void ResetTransform()
+        {
+            throw new NotImplementedException();
+            // _canvas.ResetMatrix();
+        }
+
+        public byte[] GetPixelData()
+        {
+            throw new NotImplementedException();
+            // Get pixel bytes from SKBitmap
+            // return _bitmap.Bytes;
         }
 
         public WriteableBitmap ToWriteableBitmap()

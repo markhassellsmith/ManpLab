@@ -28,7 +28,9 @@ namespace ManpWinUI.Views
             {
                 _isPanning = true;
                 _isDragging = true;
-                ViewModel.StatusMessage = "Panning - drag to move view...";
+                ViewModel.StatusMessage = ViewModel.IsHailstoneMode 
+                    ? "Panning Hailstone viewport - drag to move view..." 
+                    : "Panning - drag to move view...";
             }
             else if (point.Properties.IsLeftButtonPressed)
             {
@@ -74,21 +76,71 @@ namespace ManpWinUI.Views
 
                     if (displayWidth > 0 && displayHeight > 0)
                     {
-                        // Current fractal view dimensions (must match FractalRenderService!)
-                        var fractalWidth = 3.0 / ViewModel.Zoom;
-                        var fractalHeight = fractalWidth * ((double)ViewModel.ImageHeight / ViewModel.ImageWidth);
+                        if (ViewModel.IsHailstoneMode)
+                        {
+                            // Hailstone panning: manipulate viewport bounds
+                            if (ViewModel.CurrentHailstoneResult != null)
+                            {
+                                // Get current viewport (or use sequence bounds if no custom viewport)
+                                double viewMinX = ViewModel.HailstoneViewportMinX ?? ViewModel.CurrentHailstoneResult.MinX;
+                                double viewMaxX = ViewModel.HailstoneViewportMaxX ?? ViewModel.CurrentHailstoneResult.MaxX;
+                                double viewMinY = ViewModel.HailstoneViewportMinY ?? ViewModel.CurrentHailstoneResult.MinY;
+                                double viewMaxY = ViewModel.HailstoneViewportMaxY ?? ViewModel.CurrentHailstoneResult.MaxY;
 
-                        // Calculate the scale factor (fractal units per screen pixel)
-                        var scaleX = fractalWidth / displayWidth;
-                        var scaleY = fractalHeight / displayHeight;
+                                // Add 15% padding if using auto-bounds
+                                if (!ViewModel.HasCustomHailstoneViewport)
+                                {
+                                    double rangeX = viewMaxX - viewMinX;
+                                    double rangeY = viewMaxY - viewMinY;
+                                    if (rangeX == 0) rangeX = 2;
+                                    if (rangeY == 0) rangeY = 2;
+                                    double paddingX = rangeX * 0.15;
+                                    double paddingY = rangeY * 0.15;
+                                    viewMinX -= paddingX;
+                                    viewMaxX += paddingX;
+                                    viewMinY -= paddingY;
+                                    viewMaxY += paddingY;
+                                }
 
-                        // Update center coordinates (paper-on-desk: drag right to move image right)
-                        // X: drag right (positive deltaX) shifts image right, revealing left side
-                        ViewModel.CenterX -= deltaX * scaleX;
+                                var viewRangeX = viewMaxX - viewMinX;
+                                var viewRangeY = viewMaxY - viewMinY;
 
-                        // Y: drag down (positive deltaY) shifts image down, revealing top side
-                        // Fractal Y increases upward (opposite of screen Y), so ADD to move image down with mouse
-                        ViewModel.CenterY += deltaY * scaleY;
+                                // Calculate scale (units per pixel)
+                                var scaleX = viewRangeX / displayWidth;
+                                var scaleY = viewRangeY / displayHeight;
+
+                                // Update viewport (paper-on-desk: drag right to move image right)
+                                // X: drag right shifts image right, revealing left side
+                                viewMinX -= deltaX * scaleX;
+                                viewMaxX -= deltaX * scaleX;
+
+                                // Y: drag down shifts image down, revealing top side
+                                // Screen Y increases downward, world Y increases upward
+                                viewMinY += deltaY * scaleY;
+                                viewMaxY += deltaY * scaleY;
+
+                                ViewModel.SetHailstoneViewport(viewMinX, viewMaxX, viewMinY, viewMaxY);
+                            }
+                        }
+                        else
+                        {
+                            // Standard fractal panning
+                            // Current fractal view dimensions (must match FractalRenderService!)
+                            var fractalWidth = 3.0 / ViewModel.Zoom;
+                            var fractalHeight = fractalWidth * ((double)ViewModel.ImageHeight / ViewModel.ImageWidth);
+
+                            // Calculate the scale factor (fractal units per screen pixel)
+                            var scaleX = fractalWidth / displayWidth;
+                            var scaleY = fractalHeight / displayHeight;
+
+                            // Update center coordinates (paper-on-desk: drag right to move image right)
+                            // X: drag right (positive deltaX) shifts image right, revealing left side
+                            ViewModel.CenterX -= deltaX * scaleX;
+
+                            // Y: drag down (positive deltaY) shifts image down, revealing top side
+                            // Fractal Y increases upward (opposite of screen Y), so ADD to move image down with mouse
+                            ViewModel.CenterY += deltaY * scaleY;
+                        }
                     }
                 }
 
@@ -134,6 +186,13 @@ namespace ManpWinUI.Views
 
         private void FractalImage_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
+            // Disable mouse interactions in Hailstone mode
+            if (ViewModel.IsHailstoneMode)
+            {
+                e.Handled = true;
+                return;
+            }
+
             if (_isDragging)
             {
                 _isDragging = false;
@@ -142,14 +201,10 @@ namespace ManpWinUI.Views
 
                 if (_isPanning)
                 {
-                    // Pan complete - auto-render the new view (Mandelbrot/Julia only)
-                    if (!ViewModel.IsHailstoneMode && ViewModel.RenderMandelbrotCommand.CanExecute(null))
+                    // Pan complete - auto-render the new view (standard fractals only)
+                    if (ViewModel.RenderCommand.CanExecute(null))
                     {
-                        ViewModel.RenderMandelbrotCommand.Execute(null);
-                    }
-                    else if (ViewModel.IsHailstoneMode)
-                    {
-                        ViewModel.StatusMessage = "Panning not supported for Hailstone sequences";
+                        ViewModel.RenderCommand.Execute(null);
                     }
                 }
                 else
@@ -177,53 +232,113 @@ namespace ManpWinUI.Views
             if (ViewModel.FractalImage == null)
                 return;
 
-            // Mouse wheel zoom only applies to Mandelbrot/Julia fractals, not Hailstone
-            if (ViewModel.IsHailstoneMode)
-            {
-                ViewModel.StatusMessage = "Mouse wheel zoom not supported for Hailstone sequences";
-                e.Handled = true;
-                return;
-            }
-
             var delta = e.GetCurrentPoint(null).Properties.MouseWheelDelta;
 
-            // Zoom in if scrolling up, zoom out if scrolling down
-            if (delta > 0)
+            if (ViewModel.IsHailstoneMode)
             {
-                ViewModel.Zoom *= 2.0;
-                ViewModel.StatusMessage = $"Zooming in to {ViewModel.Zoom:F2}x...";
-            }
-            else if (delta < 0)
-            {
-                ViewModel.Zoom /= 2.0;
-                ViewModel.StatusMessage = $"Zooming out to {ViewModel.Zoom:F2}x...";
-            }
-
-            // Debounce: wait 300ms after last scroll before auto-rendering
-            _zoomTimer?.Dispose();
-            _zoomTimer = new System.Threading.Timer(_ =>
-            {
-                this.DispatcherQueue.TryEnqueue(() =>
+                // Hailstone mouse wheel zoom: manipulate viewport bounds
+                if (ViewModel.CurrentHailstoneResult != null)
                 {
-                    if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+                    // Get current viewport (or use sequence bounds if no custom viewport)
+                    double viewMinX = ViewModel.HailstoneViewportMinX ?? ViewModel.CurrentHailstoneResult.MinX;
+                    double viewMaxX = ViewModel.HailstoneViewportMaxX ?? ViewModel.CurrentHailstoneResult.MaxX;
+                    double viewMinY = ViewModel.HailstoneViewportMinY ?? ViewModel.CurrentHailstoneResult.MinY;
+                    double viewMaxY = ViewModel.HailstoneViewportMaxY ?? ViewModel.CurrentHailstoneResult.MaxY;
+
+                    // Add 15% padding if using auto-bounds
+                    if (!ViewModel.HasCustomHailstoneViewport)
                     {
-                        ViewModel.RenderMandelbrotCommand.Execute(null);
+                        double rangeX = viewMaxX - viewMinX;
+                        double rangeY = viewMaxY - viewMinY;
+                        if (rangeX == 0) rangeX = 2;
+                        if (rangeY == 0) rangeY = 2;
+                        double paddingX = rangeX * 0.15;
+                        double paddingY = rangeY * 0.15;
+                        viewMinX -= paddingX;
+                        viewMaxX += paddingX;
+                        viewMinY -= paddingY;
+                        viewMaxY += paddingY;
                     }
-                });
-            }, null, 300, System.Threading.Timeout.Infinite);
+
+                    // Calculate center and size
+                    double centerX = (viewMinX + viewMaxX) / 2.0;
+                    double centerY = (viewMinY + viewMaxY) / 2.0;
+                    double halfWidth = (viewMaxX - viewMinX) / 2.0;
+                    double halfHeight = (viewMaxY - viewMinY) / 2.0;
+
+                    // Zoom factor: 2x for zoom in, 0.5x for zoom out
+                    double zoomFactor = delta > 0 ? 0.5 : 2.0;
+
+                    // Apply zoom around center
+                    double newHalfWidth = halfWidth * zoomFactor;
+                    double newHalfHeight = halfHeight * zoomFactor;
+
+                    double newMinX = centerX - newHalfWidth;
+                    double newMaxX = centerX + newHalfWidth;
+                    double newMinY = centerY - newHalfHeight;
+                    double newMaxY = centerY + newHalfHeight;
+
+                    ViewModel.SetHailstoneViewport(newMinX, newMaxX, newMinY, newMaxY);
+                    ViewModel.StatusMessage = delta > 0 
+                        ? $"Zooming in Hailstone viewport to [{newMinX:F1}, {newMaxX:F1}] × [{newMinY:F1}, {newMaxY:F1}]..."
+                        : $"Zooming out Hailstone viewport to [{newMinX:F1}, {newMaxX:F1}] × [{newMinY:F1}, {newMaxY:F1}]...";
+
+                    // Hide labels temporarily during zoom to prevent mismatch with bitmap
+                    HailstoneLabelsCanvas.Opacity = 0.3;
+
+                    // Debounce: wait 500ms after last scroll before auto-rendering
+                    _zoomTimer?.Dispose();
+                    _zoomTimer = new System.Threading.Timer(_ =>
+                    {
+                        this.DispatcherQueue.TryEnqueue(async () =>
+                        {
+                            if (ViewModel.RenderCommand.CanExecute(null))
+                            {
+                                await ViewModel.RenderCommand.ExecuteAsync(null);
+                                // Restore labels after render completes
+                                HailstoneLabelsCanvas.Opacity = 1.0;
+                            }
+                        });
+                    }, null, 500, System.Threading.Timeout.Infinite);
+                }
+                else
+                {
+                    ViewModel.StatusMessage = "No Hailstone sequence loaded - render first before zooming";
+                }
+            }
+            else
+            {
+                // Standard fractal mouse wheel zoom
+                if (delta > 0)
+                {
+                    ViewModel.Zoom *= 2.0;
+                    ViewModel.StatusMessage = $"Zooming in to {ViewModel.Zoom:F2}x...";
+                }
+                else if (delta < 0)
+                {
+                    ViewModel.Zoom /= 2.0;
+                    ViewModel.StatusMessage = $"Zooming out to {ViewModel.Zoom:F2}x...";
+                }
+
+                // Debounce: wait 300ms after last scroll before auto-rendering
+                _zoomTimer?.Dispose();
+                _zoomTimer = new System.Threading.Timer(_ =>
+                {
+                    this.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        if (ViewModel.RenderCommand.CanExecute(null))
+                        {
+                            ViewModel.RenderCommand.Execute(null);
+                        }
+                    });
+                }, null, 300, System.Threading.Timeout.Infinite);
+            }
 
             e.Handled = true;
         }
 
         private void ZoomToRectangle()
         {
-            // Zoom rectangle only applies to Mandelbrot/Julia, not Hailstone
-            if (ViewModel.IsHailstoneMode)
-            {
-                ViewModel.StatusMessage = "Rectangle zoom not supported for Hailstone sequences";
-                return;
-            }
-
             // Get the selection rectangle bounds in screen coordinates
             var rectLeft = Canvas.GetLeft(SelectionRectangle);
             var rectTop = Canvas.GetTop(SelectionRectangle);
@@ -274,6 +389,7 @@ namespace ManpWinUI.Views
                 var rectCenterDisplayX = imageRelativeLeft + rectWidth / 2.0;
                 var rectCenterDisplayY = imageRelativeTop + rectHeight / 2.0;
 
+                // Standard fractal box zoom
                 // Convert display coordinates to bitmap pixel coordinates
                 var displayScale = displayWidth / bitmapWidth;
                 var rectCenterPixelX = rectCenterDisplayX / displayScale;
@@ -330,9 +446,9 @@ namespace ManpWinUI.Views
                 ViewModel.StatusMessage = $"Zoom: {newZoom:F2}x @ ({newCenterX:F8}, {newCenterY:F8}) | View: {newFractalWidth:F8}×{newFractalHeight:F8}";
 
                 // Auto-render the new view
-                if (ViewModel.RenderMandelbrotCommand.CanExecute(null))
+                if (ViewModel.RenderCommand.CanExecute(null))
                 {
-                    ViewModel.RenderMandelbrotCommand.Execute(null);
+                    ViewModel.RenderCommand.Execute(null);
                 }
             }
         }

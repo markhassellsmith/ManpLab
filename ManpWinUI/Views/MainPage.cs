@@ -1,6 +1,8 @@
 using ManpWinUI.ViewModels;
+using ManpWinUI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
+using System.Diagnostics;
 
 namespace ManpWinUI.Views
 {
@@ -47,7 +49,11 @@ namespace ManpWinUI.Views
                     e.PropertyName == nameof(ViewModel.CurrentHailstoneResult) ||
                     e.PropertyName == nameof(ViewModel.HailstoneScaleX))
                 {
-                    UpdateHailstoneLabels();
+                    // Only update labels after rendering completes (not during viewport changes)
+                    if (!ViewModel.IsRendering)
+                    {
+                        UpdateHailstoneLabels();
+                    }
                 }
 
                 // Update Hailstone info panel when result changes

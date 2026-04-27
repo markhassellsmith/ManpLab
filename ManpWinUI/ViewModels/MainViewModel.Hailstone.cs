@@ -80,6 +80,48 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial double HailstoneOffsetY { get; set; }
 
+    // Viewport manipulation for interactive zoom/pan
+    [ObservableProperty]
+    public partial double? HailstoneViewportMinX { get; set; }
+
+    [ObservableProperty]
+    public partial double? HailstoneViewportMaxX { get; set; }
+
+    [ObservableProperty]
+    public partial double? HailstoneViewportMinY { get; set; }
+
+    [ObservableProperty]
+    public partial double? HailstoneViewportMaxY { get; set; }
+
+    // Computed property: whether a custom viewport is active
+    public bool HasCustomHailstoneViewport => 
+        HailstoneViewportMinX.HasValue && 
+        HailstoneViewportMaxX.HasValue && 
+        HailstoneViewportMinY.HasValue && 
+        HailstoneViewportMaxY.HasValue;
+
+    /// <summary>
+    /// Resets the Hailstone viewport to auto-scale (clears custom bounds).
+    /// </summary>
+    public void ResetHailstoneViewport()
+    {
+        HailstoneViewportMinX = null;
+        HailstoneViewportMaxX = null;
+        HailstoneViewportMinY = null;
+        HailstoneViewportMaxY = null;
+    }
+
+    /// <summary>
+    /// Sets a custom Hailstone viewport (for interactive zoom/pan).
+    /// </summary>
+    public void SetHailstoneViewport(double minX, double maxX, double minY, double maxY)
+    {
+        HailstoneViewportMinX = minX;
+        HailstoneViewportMaxX = maxX;
+        HailstoneViewportMinY = minY;
+        HailstoneViewportMaxY = maxY;
+    }
+
     // Computed property: Hailstone mode is active when fractal type is "Hailstone"
     public bool IsHailstoneMode => SelectedFractalType == "Hailstone";
 
