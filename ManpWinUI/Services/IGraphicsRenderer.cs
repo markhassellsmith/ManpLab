@@ -87,7 +87,14 @@ namespace ManpWinUI.Services
         void ResetTransform();
 
         /// <summary>
+        /// Gets the raw pixel data as a byte array (BGRA format).
+        /// This method can be called from any thread.
+        /// </summary>
+        byte[] GetPixelData();
+
+        /// <summary>
         /// Gets the rendered image as a WriteableBitmap for display in WinUI.
+        /// NOTE: This must be called on the UI thread!
         /// </summary>
         Microsoft.UI.Xaml.Media.Imaging.WriteableBitmap ToWriteableBitmap();
 

@@ -114,6 +114,13 @@ namespace ManpWinUI.Services
             // _canvas.ResetMatrix();
         }
 
+        public byte[] GetPixelData()
+        {
+            throw new NotImplementedException();
+            // Get pixel bytes from SKBitmap
+            // return _bitmap.Bytes;
+        }
+
         public WriteableBitmap ToWriteableBitmap()
         {
             throw new NotImplementedException();

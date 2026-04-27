@@ -30,7 +30,7 @@ public partial class MainViewModel(
     private readonly IFractalRenderService _renderService = renderService;
     private readonly BookmarkService _bookmarkService = bookmarkService;
     private readonly IHailstoneService _hailstoneService = hailstoneService;
-    private readonly HailstoneRenderService _hailstoneRenderService = new();
+    private readonly HailstoneRenderServiceWin2D _hailstoneRenderService = new();
 
     // Image resolution
     [ObservableProperty]
@@ -272,12 +272,16 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     [RelayCommand(CanExecute = nameof(CanRender))]
     private async Task RenderAsync()
     {
+        System.Diagnostics.Debug.WriteLine($"[RenderAsync] Called - IsHailstoneMode={IsHailstoneMode}, SelectedFractalType={SelectedFractalType}");
+
         if (IsHailstoneMode)
         {
+            System.Diagnostics.Debug.WriteLine("[RenderAsync] Routing to RenderHailstoneAsync");
             await RenderHailstoneAsync();
         }
         else
         {
+            System.Diagnostics.Debug.WriteLine("[RenderAsync] Routing to RenderMandelbrotAsync");
             await RenderMandelbrotAsync();
         }
     }
@@ -288,8 +292,11 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     [RelayCommand(CanExecute = nameof(CanRender))]
     private async Task RenderHailstoneAsync()
     {
+        System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Called - IsHailstoneMode={IsHailstoneMode}");
+
         if (!IsHailstoneMode)
         {
+            System.Diagnostics.Debug.WriteLine("[RenderHailstoneAsync] EARLY EXIT - Not in Hailstone mode!");
             StatusMessage = "Please select Hailstone fractal type first.";
             return;
         }
@@ -297,6 +304,8 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         IsRendering = true;
         RenderProgress = 0;
         StatusMessage = $"Calculating Hailstone sequence from ({HailstoneStartX}, {HailstoneStartY})...";
+
+        System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Starting render - ({HailstoneStartX}, {HailstoneStartY}), MaxIter={HailstoneMaxIterations}");
 
         try
         {
@@ -309,6 +318,8 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 HailstoneMaxIterations,
                 colorSpread: 7,  // Default color spread
                 exportToCsv: false);  // Set to true if you want CSV export
+
+            System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Sequence calculated - {result.Sequence.Count} points");
 
             StatusMessage = $"Rendering Hailstone sequence ({result.Sequence.Count} points)...";
             RenderProgress = 50;
@@ -327,15 +338,42 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 HailstoneViewportMinY,
                 HailstoneViewportMaxY);
 
-            // Update UI on dispatcher thread
+            System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Got render result with {(renderResult.PixelData != null ? renderResult.PixelData.Length : 0)} bytes of pixel data");
+
+            // Create bitmap on UI thread (WriteableBitmap must be created on UI thread!)
+            WriteableBitmap? bitmap = null;
             _dispatcherQueue.TryEnqueue(() =>
             {
-                FractalImage = renderResult.Bitmap;
-                CurrentHailstoneResult = result;
-                HailstoneScaleX = renderResult.ScaleX;
-                HailstoneScaleY = renderResult.ScaleY;
-                HailstoneOffsetX = renderResult.OffsetX;
-                HailstoneOffsetY = renderResult.OffsetY;
+                try
+                {
+                    if (renderResult.PixelData != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Creating WriteableBitmap on UI thread ({renderResult.Width}x{renderResult.Height})");
+                        bitmap = new WriteableBitmap(renderResult.Width, renderResult.Height);
+                        using (var stream = bitmap.PixelBuffer.AsStream())
+                        {
+                            stream.Write(renderResult.PixelData, 0, renderResult.PixelData.Length);
+                        }
+                        System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Bitmap created successfully");
+                    }
+                    else if (renderResult.Bitmap != null)
+                    {
+                        // Legacy path: bitmap already created
+                        bitmap = renderResult.Bitmap;
+                    }
+
+                    FractalImage = bitmap;
+                    CurrentHailstoneResult = result;
+                    HailstoneScaleX = renderResult.ScaleX;
+                    HailstoneScaleY = renderResult.ScaleY;
+                    HailstoneOffsetX = renderResult.OffsetX;
+                    HailstoneOffsetY = renderResult.OffsetY;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] ERROR creating bitmap on UI thread: {ex.Message}");
+                    StatusMessage = $"Error creating bitmap: {ex.Message}";
+                }
             });
 
             LastRenderTime = DateTime.Now - startTime;
@@ -482,9 +520,13 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
 
     partial void OnSelectedFractalTypeChanged(string value)
     {
+        System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanged] Fractal type changed to: {value}");
+
         // Notify that computed properties have changed
         OnPropertyChanged(nameof(IsHailstoneMode));
         OnPropertyChanged(nameof(ShowMandelbrotAxes));
+
+        System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanged] IsHailstoneMode is now: {IsHailstoneMode}");
 
         // Clear Hailstone-specific data when switching away from Hailstone mode
         if (value != "Hailstone")

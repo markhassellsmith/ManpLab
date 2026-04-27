@@ -10,8 +10,24 @@ public class HailstoneRenderResult
 {
     /// <summary>
     /// The rendered bitmap image.
+    /// NOTE: May be null if pixel data is provided instead (for thread-safe bitmap creation).
     /// </summary>
-    public required WriteableBitmap Bitmap { get; init; }
+    public WriteableBitmap? Bitmap { get; init; }
+
+    /// <summary>
+    /// Raw pixel data in BGRA format (used when bitmap creation must happen on UI thread).
+    /// </summary>
+    public byte[]? PixelData { get; init; }
+
+    /// <summary>
+    /// Image width in pixels (used with PixelData).
+    /// </summary>
+    public int Width { get; init; }
+
+    /// <summary>
+    /// Image height in pixels (used with PixelData).
+    /// </summary>
+    public int Height { get; init; }
 
     /// <summary>
     /// The Hailstone sequence that was rendered.

@@ -230,7 +230,21 @@ RenderSequenceAsync()
 
 ## Next Steps
 
-1. **User Testing:** Verify artifact is eliminated in actual application
+1. ~~**User Testing:** Verify artifact is eliminated in actual application~~
 2. **Cleanup:** Remove dead code (old Draw methods) in separate commit
 3. **Documentation:** Update NUMVIS_AESTHETIC_IMPROVEMENTS.md with final solution
 4. **Performance:** Benchmark render times to ensure no regression
+
+---
+
+## Mouse Interaction Status
+
+**Date:** December 2024  
+**Status:** Mouse interactions disabled in Hailstone mode
+
+All mouse event handlers (PointerPressed, PointerMoved, PointerReleased, PointerWheelChanged) now check `ViewModel.IsHailstoneMode` at the start and return immediately if true. The mouse interaction code was removed to prevent issues with:
+- Left-click drag zoom boxes
+- Right-click panning
+- Mouse wheel zoom
+
+Hailstone visualization now only supports keyboard controls and UI button interactions.

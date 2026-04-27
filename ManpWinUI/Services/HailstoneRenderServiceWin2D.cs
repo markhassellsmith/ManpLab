@@ -31,6 +31,10 @@ public class HailstoneRenderServiceWin2D
     /// <param name="showPoints">Whether to draw dots at trajectory points.</param>
     /// <param name="showLabels">Whether to draw point labels directly on bitmap.</param>
     /// <param name="useFixedViewport">If true, uses fixed viewport bounds; if false, auto-scales to data.</param>
+    /// <param name="customViewportMinX">Custom viewport minimum X (overrides auto-scale/fixed).</param>
+    /// <param name="customViewportMaxX">Custom viewport maximum X (overrides auto-scale/fixed).</param>
+    /// <param name="customViewportMinY">Custom viewport minimum Y (overrides auto-scale/fixed).</param>
+    /// <param name="customViewportMaxY">Custom viewport maximum Y (overrides auto-scale/fixed).</param>
     /// <returns>A HailstoneRenderResult containing the bitmap and transform parameters.</returns>
     public async Task<HailstoneRenderResult> RenderSequenceAsync(
         HailstoneResult result,
@@ -39,7 +43,11 @@ public class HailstoneRenderServiceWin2D
         bool showAxes,
         bool showPoints,
         bool showLabels,
-        bool useFixedViewport = false)
+        bool useFixedViewport = false,
+        double? customViewportMinX = null,
+        double? customViewportMaxX = null,
+        double? customViewportMinY = null,
+        double? customViewportMaxY = null)
     {
         var stopwatch = Stopwatch.StartNew();
 
@@ -49,7 +57,24 @@ public class HailstoneRenderServiceWin2D
 
         // Determine bounds
         int minX, maxX, minY, maxY;
-        if (useFixedViewport)
+
+        // Check if custom viewport is provided (takes highest priority)
+        bool hasCustomViewport = customViewportMinX.HasValue && 
+                                  customViewportMaxX.HasValue && 
+                                  customViewportMinY.HasValue && 
+                                  customViewportMaxY.HasValue;
+
+        if (hasCustomViewport)
+        {
+            // Use custom viewport (from interactive zoom/pan)
+            minX = (int)Math.Floor(customViewportMinX!.Value);
+            maxX = (int)Math.Ceiling(customViewportMaxX!.Value);
+            minY = (int)Math.Floor(customViewportMinY!.Value);
+            maxY = (int)Math.Ceiling(customViewportMaxY!.Value);
+            Debug.WriteLine($"Using CUSTOM viewport: X=[{customViewportMinX:F2}, {customViewportMaxX:F2}], Y=[{customViewportMinY:F2}, {customViewportMaxY:F2}]");
+            Debug.WriteLine($"  Rounded to integers: X=[{minX}, {maxX}], Y=[{minY}, {maxY}]");
+        }
+        else if (useFixedViewport)
         {
             minX = DefaultMinX;
             maxX = DefaultMaxX;
@@ -68,12 +93,12 @@ public class HailstoneRenderServiceWin2D
 
         // Calculate world-to-screen transform
         var (scaleX, scaleY, offsetX, offsetY) = CalculateTransform(
-            minX, maxX, minY, maxY, width, height, useFixedViewport);
+            minX, maxX, minY, maxY, width, height, useFixedViewport || hasCustomViewport);
 
         Debug.WriteLine($"Transform: scaleX={scaleX:F2}, scaleY={scaleY:F2}, offsetX={offsetX:F2}, offsetY={offsetY:F2}");
 
-        // Render on background thread
-        WriteableBitmap? bitmap = await Task.Run(() =>
+        // Render on background thread - get pixel data (not bitmap!)
+        var pixelData = await Task.Run(() =>
         {
             try
             {
@@ -91,32 +116,33 @@ public class HailstoneRenderServiceWin2D
                 // 3. Draw grid and axes (if enabled) - now in world coordinates!
                 if (showAxes)
                 {
-                    DrawGridAndAxesWithTransform(renderer, minX, maxX, minY, maxY);
+                    DrawGridAndAxesWithTransform(renderer, minX, maxX, minY, maxY, scaleX, scaleY);
                 }
 
                 // 4. Draw sequence trajectory path - now in world coordinates!
-                DrawSequencePathWithTransform(renderer, result.Sequence);
+                DrawSequencePathWithTransform(renderer, result.Sequence, scaleX, scaleY);
 
-                // 5. Draw points at each position (if enabled) - now in world coordinates!
+                // 5. Draw points at each position (if enabled) - fixed pixel size!
                 if (showPoints)
                 {
-                    DrawPointsWithTransform(renderer, result.Sequence);
+                    DrawPointsWithTransform(renderer, result.Sequence, scaleX, scaleY, offsetX, offsetY);
                 }
 
-                // 6. Reset transform for screen-space rendering (labels and info)
+                // 6. Reset transform for screen-space rendering
                 renderer.ResetTransform();
 
-                // 7. Draw point labels directly on bitmap (if enabled) - screen coordinates
-                if (showLabels)
-                {
-                    DrawPointLabels(renderer, result.Sequence, scaleX, scaleY, offsetX, offsetY);
-                }
+                // 7. NOTE: Point labels are NOT drawn on bitmap - they are handled by
+                // the Canvas overlay system (MainPage.HailstoneLabels.cs) which provides
+                // smart placement and anti-overlap logic. Drawing them here would create duplicates.
 
-                // 8. Draw info text in corner - screen coordinates
-                DrawInfoText(renderer, result);
+                // 8. NOTE: Info text is also NOT drawn on bitmap - it is handled by the Canvas
+                // overlay system (MainPage.HailstoneInfo.cs) which provides proper layering
+                // with semi-transparent background. Drawing here would create duplicate text.
 
-                // Convert to WriteableBitmap
-                return renderer.ToWriteableBitmap();
+                // All rendering complete - get pixel data
+
+                // Get pixel data (can be done on background thread)
+                return renderer.GetPixelData();
             }
             catch (Exception ex)
             {
@@ -129,14 +155,18 @@ public class HailstoneRenderServiceWin2D
         stopwatch.Stop();
         Debug.WriteLine($"=== Win2D Hailstone Render Complete ({stopwatch.ElapsedMilliseconds}ms) ===");
 
-        if (bitmap == null)
+        if (pixelData == null)
         {
             throw new InvalidOperationException("Win2D rendering failed");
         }
 
+        // Create WriteableBitmap on UI thread (caller must handle this)
+        // We return the pixel data and let the caller create the bitmap
         return new HailstoneRenderResult
         {
-            Bitmap = bitmap,
+            PixelData = pixelData,
+            Width = width,
+            Height = height,
             SequenceResult = result,
             ScaleX = scaleX,
             ScaleY = scaleY,
@@ -453,16 +483,20 @@ public class HailstoneRenderServiceWin2D
 
     /// <summary>
     /// Draws grid and axes using world coordinates (transform handles conversion).
-    /// Simplified version without manual WorldToScreen conversion.
+    /// Line thickness must be adjusted for scale to maintain 1-pixel width.
     /// </summary>
     private void DrawGridAndAxesWithTransform(IGraphicsRenderer renderer,
-        int minX, int maxX, int minY, int maxY)
+        int minX, int maxX, int minY, int maxY, double scaleX, double scaleY)
     {
         var gridColor = Color.FromArgb(40, 50, 50, 50);
         var axesColor = Color.FromArgb(150, 100, 100, 100);
 
         int range = Math.Max(maxX - minX, maxY - minY);
         int tickSpacing = CalculateTickSpacing(range);
+
+        // Calculate line thickness in world units to achieve 1-pixel width
+        float avgScale = (float)((Math.Abs(scaleX) + Math.Abs(scaleY)) / 2.0);
+        float lineThickness = 1.0f / avgScale;
 
         // Draw vertical grid lines in world coordinates
         int startX = (minX / tickSpacing) * tickSpacing;
@@ -477,8 +511,7 @@ public class HailstoneRenderServiceWin2D
         for (int x = startX; x <= endX; x += tickSpacing)
         {
             var color = (x == 0) ? axesColor : gridColor;
-            // Cast to float to invoke float overload for smooth rendering
-            renderer.DrawLine((float)x, yMin, (float)x, yMax, color, 1.0f);
+            renderer.DrawLine((float)x, yMin, (float)x, yMax, color, lineThickness);
         }
 
         // Draw horizontal grid lines in world coordinates
@@ -493,19 +526,25 @@ public class HailstoneRenderServiceWin2D
         for (int y = startY; y <= endY; y += tickSpacing)
         {
             var color = (y == 0) ? axesColor : gridColor;
-            // Cast to float to invoke float overload for smooth rendering
-            renderer.DrawLine(xMin, (float)y, xMax, (float)y, color, 1.0f);
+            renderer.DrawLine(xMin, (float)y, xMax, (float)y, color, lineThickness);
         }
     }
 
     /// <summary>
     /// Draws sequence trajectory path using world coordinates (transform handles conversion).
-    /// This is the key improvement - drawing directly in mathematical coordinates!
-    /// Cast integers to float to ensure float overload is called for smooth rendering.
+    /// Line thickness must be adjusted for scale to maintain consistent pixel width.
+    /// Thickness in world units = desired pixel thickness / scale
+    /// All lines use the same thickness - no special thickness for cycle segments.
     /// </summary>
-    private void DrawSequencePathWithTransform(IGraphicsRenderer renderer, List<HailstonePoint> sequence)
+    private void DrawSequencePathWithTransform(IGraphicsRenderer renderer, List<HailstonePoint> sequence,
+        double scaleX, double scaleY)
     {
         if (sequence.Count < 2) return;
+
+        // Calculate line thickness in world units to achieve desired pixel width
+        // Use average of absolute scaleX and scaleY (scaleY is negative due to Y-flip)
+        float avgScale = (float)((Math.Abs(scaleX) + Math.Abs(scaleY)) / 2.0);
+        float lineThickness = 1.2f / avgScale;  // 1.2 pixels for all lines
 
         for (int i = 0; i < sequence.Count - 1; i++)
         {
@@ -514,50 +553,56 @@ public class HailstoneRenderServiceWin2D
 
             if (p1.IsInCycle)
             {
-                // Magenta for cycle - thicker line (2.5x matches NumVis)
-                // Cast to float to invoke float overload for smooth anti-aliasing
-                renderer.DrawLine((float)p1.X, (float)p1.Y, (float)p2.X, (float)p2.Y, Colors.Magenta, 2.5f);
+                // Magenta for cycle - same thickness as normal lines
+                renderer.DrawLine((float)p1.X, (float)p1.Y, (float)p2.X, (float)p2.Y, Colors.Magenta, lineThickness);
             }
             else
             {
                 // Spectrum color from point data
                 var color = Color.FromArgb(255, p2.Color.R, p2.Color.G, p2.Color.B);
-                // Cast to float to invoke float overload for smooth anti-aliasing
-                renderer.DrawLine((float)p1.X, (float)p1.Y, (float)p2.X, (float)p2.Y, color, 1.2f);
+                renderer.DrawLine((float)p1.X, (float)p1.Y, (float)p2.X, (float)p2.Y, color, lineThickness);
             }
         }
     }
 
     /// <summary>
-    /// Draws points using world coordinates (transform handles conversion).
-    /// Cast integers to float for smooth rendering.
+    /// Draws points using world coordinates but with fixed pixel-size markers.
+    /// Transform is temporarily reset to prevent scaling the radius/size.
+    /// This requires passing scale/offset parameters to manually convert positions.
     /// </summary>
-    private void DrawPointsWithTransform(IGraphicsRenderer renderer, List<HailstonePoint> sequence)
+    private void DrawPointsWithTransform(IGraphicsRenderer renderer, List<HailstonePoint> sequence,
+        double scaleX, double scaleY, double offsetX, double offsetY)
     {
         int cycleStartIndex = sequence.FindIndex(p => p.IsInCycle);
 
+        // Reset transform for drawing markers with fixed pixel sizes
+        renderer.ResetTransform();
+
         foreach (var point in sequence)
         {
+            // Convert world position to screen position
+            var (screenX, screenY) = WorldToScreen(point.X, point.Y, scaleX, scaleY, offsetX, offsetY);
+
             if (point.Step == 0)
             {
-                // Green square for start
-                renderer.DrawRectangle((float)point.X - 2, (float)point.Y - 2, 4, 4, Colors.Green);
+                // Green square for start (4x4 pixels)
+                renderer.DrawRectangle(screenX - 2, screenY - 2, 4, 4, Colors.Green);
             }
             else if (point.IsInCycle && sequence.IndexOf(point) == cycleStartIndex)
             {
-                // Yellow diamond for cycle start
-                renderer.DrawCircle((float)point.X, (float)point.Y, 3, Colors.Yellow);
+                // Yellow circle for cycle start (3 pixel radius)
+                renderer.DrawCircle(screenX, screenY, 3, Colors.Yellow);
             }
             else if (point.IsInCycle)
             {
-                // Magenta circles for cycle points
-                renderer.DrawCircle((float)point.X, (float)point.Y, 3, Colors.Magenta);
+                // Magenta circles for cycle points (3 pixel radius)
+                renderer.DrawCircle(screenX, screenY, 3, Colors.Magenta);
             }
             else
             {
-                // Small colored dots for regular points
+                // Small colored dots for regular points (2 pixel radius)
                 var color = Color.FromArgb(255, point.Color.R, point.Color.G, point.Color.B);
-                renderer.DrawCircle((float)point.X, (float)point.Y, 2, color);
+                renderer.DrawCircle(screenX, screenY, 2, color);
             }
         }
     }

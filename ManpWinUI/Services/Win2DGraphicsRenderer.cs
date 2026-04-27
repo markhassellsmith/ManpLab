@@ -149,25 +149,34 @@ namespace ManpWinUI.Services
             _drawingSession.Transform = Matrix3x2.Identity;
         }
 
-        public WriteableBitmap ToWriteableBitmap()
+        public byte[] GetPixelData()
         {
-            // Flush the drawing session
+            // Flush the drawing session to ensure all drawing is complete
             _drawingSession?.Dispose();
             _drawingSession = null;
 
-            // Get pixel data from Win2D render target
+            // Get pixel data from Win2D render target (can be called from any thread)
             var pixels = _renderTarget.GetPixelBytes();
 
+            // Recreate drawing session for potential future operations
+            _drawingSession = _renderTarget.CreateDrawingSession();
+            _drawingSession.Antialiasing = CanvasAntialiasing.Antialiased;
+
+            return pixels;
+        }
+
+        public WriteableBitmap ToWriteableBitmap()
+        {
+            // Get pixel data (this flushes the drawing session)
+            var pixels = GetPixelData();
+
             // Create WriteableBitmap and copy pixels
+            // NOTE: This MUST be called on the UI thread!
             var bitmap = new WriteableBitmap(Width, Height);
             using (var stream = bitmap.PixelBuffer.AsStream())
             {
                 stream.Write(pixels, 0, pixels.Length);
             }
-
-            // Recreate drawing session for potential future operations
-            _drawingSession = _renderTarget.CreateDrawingSession();
-            _drawingSession.Antialiasing = CanvasAntialiasing.Antialiased;
 
             return bitmap;
         }
