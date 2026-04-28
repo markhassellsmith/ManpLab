@@ -7,6 +7,7 @@
     xmlns:local="using:ManpWinUI.Views"
     xmlns:vm="using:ManpWinUI.ViewModels"
     xmlns:models="using:ManpWinUI.Models"
+    xmlns:browser="using:ManpWinUI.Views.Browser"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -111,29 +112,6 @@
                 </AppBarButton.Icon>
                 <ToolTipService.ToolTip>
                     <ToolTip Content="View and manage fractal bookmarks (B)" />
-                </ToolTipService.ToolTip>
-            </AppBarButton>
-
-            <!-- Win2D Test Buttons (temporary for validation) -->
-            <AppBarSeparator />
-            <AppBarButton
-                Label="Test Win2D"
-                Click="TestWin2D_Click">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE7EF;" FontFamily="Segoe MDL2 Assets" />
-                </AppBarButton.Icon>
-                <ToolTipService.ToolTip>
-                    <ToolTip Content="Test Win2D rendering (validation)" />
-                </ToolTipService.ToolTip>
-            </AppBarButton>
-            <AppBarButton
-                Label="Test Win2D Hailstone"
-                Click="TestWin2DHailstone_Click">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE8FD;" FontFamily="Segoe MDL2 Assets" />
-                </AppBarButton.Icon>
-                <ToolTipService.ToolTip>
-                    <ToolTip Content="Test Win2D Hailstone renderer (no Canvas overlays!)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
         </CommandBar>
@@ -252,14 +230,23 @@
             <SplitView.Content>
             <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350" />
+                <!-- Browser Panel - wider to show full names -->
                 <ColumnDefinition Width="*" />
                 <!-- Fractal Display -->
                 <ColumnDefinition Width="350" />
-                <!-- Side Panel -->
+                <!-- Properties Panel -->
             </Grid.ColumnDefinitions>
 
-            <!-- Fractal Canvas -->
+            <!-- Browser Panel -->
             <Grid Grid.Column="0"
+                  BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                  BorderThickness="0,0,1,0">
+                <browser:FractalBrowserView />
+            </Grid>
+
+            <!-- Fractal Canvas -->
+            <Grid Grid.Column="1"
                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                   PointerPressed="FractalImage_PointerPressed"
                   PointerMoved="FractalImage_PointerMoved"
@@ -354,8 +341,10 @@
                         </Grid>
 
                         <!-- Side Panel with Parameters -->
-                        <ScrollViewer Grid.Column="1" 
+                        <ScrollViewer Grid.Column="2"
                                       Background="{ThemeResource LayerFillColorDefaultBrush}"
+                                      BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                      BorderThickness="1,0,0,0"
                                       Padding="16">
                             <StackPanel Spacing="12">
                                 <TextBlock Text="Parameters" 

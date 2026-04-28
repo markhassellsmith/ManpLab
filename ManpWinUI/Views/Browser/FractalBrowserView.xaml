@@ -34,9 +34,38 @@
 
         <!-- Fractal TreeView -->
         <ScrollViewer Grid.Row="2" Padding="8,0">
-            <TreeView ItemsSource="{x:Bind ViewModel.Categories, Mode=OneWay}">
-                <!-- Week 4: Stub data, Week 5: Dynamic from FractalRegistry -->
-            </TreeView>
+            <ItemsRepeater ItemsSource="{x:Bind ViewModel.Categories, Mode=OneWay}">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="vm:FractalCategoryNode">
+                        <Expander IsExpanded="{x:Bind IsExpanded, Mode=OneWay}"
+                                  HorizontalAlignment="Stretch"
+                                  HorizontalContentAlignment="Stretch"
+                                  Margin="0,2">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{x:Bind Icon}" FontSize="14" />
+                                    <TextBlock Text="{x:Bind Name}" 
+                                               FontWeight="SemiBold" 
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Expander.Header>
+                            <ItemsRepeater ItemsSource="{x:Bind Fractals}">
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:FractalNode">
+                                        <Button Content="{x:Bind Name}"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Left"
+                                                Padding="24,8,8,8"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Margin="0,1" />
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                            </ItemsRepeater>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
         </ScrollViewer>
 
         <!-- Status Footer -->

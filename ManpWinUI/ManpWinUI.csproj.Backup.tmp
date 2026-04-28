@@ -48,6 +48,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Page Remove="Views\Canvas\FractalCanvasView.xaml" />
+      <Page Remove="Views\FractalCanvas\FractalCanvasView.xaml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.*" />
         <PackageReference Include="Microsoft.Web.WebView2" Version="1.*" />
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.*" />
