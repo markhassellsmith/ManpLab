@@ -107,6 +107,9 @@
     <ClCompile Include="MandelbrotFamily.cpp" />
     <ClCompile Include="PhoenixFamily.cpp" />
     <ClCompile Include="TricornFamily.cpp" />
+    <ClCompile Include="MultibrotFamily.cpp" />
+    <ClCompile Include="NewtonFamily.cpp" />
+    <ClCompile Include="MagnetFamily.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
