@@ -340,38 +340,22 @@
                             </Grid>
                         </Grid>
 
-                        <!-- Side Panel with Parameters -->
-                        <ScrollViewer Grid.Column="2"
-                                      Background="{ThemeResource LayerFillColorDefaultBrush}"
-                                      BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                      BorderThickness="1,0,0,0"
-                                      Padding="16">
-                            <StackPanel Spacing="12">
-                                <TextBlock Text="Parameters" 
-                                           FontWeight="SemiBold" 
-                                           FontSize="18" 
-                                           Margin="0,0,0,8" />
-
-                                <!-- Color Palette -->
-                                <StackPanel Spacing="4">
-                                    <TextBlock Text="Color Palette" FontWeight="SemiBold" />
-                                    <ComboBox
-                                        SelectedItem="{x:Bind ViewModel.SelectedPalette, Mode=TwoWay}"
-                                        HorizontalAlignment="Stretch">
-                                        <x:String>Grayscale</x:String>
-                                        <x:String>Classic</x:String>
-                                        <x:String>Fire</x:String>
-                                        <x:String>Ocean</x:String>
-                                        <x:String>Rainbow</x:String>
-                                        <x:String>Psychedelic</x:String>
-                                    </ComboBox>
-                                </StackPanel>
-
-                                <MenuFlyoutSeparator />
-
-                                <!-- Fractal Type Selection -->
-                                <StackPanel Spacing="4">
-                                    <TextBlock Text="Fractal Type" FontWeight="SemiBold" />
+                        <!-- Properties Panel with Tabs -->
+                        <Grid Grid.Column="2"
+                              Background="{ThemeResource LayerFillColorDefaultBrush}"
+                              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                              BorderThickness="1,0,0,0">
+                            <TabView>
+                                <!-- Parameters Tab -->
+                                <TabViewItem Header="Parameters">
+                                    <TabViewItem.IconSource>
+                                        <SymbolIconSource Symbol="Setting" />
+                                    </TabViewItem.IconSource>
+                                    <ScrollViewer Padding="16">
+                                        <StackPanel Spacing="12">
+                                            <!-- Fractal Type Selection -->
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="Fractal Type" FontWeight="SemiBold" />
                                     <ComboBox
                                         SelectedItem="{x:Bind ViewModel.SelectedFractalType, Mode=TwoWay}"
                                         HorizontalAlignment="Stretch">
@@ -661,8 +645,78 @@
                                     OnContent="Visible"
                                     OffContent="Hidden"
                                     ToolTipService.ToolTip="Display tick marks and coordinate labels on image borders" />
-                            </StackPanel>
-                        </ScrollViewer>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </TabViewItem>
+
+                                <!-- Colors Tab -->
+                                <TabViewItem Header="Colors">
+                                    <TabViewItem.IconSource>
+                                        <SymbolIconSource Symbol="Highlight" />
+                                    </TabViewItem.IconSource>
+                                    <ScrollViewer Padding="16">
+                                        <StackPanel Spacing="12">
+                                            <!-- Color Palette -->
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="Color Palette" FontWeight="SemiBold" />
+                                                <ComboBox
+                                                    SelectedItem="{x:Bind ViewModel.SelectedPalette, Mode=TwoWay}"
+                                                    HorizontalAlignment="Stretch">
+                                                    <x:String>Grayscale</x:String>
+                                                    <x:String>Classic</x:String>
+                                                    <x:String>Fire</x:String>
+                                                    <x:String>Ocean</x:String>
+                                                    <x:String>Rainbow</x:String>
+                                                    <x:String>Psychedelic</x:String>
+                                                </ComboBox>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </TabViewItem>
+
+                                <!-- Info Tab -->
+                                <TabViewItem Header="Info">
+                                    <TabViewItem.IconSource>
+                                        <SymbolIconSource Symbol="Help" />
+                                    </TabViewItem.IconSource>
+                                    <ScrollViewer Padding="16">
+                                        <StackPanel Spacing="12">
+                                            <TextBlock Text="Fractal Information" 
+                                                       FontWeight="SemiBold" 
+                                                       FontSize="16" />
+                                            <TextBlock Text="Select a fractal from the browser to see its description and properties."
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                            <TextBlock Text="Week 5: Dynamic fractal metadata will appear here"
+                                                       FontSize="11"
+                                                       FontStyle="Italic"
+                                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </TabViewItem>
+
+                                <!-- Bookmarks Tab -->
+                                <TabViewItem Header="Bookmarks">
+                                    <TabViewItem.IconSource>
+                                        <SymbolIconSource Symbol="Favorite" />
+                                    </TabViewItem.IconSource>
+                                    <ScrollViewer Padding="16">
+                                        <StackPanel Spacing="12">
+                                            <TextBlock Text="Bookmark Management" 
+                                                       FontWeight="SemiBold" 
+                                                       FontSize="16" />
+                                            <TextBlock Text="Use the Bookmarks button in the toolbar to manage saved locations."
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                            <TextBlock Text="Future: Bookmarks will be managed here instead of overlay panel"
+                                                       FontSize="11"
+                                                       FontStyle="Italic"
+                                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </TabViewItem>
+                            </TabView>
+                        </Grid>
             </Grid>
             </SplitView.Content>
         </SplitView>
