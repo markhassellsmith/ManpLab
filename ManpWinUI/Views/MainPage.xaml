@@ -386,10 +386,26 @@
                                     <ComboBox
                                         SelectedItem="{x:Bind ViewModel.SelectedFractalType, Mode=TwoWay}"
                                         HorizontalAlignment="Stretch">
+                                        <!-- Classic Fractals -->
                                         <x:String>Mandelbrot</x:String>
                                         <x:String>BurningShip</x:String>
                                         <x:String>Tricorn</x:String>
                                         <x:String>Phoenix</x:String>
+                                        <!-- Multibrot Family -->
+                                        <x:String>Multibrot3</x:String>
+                                        <x:String>Multibrot4</x:String>
+                                        <x:String>Multibrot5</x:String>
+                                        <!-- Newton Method -->
+                                        <x:String>Newton</x:String>
+                                        <x:String>Nova</x:String>
+                                        <!-- Magnet Fractals -->
+                                        <x:String>Magnet1</x:String>
+                                        <x:String>Magnet2</x:String>
+                                        <!-- Julia Presets -->
+                                        <x:String>JuliaSanMarco</x:String>
+                                        <x:String>JuliaDouadyRabbit</x:String>
+                                        <x:String>JuliaSiegelDisk</x:String>
+                                        <!-- Hailstone (special) -->
                                         <x:String>Hailstone</x:String>
                                     </ComboBox>
                                 </StackPanel>
