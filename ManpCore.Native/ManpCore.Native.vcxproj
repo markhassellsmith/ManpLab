@@ -87,6 +87,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BatchRenderer.h" />
     <ClInclude Include="BigDoubleMarshaller.h" />
     <ClInclude Include="ColorPalette.h" />
     <ClInclude Include="FractalEngineWrapper.h" />
@@ -96,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="BatchRenderer.cpp" />
     <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="FractalEngineWrapper.cpp" />
     <ClCompile Include="..\ManpWIN64\Complex.cpp">
