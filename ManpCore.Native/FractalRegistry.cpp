@@ -125,6 +125,9 @@ extern void RegisterMandelbrotFamily();
 extern void RegisterBurningShipFamily();
 extern void RegisterTricornFamily();
 extern void RegisterPhoenixFamily();
+extern void RegisterMultibrotFamily();
+extern void RegisterNewtonFamily();
+extern void RegisterMagnetFamily();
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -132,10 +135,14 @@ void FractalRegistry::InitializeBuiltins()
         return;
 
     // Register all built-in fractal families
-    RegisterMandelbrotFamily();
-    RegisterBurningShipFamily();
-    RegisterTricornFamily();
-    RegisterPhoenixFamily();
+    RegisterMandelbrotFamily();      // Mandelbrot + 3 Julia presets = 4
+    RegisterBurningShipFamily();     // Burning Ship = 1
+    RegisterTricornFamily();         // Tricorn = 1
+    RegisterPhoenixFamily();         // Phoenix = 1
+    RegisterMultibrotFamily();       // Multibrot 3,4,5 = 3
+    RegisterNewtonFamily();          // Newton, Nova = 2
+    RegisterMagnetFamily();          // Magnet I, II = 2
+    // Total: 14 fractals
 
     s_initialized = true;
 }
