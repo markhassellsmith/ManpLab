@@ -317,7 +317,7 @@
                   PointerReleased="FractalImage_PointerReleased"
                   PointerWheelChanged="FractalImage_PointerWheelChanged">
                         <!-- Fractal Image Display -->
-                        <Viewbox x:Name="FractalViewbox" Stretch="Fill" SizeChanged="FractalViewbox_SizeChanged">
+                        <Viewbox x:Name="FractalViewbox" Stretch="Uniform" SizeChanged="FractalViewbox_SizeChanged">
                             <Image
                         x:Name="FractalImage"
                         Source="{x:Bind ViewModel.FractalImage, Mode=OneWay}"
