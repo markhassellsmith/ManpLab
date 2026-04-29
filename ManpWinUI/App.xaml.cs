@@ -45,8 +45,29 @@ namespace ManpWinUI
             // Configure Serilog
             ConfigureLogging();
 
+            // Initialize native fractal registry (Week 5: Phase 2)
+            InitializeFractalRegistry();
+
             // Configure dependency injection
             _serviceProvider = ConfigureServices();
+        }
+
+        /// <summary>
+        /// Initialize the native FractalRegistry with all built-in fractals.
+        /// Week 5: Required for browser integration.
+        /// </summary>
+        private void InitializeFractalRegistry()
+        {
+            try
+            {
+                ManpCore.Native.FractalRegistryWrapper.Initialize();
+                int count = ManpCore.Native.FractalRegistryWrapper.GetCount();
+                Log.Information("FractalRegistry initialized with {Count} fractals", count);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to initialize FractalRegistry");
+            }
         }
 
         /// <summary>

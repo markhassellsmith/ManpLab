@@ -280,7 +280,7 @@
 
                         <!-- Browser Content -->
                         <Grid Grid.Row="1">
-                            <browser:FractalBrowserView />
+                            <browser:FractalBrowserView x:Name="BrowserView" />
                         </Grid>
                     </Grid>
 

@@ -28,6 +28,9 @@ namespace ManpWinUI.Views
             ViewModel = App.Current.Services.GetRequiredService<MainViewModel>();
             DataContext = ViewModel;
 
+            // Subscribe to browser fractal selection (Week 5 Task 6)
+            BrowserView.ViewModel.FractalSelected += OnFractalSelected;
+
             // Initialize ViewModel asynchronously
             _ = InitializeViewModelAsync();
 
@@ -63,6 +66,37 @@ namespace ManpWinUI.Views
                     UpdateHailstoneInfo();
                 }
             };
+        }
+
+        /// <summary>
+        /// Handle fractal selection from browser.
+        /// Week 5 Task 6: Load selected fractal with default view parameters.
+        /// </summary>
+        private void OnFractalSelected(object? sender, ViewModels.Browser.FractalSelectedEventArgs e)
+        {
+            if (e?.Fractal == null)
+                return;
+
+            Debug.WriteLine($"[MainPage] Loading fractal: {e.Fractal.Name}");
+
+            // Get fractal metadata from registry
+            var fractalInfo = ManpCore.Native.FractalRegistryWrapper.GetFractalInfo(e.Fractal.Name);
+            if (fractalInfo == null)
+            {
+                ViewModel.StatusMessage = $"Error: Fractal '{e.Fractal.Name}' not found in registry";
+                return;
+            }
+
+            // Update ViewModel with fractal selection and default view
+            ViewModel.SelectedFractalType = e.Fractal.Name;
+            ViewModel.CenterX = fractalInfo.DefaultCenterX;
+            ViewModel.CenterY = fractalInfo.DefaultCenterY;
+            ViewModel.Zoom = fractalInfo.DefaultZoom;
+            ViewModel.SelectedIterationMode = "Standard"; // Reset to standard mode when switching fractals
+
+            // Auto-render the selected fractal
+            ViewModel.StatusMessage = $"Loading {fractalInfo.DisplayName}...";
+            _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
         }
 
         private async System.Threading.Tasks.Task InitializeViewModelAsync()

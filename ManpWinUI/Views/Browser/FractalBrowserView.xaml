@@ -1,5 +1,6 @@
 <UserControl
     x:Class="ManpWinUI.Views.Browser.FractalBrowserView"
+    x:Name="BrowserViewRoot"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -52,13 +53,16 @@
                             <ItemsRepeater ItemsSource="{x:Bind Fractals}">
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:FractalNode">
-                                        <Button Content="{x:Bind Name}"
+                                        <Button Content="{x:Bind DisplayName}"
+                                                Command="{Binding ElementName=BrowserViewRoot, Path=ViewModel.SelectFractalCommand}"
+                                                CommandParameter="{x:Bind}"
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Left"
                                                 Padding="24,8,8,8"
                                                 Background="Transparent"
                                                 BorderThickness="0"
-                                                Margin="0,1" />
+                                                Margin="0,1"
+                                                ToolTipService.ToolTip="{x:Bind Description}" />
                                     </DataTemplate>
                                 </ItemsRepeater.ItemTemplate>
                             </ItemsRepeater>
@@ -76,7 +80,7 @@
             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
             BorderThickness="0,1,0,0">
             <TextBlock
-                Text="Week 5: Clicking fractals will load them"
+                Text="Click a fractal to load and render it"
                 FontSize="11"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                 TextWrapping="Wrap" />
