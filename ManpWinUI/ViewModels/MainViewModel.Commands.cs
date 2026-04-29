@@ -25,7 +25,6 @@ public partial class MainViewModel
         // Guard: Don't start a new render if already rendering
         if (IsRendering)
         {
-            System.Diagnostics.Debug.WriteLine("[RenderMandelbrotAsync] Already rendering - ignoring request");
             return;
         }
 
@@ -91,8 +90,7 @@ public partial class MainViewModel
         {
             var startTime = DateTime.Now;
 
-            // Progress reporting callback - ALWAYS use dispatcher to avoid COM exceptions
-            // Progress updates are always posted, even if paused (pause now cancels the render)
+            // Progress reporting callback - always enqueue to UI thread to avoid COM exceptions
             Action<double> progressCallback = percentage =>
             {
                 _dispatcherQueue.TryEnqueue(() =>
@@ -103,30 +101,19 @@ public partial class MainViewModel
             var progress = new Progress<double>(progressCallback);
 
             // Call FractalRenderService to render the fractal
-            FractalRenderResult result;
-            try
-            {
-                result = await _renderService.RenderMandelbrotAsync(
-                    CenterX,
-                    CenterY,
-                    Zoom,
-                    ImageWidth,
-                    ImageHeight,
-                    MaxIterations,
-                    SelectedPalette,
-                    SelectedFractalType,
-                    IsJuliaMode,
-                    JuliaCX,
-                    JuliaCY,
-                    progress);
-            }
-            catch (InvalidCastException ex)
-            {
-                StatusMessage = $"InvalidCastException during render: {ex.Message}";
-                System.Diagnostics.Debug.WriteLine($"InvalidCastException in RenderMandelbrotAsync: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                return;
-            }
+            var result = await _renderService.RenderMandelbrotAsync(
+                CenterX,
+                CenterY,
+                Zoom,
+                ImageWidth,
+                ImageHeight,
+                MaxIterations,
+                SelectedPalette,
+                SelectedFractalType,
+                IsJuliaMode,
+                JuliaCX,
+                JuliaCY,
+                progress);
 
             // Check if render was cancelled
             if (cancellationToken.IsCancellationRequested)
@@ -135,49 +122,13 @@ public partial class MainViewModel
             }
 
             // Convert byte[] to WriteableBitmap on UI thread
-            try
+            _dispatcherQueue.TryEnqueue(() =>
             {
-                _dispatcherQueue.TryEnqueue(() =>
-                {
-                    try
-                    {
-                        ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
-                    }
-                    catch (InvalidCastException ex)
-                    {
-                        StatusMessage = $"InvalidCastException in ConvertPixelDataToBitmap: {ex.Message}";
-                        System.Diagnostics.Debug.WriteLine($"InvalidCastException in ConvertPixelDataToBitmap: {ex.Message}");
-                        System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                    }
-                });
-            }
-            catch (InvalidCastException ex)
-            {
-                StatusMessage = $"InvalidCastException in TryEnqueue: {ex.Message}";
-                System.Diagnostics.Debug.WriteLine($"InvalidCastException in TryEnqueue: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-            }
+                ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
+            });
 
             var renderTime = DateTime.Now - startTime;
-
-            // Show diagnostic info if escape percentage is very low
             var escapePercent = result.EscapePercentage;
-
-            // DETAILED DIAGNOSTIC LOGGING
-            var logMessage = $@"
-───────────────────────────────────────────────────────────────
-RENDER COMPLETE - DIAGNOSTIC INFO
-───────────────────────────────────────────────────────────────
-Resolution: {ImageWidth} × {ImageHeight} ({result.TotalIterations:N0} total iterations)
-Render time: {renderTime.TotalMilliseconds:F0} ms
-Escape stats: {result.EscapedPixels:N0} / {ImageWidth * ImageHeight:N0} pixels ({escapePercent:F2}%)
-Max iterations: {MaxIterations}
-Zoom: {Zoom:F4}x
-Center: ({CenterX:F10}, {CenterY:F10})
-View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / ImageWidth):F10}
-───────────────────────────────────────────────────────────────
-";
-            System.Diagnostics.Debug.WriteLine(logMessage);
 
             // Update UI-bound properties on UI thread
             _dispatcherQueue.TryEnqueue(() =>
@@ -225,11 +176,8 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     [RelayCommand]
     private async Task RenderHailstoneAsync()
     {
-        System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Called - IsHailstoneMode={IsHailstoneMode}");
-
         if (!IsHailstoneMode)
         {
-            System.Diagnostics.Debug.WriteLine("[RenderHailstoneAsync] EARLY EXIT - Not in Hailstone mode!");
             _dispatcherQueue.TryEnqueue(() =>
             {
                 StatusMessage = "Please select Hailstone fractal type first.";
@@ -240,7 +188,6 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         // Guard: Don't start a new render if already rendering
         if (IsRendering)
         {
-            System.Diagnostics.Debug.WriteLine("[RenderHailstoneAsync] Already rendering - ignoring request");
             return;
         }
 
@@ -257,8 +204,6 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             StatusMessage = $"Calculating Hailstone sequence from ({HailstoneStartX}, {HailstoneStartY})...";
         });
 
-        System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Starting render - ({HailstoneStartX}, {HailstoneStartY}), MaxIter={HailstoneMaxIterations}");
-
         try
         {
             var startTime = DateTime.Now;
@@ -268,10 +213,8 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 HailstoneStartX,
                 HailstoneStartY,
                 HailstoneMaxIterations,
-                colorSpread: 7,  // Default color spread
-                exportToCsv: false);  // Set to true if you want CSV export
-
-            System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Sequence calculated - {result.Sequence.Count} points");
+                colorSpread: 7,
+                exportToCsv: false);
 
             _dispatcherQueue.TryEnqueue(() =>
             {
@@ -293,8 +236,6 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 HailstoneViewportMinY,
                 HailstoneViewportMaxY);
 
-            System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Got render result with {(renderResult.PixelData != null ? renderResult.PixelData.Length : 0)} bytes of pixel data");
-
             // Check if render was cancelled
             if (cancellationToken.IsCancellationRequested)
             {
@@ -309,17 +250,14 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 {
                     if (renderResult.PixelData != null)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Creating WriteableBitmap on UI thread ({renderResult.Width}x{renderResult.Height})");
                         bitmap = new WriteableBitmap(renderResult.Width, renderResult.Height);
                         using (var stream = bitmap.PixelBuffer.AsStream())
                         {
                             stream.Write(renderResult.PixelData, 0, renderResult.PixelData.Length);
                         }
-                        System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Bitmap created successfully");
                     }
                     else if (renderResult.Bitmap != null)
                     {
-                        // Legacy path: bitmap already created
                         bitmap = renderResult.Bitmap;
                     }
 
@@ -332,7 +270,6 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] ERROR creating bitmap on UI thread: {ex.Message}");
                     StatusMessage = $"Error creating bitmap: {ex.Message}";
                 }
             });
@@ -357,7 +294,6 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             {
                 StatusMessage = $"Error: {ex.Message}";
             });
-            System.Diagnostics.Debug.WriteLine($"Hailstone render error: {ex}");
         }
         finally
         {
@@ -379,16 +315,12 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     [RelayCommand]
     private async Task RenderAsync()
     {
-        System.Diagnostics.Debug.WriteLine($"[RenderAsync] Called - IsHailstoneMode={IsHailstoneMode}, SelectedFractalType={SelectedFractalType}");
-
         if (IsHailstoneMode)
         {
-            System.Diagnostics.Debug.WriteLine("[RenderAsync] Routing to RenderHailstoneAsync");
             await RenderHailstoneAsync();
         }
         else
         {
-            System.Diagnostics.Debug.WriteLine("[RenderAsync] Routing to RenderMandelbrotAsync");
             await RenderMandelbrotAsync();
         }
     }
@@ -404,18 +336,13 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     [RelayCommand(CanExecute = nameof(CanStopRender))]
     private void StopRender()
     {
-        System.Diagnostics.Debug.WriteLine("[StopRender] Called - Cancelling render");
-
-        // Cancel the render operation
         _renderCancellationSource?.Cancel();
 
-        // Reset all rendering state on UI thread
         _dispatcherQueue.TryEnqueue(() =>
         {
             IsRendering = false;
             RenderProgress = 0;
             StatusMessage = "Rendering stopped by user";
-            System.Diagnostics.Debug.WriteLine("[StopRender] State reset complete");
         });
     }
 
