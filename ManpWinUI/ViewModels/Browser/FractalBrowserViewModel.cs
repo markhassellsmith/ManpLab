@@ -68,69 +68,56 @@ public partial class FractalBrowserViewModel : ObservableObject
     public FractalBrowserViewModel()
     {
         Categories = new ObservableCollection<FractalCategoryNode>();
-        LoadStubData();
+        LoadFromRegistry();
     }
 
     /// <summary>
-    /// Load stub category data for Week 4.
-    /// Week 5: Replace with FractalRegistry integration.
+    /// Load categories and fractals from the native FractalRegistry.
+    /// Week 5: Replaces stub data with real registry integration.
     /// </summary>
-    private void LoadStubData()
+    private void LoadFromRegistry()
     {
-        // Classic Fractals (4)
-        var classic = new FractalCategoryNode
+        try
         {
-            Name = "Classic Fractals",
-            Icon = "📁",
-            IsExpanded = true
-        };
-        classic.Fractals.Add(new FractalNode { Name = "Mandelbrot", Category = "Classic Fractals" });
-        classic.Fractals.Add(new FractalNode { Name = "BurningShip", Category = "Classic Fractals" });
-        classic.Fractals.Add(new FractalNode { Name = "Tricorn", Category = "Classic Fractals" });
-        classic.Fractals.Add(new FractalNode { Name = "Phoenix", Category = "Classic Fractals" });
-        Categories.Add(classic);
+            var categories = ManpCore.Native.FractalRegistryWrapper.GetCategories();
 
-        // Multibrot Family (3)
-        var multibrot = new FractalCategoryNode
-        {
-            Name = "Multibrot Family",
-            Icon = "📁"
-        };
-        multibrot.Fractals.Add(new FractalNode { Name = "Multibrot3", Category = "Multibrot Family" });
-        multibrot.Fractals.Add(new FractalNode { Name = "Multibrot4", Category = "Multibrot Family" });
-        multibrot.Fractals.Add(new FractalNode { Name = "Multibrot5", Category = "Multibrot Family" });
-        Categories.Add(multibrot);
+            foreach (var categoryName in categories)
+            {
+                var fractals = ManpCore.Native.FractalRegistryWrapper.GetFractalsByCategory(categoryName);
 
-        // Newton Method (2)
-        var newton = new FractalCategoryNode
-        {
-            Name = "Newton Method",
-            Icon = "📁"
-        };
-        newton.Fractals.Add(new FractalNode { Name = "Newton", Category = "Newton Method" });
-        newton.Fractals.Add(new FractalNode { Name = "Nova", Category = "Newton Method" });
-        Categories.Add(newton);
+                if (fractals.Count == 0)
+                    continue;
 
-        // Magnet Fractals (2)
-        var magnet = new FractalCategoryNode
-        {
-            Name = "Magnet Fractals",
-            Icon = "📁"
-        };
-        magnet.Fractals.Add(new FractalNode { Name = "Magnet1", Category = "Magnet Fractals" });
-        magnet.Fractals.Add(new FractalNode { Name = "Magnet2", Category = "Magnet Fractals" });
-        Categories.Add(magnet);
+                var categoryNode = new FractalCategoryNode
+                {
+                    Name = categoryName,
+                    Icon = "📁",
+                    IsExpanded = categoryName == "Classic Fractals" // Expand Classic by default
+                };
 
-        // Julia Presets (3)
-        var julia = new FractalCategoryNode
+                foreach (var fractalInfo in fractals)
+                {
+                    categoryNode.Fractals.Add(new FractalNode
+                    {
+                        Name = fractalInfo.Name,
+                        DisplayName = fractalInfo.DisplayName,
+                        Category = fractalInfo.Category,
+                        Description = fractalInfo.Description
+                    });
+                }
+
+                Categories.Add(categoryNode);
+            }
+
+            System.Diagnostics.Debug.WriteLine(
+                $"[FractalBrowserViewModel] Loaded {Categories.Count} categories from registry");
+        }
+        catch (Exception ex)
         {
-            Name = "Julia Presets",
-            Icon = "📁"
-        };
-        julia.Fractals.Add(new FractalNode { Name = "JuliaSanMarco", Category = "Julia Presets" });
-        julia.Fractals.Add(new FractalNode { Name = "JuliaDouadyRabbit", Category = "Julia Presets" });
-        julia.Fractals.Add(new FractalNode { Name = "JuliaSiegelDisk", Category = "Julia Presets" });
-        Categories.Add(julia);
+            System.Diagnostics.Debug.WriteLine(
+                $"[FractalBrowserViewModel] Error loading registry: {ex.Message}");
+            // Fall back to empty state rather than showing stale stub data
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -164,11 +151,12 @@ public class FractalCategoryNode
 
 /// <summary>
 /// Represents a fractal node in the browser.
-/// Week 5: Add metadata (description, thumbnail, etc.)
+/// Week 5: Populated from FractalRegistry with metadata.
 /// </summary>
 public class FractalNode
 {
     public string Name { get; set; } = string.Empty;
+    public string DisplayName { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? ThumbnailPath { get; set; }

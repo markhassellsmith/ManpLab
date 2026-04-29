@@ -52,13 +52,14 @@
                             <ItemsRepeater ItemsSource="{x:Bind Fractals}">
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:FractalNode">
-                                        <Button Content="{x:Bind Name}"
+                                        <Button Content="{x:Bind DisplayName}"
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Left"
                                                 Padding="24,8,8,8"
                                                 Background="Transparent"
                                                 BorderThickness="0"
-                                                Margin="0,1" />
+                                                Margin="0,1"
+                                                ToolTipService.ToolTip="{x:Bind Description}" />
                                     </DataTemplate>
                                 </ItemsRepeater.ItemTemplate>
                             </ItemsRepeater>
