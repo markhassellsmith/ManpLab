@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ManpWinUI.Services;
 using System.Collections.ObjectModel;
 
 namespace ManpWinUI.ViewModels.Browser;
@@ -12,6 +13,8 @@ namespace ManpWinUI.ViewModels.Browser;
 /// </summary>
 public partial class FractalBrowserViewModel : ObservableObject
 {
+    private readonly IAppSettingsService? _settingsService;
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // EVENTS
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -27,16 +30,20 @@ public partial class FractalBrowserViewModel : ObservableObject
 
     /// <summary>
     /// Search query text for filtering fractals.
-    /// Week 5: Wire up actual filtering logic.
+    /// Week 5 Task 7: Filters categories and fractals by name/description.
     /// </summary>
     [ObservableProperty]
     private string searchQuery = string.Empty;
 
+    /// <summary>
+    /// Master list of all categories (unfiltered).
+    /// Used to restore full list when search is cleared.
+    /// </summary>
+    private List<FractalCategoryNode> _allCategories = new();
+
     partial void OnSearchQueryChanged(string value)
     {
-        // Week 5: Implement filtering
-        // For now, just log the search
-        System.Diagnostics.Debug.WriteLine($"[FractalBrowserViewModel] Search query: {value}");
+        FilterCategories(value);
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -74,10 +81,12 @@ public partial class FractalBrowserViewModel : ObservableObject
     // INITIALIZATION
     // ═══════════════════════════════════════════════════════════════════════════════
 
-    public FractalBrowserViewModel()
+    public FractalBrowserViewModel(IAppSettingsService? settingsService = null)
     {
+        _settingsService = settingsService;
         Categories = new ObservableCollection<FractalCategoryNode>();
         LoadFromRegistry();
+        RestoreSelection();
     }
 
     /// <summary>
@@ -115,7 +124,13 @@ public partial class FractalBrowserViewModel : ObservableObject
                     });
                 }
 
-                Categories.Add(categoryNode);
+                _allCategories.Add(categoryNode);
+            }
+
+            // Populate Categories with all items initially
+            foreach (var category in _allCategories)
+            {
+                Categories.Add(category);
             }
 
             System.Diagnostics.Debug.WriteLine(
@@ -126,6 +141,102 @@ public partial class FractalBrowserViewModel : ObservableObject
             System.Diagnostics.Debug.WriteLine(
                 $"[FractalBrowserViewModel] Error loading registry: {ex.Message}");
             // Fall back to empty state rather than showing stale stub data
+        }
+    }
+
+    /// <summary>
+    /// Filter categories and fractals based on search query.
+    /// Week 5 Task 7: Searches by name, display name, and description.
+    /// </summary>
+    private void FilterCategories(string query)
+    {
+        Categories.Clear();
+
+        // If no search query, show all categories
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            foreach (var category in _allCategories)
+            {
+                Categories.Add(category);
+            }
+            return;
+        }
+
+        // Case-insensitive search
+        var searchLower = query.ToLower();
+
+        // Filter each category
+        foreach (var category in _allCategories)
+        {
+            // Check if category name matches
+            var categoryMatches = category.Name.ToLower().Contains(searchLower);
+
+            // Create filtered category with matching fractals
+            var filteredCategory = new FractalCategoryNode
+            {
+                Name = category.Name,
+                Icon = category.Icon,
+                IsExpanded = true // Expand categories with search results
+            };
+
+            // Add fractals that match the search
+            foreach (var fractal in category.Fractals)
+            {
+                var nameMatches = fractal.Name.ToLower().Contains(searchLower);
+                var displayNameMatches = fractal.DisplayName.ToLower().Contains(searchLower);
+                var descriptionMatches = !string.IsNullOrEmpty(fractal.Description) &&
+                                        fractal.Description.ToLower().Contains(searchLower);
+
+                if (categoryMatches || nameMatches || displayNameMatches || descriptionMatches)
+                {
+                    filteredCategory.Fractals.Add(fractal);
+                }
+            }
+
+            // Only add category if it has matching fractals or its name matches
+            if (filteredCategory.Fractals.Count > 0 || categoryMatches)
+            {
+                Categories.Add(filteredCategory);
+            }
+        }
+
+        System.Diagnostics.Debug.WriteLine(
+            $"[FractalBrowserViewModel] Filtered to {Categories.Count} categories for query: '{query}'");
+    }
+
+    /// <summary>
+    /// Restore the previously selected fractal from settings.
+    /// Week 5 Task 8: Persist selection across app restarts.
+    /// </summary>
+    private void RestoreSelection()
+    {
+        if (_settingsService == null)
+            return;
+
+        var savedFractalName = _settingsService.GetSelectedFractal();
+        if (string.IsNullOrEmpty(savedFractalName))
+            return;
+
+        // Find the fractal in the loaded categories
+        foreach (var category in _allCategories)
+        {
+            var fractal = category.Fractals.FirstOrDefault(f => f.Name == savedFractalName);
+            if (fractal != null)
+            {
+                // Expand the category containing the saved fractal
+                var displayedCategory = Categories.FirstOrDefault(c => c.Name == category.Name);
+                if (displayedCategory != null)
+                {
+                    displayedCategory.IsExpanded = true;
+                }
+
+                // Trigger selection and render
+                SelectFractal(fractal);
+
+                System.Diagnostics.Debug.WriteLine(
+                    $"[FractalBrowserViewModel] Restored selection: {savedFractalName}");
+                break;
+            }
         }
     }
 
@@ -145,6 +256,7 @@ public partial class FractalBrowserViewModel : ObservableObject
     /// <summary>
     /// Handle fractal selection from the browser.
     /// Week 5 Task 6: Raise event to notify MainViewModel.
+    /// Week 5 Task 8: Save selection to settings for persistence.
     /// </summary>
     [RelayCommand]
     private void SelectFractal(FractalNode fractal)
@@ -155,6 +267,9 @@ public partial class FractalBrowserViewModel : ObservableObject
         SelectedFractal = fractal;
 
         System.Diagnostics.Debug.WriteLine($"[FractalBrowserViewModel] Fractal selected: {fractal.Name}");
+
+        // Save selection to settings (Week 5 Task 8)
+        _settingsService?.SetSelectedFractal(fractal.Name);
 
         // Raise event with fractal info
         FractalSelected?.Invoke(this, new FractalSelectedEventArgs(fractal));

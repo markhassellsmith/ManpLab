@@ -13,6 +13,7 @@ public class AppSettingsService : IAppSettingsService
     private const string PropertiesWidthKey = "PropertiesPanelWidth";
     private const string BrowserVisibleKey = "BrowserPanelVisible";
     private const string PropertiesVisibleKey = "PropertiesPanelVisible";
+    private const string SelectedFractalKey = "SelectedFractal";
 
     // Default values
     private const double DefaultBrowserWidth = 250.0;
@@ -77,5 +78,19 @@ public class AppSettingsService : IAppSettingsService
     public void SetPropertiesPanelVisible(bool visible)
     {
         _localSettings.Values[PropertiesVisibleKey] = visible;
+    }
+
+    public string? GetSelectedFractal()
+    {
+        if (_localSettings.Values.TryGetValue(SelectedFractalKey, out var value) && value is string fractalName)
+        {
+            return fractalName;
+        }
+        return null;
+    }
+
+    public void SetSelectedFractal(string fractalName)
+    {
+        _localSettings.Values[SelectedFractalKey] = fractalName;
     }
 }

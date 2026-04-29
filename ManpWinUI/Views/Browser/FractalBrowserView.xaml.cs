@@ -1,4 +1,5 @@
 using ManpWinUI.ViewModels.Browser;
+using ManpWinUI.Services;
 using Microsoft.UI.Xaml.Controls;
 
 namespace ManpWinUI.Views.Browser;
@@ -14,7 +15,10 @@ public sealed partial class FractalBrowserView : UserControl
 
     public FractalBrowserView()
     {
-        ViewModel = new FractalBrowserViewModel();
+        // Get settings service from DI container for persistence (Week 5 Task 8)
+        var settingsService = App.Current.Services.GetService(typeof(IAppSettingsService)) as IAppSettingsService;
+
+        ViewModel = new FractalBrowserViewModel(settingsService);
         DataContext = ViewModel;
         InitializeComponent();
     }

@@ -1,8 +1,9 @@
 # Phase 2 Week 5: Fractal Browser Integration
 
-**Status**: 🚧 In Progress  
+**Status**: ✅ **COMPLETED**  
 **Branch**: `feature/phase2-week5-browser-integration`  
-**Started**: January 2025
+**Started**: January 2025  
+**Completed**: January 2025
 
 ---
 
@@ -133,8 +134,7 @@ Properties: Name, DisplayName, Category, Description, SupportsJulia, DefaultCent
 - ✅ Build compiles successfully
 
 ### Known Limitations (Week 5 Scope)
-- ⏳ No search/filtering implementation (Week 5 Task 7)
-- ⏳ No fractal selection persistence (Week 5 Task 8)
+- None - All Week 5 tasks complete!
 
 ---
 
@@ -162,32 +162,42 @@ Properties: Name, DisplayName, Category, Description, SupportsJulia, DefaultCent
 
 ---
 
-### Task 7: Search & Filtering
+### ✅ Task 7: Search & Filtering (COMPLETE)
 **Goal**: Make the search box functional
 
-**Files to Modify**:
-- `FractalBrowserViewModel.cs` - Implement `OnSearchQueryChanged` filtering logic
+**Files Modified**:
+- ✅ `FractalBrowserViewModel.cs` - Implemented `OnSearchQueryChanged` filtering logic
 
 **Implementation**:
-1. Store master category/fractal list
-2. Filter fractals by name/displayName/description when `SearchQuery` changes
-3. Update `Categories` observable collection with filtered results
-4. Clear search button already exists (works)
+1. ✅ Store master category/fractal list in `_allCategories`
+2. ✅ Filter fractals by name/displayName/description when `SearchQuery` changes
+3. ✅ Update `Categories` observable collection with filtered results
+4. ✅ Expand matching categories automatically
+5. ✅ Clear search button works to restore full list
+6. ✅ Case-insensitive search across all text fields
+
+**Result**: Search box now filters the fractal tree in real-time, searching across names, display names, and descriptions!
 
 ---
 
-### Task 8: Selection State & Persistence
+### ✅ Task 8: Selection State & Persistence (COMPLETE)
 **Goal**: Remember which fractal is selected across app restarts
 
-**Files to Modify**:
-- `FractalBrowserViewModel.cs` - Add selected fractal state
-- `IAppSettingsService.cs` - Add `GetSelectedFractal()` / `SetSelectedFractal()`
-- `AppSettingsService.cs` - Implement persistence
+**Files Modified**:
+- ✅ `IAppSettingsService.cs` - Added `GetSelectedFractal()` / `SetSelectedFractal()` methods
+- ✅ `AppSettingsService.cs` - Implemented persistence using `ApplicationData.LocalSettings`
+- ✅ `FractalBrowserViewModel.cs` - Added `RestoreSelection()` and saves selection on change
+- ✅ `FractalBrowserView.xaml.cs` - Retrieves `IAppSettingsService` from DI container
 
 **Implementation**:
-1. Save selected fractal name when selection changes
-2. Restore selection on browser initialization
-3. Highlight selected fractal in browser UI (visual state)
+1. ✅ Extended settings service interface with fractal name persistence
+2. ✅ ViewModel constructor accepts optional `IAppSettingsService` parameter
+3. ✅ `SelectFractal()` saves selected fractal name to settings
+4. ✅ `RestoreSelection()` called after registry load to restore last selection
+5. ✅ Auto-expands category containing restored fractal
+6. ✅ Auto-triggers render on restore via `SelectFractal()` event
+
+**Result**: Last selected fractal is now remembered and automatically loaded on app restart!
 
 ---
 
@@ -198,12 +208,12 @@ Properties: Name, DisplayName, Category, Description, SupportsJulia, DefaultCent
 - [x] Browser panel loads real categories and fractals from registry
 - [x] DisplayName and Description visible in UI
 - [x] Clicking a fractal loads and renders it (Task 6)
-- [ ] Search box filters fractals by name/description (Task 7)
-- [ ] Selected fractal persists across app restarts (Task 8)
+- [x] Search box filters fractals by name/description (Task 7)
+- [x] Selected fractal persists across app restarts (Task 8)
 - [x] All 14 registered fractals accessible from browser
 - [x] Clean build with no warnings/errors
 
-**Current Progress**: 7/9 criteria complete (78%)
+**Current Progress**: ✅ **9/9 criteria complete (100%) - WEEK 5 COMPLETE!**
 
 ---
 
@@ -255,4 +265,4 @@ Properties: Name, DisplayName, Category, Description, SupportsJulia, DefaultCent
 ---
 
 **Last Updated**: January 2025  
-**Next Milestone**: Task 6 - Fractal Selection & Loading
+**Status**: ✅ **WEEK 5 COMPLETE - Ready for merge to development**

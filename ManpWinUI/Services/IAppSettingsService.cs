@@ -44,4 +44,16 @@ public interface IAppSettingsService
     /// Saves whether the properties panel is visible.
     /// </summary>
     void SetPropertiesPanelVisible(bool visible);
+
+    /// <summary>
+    /// Gets the name of the last selected fractal, or null if none saved.
+    /// Week 5 Task 8: Persist browser selection across app restarts.
+    /// </summary>
+    string? GetSelectedFractal();
+
+    /// <summary>
+    /// Saves the name of the currently selected fractal.
+    /// Week 5 Task 8: Persist browser selection across app restarts.
+    /// </summary>
+    void SetSelectedFractal(string fractalName);
 }
