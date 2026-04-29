@@ -1,4 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ManpWinUI.Services;
 
 namespace ManpWinUI.ViewModels;
 
@@ -130,5 +132,102 @@ public partial class MainViewModel
                 StatusMessage = "Hailstone Mode - Click Render to generate sequence";
                 break;
         }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // PANEL VISIBILITY & SIZING
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Indicates whether the browser panel is visible.
+    /// </summary>
+    [ObservableProperty]
+    private bool isBrowserPanelVisible = true;
+
+    partial void OnIsBrowserPanelVisibleChanged(bool value)
+    {
+        _settingsService.SetBrowserPanelVisible(value);
+    }
+
+    /// <summary>
+    /// Indicates whether the properties panel is visible.
+    /// </summary>
+    [ObservableProperty]
+    private bool isPropertiesPanelVisible = true;
+
+    partial void OnIsPropertiesPanelVisibleChanged(bool value)
+    {
+        _settingsService.SetPropertiesPanelVisible(value);
+    }
+
+    /// <summary>
+    /// Browser panel width in pixels.
+    /// </summary>
+    [ObservableProperty]
+    private double browserPanelWidth = 250.0;
+
+    partial void OnBrowserPanelWidthChanged(double value)
+    {
+        // Only save if panel is visible and width is reasonable
+        if (IsBrowserPanelVisible && value >= 150 && value <= 600)
+        {
+            _settingsService.SetBrowserPanelWidth(value);
+        }
+    }
+
+    /// <summary>
+    /// Properties panel width in pixels.
+    /// </summary>
+    [ObservableProperty]
+    private double propertiesPanelWidth = 300.0;
+
+    partial void OnPropertiesPanelWidthChanged(double value)
+    {
+        // Only save if panel is visible and width is reasonable
+        if (IsPropertiesPanelVisible && value >= 200 && value <= 800)
+        {
+            _settingsService.SetPropertiesPanelWidth(value);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // PANEL COMMANDS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Toggles the browser panel visibility (Ctrl+B).
+    /// </summary>
+    [RelayCommand]
+    private void ToggleBrowserPanel()
+    {
+        IsBrowserPanelVisible = !IsBrowserPanelVisible;
+    }
+
+    /// <summary>
+    /// Toggles the properties panel visibility (Ctrl+P).
+    /// </summary>
+    [RelayCommand]
+    private void TogglePropertiesPanel()
+    {
+        IsPropertiesPanelVisible = !IsPropertiesPanelVisible;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // PANEL STATE INITIALIZATION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Restores panel state from settings.
+    /// Call this after constructor initialization.
+    /// </summary>
+    private void RestorePanelState()
+    {
+        // Restore visibility
+        IsBrowserPanelVisible = _settingsService.GetBrowserPanelVisible();
+        IsPropertiesPanelVisible = _settingsService.GetPropertiesPanelVisible();
+
+        // Restore sizes (with fallback to defaults)
+        BrowserPanelWidth = _settingsService.GetBrowserPanelWidth() ?? 250.0;
+        PropertiesPanelWidth = _settingsService.GetPropertiesPanelWidth() ?? 300.0;
     }
 }

@@ -209,7 +209,40 @@ namespace ManpWinUI.Views
                     _ = SaveImageAsync(Services.ImageFormat.PNG);
                     e.Handled = true;
                     break;
+
+                // B: Toggle Bookmarks Panel (without Ctrl, legacy support)
+                case VirtualKey.B when !ctrlPressed:
+                    if (ViewModel.ToggleBookmarksPanelCommand.CanExecute(null))
+                    {
+                        ViewModel.ToggleBookmarksPanelCommand.Execute(null);
+                        e.Handled = true;
+                    }
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Handles Ctrl+B keyboard accelerator for toggling Browser panel.
+        /// </summary>
+        private void ToggleBrowserPanel_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (ViewModel.ToggleBrowserPanelCommand.CanExecute(null))
+            {
+                ViewModel.ToggleBrowserPanelCommand.Execute(null);
+            }
+            args.Handled = true;
+        }
+
+        /// <summary>
+        /// Handles Ctrl+P keyboard accelerator for toggling Properties panel.
+        /// </summary>
+        private void TogglePropertiesPanel_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (ViewModel.TogglePropertiesPanelCommand.CanExecute(null))
+            {
+                ViewModel.TogglePropertiesPanelCommand.Execute(null);
+            }
+            args.Handled = true;
         }
 
         /// <summary>
@@ -314,7 +347,14 @@ MODES & DISPLAY
 ═══════════════════════════════════════
 T                  Toggle Standard/Julia mode
 A                  Toggle coordinate axes
-Ctrl+S             Save image (not implemented)
+Ctrl+S             Save image
+B                  Toggle bookmarks panel
+
+═══════════════════════════════════════
+PANELS
+═══════════════════════════════════════
+Ctrl+B             Toggle Browser panel
+Ctrl+P             Toggle Properties panel
 
 ═══════════════════════════════════════
 HELP

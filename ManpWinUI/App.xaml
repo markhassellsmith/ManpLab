@@ -25,6 +25,7 @@
             <converters:JuliaModeTextConverter x:Key="JuliaModeTextConverter"/>
             <converters:BoolToStarGlyphConverter x:Key="BoolToStarGlyphConverter"/>
             <converters:BoolToStarColorConverter x:Key="BoolToStarColorConverter"/>
+            <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter"/>
 
             <Color x:Key="Primary">#512BD4</Color>
 

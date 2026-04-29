@@ -13,6 +13,13 @@
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
     KeyDown="Page_KeyDown">
 
+    <Page.KeyboardAccelerators>
+        <!-- Ctrl+B: Toggle Browser Panel -->
+        <KeyboardAccelerator Key="B" Modifiers="Control" Invoked="ToggleBrowserPanel_Invoked" />
+        <!-- Ctrl+P: Toggle Properties Panel -->
+        <KeyboardAccelerator Key="P" Modifiers="Control" Invoked="TogglePropertiesPanel_Invoked" />
+    </Page.KeyboardAccelerators>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -230,23 +237,80 @@
             <SplitView.Content>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="350" />
-                        <!-- Browser Panel - wider to show full names -->
+                        <ColumnDefinition Width="{x:Bind ViewModel.BrowserPanelWidth, Mode=OneWay, Converter={StaticResource DoubleToGridLengthConverter}}" />
+                        <!-- Browser Panel - width persisted -->
+                        <ColumnDefinition Width="Auto" />
+                        <!-- GridSplitter for browser panel -->
                         <ColumnDefinition Width="*" />
                         <!-- Fractal Display -->
-                        <ColumnDefinition Width="350" />
-                        <!-- Properties Panel -->
+                        <ColumnDefinition Width="Auto" />
+                        <!-- GridSplitter for properties panel -->
+                        <ColumnDefinition Width="{x:Bind ViewModel.PropertiesPanelWidth, Mode=OneWay, Converter={StaticResource DoubleToGridLengthConverter}}" />
+                        <!-- Properties Panel - width persisted -->
                     </Grid.ColumnDefinitions>
 
                     <!-- Browser Panel -->
                     <Grid Grid.Column="0"
-                  BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                  BorderThickness="0,0,1,0">
-                        <browser:FractalBrowserView />
+                          Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                          BorderThickness="0,0,1,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <!-- Header with collapse button -->
+                            <RowDefinition Height="*" />
+                            <!-- Browser content -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Browser Panel Header -->
+                        <Grid Grid.Row="0"
+                              Padding="12,8"
+                              Background="{ThemeResource LayerFillColorDefaultBrush}"
+                              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                              BorderThickness="0,0,0,1">
+                            <TextBlock Text="Browser"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center" />
+                            <Button Content="&#xE76C;"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Command="{x:Bind ViewModel.ToggleBrowserPanelCommand}"
+                                    HorizontalAlignment="Right"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    ToolTipService.ToolTip="Collapse browser panel (Ctrl+B)" />
+                        </Grid>
+
+                        <!-- Browser Content -->
+                        <Grid Grid.Row="1">
+                            <browser:FractalBrowserView />
+                        </Grid>
                     </Grid>
 
+                    <!-- Collapsed Browser Panel Button -->
+                    <Button Grid.Column="0"
+                            Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
+                            Content="&#xE76B;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Command="{x:Bind ViewModel.ToggleBrowserPanelCommand}"
+                            VerticalAlignment="Top"
+                            Margin="4"
+                            Style="{StaticResource SubtleButtonStyle}"
+                            ToolTipService.ToolTip="Expand browser panel (Ctrl+B)"
+                            Background="{ThemeResource LayerFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                            BorderThickness="1" />
+
+                    <!-- GridSplitter for Browser Panel -->
+                    <Border Grid.Column="1"
+                            Width="4"
+                            Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                            PointerEntered="BrowserSplitter_PointerEntered"
+                            PointerExited="BrowserSplitter_PointerExited"
+                            PointerPressed="BrowserSplitter_PointerPressed"
+                            PointerMoved="BrowserSplitter_PointerMoved"
+                            PointerReleased="BrowserSplitter_PointerReleased" />
+
                     <!-- Fractal Canvas -->
-                    <Grid Grid.Column="1"
+                    <Grid Grid.Column="2"
                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                   PointerPressed="FractalImage_PointerPressed"
                   PointerMoved="FractalImage_PointerMoved"
@@ -360,12 +424,49 @@
                         </Grid>
                     </Grid>
 
-                    <!-- Properties Panel with Tabs - Disabled only when paused -->
-                    <Grid Grid.Column="2"
+                    <!-- GridSplitter for Properties Panel -->
+                    <Border Grid.Column="3"
+                            Width="4"
+                            Visibility="{x:Bind ViewModel.IsPropertiesPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                            PointerEntered="PropertiesSplitter_PointerEntered"
+                            PointerExited="PropertiesSplitter_PointerExited"
+                            PointerPressed="PropertiesSplitter_PointerPressed"
+                            PointerMoved="PropertiesSplitter_PointerMoved"
+                            PointerReleased="PropertiesSplitter_PointerReleased" />
+
+                    <!-- Properties Panel with Tabs -->
+                    <Grid Grid.Column="4"
+                          Visibility="{x:Bind ViewModel.IsPropertiesPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          Background="{ThemeResource LayerFillColorDefaultBrush}"
+                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                          BorderThickness="1,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <!-- Header with collapse button -->
+                            <RowDefinition Height="*" />
+                            <!-- Properties content -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Properties Panel Header -->
+                        <Grid Grid.Row="0"
+                              Padding="12,8"
                               Background="{ThemeResource LayerFillColorDefaultBrush}"
                               BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                              BorderThickness="1,0,0,0">
-                        <TabView>
+                              BorderThickness="0,0,0,1">
+                            <TextBlock Text="Properties"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center" />
+                            <Button Content="&#xE76C;"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Command="{x:Bind ViewModel.TogglePropertiesPanelCommand}"
+                                    HorizontalAlignment="Right"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    ToolTipService.ToolTip="Collapse properties panel (Ctrl+P)" />
+                        </Grid>
+
+                        <!-- Properties Content -->
+                        <TabView Grid.Row="1">
                             <!-- Parameters Tab -->
                             <TabViewItem Header="Parameters">
                                 <TabViewItem.IconSource>
@@ -737,6 +838,21 @@
                             </TabViewItem>
                         </TabView>
                     </Grid>
+
+                    <!-- Collapsed Properties Panel Button -->
+                    <Button Grid.Column="4"
+                            Visibility="{x:Bind ViewModel.IsPropertiesPanelVisible, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
+                            Content="&#xE76B;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Command="{x:Bind ViewModel.TogglePropertiesPanelCommand}"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
+                            Margin="4"
+                            Style="{StaticResource SubtleButtonStyle}"
+                            ToolTipService.ToolTip="Expand properties panel (Ctrl+P)"
+                            Background="{ThemeResource LayerFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                            BorderThickness="1" />
                 </Grid>
             </SplitView.Content>
         </SplitView>

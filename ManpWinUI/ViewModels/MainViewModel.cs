@@ -32,7 +32,8 @@ public partial class MainViewModel(
     IFractalRenderService renderService, 
     IBookmarkService bookmarkService,
     IHailstoneService hailstoneService,
-    IHailstoneRenderService hailstoneRenderService) : ObservableObject
+    IHailstoneRenderService hailstoneRenderService,
+    IAppSettingsService settingsService) : ObservableObject
 {
     // ═══════════════════════════════════════════════════════════════════════════════
     // SERVICE DEPENDENCIES
@@ -43,18 +44,20 @@ public partial class MainViewModel(
     private readonly IBookmarkService _bookmarkService = bookmarkService;
     private readonly IHailstoneService _hailstoneService = hailstoneService;
     private readonly IHailstoneRenderService _hailstoneRenderService = hailstoneRenderService;
+    private readonly IAppSettingsService _settingsService = settingsService;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // INITIALIZATION
     // ═══════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Initializes bookmarks from storage.
-    /// Call this after construction to load saved bookmarks.
+    /// Initializes bookmarks from storage and restores panel state.
+    /// Call this after construction to load saved bookmarks and UI settings.
     /// </summary>
     public async Task InitializeAsync()
     {
         await _bookmarkService.LoadBookmarksAsync();
         RefreshBookmarks();
+        RestorePanelState();
     }
 }
