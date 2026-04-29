@@ -91,7 +91,8 @@
     <ClInclude Include="BigDoubleMarshaller.h" />
     <ClInclude Include="ColorPalette.h" />
     <ClInclude Include="FractalEngineWrapper.h" />
-    <ClInclude Include="FractalRegistry.h" />`n    <ClInclude Include="FractalRegistryWrapper.h" />
+    <ClInclude Include="FractalRegistry.h" />
+    <ClInclude Include="FractalRegistryWrapper.h" />
     <ClInclude Include="MandelbrotCalculator.h" />
     <ClInclude Include="NativePerformanceBaseline.h" />
   </ItemGroup>
@@ -103,7 +104,8 @@
     <ClCompile Include="..\ManpWIN64\Complex.cpp">
       <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
-    <ClCompile Include="FractalRegistry.cpp" />`n    <ClCompile Include="FractalRegistryWrapper.cpp" />
+    <ClCompile Include="FractalRegistry.cpp" />
+    <ClCompile Include="FractalRegistryWrapper.cpp" />
     <ClCompile Include="MandelbrotFamily.cpp" />
     <ClCompile Include="PhoenixFamily.cpp" />
     <ClCompile Include="TricornFamily.cpp" />

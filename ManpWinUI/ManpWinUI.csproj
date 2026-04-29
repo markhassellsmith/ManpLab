@@ -15,6 +15,11 @@
         <AppxBundle>Never</AppxBundle>
         <DefaultLanguage>en-US</DefaultLanguage>
 
+        <!-- Force deployment in debug mode -->
+        <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+        <GenerateTestArtifacts>True</GenerateTestArtifacts>
+        <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+
         <!-- Project Options -->
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
@@ -87,6 +92,15 @@
         </ItemGroup>
         <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(OutDir)AppX\" SkipUnchangedFiles="true" />
         <Message Text="Copied native DLLs to AppX folder" Importance="high" />
+    </Target>
+
+    <!-- Custom deploy target for Visual Studio debugging -->
+    <Target Name="Deploy" DependsOnTargets="Build" Condition="'$(WindowsPackageType)'=='MSIX'">
+        <Message Text="Deploying MSIX package from $(OutDir)AppX\" Importance="high" />
+        <Exec Command="powershell.exe -Command &quot;Add-AppxPackage -Register '$(OutDir)AppX\AppxManifest.xml' -ForceApplicationShutdown -ForceUpdateFromAnyVersion&quot;" 
+              IgnoreExitCode="false"
+              ContinueOnError="false" />
+        <Message Text="MSIX package deployed successfully" Importance="high" />
     </Target>
 
     <!-- 
