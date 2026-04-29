@@ -43,12 +43,11 @@ public partial class MainViewModel
 
     /// <summary>
     /// Indicates whether a render operation is currently in progress.
-    /// Used for UI state (progress overlay, stop/pause buttons).
+    /// Used for UI state (progress overlay, stop button).
     /// Does NOT control Render button enablement.
     /// </summary>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StopRenderCommand))]
-    [NotifyCanExecuteChangedFor(nameof(PauseResumeRenderCommand))]
     public partial bool IsRendering { get; set; }
 
     /// <summary>
@@ -58,13 +57,6 @@ public partial class MainViewModel
     {
         // Commands have no CanExecute constraint, so no notification needed
     }
-
-    /// <summary>
-    /// Indicates whether the current render operation is paused.
-    /// </summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PauseResumeButtonText))]
-    public partial bool IsPaused { get; set; }
 
     /// <summary>
     /// Current render progress (0-100).

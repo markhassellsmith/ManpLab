@@ -39,7 +39,6 @@ public partial class MainViewModel
         _dispatcherQueue.TryEnqueue(() =>
         {
             IsRendering = true;
-            IsPaused = false;
             RenderProgress = 0;
             IsBookmarksPanelOpen = false;
             StatusMessage = IsJuliaMode 
@@ -93,7 +92,7 @@ public partial class MainViewModel
             var startTime = DateTime.Now;
 
             // Progress reporting callback - ALWAYS use dispatcher to avoid COM exceptions
-            // Do NOT use Progress<T> at all - it can invoke synchronously
+            // Progress updates are always posted, even if paused (pause now cancels the render)
             Action<double> progressCallback = percentage =>
             {
                 _dispatcherQueue.TryEnqueue(() =>
@@ -212,7 +211,6 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             _dispatcherQueue.TryEnqueue(() =>
             {
                 IsRendering = false;
-                IsPaused = false;
             });
         }
     }
@@ -254,7 +252,6 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         _dispatcherQueue.TryEnqueue(() =>
         {
             IsRendering = true;
-            IsPaused = false;
             RenderProgress = 0;
             IsBookmarksPanelOpen = false;
             StatusMessage = $"Calculating Hailstone sequence from ({HailstoneStartX}, {HailstoneStartY})...";
@@ -368,7 +365,6 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             _dispatcherQueue.TryEnqueue(() =>
             {
                 IsRendering = false;
-                IsPaused = false;
             });
         }
     }
@@ -396,4 +392,35 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
             await RenderMandelbrotAsync();
         }
     }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // RENDER CONTROL
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Stops the current rendering operation.
+    /// Clears intermediate computations and returns to pre-render state.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanStopRender))]
+    private void StopRender()
+    {
+        System.Diagnostics.Debug.WriteLine("[StopRender] Called - Cancelling render");
+
+        // Cancel the render operation
+        _renderCancellationSource?.Cancel();
+
+        // Reset all rendering state on UI thread
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            IsRendering = false;
+            RenderProgress = 0;
+            StatusMessage = "Rendering stopped by user";
+            System.Diagnostics.Debug.WriteLine("[StopRender] State reset complete");
+        });
+    }
+
+    /// <summary>
+    /// Determines whether stop can be executed (rendering is active).
+    /// </summary>
+    private bool CanStopRender() => IsRendering;
 }

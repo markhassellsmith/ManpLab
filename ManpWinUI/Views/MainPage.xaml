@@ -125,11 +125,9 @@
                    OpenPaneLength="350"
                    CompactPaneLength="0">
 
-            <!-- Bookmarks Panel (Pane) - Disabled only when paused -->
+            <!-- Bookmarks Panel (Pane) -->
             <SplitView.Pane>
-                <Grid Background="{ThemeResource LayerFillColorDefaultBrush}"
-                      IsHitTestVisible="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
-                      Opacity="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource PausedToOpacityConverter}}">
+                <Grid Background="{ThemeResource LayerFillColorDefaultBrush}">
                     <ScrollViewer Padding="16">
                         <StackPanel Spacing="12">
                             <Grid>
@@ -240,12 +238,10 @@
                         <!-- Properties Panel -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- Browser Panel - Disabled only when paused -->
+                    <!-- Browser Panel -->
                     <Grid Grid.Column="0"
                   BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                  BorderThickness="0,0,1,0"
-                  IsHitTestVisible="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
-                  Opacity="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource PausedToOpacityConverter}}">
+                  BorderThickness="0,0,1,0">
                         <browser:FractalBrowserView />
                     </Grid>
 
@@ -330,19 +326,11 @@
                                     VerticalAlignment="Center"
                                     Spacing="16">
 
-                                <!-- Progress Ring (active) or Pause Icon (paused) -->
-                                <Grid Width="60" Height="60">
-                                    <ProgressRing
-                                            IsActive="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
-                                            Width="60"
-                                            Height="60"
-                                            Visibility="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource BoolNegationConverter}, FallbackValue=Visible}" />
-                                    <FontIcon
-                                            Glyph="&#xE769;"
-                                            FontSize="48"
-                                            Foreground="{ThemeResource SystemAccentColor}"
-                                            Visibility="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                </Grid>
+                                <!-- Progress Ring -->
+                                <ProgressRing
+                                        IsActive="True"
+                                        Width="60"
+                                        Height="60" />
 
                                 <TextBlock
                                         Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
@@ -359,18 +347,10 @@
                                 <!-- Render Control Buttons -->
                                 <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,8,0,0">
                                     <Button
-                                            Command="{x:Bind ViewModel.PauseResumeRenderCommand}"
-                                            Content="{x:Bind ViewModel.PauseResumeButtonText, Mode=OneWay}"
-                                            MinWidth="100">
-                                        <Button.KeyboardAccelerators>
-                                            <KeyboardAccelerator Key="P" Modifiers="Control" />
-                                        </Button.KeyboardAccelerators>
-                                    </Button>
-                                    <Button
                                             Command="{x:Bind ViewModel.StopRenderCommand}"
-                                            Content="Stop"
+                                            Content="Stop Render"
                                             Style="{StaticResource AccentButtonStyle}"
-                                            MinWidth="100">
+                                            MinWidth="120">
                                         <Button.KeyboardAccelerators>
                                             <KeyboardAccelerator Key="Escape" />
                                         </Button.KeyboardAccelerators>
@@ -384,9 +364,7 @@
                     <Grid Grid.Column="2"
                               Background="{ThemeResource LayerFillColorDefaultBrush}"
                               BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                              BorderThickness="1,0,0,0"
-                              IsHitTestVisible="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
-                              Opacity="{x:Bind ViewModel.IsPaused, Mode=OneWay, Converter={StaticResource PausedToOpacityConverter}}">
+                              BorderThickness="1,0,0,0">
                         <TabView>
                             <!-- Parameters Tab -->
                             <TabViewItem Header="Parameters">
