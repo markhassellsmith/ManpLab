@@ -1,12 +1,33 @@
 #include "FractalRegistryWrapper.h"
 #include "FractalRegistry.h"
 #include <string>
-#include <msclr/marshal_cppstd.h>
 
 using namespace System;
 using namespace System::Collections::Generic;
+using namespace System::Runtime::InteropServices;
 using namespace ManpCore::Native;
-using namespace msclr::interop;
+
+// Helper function to convert managed string to std::string without msclr/marshal
+static std::string ManagedToStdString(String^ str)
+{
+    if (String::IsNullOrEmpty(str))
+        return std::string();
+
+    array<unsigned char>^ bytes = System::Text::Encoding::UTF8->GetBytes(str);
+    pin_ptr<unsigned char> pinnedBytes = &bytes[0];
+    return std::string(reinterpret_cast<char*>(pinnedBytes), bytes->Length);
+}
+
+// Helper function to convert std::string to managed String
+static String^ StdStringToManaged(const std::string& str)
+{
+    if (str.empty())
+        return String::Empty;
+
+    array<unsigned char>^ bytes = gcnew array<unsigned char>((int)str.size());
+    Marshal::Copy(IntPtr((void*)str.data()), bytes, 0, (int)str.size());
+    return System::Text::Encoding::UTF8->GetString(bytes);
+}
 
 //=============================================================================
 // FractalRegistryWrapper Implementation
@@ -30,10 +51,10 @@ List<FractalInfo^>^ FractalRegistryWrapper::GetAllFractals()
         if (spec != nullptr)
         {
             auto info = gcnew FractalInfo();
-            info->Name = marshal_as<String^>(spec->name);
-            info->DisplayName = marshal_as<String^>(spec->displayName);
-            info->Category = marshal_as<String^>(spec->category);
-            info->Description = marshal_as<String^>(spec->description);
+            info->Name = StdStringToManaged(spec->name);
+            info->DisplayName = StdStringToManaged(spec->displayName);
+            info->Category = StdStringToManaged(spec->category);
+            info->Description = StdStringToManaged(spec->description);
             info->SupportsJulia = spec->supportsJulia;
             info->DefaultCenterX = spec->defaultCenterX;
             info->DefaultCenterY = spec->defaultCenterY;
@@ -54,7 +75,7 @@ List<String^>^ FractalRegistryWrapper::GetCategories()
 
     for (const auto& category : categories)
     {
-        result->Add(marshal_as<String^>(category));
+        result->Add(StdStringToManaged(category));
     }
 
     return result;
@@ -67,7 +88,7 @@ List<FractalInfo^>^ FractalRegistryWrapper::GetFractalsByCategory(String^ catego
     if (String::IsNullOrEmpty(category))
         return result;
 
-    std::string nativeCategory = marshal_as<std::string>(category);
+    std::string nativeCategory = ManagedToStdString(category);
     std::vector<std::string> names = ::Native::FractalRegistry::GetFractalsByCategory(nativeCategory);
 
     for (const auto& name : names)
@@ -76,10 +97,10 @@ List<FractalInfo^>^ FractalRegistryWrapper::GetFractalsByCategory(String^ catego
         if (spec != nullptr)
         {
             auto info = gcnew FractalInfo();
-            info->Name = marshal_as<String^>(spec->name);
-            info->DisplayName = marshal_as<String^>(spec->displayName);
-            info->Category = marshal_as<String^>(spec->category);
-            info->Description = marshal_as<String^>(spec->description);
+            info->Name = StdStringToManaged(spec->name);
+            info->DisplayName = StdStringToManaged(spec->displayName);
+            info->Category = StdStringToManaged(spec->category);
+            info->Description = StdStringToManaged(spec->description);
             info->SupportsJulia = spec->supportsJulia;
             info->DefaultCenterX = spec->defaultCenterX;
             info->DefaultCenterY = spec->defaultCenterY;
@@ -97,17 +118,17 @@ FractalInfo^ FractalRegistryWrapper::GetFractalInfo(String^ name)
     if (String::IsNullOrEmpty(name))
         return nullptr;
 
-    std::string nativeName = marshal_as<std::string>(name);
+    std::string nativeName = ManagedToStdString(name);
     const ::Native::FractalSpec* spec = ::Native::FractalRegistry::GetSpec(nativeName);
 
     if (spec == nullptr)
         return nullptr;
 
     auto info = gcnew FractalInfo();
-    info->Name = marshal_as<String^>(spec->name);
-    info->DisplayName = marshal_as<String^>(spec->displayName);
-    info->Category = marshal_as<String^>(spec->category);
-    info->Description = marshal_as<String^>(spec->description);
+    info->Name = StdStringToManaged(spec->name);
+    info->DisplayName = StdStringToManaged(spec->displayName);
+    info->Category = StdStringToManaged(spec->category);
+    info->Description = StdStringToManaged(spec->description);
     info->SupportsJulia = spec->supportsJulia;
     info->DefaultCenterX = spec->defaultCenterX;
     info->DefaultCenterY = spec->defaultCenterY;
@@ -121,7 +142,7 @@ bool FractalRegistryWrapper::IsRegistered(String^ name)
     if (String::IsNullOrEmpty(name))
         return false;
 
-    std::string nativeName = marshal_as<std::string>(name);
+    std::string nativeName = ManagedToStdString(name);
     return ::Native::FractalRegistry::IsRegistered(nativeName);
 }
 

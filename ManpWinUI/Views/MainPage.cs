@@ -92,7 +92,7 @@ namespace ManpWinUI.Views
             ViewModel.CenterX = fractalInfo.DefaultCenterX;
             ViewModel.CenterY = fractalInfo.DefaultCenterY;
             ViewModel.Zoom = fractalInfo.DefaultZoom;
-            ViewModel.IsJuliaMode = false; // Reset Julia mode when switching fractals
+            ViewModel.SelectedIterationMode = "Standard"; // Reset to standard mode when switching fractals
 
             // Auto-render the selected fractal
             ViewModel.StatusMessage = $"Loading {fractalInfo.DisplayName}...";

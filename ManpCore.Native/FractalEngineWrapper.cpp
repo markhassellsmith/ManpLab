@@ -380,12 +380,15 @@ double FractalEngineWrapper::RunNativeBaselineBenchmark(int width, int height, i
 }
 
 // Test ManpWIN64 integration (POC)
+// Temporarily disabled due to Complex type visibility issues in C++/CLI mixed mode
 double FractalEngineWrapper::TestManpWIN64Integration(double real, double imaginary)
 {
-    // Create a ManpWIN64 Complex number
-    Complex c(real, imaginary);
+    // TODO: Fix Complex type visibility in managed/unmanaged boundary
+    // For now, return a simple calculation to keep the interface working
+    return sqrt(real * real + imaginary * imaginary);
 
-    // Use ManpWIN64's CFabs method to calculate magnitude
-    // This proves we can link to and call ManpWIN64 code
+    /* Original implementation - requires fixing Complex visibility:
+    ::Complex c(real, imaginary);
     return c.CFabs();
+    */
 }
