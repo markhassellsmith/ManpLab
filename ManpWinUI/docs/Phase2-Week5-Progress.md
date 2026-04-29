@@ -128,10 +128,11 @@ Properties: Name, DisplayName, Category, Description, SupportsJulia, DefaultCent
 - ✅ All 14 registered fractals visible in browser (Classic Fractals, Julia Sets, Multibrot Family, Newton Method, Magnet Fractals)
 - ✅ DisplayName shows friendly names in UI
 - ✅ Descriptions appear as tooltips when hovering over fractals
+- ✅ Clicking fractals loads and renders them with default view parameters
+- ✅ Default center/zoom loaded from FractalRegistry metadata
 - ✅ Build compiles successfully
 
 ### Known Limitations (Week 5 Scope)
-- ⏳ Clicking fractals doesn't load them yet (Week 5 Task 6)
 - ⏳ No search/filtering implementation (Week 5 Task 7)
 - ⏳ No fractal selection persistence (Week 5 Task 8)
 
@@ -139,20 +140,25 @@ Properties: Name, DisplayName, Category, Description, SupportsJulia, DefaultCent
 
 ## Next Steps
 
-### Task 6: Fractal Selection & Loading
+### ✅ Task 6: Fractal Selection & Loading (COMPLETE)
 **Goal**: Wire fractal selection to actually load and render the selected fractal
 
-**Files to Modify**:
-- `FractalBrowserViewModel.cs` - Add `FractalSelected` event or command
-- `MainViewModel.cs` - Handle fractal selection and trigger render
-- `FractalRenderService.cs` - Update to support any fractal by name (not just Mandelbrot/Hailstone)
+**Files Modified**:
+- ✅ `FractalBrowserViewModel.cs` - Added `FractalSelected` event and `SelectFractalCommand`
+- ✅ `FractalBrowserView.xaml` - Wired button click to `SelectFractalCommand`
+- ✅ `MainPage.xaml` - Added `x:Name="BrowserView"` to access view instance
+- ✅ `MainPage.cs` - Subscribed to `FractalSelected` event, loads fractal with registry metadata
 
 **Implementation**:
-1. Add command or event to `FractalBrowserViewModel` when fractal button clicked
-2. Pass selected fractal name to `MainViewModel`
-3. Update render service to accept fractal name parameter
-4. Load fractal metadata (default center/zoom) from registry
-5. Trigger render with selected fractal
+1. ✅ Added `FractalSelectedEventArgs` with selected fractal info
+2. ✅ Created `SelectFractalCommand` in browser ViewModel
+3. ✅ Wired button clicks to command with CommandParameter
+4. ✅ MainPage subscribes to event and updates MainViewModel
+5. ✅ Loads default center/zoom from FractalRegistry metadata
+6. ✅ Auto-triggers render when fractal selected
+7. ✅ Resets Julia mode when switching fractals
+
+**Result**: Clicking any fractal in the browser now loads and renders it with appropriate default view!
 
 ---
 
@@ -191,13 +197,13 @@ Properties: Name, DisplayName, Category, Description, SupportsJulia, DefaultCent
 - [x] Registry initialized at application startup
 - [x] Browser panel loads real categories and fractals from registry
 - [x] DisplayName and Description visible in UI
-- [ ] Clicking a fractal loads and renders it (Task 6)
+- [x] Clicking a fractal loads and renders it (Task 6)
 - [ ] Search box filters fractals by name/description (Task 7)
 - [ ] Selected fractal persists across app restarts (Task 8)
-- [ ] All 14 registered fractals accessible from browser
-- [ ] Clean build with no warnings/errors
+- [x] All 14 registered fractals accessible from browser
+- [x] Clean build with no warnings/errors
 
-**Current Progress**: 5/9 criteria complete (56%)
+**Current Progress**: 7/9 criteria complete (78%)
 
 ---
 

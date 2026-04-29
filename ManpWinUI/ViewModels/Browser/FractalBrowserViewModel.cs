@@ -13,6 +13,15 @@ namespace ManpWinUI.ViewModels.Browser;
 public partial class FractalBrowserViewModel : ObservableObject
 {
     // ═══════════════════════════════════════════════════════════════════════════════
+    // EVENTS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Event raised when a fractal is selected in the browser.
+    /// Week 5 Task 6: MainViewModel subscribes to this to handle fractal loading.
+    /// </summary>
+    public event EventHandler<FractalSelectedEventArgs>? FractalSelected;
+    // ═══════════════════════════════════════════════════════════════════════════════
     // SEARCH & FILTER
     // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -131,6 +140,41 @@ public partial class FractalBrowserViewModel : ObservableObject
     private void ClearSearch()
     {
         SearchQuery = string.Empty;
+    }
+
+    /// <summary>
+    /// Handle fractal selection from the browser.
+    /// Week 5 Task 6: Raise event to notify MainViewModel.
+    /// </summary>
+    [RelayCommand]
+    private void SelectFractal(FractalNode fractal)
+    {
+        if (fractal == null)
+            return;
+
+        SelectedFractal = fractal;
+
+        System.Diagnostics.Debug.WriteLine($"[FractalBrowserViewModel] Fractal selected: {fractal.Name}");
+
+        // Raise event with fractal info
+        FractalSelected?.Invoke(this, new FractalSelectedEventArgs(fractal));
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EVENT ARGS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/// <summary>
+/// Event arguments for fractal selection.
+/// </summary>
+public class FractalSelectedEventArgs : EventArgs
+{
+    public FractalNode Fractal { get; }
+
+    public FractalSelectedEventArgs(FractalNode fractal)
+    {
+        Fractal = fractal;
     }
 }
 
