@@ -19,15 +19,33 @@ public partial class MainViewModel
     /// <summary>
     /// Renders the Mandelbrot set with current parameters.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanRender))]
+    [RelayCommand]
     private async Task RenderMandelbrotAsync()
     {
-        IsRendering = true;
-        RenderProgress = 0;
+        // Guard: Don't start a new render if already rendering
+        if (IsRendering)
+        {
+            System.Diagnostics.Debug.WriteLine("[RenderMandelbrotAsync] Already rendering - ignoring request");
+            return;
+        }
+
+        // Create a new cancellation token for this render
+        _renderCancellationSource?.Dispose();
+        _renderCancellationSource = new CancellationTokenSource();
+        var cancellationToken = _renderCancellationSource.Token;
+
         var fractalName = IsJuliaMode ? $"{SelectedFractalType} Julia" : SelectedFractalType;
-        StatusMessage = IsJuliaMode 
-            ? $"Rendering {fractalName} set (c = {JuliaCX:F4}, {JuliaCY:F4})..." 
-            : $"Rendering {fractalName} set...";
+
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            IsRendering = true;
+            IsPaused = false;
+            RenderProgress = 0;
+            IsBookmarksPanelOpen = false;
+            StatusMessage = IsJuliaMode 
+                ? $"Rendering {fractalName} set (c = {JuliaCX:F4}, {JuliaCY:F4})..." 
+                : $"Rendering {fractalName} set...";
+        });
 
         // Auto-scale iterations based on zoom if enabled
         if (AutoScaleIterations)
@@ -36,12 +54,18 @@ public partial class MainViewModel
             if (MaxIterations < recommendedIterations)
             {
                 var oldIterations = MaxIterations;
-                MaxIterations = recommendedIterations;
-                IterationSuggestion = $"Auto-increased iterations: {oldIterations} → {MaxIterations} for zoom {Zoom:F2}x";
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    MaxIterations = recommendedIterations;
+                    IterationSuggestion = $"Auto-increased iterations: {oldIterations} → {recommendedIterations} for zoom {Zoom:F2}x";
+                });
             }
             else
             {
-                IterationSuggestion = $"Using {MaxIterations} iterations at zoom {Zoom:F2}x";
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    IterationSuggestion = $"Using {MaxIterations} iterations at zoom {Zoom:F2}x";
+                });
             }
         }
         else
@@ -50,11 +74,17 @@ public partial class MainViewModel
             var recommendedIterations = CalculateRecommendedIterations(Zoom);
             if (MaxIterations < recommendedIterations)
             {
-                IterationSuggestion = $"⚠️ Consider increasing iterations to ~{recommendedIterations} for better detail at zoom {Zoom:F2}x (currently {MaxIterations})";
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    IterationSuggestion = $"⚠️ Consider increasing iterations to ~{recommendedIterations} for better detail at zoom {Zoom:F2}x (currently {MaxIterations})";
+                });
             }
             else
             {
-                IterationSuggestion = string.Empty;
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    IterationSuggestion = string.Empty;
+                });
             }
         }
 
@@ -62,22 +92,16 @@ public partial class MainViewModel
         {
             var startTime = DateTime.Now;
 
-            // Progress reporting callback
-            var progress = new Progress<double>(percentage =>
+            // Progress reporting callback - ALWAYS use dispatcher to avoid COM exceptions
+            // Do NOT use Progress<T> at all - it can invoke synchronously
+            Action<double> progressCallback = percentage =>
             {
-                try
+                _dispatcherQueue.TryEnqueue(() =>
                 {
-                    _dispatcherQueue.TryEnqueue(() =>
-                    {
-                        RenderProgress = percentage * 100.0;
-                    });
-                }
-                catch (InvalidCastException ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"InvalidCastException in Progress callback: {ex.Message}");
-                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                }
-            });
+                    RenderProgress = percentage * 100.0;
+                });
+            };
+            var progress = new Progress<double>(progressCallback);
 
             // Call FractalRenderService to render the fractal
             FractalRenderResult result;
@@ -105,6 +129,12 @@ public partial class MainViewModel
                 return;
             }
 
+            // Check if render was cancelled
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
             // Convert byte[] to WriteableBitmap on UI thread
             try
             {
@@ -129,7 +159,7 @@ public partial class MainViewModel
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
             }
 
-            LastRenderTime = DateTime.Now - startTime;
+            var renderTime = DateTime.Now - startTime;
 
             // Show diagnostic info if escape percentage is very low
             var escapePercent = result.EscapePercentage;
@@ -140,7 +170,7 @@ public partial class MainViewModel
 RENDER COMPLETE - DIAGNOSTIC INFO
 ───────────────────────────────────────────────────────────────
 Resolution: {ImageWidth} × {ImageHeight} ({result.TotalIterations:N0} total iterations)
-Render time: {LastRenderTime.TotalMilliseconds:F0} ms
+Render time: {renderTime.TotalMilliseconds:F0} ms
 Escape stats: {result.EscapedPixels:N0} / {ImageWidth * ImageHeight:N0} pixels ({escapePercent:F2}%)
 Max iterations: {MaxIterations}
 Zoom: {Zoom:F4}x
@@ -150,26 +180,40 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
 ";
             System.Diagnostics.Debug.WriteLine(logMessage);
 
-            if (escapePercent < 1.0)
+            // Update UI-bound properties on UI thread
+            _dispatcherQueue.TryEnqueue(() =>
             {
-                StatusMessage = $"⚠️ Only {escapePercent:F2}% of pixels escaped - You're inside the Mandelbrot set! Zoom to the boundary for detail.";
-            }
-            else if (escapePercent < 10.0)
-            {
-                StatusMessage = $"Low detail: {escapePercent:F1}% escaped - Try zooming to colorful boundaries";
-            }
-            else
-            {
-                StatusMessage = $"Rendered in {LastRenderTime.TotalMilliseconds:F0} ms ({escapePercent:F1}% escaped)";
-            }
+                LastRenderTime = renderTime;
+
+                if (escapePercent < 1.0)
+                {
+                    StatusMessage = $"⚠️ Only {escapePercent:F2}% of pixels escaped - You're inside the Mandelbrot set! Zoom to the boundary for detail.";
+                }
+                else if (escapePercent < 10.0)
+                {
+                    StatusMessage = $"Low detail: {escapePercent:F1}% escaped - Try zooming to colorful boundaries";
+                }
+                else
+                {
+                    StatusMessage = $"Rendered in {renderTime.TotalMilliseconds:F0} ms ({escapePercent:F1}% escaped)";
+                }
+            });
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Error: {ex.Message}";
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                StatusMessage = $"Error: {ex.Message}";
+            });
         }
         finally
         {
-            IsRendering = false;
+            // Reset state on UI thread
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                IsRendering = false;
+                IsPaused = false;
+            });
         }
     }
 
@@ -180,7 +224,7 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     /// <summary>
     /// Renders the Hailstone 2D sequence with current parameters.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanRender))]
+    [RelayCommand]
     private async Task RenderHailstoneAsync()
     {
         System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Called - IsHailstoneMode={IsHailstoneMode}");
@@ -188,13 +232,33 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
         if (!IsHailstoneMode)
         {
             System.Diagnostics.Debug.WriteLine("[RenderHailstoneAsync] EARLY EXIT - Not in Hailstone mode!");
-            StatusMessage = "Please select Hailstone fractal type first.";
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                StatusMessage = "Please select Hailstone fractal type first.";
+            });
             return;
         }
 
-        IsRendering = true;
-        RenderProgress = 0;
-        StatusMessage = $"Calculating Hailstone sequence from ({HailstoneStartX}, {HailstoneStartY})...";
+        // Guard: Don't start a new render if already rendering
+        if (IsRendering)
+        {
+            System.Diagnostics.Debug.WriteLine("[RenderHailstoneAsync] Already rendering - ignoring request");
+            return;
+        }
+
+        // Create a new cancellation token for this render
+        _renderCancellationSource?.Dispose();
+        _renderCancellationSource = new CancellationTokenSource();
+        var cancellationToken = _renderCancellationSource.Token;
+
+        _dispatcherQueue.TryEnqueue(() =>
+        {
+            IsRendering = true;
+            IsPaused = false;
+            RenderProgress = 0;
+            IsBookmarksPanelOpen = false;
+            StatusMessage = $"Calculating Hailstone sequence from ({HailstoneStartX}, {HailstoneStartY})...";
+        });
 
         System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Starting render - ({HailstoneStartX}, {HailstoneStartY}), MaxIter={HailstoneMaxIterations}");
 
@@ -212,8 +276,11 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
 
             System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Sequence calculated - {result.Sequence.Count} points");
 
-            StatusMessage = $"Rendering Hailstone sequence ({result.Sequence.Count} points)...";
-            RenderProgress = 50;
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                StatusMessage = $"Rendering Hailstone sequence ({result.Sequence.Count} points)...";
+                RenderProgress = 50;
+            });
 
             // Render to bitmap with optional custom viewport
             var renderResult = await _hailstoneRenderService.RenderSequenceAsync(
@@ -230,6 +297,12 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 HailstoneViewportMaxY);
 
             System.Diagnostics.Debug.WriteLine($"[RenderHailstoneAsync] Got render result with {(renderResult.PixelData != null ? renderResult.PixelData.Length : 0)} bytes of pixel data");
+
+            // Check if render was cancelled
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
 
             // Create bitmap on UI thread (WriteableBitmap must be created on UI thread!)
             WriteableBitmap? bitmap = null;
@@ -267,24 +340,36 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
                 }
             });
 
-            LastRenderTime = DateTime.Now - startTime;
-            RenderProgress = 100;
+            var renderTime = DateTime.Now - startTime;
 
             // Build status message
             string cycleInfo = result.HasCycle
                 ? $" | Cycle detected at step {result.CycleStartIndex} (length {result.CycleLength})"
                 : " | No cycle detected";
 
-            StatusMessage = $"Rendered {result.Sequence.Count} points in {LastRenderTime.TotalMilliseconds:F0} ms{cycleInfo}";
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                LastRenderTime = renderTime;
+                RenderProgress = 100;
+                StatusMessage = $"Rendered {result.Sequence.Count} points in {renderTime.TotalMilliseconds:F0} ms{cycleInfo}";
+            });
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Error: {ex.Message}";
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                StatusMessage = $"Error: {ex.Message}";
+            });
             System.Diagnostics.Debug.WriteLine($"Hailstone render error: {ex}");
         }
         finally
         {
-            IsRendering = false;
+            // Reset state on UI thread
+            _dispatcherQueue.TryEnqueue(() =>
+            {
+                IsRendering = false;
+                IsPaused = false;
+            });
         }
     }
 
@@ -295,7 +380,7 @@ View dimensions: {3.0 / Zoom:F10} × {(3.0 / Zoom) * ((double)ImageHeight / Imag
     /// <summary>
     /// Unified render command that routes to the appropriate render method.
     /// </summary>
-    [RelayCommand(CanExecute = nameof(CanRender))]
+    [RelayCommand]
     private async Task RenderAsync()
     {
         System.Diagnostics.Debug.WriteLine($"[RenderAsync] Called - IsHailstoneMode={IsHailstoneMode}, SelectedFractalType={SelectedFractalType}");

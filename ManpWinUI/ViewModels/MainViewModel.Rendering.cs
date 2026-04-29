@@ -37,10 +37,34 @@ public partial class MainViewModel
     // ═══════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
+    /// Cancellation token source for stopping renders.
+    /// </summary>
+    private CancellationTokenSource? _renderCancellationSource;
+
+    /// <summary>
     /// Indicates whether a render operation is currently in progress.
+    /// Used for UI state (progress overlay, stop/pause buttons).
+    /// Does NOT control Render button enablement.
     /// </summary>
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StopRenderCommand))]
+    [NotifyCanExecuteChangedFor(nameof(PauseResumeRenderCommand))]
     public partial bool IsRendering { get; set; }
+
+    /// <summary>
+    /// Called when IsRendering property changes.
+    /// </summary>
+    partial void OnIsRenderingChanged(bool value)
+    {
+        // Commands have no CanExecute constraint, so no notification needed
+    }
+
+    /// <summary>
+    /// Indicates whether the current render operation is paused.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PauseResumeButtonText))]
+    public partial bool IsPaused { get; set; }
 
     /// <summary>
     /// Current render progress (0-100).
@@ -63,15 +87,6 @@ public partial class MainViewModel
     /// </summary>
     [ObservableProperty]
     public partial WriteableBitmap? FractalImage { get; set; }
-
-    // ═══════════════════════════════════════════════════════════════════════════════
-    // RENDER COMMANDS
-    // ═══════════════════════════════════════════════════════════════════════════════
-
-    /// <summary>
-    /// Determines whether rendering can be executed (not already rendering).
-    /// </summary>
-    private bool CanRender() => !IsRendering;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // HELPER METHODS
