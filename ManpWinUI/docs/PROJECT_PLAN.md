@@ -86,8 +86,23 @@ Documentation:
 └────────────┴────────────────────────┴────────────────┘
 ```
 
-### Week 4: Layout Foundation
-Create 3-panel resizable layout with splitters
+### Week 4: Layout Foundation ✅ COMPLETE
+**Create 3-panel resizable layout with splitters**
+
+Status: ✅ Complete
+- ✅ 3-panel layout (Browser | Canvas | Properties)
+- ✅ GridSplitter implementation with drag-to-resize
+- ✅ Panel persistence (save/restore widths and visibility)
+- ✅ Panel collapse/expand buttons (VS Code-style)
+- ✅ Keyboard shortcuts: Ctrl+B (Browser), Ctrl+P (Properties)
+- ✅ `IAppSettingsService` for persistent settings storage
+- ✅ `DoubleToGridLengthConverter` for width bindings
+- ✅ Visual feedback (cursor changes on hover)
+- ✅ Resizable with min/max width constraints
+
+Documentation:
+- ✅ Updated keyboard shortcuts help (F1)
+- ✅ `MainPage.PanelManagement.cs` for splitter handlers
 
 ### Week 5: Fractal Browser
 TreeView with all 240+ fractals, search, favorites
@@ -197,7 +212,17 @@ ManpLab/
 - [ ] Public release ready (Not yet)
 
 **Phase 1 Status**: ✅ Complete (Weeks 1-3)
-- ✅ FractalRegistry system
+- ✅ FractalRegistry system (4 fractals registered)
+- ✅ Fractal switching via wrapper
+- ✅ BatchRenderer with animation support
+
+**Phase 2 Status**: 🚧 In Progress (Week 4/8)
+- ✅ Week 4: Layout Foundation complete
+  - ✅ 3-panel resizable layout
+  - ✅ Panel persistence and collapse/expand
+  - ✅ Keyboard shortcuts (Ctrl+B, Ctrl+P)
+- ⏳ Week 5: Fractal Browser (Next)
+- ⏳ Week 6-8: Properties panels, presets, history
 - ✅ FractalEngineWrapper with dynamic dispatch
 - ✅ BatchRenderer with animation support
 
