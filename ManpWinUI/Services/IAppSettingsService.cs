@@ -56,4 +56,20 @@ public interface IAppSettingsService
     /// Week 5 Task 8: Persist browser selection across app restarts.
     /// </summary>
     void SetSelectedFractal(string fractalName);
+
+    /// <summary>
+    /// Gets saved parameter values for a specific fractal, or null if none saved.
+    /// Week 6 Task 6: Persist parameter values per fractal type.
+    /// </summary>
+    /// <param name="fractalName">Name of the fractal</param>
+    /// <returns>JSON string of saved parameters, or null</returns>
+    string? GetFractalParameters(string fractalName);
+
+    /// <summary>
+    /// Saves parameter values for a specific fractal.
+    /// Week 6 Task 6: Persist parameter values per fractal type.
+    /// </summary>
+    /// <param name="fractalName">Name of the fractal</param>
+    /// <param name="parametersJson">JSON string of parameter values</param>
+    void SetFractalParameters(string fractalName, string parametersJson);
 }

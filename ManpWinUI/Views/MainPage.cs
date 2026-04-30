@@ -1,4 +1,5 @@
 using ManpWinUI.ViewModels;
+using ManpWinUI.ViewModels.Properties;
 using ManpWinUI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
@@ -13,6 +14,7 @@ namespace ManpWinUI.Views
     public sealed partial class MainPage : Page
     {
         public MainViewModel ViewModel { get; }
+        private ParameterEditorViewModel ParameterEditorViewModel { get; }
 
         private bool _isDragging;
         private bool _isPanning; // Track if we're panning (right-click) vs zooming (left-click)
@@ -27,6 +29,17 @@ namespace ManpWinUI.Views
             // Get ViewModel from DI container
             ViewModel = App.Current.Services.GetRequiredService<MainViewModel>();
             DataContext = ViewModel;
+
+            // Get settings service from DI container
+            var settingsService = App.Current.Services.GetRequiredService<IAppSettingsService>();
+
+            // Initialize ParameterEditor ViewModel (Week 6)
+            // Week 6 Task 6: Pass settings service for parameter persistence
+            ParameterEditorViewModel = new ParameterEditorViewModel(settingsService);
+            ParameterEditor.DataContext = ParameterEditorViewModel;
+
+            // Week 6 Task 5: Subscribe to parameter changes for automatic re-rendering
+            ParameterEditorViewModel.ParameterChanged += OnParameterChanged;
 
             // Subscribe to browser fractal selection (Week 5 Task 6)
             BrowserView.ViewModel.FractalSelected += OnFractalSelected;
@@ -45,6 +58,14 @@ namespace ManpWinUI.Views
                     e.PropertyName == nameof(ViewModel.FractalImage))
                 {
                     UpdateCoordinateAxes();
+
+                    // Week 6 Task 5: Sync view parameters back to ParameterEditor (for zoom/pan operations)
+                    if (e.PropertyName == nameof(ViewModel.CenterX))
+                        ParameterEditorViewModel.UpdateParameterValue("Center X", ViewModel.CenterX.ToString("F6"));
+                    if (e.PropertyName == nameof(ViewModel.CenterY))
+                        ParameterEditorViewModel.UpdateParameterValue("Center Y", ViewModel.CenterY.ToString("F6"));
+                    if (e.PropertyName == nameof(ViewModel.Zoom))
+                        ParameterEditorViewModel.UpdateParameterValue("Zoom", ViewModel.Zoom.ToString("F2"));
                 }
 
                 // Update Hailstone labels when relevant properties change
@@ -71,6 +92,7 @@ namespace ManpWinUI.Views
         /// <summary>
         /// Handle fractal selection from browser.
         /// Week 5 Task 6: Load selected fractal with default view parameters.
+        /// Week 6 Task 2: Load parameters in ParameterEditorViewModel.
         /// </summary>
         private void OnFractalSelected(object? sender, ViewModels.Browser.FractalSelectedEventArgs e)
         {
@@ -94,8 +116,40 @@ namespace ManpWinUI.Views
             ViewModel.Zoom = fractalInfo.DefaultZoom;
             ViewModel.SelectedIterationMode = "Standard"; // Reset to standard mode when switching fractals
 
+            // Week 6 Task 2: Load parameters in ParameterEditor
+            ParameterEditorViewModel.LoadParametersForFractal(e.Fractal.Name);
+
             // Auto-render the selected fractal
             ViewModel.StatusMessage = $"Loading {fractalInfo.DisplayName}...";
+            _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>
+        /// Handle parameter changes from the parameter editor.
+        /// Week 6 Task 5: Sync parameter values to MainViewModel and trigger re-render.
+        /// </summary>
+        private void OnParameterChanged(object? sender, EventArgs e)
+        {
+            Debug.WriteLine($"[MainPage] Parameter changed, syncing to ViewModel and re-rendering");
+
+            // Sync editable parameters from ParameterEditor to MainViewModel
+            var centerX = ParameterEditorViewModel.GetParameterValue("Center X");
+            if (centerX != null && double.TryParse(centerX, out var x))
+                ViewModel.CenterX = x;
+
+            var centerY = ParameterEditorViewModel.GetParameterValue("Center Y");
+            if (centerY != null && double.TryParse(centerY, out var y))
+                ViewModel.CenterY = y;
+
+            var zoom = ParameterEditorViewModel.GetParameterValue("Zoom");
+            if (zoom != null && double.TryParse(zoom, out var z))
+                ViewModel.Zoom = z;
+
+            var maxIterations = ParameterEditorViewModel.GetParameterValue("Max Iterations");
+            if (maxIterations != null && int.TryParse(maxIterations, out var iter))
+                ViewModel.MaxIterations = iter;
+
+            // Trigger re-render with updated parameters
             _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
         }
 

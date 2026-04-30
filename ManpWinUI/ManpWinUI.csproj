@@ -52,6 +52,8 @@
         <None Remove="ManpWinUI.slnx" />
     </ItemGroup>
 
+
+
     <ItemGroup>
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.*" />
         <PackageReference Include="Microsoft.Web.WebView2" Version="1.*" />
@@ -97,9 +99,7 @@
     <!-- Custom deploy target for Visual Studio debugging -->
     <Target Name="Deploy" DependsOnTargets="Build" Condition="'$(WindowsPackageType)'=='MSIX'">
         <Message Text="Deploying MSIX package from $(OutDir)AppX\" Importance="high" />
-        <Exec Command="powershell.exe -Command &quot;Add-AppxPackage -Register '$(OutDir)AppX\AppxManifest.xml' -ForceApplicationShutdown -ForceUpdateFromAnyVersion&quot;" 
-              IgnoreExitCode="false"
-              ContinueOnError="false" />
+        <Exec Command="powershell.exe -Command &quot;Add-AppxPackage -Register '$(OutDir)AppX\AppxManifest.xml' -ForceApplicationShutdown -ForceUpdateFromAnyVersion&quot;" IgnoreExitCode="false" ContinueOnError="false" />
         <Message Text="MSIX package deployed successfully" Importance="high" />
     </Target>
 

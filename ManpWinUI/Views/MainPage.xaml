@@ -8,6 +8,7 @@
     xmlns:vm="using:ManpWinUI.ViewModels"
     xmlns:models="using:ManpWinUI.Models"
     xmlns:browser="using:ManpWinUI.Views.Browser"
+    xmlns:properties="using:ManpWinUI.Views.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -474,6 +475,26 @@
                                 </TabViewItem.IconSource>
                                 <ScrollViewer Padding="16">
                                     <StackPanel Spacing="12">
+                                        <!-- NEW: Dynamic Parameter Editor -->
+                                        <Border BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="4"
+                                                Padding="12"
+                                                Background="{ThemeResource LayerFillColorAltBrush}">
+                                            <StackPanel Spacing="8">
+                                                <TextBlock Text="Dynamic Parameters (Week 6)"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="14" />
+                                                <TextBlock Text="Parameters for selected fractal will appear below:"
+                                                           FontSize="12"
+                                                           Opacity="0.7"
+                                                           TextWrapping="Wrap" />
+                                                <properties:ParameterEditorView x:Name="ParameterEditor" />
+                                            </StackPanel>
+                                        </Border>
+
+                                        <MenuFlyoutSeparator />
+
                                         <!-- Fractal Type Selection -->
                                         <StackPanel Spacing="4">
                                             <TextBlock Text="Fractal Type" FontWeight="SemiBold" />

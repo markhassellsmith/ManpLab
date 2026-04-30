@@ -1,0 +1,172 @@
+<UserControl
+    x:Class="ManpWinUI.Views.Properties.ParameterEditorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:properties="using:ManpWinUI.Views.Properties"
+    mc:Ignorable="d"
+    d:DesignHeight="400"
+    d:DesignWidth="300">
+    
+    <UserControl.Resources>
+        <!-- Template for read-only parameters (displays as label) -->
+        <DataTemplate x:Key="ReadOnlyStringTemplate">
+            <Grid Margin="0,4" ToolTipService.ToolTip="{Binding Description}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Column="0"
+                    Text="{Binding Name}" 
+                    VerticalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <TextBlock 
+                    Grid.Column="1"
+                    Text="{Binding Value}" 
+                    VerticalAlignment="Center"
+                    FontWeight="SemiBold"/>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Template for editable double parameters -->
+        <DataTemplate x:Key="EditableDoubleTemplate">
+            <Grid Margin="0,4" ToolTipService.ToolTip="{Binding Description}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Column="0"
+                    Text="{Binding Name}" 
+                    VerticalAlignment="Center"/>
+                <NumberBox 
+                    Grid.Column="1"
+                    Value="{Binding ValueAsDouble, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Minimum="{Binding MinValue}"
+                    Maximum="{Binding MaxValue}"
+                    SpinButtonPlacementMode="Compact"
+                    SmallChange="0.01"
+                    LargeChange="0.1"
+                    IsEnabled="{Binding IsEditable}"
+                    ValidationMode="InvalidInputOverwritten"/>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Template for editable integer parameters -->
+        <DataTemplate x:Key="EditableIntegerTemplate">
+            <Grid Margin="0,4" ToolTipService.ToolTip="{Binding Description}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Column="0"
+                    Text="{Binding Name}" 
+                    VerticalAlignment="Center"/>
+                <NumberBox 
+                    Grid.Column="1"
+                    Value="{Binding ValueAsDouble, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Minimum="{Binding MinValue}"
+                    Maximum="{Binding MaxValue}"
+                    SpinButtonPlacementMode="Compact"
+                    SmallChange="1"
+                    LargeChange="10"
+                    IsEnabled="{Binding IsEditable}"
+                    ValidationMode="InvalidInputOverwritten"
+                    NumberFormatter="{x:Null}"/>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Template for complex number parameters (Julia C values) -->
+        <DataTemplate x:Key="EditableComplexTemplate">
+            <StackPanel Margin="0,4" ToolTipService.ToolTip="{Binding Description}">
+                <TextBlock 
+                    Text="{Binding Name}" 
+                    Margin="0,0,0,4"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock 
+                        Grid.Column="0"
+                        Text="Re:" 
+                        VerticalAlignment="Center"
+                        Margin="0,0,4,0"/>
+                    <NumberBox 
+                        Grid.Column="1"
+                        Value="{Binding ComplexReal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Minimum="{Binding MinValue}"
+                        Maximum="{Binding MaxValue}"
+                        SpinButtonPlacementMode="Compact"
+                        SmallChange="0.01"
+                        IsEnabled="{Binding IsEditable}"
+                        Margin="0,0,8,0"/>
+                    <TextBlock 
+                        Grid.Column="2"
+                        Text="Im:" 
+                        VerticalAlignment="Center"
+                        Margin="0,0,4,0"/>
+                    <NumberBox 
+                        Grid.Column="3"
+                        Value="{Binding ComplexImaginary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Minimum="{Binding MinValue}"
+                        Maximum="{Binding MaxValue}"
+                        SpinButtonPlacementMode="Compact"
+                        SmallChange="0.01"
+                        IsEnabled="{Binding IsEditable}"/>
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Template for boolean parameters -->
+        <DataTemplate x:Key="EditableBooleanTemplate">
+            <Grid Margin="0,4" ToolTipService.ToolTip="{Binding Description}">
+                <CheckBox 
+                    Content="{Binding Name}"
+                    IsChecked="{Binding ValueAsBoolean, Mode=TwoWay}"
+                    IsEnabled="{Binding IsEditable}"/>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Fallback template for unsupported types -->
+        <DataTemplate x:Key="FallbackTemplate">
+            <Grid Margin="0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Column="0"
+                    Text="{Binding Name}" 
+                    VerticalAlignment="Center"/>
+                <TextBox 
+                    Grid.Column="1"
+                    Text="{Binding Value, Mode=TwoWay}"
+                    IsReadOnly="True"/>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Template selector -->
+        <properties:ParameterTemplateSelector 
+            x:Key="ParameterTemplateSelector"
+            ReadOnlyStringTemplate="{StaticResource ReadOnlyStringTemplate}"
+            EditableDoubleTemplate="{StaticResource EditableDoubleTemplate}"
+            EditableIntegerTemplate="{StaticResource EditableIntegerTemplate}"
+            EditableComplexTemplate="{StaticResource EditableComplexTemplate}"
+            EditableBooleanTemplate="{StaticResource EditableBooleanTemplate}"
+            FallbackTemplate="{StaticResource FallbackTemplate}"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding Parameters}"
+                      ItemTemplateSelector="{StaticResource ParameterTemplateSelector}"/>
+    </ScrollViewer>
+</UserControl>
+
+
