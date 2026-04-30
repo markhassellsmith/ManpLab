@@ -1,6 +1,7 @@
 using ManpWinUI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace ManpWinUI.Views
 {
@@ -148,6 +149,155 @@ namespace ManpWinUI.Views
             await SaveImageAsync(ImageFormat.JPEG);
         }
 
+        /// <summary>
+        /// Opens a save file dialog with appropriate format choices based on fractal type.
+        /// For Hailstone: PNG, JPEG, SVG. For regular fractals: PNG, JPEG.
+        /// </summary>
+        private async void SaveImageWithDialog_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            if (ViewModel.FractalImage == null)
+            {
+                ViewModel.StatusMessage = "No image to save";
+                return;
+            }
+
+            try
+            {
+                var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.Current.MainWindow);
+                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+
+                savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+
+                // Generate filename based on fractal type
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                var fractalName = ViewModel.SelectedFractalType.Replace(" ", "");
+                var mode = ViewModel.SelectedIterationMode == "Julia" ? "_Julia" : "";
+                savePicker.SuggestedFileName = $"{fractalName}{mode}_{timestamp}";
+
+                // Add file type choices based on fractal type
+                savePicker.FileTypeChoices.Add("PNG Image", new[] { ".png" });
+                savePicker.FileTypeChoices.Add("JPEG Image", new[] { ".jpg", ".jpeg" });
+
+                // Add SVG option for Hailstone fractals
+                if (ViewModel.IsHailstoneMode && ViewModel.CurrentHailstoneResult != null)
+                {
+                    savePicker.FileTypeChoices.Add("SVG Vector Image", new[] { ".svg" });
+                    savePicker.SuggestedFileName = $"Hailstone_{timestamp}";
+                }
+
+                var file = await savePicker.PickSaveFileAsync();
+                if (file == null)
+                {
+                    ViewModel.StatusMessage = "Save cancelled";
+                    return;
+                }
+
+                // Determine format from file extension
+                var extension = System.IO.Path.GetExtension(file.Name).ToLowerInvariant();
+
+                if (extension == ".svg")
+                {
+                    // Handle SVG export for Hailstone
+                    if (!ViewModel.IsHailstoneMode || ViewModel.CurrentHailstoneResult == null)
+                    {
+                        ViewModel.StatusMessage = "SVG export is only available for Hailstone sequences";
+                        return;
+                    }
+
+                    var hailstoneExportService = new HailstoneExportService();
+                    var metadata = ViewModel.CreateMetadata();
+
+                    var success = await hailstoneExportService.ExportAsSvgAsync(
+                        ViewModel.CurrentHailstoneResult,
+                        ViewModel.HailstoneScaleX,
+                        ViewModel.HailstoneScaleY,
+                        ViewModel.HailstoneOffsetX,
+                        ViewModel.HailstoneOffsetY,
+                        ViewModel.ImageWidth,
+                        ViewModel.ImageHeight,
+                        file.Path,
+                        metadata);
+
+                    if (success)
+                    {
+                        ViewModel.StatusMessage = $"Hailstone sequence saved as SVG: {file.Name}";
+                    }
+                    else
+                    {
+                        ViewModel.StatusMessage = "Error saving SVG file";
+                    }
+                }
+                else
+                {
+                    // Handle PNG/JPEG export
+                    var format = extension == ".png" ? ImageFormat.PNG : ImageFormat.JPEG;
+                    var metadata = ViewModel.CreateMetadata();
+
+                    // Save directly to the chosen file
+                    using (var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
+                    {
+                        // Create encoder based on format
+                        var encoder = format == ImageFormat.PNG
+                            ? await Windows.Graphics.Imaging.BitmapEncoder.CreateAsync(
+                                Windows.Graphics.Imaging.BitmapEncoder.PngEncoderId, stream)
+                            : await Windows.Graphics.Imaging.BitmapEncoder.CreateAsync(
+                                Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId, stream);
+
+                        // Get pixel data from WriteableBitmap
+                        var pixelBuffer = ViewModel.FractalImage.PixelBuffer;
+                        byte[] pixels = new byte[pixelBuffer.Length];
+                        pixelBuffer.CopyTo(pixels);
+
+                        // Set pixel data
+                        encoder.SetPixelData(
+                            Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8,
+                            Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied,
+                            (uint)ViewModel.FractalImage.PixelWidth,
+                            (uint)ViewModel.FractalImage.PixelHeight,
+                            96.0, // DPI X
+                            96.0, // DPI Y
+                            pixels);
+
+                        // Add metadata
+                        var properties = encoder.BitmapProperties;
+                        var jsonMetadata = System.Text.Json.JsonSerializer.Serialize(metadata, 
+                            new System.Text.Json.JsonSerializerOptions { WriteIndented = false });
+
+                        if (format == ImageFormat.PNG)
+                        {
+                            // Add PNG tEXt chunks
+                            var metadataProps = new[]
+                            {
+                                new Windows.Graphics.Imaging.BitmapPropertySet
+                                {
+                                    { "/tEXt/Software", new Windows.Graphics.Imaging.BitmapTypedValue($"{metadata.Software} {metadata.Version}", Windows.Foundation.PropertyType.String) }
+                                },
+                                new Windows.Graphics.Imaging.BitmapPropertySet
+                                {
+                                    { "/tEXt/ManpLabMetadata", new Windows.Graphics.Imaging.BitmapTypedValue(jsonMetadata, Windows.Foundation.PropertyType.String) }
+                                }
+                            };
+
+                            foreach (var propSet in metadataProps)
+                            {
+                                try { await properties.SetPropertiesAsync(propSet); } catch { }
+                            }
+                        }
+
+                        await encoder.FlushAsync();
+                    }
+
+                    var formatName = format == ImageFormat.PNG ? "PNG" : "JPEG";
+                    ViewModel.StatusMessage = $"Image saved as {formatName} with embedded metadata: {file.Name}";
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewModel.StatusMessage = $"Error saving image: {ex.Message}";
+            }
+        }
+
         private async void SaveSVG_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             if (!ViewModel.IsHailstoneMode || ViewModel.CurrentHailstoneResult == null)
@@ -213,7 +363,7 @@ namespace ManpWinUI.Views
 
             try
             {
-                var exportService = App.Current.Services.GetRequiredService<ImageExportService>();
+                var exportService = App.Current.Services.GetRequiredService<IImageExportService>();
                 var metadata = ViewModel.CreateMetadata();
 
                 await exportService.CopyToClipboardAsync(ViewModel.FractalImage, metadata);
@@ -236,7 +386,7 @@ namespace ManpWinUI.Views
 
             try
             {
-                var exportService = App.Current.Services.GetRequiredService<ImageExportService>();
+                var exportService = App.Current.Services.GetRequiredService<IImageExportService>();
                 var metadata = ViewModel.CreateMetadata();
 
                 // Get window handle for file picker

@@ -69,38 +69,59 @@ public class ImageExportService : IImageExportService
     {
         var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
 
-        // Create a temporary in-memory stream
-        using var stream = new InMemoryRandomAccessStream();
+        // Create a temporary in-memory stream that won't be disposed immediately
+        var stream = new InMemoryRandomAccessStream();
 
-        // Encode as PNG with metadata
-        var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+        try
+        {
+            // Encode as PNG with metadata
+            var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
 
-        // Get pixel data from WriteableBitmap
-        var pixelBuffer = bitmap.PixelBuffer;
-        var pixels = pixelBuffer.ToArray();
+            // Get pixel data from WriteableBitmap
+            var pixelBuffer = bitmap.PixelBuffer;
+            var pixels = pixelBuffer.ToArray();
 
-        encoder.SetPixelData(
-            BitmapPixelFormat.Bgra8,
-            BitmapAlphaMode.Premultiplied,
-            (uint)bitmap.PixelWidth,
-            (uint)bitmap.PixelHeight,
-            96.0,
-            96.0,
-            pixels);
+            encoder.SetPixelData(
+                BitmapPixelFormat.Bgra8,
+                BitmapAlphaMode.Premultiplied,
+                (uint)bitmap.PixelWidth,
+                (uint)bitmap.PixelHeight,
+                96.0,
+                96.0,
+                pixels);
 
-        // Add metadata as PNG tEXt chunk
-        await AddPngMetadataAsync(encoder, metadata);
+            // Add metadata as PNG tEXt chunk
+            await AddPngMetadataAsync(encoder, metadata);
 
-        await encoder.FlushAsync();
+            await encoder.FlushAsync();
 
-        // Copy to clipboard
-        stream.Seek(0);
-        dataPackage.SetBitmap(RandomAccessStreamReference.CreateFromStream(stream));
+            // Reset stream position
+            stream.Seek(0);
 
-        // Also add metadata as text
-        dataPackage.SetText($"Fractal: {metadata.FractalType} at ({metadata.CenterX:F8}, {metadata.CenterY:F8}), Zoom: {metadata.Zoom:F2}x");
+            // Create a detached stream reference that won't be disposed
+            var streamReference = RandomAccessStreamReference.CreateFromStream(stream);
+            dataPackage.SetBitmap(streamReference);
 
-        Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
+            // Also add the raw bitmap data in a format Paint.NET can understand
+            // Add as PNG file format (standard clipboard format)
+            dataPackage.SetData("PNG", stream);
+
+            // Also add metadata as text
+            var metadataText = $"Fractal: {metadata.FractalType} at ({metadata.CenterX:F8}, {metadata.CenterY:F8}), Zoom: {metadata.Zoom:F2}x";
+            dataPackage.SetText(metadataText);
+
+            // Set the clipboard content
+            Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
+
+            // Note: Don't dispose the stream here - the clipboard needs it to remain alive
+            // The system will handle cleanup when the clipboard content is replaced
+        }
+        catch (Exception)
+        {
+            // If there's an error, clean up the stream
+            stream?.Dispose();
+            throw;
+        }
     }
 
     /// <summary>
