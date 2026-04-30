@@ -125,11 +125,12 @@ Compilation errors: ✅ None
 
 ### Git Commits
 ```
-Commit: e06f225
-Message: "Week 8.5: Document file export feature completion"
-Files changed: 3
-Insertions: +660
-Deletions: -31
+Commit: e06f225 - Week 8.5: Document file export feature completion
+Commit: 99082c1 - Add Week 8.5 session completion report
+Commit: d761066 - Add native C++ engine architecture documentation
+Commit: f093fbe - Fix file export handlers - use IImageExportService interface
+Commit: 995675b - Improve file export UX with unified save dialog
+Commit: bf8feee - Fix clipboard copy compatibility with Paint.NET and other editors
 ```
 
 ### Branch Status
