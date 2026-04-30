@@ -27,7 +27,8 @@ namespace Native {
         Fire,           // Hot colors: black -> red -> yellow -> white
         Ocean,          // Cool colors: deep blue -> cyan -> white
         Rainbow,        // Full spectrum
-        Psychedelic     // Vibrant, high-contrast colors
+        Psychedelic,    // Vibrant, high-contrast colors
+        Spectrum        // Pure HSV spectrum at full saturation (S=100%, L=50%)
     };
 
     /// <summary>
@@ -71,7 +72,10 @@ namespace Native {
             
             case PaletteType::Psychedelic:
                 return GetPsychedelicColor(t);
-            
+
+            case PaletteType::Spectrum:
+                return GetSpectrumColor(t);
+
             default:
                 return GetGrayscaleColor(t);
             }
@@ -198,6 +202,16 @@ namespace Native {
             double b = (sin(t * 13.0 * 3.14159 + 4.0) + 1.0) * 127.5;
 
             return ColorRGB((unsigned char)r, (unsigned char)g, (unsigned char)b);
+        }
+
+        // Spectrum palette (pure HSV wheel at S=100%, L=50%)
+        // Matches Spectrum360 progression: smooth hue rotation through full color wheel
+        static ColorRGB GetSpectrumColor(double t)
+        {
+            // Map iteration to full 360° hue rotation
+            // Using HSV with fixed S=1.0 (100% saturation), V=1.0 (50% lightness equivalent)
+            double hue = t * 360.0;
+            return HSVtoRGB(hue, 1.0, 1.0);
         }
 
         // HSV to RGB conversion helper

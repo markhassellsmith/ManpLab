@@ -32,7 +32,10 @@ namespace Native {
         Rainbow = 4,
 
         /// <summary>Vibrant multi-color psychedelic pattern with wave functions</summary>
-        Psychedelic = 5
+        Psychedelic = 5,
+
+        /// <summary>Pure HSV color wheel at 100% saturation - smooth progression through all hues</summary>
+        Spectrum = 6
     };
 
     /// <summary>

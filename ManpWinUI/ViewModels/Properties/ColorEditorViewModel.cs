@@ -9,6 +9,7 @@ namespace ManpWinUI.ViewModels.Properties
     /// Defines available color palette types for fractal rendering.
     /// Week 7 Task 1: Foundation for palette selection.
     /// Week 7 Task 2: Aligned with ManpCore.Native ColorPalette enum.
+    /// Week 7 Task 3: Added Spectrum palette.
     /// </summary>
     public enum PaletteType
     {
@@ -17,7 +18,8 @@ namespace ManpWinUI.ViewModels.Properties
         Fire,           // Red/orange/yellow gradient
         Ocean,          // Deep blue to turquoise
         Rainbow,        // Full spectrum colors
-        Psychedelic     // Vibrant, high-contrast colors
+        Psychedelic,    // Vibrant, high-contrast colors
+        Spectrum        // Pure HSV color wheel (S=100%, L=50%)
     }
 
     /// <summary>
@@ -262,6 +264,21 @@ namespace ManpWinUI.ViewModels.Properties
             psychedelic.PreviewColors.Add("#FF0000"); // Red
             psychedelic.PreviewColors.Add("#0000FF"); // Blue
             Palettes.Add(psychedelic);
+
+            // Spectrum palette (Week 7 Task 3 enhancement)
+            var spectrum = new PaletteItem
+            {
+                Name = "Spectrum",
+                Type = PaletteType.Spectrum,
+                Description = "Pure HSV color wheel at full saturation"
+            };
+            spectrum.PreviewColors.Add("#FF0000"); // Red (0°)
+            spectrum.PreviewColors.Add("#FFFF00"); // Yellow (60°)
+            spectrum.PreviewColors.Add("#00FF00"); // Green (120°)
+            spectrum.PreviewColors.Add("#00FFFF"); // Cyan (180°)
+            spectrum.PreviewColors.Add("#0000FF"); // Blue (240°)
+            spectrum.PreviewColors.Add("#FF00FF"); // Magenta (300°)
+            Palettes.Add(spectrum);
 
             // Set Classic as default selection
             _selectedPalette = classic;

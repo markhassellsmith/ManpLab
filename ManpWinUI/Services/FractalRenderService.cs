@@ -257,7 +257,8 @@ Calculated View:
             "Fire",
             "Ocean",
             "Rainbow",
-            "Psychedelic"
+            "Psychedelic",
+            "Spectrum"
         };
     }
 
@@ -271,6 +272,7 @@ Calculated View:
             "Ocean" => ColorPalette.Ocean,
             "Rainbow" => ColorPalette.Rainbow,
             "Psychedelic" => ColorPalette.Psychedelic,
+            "Spectrum" => ColorPalette.Spectrum,
             _ => ColorPalette.Classic // Default fallback
         };
     }
