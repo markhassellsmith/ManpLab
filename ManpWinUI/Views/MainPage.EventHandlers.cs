@@ -213,7 +213,7 @@ namespace ManpWinUI.Views
 
             try
             {
-                var exportService = App.Current.Services.GetRequiredService<ImageExportService>();
+                var exportService = App.Current.Services.GetRequiredService<IImageExportService>();
                 var metadata = ViewModel.CreateMetadata();
 
                 await exportService.CopyToClipboardAsync(ViewModel.FractalImage, metadata);
@@ -236,7 +236,7 @@ namespace ManpWinUI.Views
 
             try
             {
-                var exportService = App.Current.Services.GetRequiredService<ImageExportService>();
+                var exportService = App.Current.Services.GetRequiredService<IImageExportService>();
                 var metadata = ViewModel.CreateMetadata();
 
                 // Get window handle for file picker
