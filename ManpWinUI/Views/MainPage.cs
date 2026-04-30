@@ -15,6 +15,8 @@ namespace ManpWinUI.Views
     {
         public MainViewModel ViewModel { get; }
         private ParameterEditorViewModel ParameterEditorViewModel { get; }
+        private ColorEditorViewModel ColorEditorViewModel { get; }
+        private RenderSettingsViewModel RenderSettingsViewModel { get; }
 
         private bool _isDragging;
         private bool _isPanning; // Track if we're panning (right-click) vs zooming (left-click)
@@ -40,6 +42,22 @@ namespace ManpWinUI.Views
 
             // Week 6 Task 5: Subscribe to parameter changes for automatic re-rendering
             ParameterEditorViewModel.ParameterChanged += OnParameterChanged;
+
+            // Initialize ColorEditor ViewModel (Week 7 Task 2)
+            ColorEditorViewModel = new ColorEditorViewModel();
+            ColorEditor.DataContext = ColorEditorViewModel;
+
+            // Week 7 Task 2: Subscribe to palette changes to trigger re-render with new colors
+            ColorEditorViewModel.PaletteChanged += OnPaletteChanged;
+            ColorEditorViewModel.ColorSettingsChanged += OnColorSettingsChanged;
+
+            // Initialize RenderSettings ViewModel (Week 7 Task 2)
+            RenderSettingsViewModel = new RenderSettingsViewModel();
+            RenderSettingsView.DataContext = RenderSettingsViewModel;
+
+            // Week 7 Task 2: Subscribe to render settings changes
+            RenderSettingsViewModel.RenderModeChanged += OnRenderModeChanged;
+            RenderSettingsViewModel.RenderSettingsChanged += OnRenderSettingsChanged;
 
             // Subscribe to browser fractal selection (Week 5 Task 6)
             BrowserView.ViewModel.FractalSelected += OnFractalSelected;
@@ -151,6 +169,73 @@ namespace ManpWinUI.Views
 
             // Trigger re-render with updated parameters
             _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>
+        /// Handle palette selection changes from ColorEditorViewModel.
+        /// Week 7 Task 2: Update MainViewModel palette and re-render.
+        /// </summary>
+        private void OnPaletteChanged(object? sender, EventArgs e)
+        {
+            if (ColorEditorViewModel.SelectedPalette != null)
+            {
+                var paletteName = ColorEditorViewModel.SelectedPalette.Name;
+                Debug.WriteLine($"[MainPage] Palette changed to: {paletteName}");
+
+                // Update MainViewModel with selected palette
+                ViewModel.SelectedPalette = paletteName;
+
+                // Only auto-render if we have a rendered image already
+                if (ViewModel.FractalImage != null)
+                {
+                    _ = ViewModel.RenderCommand.ExecuteAsync(null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handle color settings changes (cycle speed, offset) from ColorEditorViewModel.
+        /// Week 7 Task 2: Real-time color adjustments.
+        /// </summary>
+        private void OnColorSettingsChanged(object? sender, EventArgs e)
+        {
+            Debug.WriteLine($"[MainPage] Color settings changed - Speed: {ColorEditorViewModel.ColorCycleSpeed}, Offset: {ColorEditorViewModel.ColorOffset}");
+
+            // TODO Week 7 Task 3: Apply color cycle/offset adjustments
+            // For now, just re-render with the adjusted palette
+            if (ViewModel.FractalImage != null)
+            {
+                _ = ViewModel.RenderCommand.ExecuteAsync(null);
+            }
+        }
+
+        /// <summary>
+        /// Handle render mode changes from RenderSettingsViewModel.
+        /// Week 7 Task 2: Switch between escape-time, smooth coloring, distance estimation, orbit trap.
+        /// </summary>
+        private void OnRenderModeChanged(object? sender, EventArgs e)
+        {
+            var mode = RenderSettingsViewModel.SelectedRenderMode;
+            Debug.WriteLine($"[MainPage] Render mode changed to: {mode}");
+
+            // TODO Week 7 Task 3: Pass render mode to native engine
+            // For now, just log the change
+            if (ViewModel.FractalImage != null)
+            {
+                ViewModel.StatusMessage = $"Render mode: {mode} (re-render to apply)";
+            }
+        }
+
+        /// <summary>
+        /// Handle quality settings changes from RenderSettingsViewModel.
+        /// Week 7 Task 2: Antialiasing, smooth coloring, deep zoom toggles.
+        /// </summary>
+        private void OnRenderSettingsChanged(object? sender, EventArgs e)
+        {
+            Debug.WriteLine($"[MainPage] Render settings changed - AA: {RenderSettingsViewModel.AntialiasingLevel}, Smooth: {RenderSettingsViewModel.UseSmoothColoring}, DeepZoom: {RenderSettingsViewModel.UseDeepZoom}");
+
+            // TODO Week 7 Task 3: Pass quality flags to native engine
+            // For now, just log the change
         }
 
         private async System.Threading.Tasks.Task InitializeViewModelAsync()

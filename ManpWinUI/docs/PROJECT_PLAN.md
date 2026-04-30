@@ -171,18 +171,47 @@ Status: ✅ Complete (All 6 Tasks)
 Documentation:
 - ✅ `Phase2-Week6-Progress.md` with all 6 tasks complete
 
-Branch: Ready for merge to `development`
+Branch: `feature/phase2-week7-color-render-panels`
 
-### Week 7: Color & Render Panels 🚧 IN PROGRESS
+### Week 8: Presets & History
+Save locations, navigation undo/redo
+
+### Week 8.5: File Export 🚨 CRITICAL - MISSING IMPLEMENTATION
+**Implement image save functionality (toolbar buttons exist but not functional)**
+
+Status: ⏳ Not Started - Discovered during Week 7
+
+Features:
+- PNG/JPEG export with file picker (FileSavePicker)
+- Export options dialog (resolution, quality, metadata)
+- SVG export for Hailstone (via native bridge)
+- Metadata embedding (coordinates, parameters, fractal type)
+- Event handlers for Save Image toolbar buttons
+
+Priority: **HIGH** - Core user-facing feature
+Estimated: 7-8 hours (~1 week task)
+
+See: `docs/FILE_EXPORT_TODO.md` for detailed implementation plan
+
+---
+
+## Phase 3: Advanced Features (Weeks 9-10)
+
+### Week 9: Core Features
+- Render cancellation (ESC key) ✅ Already implemented!
+- Deep zoom toggle (arbitrary precision)
+- Enhanced status bar
+
+### Week 10: Animation System
 Palette selection, render mode (escape-time, distance, orbit trap)
 
-Status: 🚧 Task 1 Complete ✅
+Status: 🚧 Task 2 Complete ✅
 
 **Task 1: Foundation Setup** ✅
 - ✅ Created `ColorEditorView.xaml` and `ColorEditorViewModel.cs`
 - ✅ Created `RenderSettingsView.xaml` and `RenderSettingsViewModel.cs`
 - ✅ Integrated into Properties Panel (Colors and Render tabs)
-- ✅ 7 built-in color palettes with visual previews
+- ✅ 6 built-in color palettes aligned with native engine
 - ✅ 4 render modes (EscapeTime, SmoothColoring, DistanceEstimation, OrbitTrap)
 - ✅ Quality settings (antialiasing, smooth coloring, deep zoom)
 - ✅ Resolution controls with presets (HD, Full HD, 4K)
@@ -190,13 +219,23 @@ Status: 🚧 Task 1 Complete ✅
 - ✅ Reset to defaults functionality
 - ✅ Build successful
 
-**Task 2: Palette System** ⏳ Next
-- Wire palette selection to render engine
-- Apply color gradients to fractals
-- Test palette switching
+**Task 2: Palette System** ✅
+- ✅ Wired ColorEditorViewModel and RenderSettingsViewModel to MainPage
+- ✅ Subscribed to palette change events
+- ✅ Aligned UI palettes with ManpCore.Native (Grayscale, Classic, Fire, Ocean, Rainbow, Psychedelic)
+- ✅ Automatic re-render when palette changes
+- ✅ Data flow: UI → ViewModel → MainViewModel → RenderService → Native Engine
+- ✅ Build successful, ready for testing
+
+**Task 3: Advanced Features** ⏳ Next
+- Render mode switching (pass to native engine)
+- Color cycle speed and offset effects
+- Palette persistence per fractal
+- Smooth coloring and antialiasing integration
 
 Documentation:
 - ✅ `Phase2-Week7-Progress.md` started
+- ✅ `Phase2-Week7-Task2-Complete.md` with full implementation details
 
 Branch: `feature/phase2-week7-color-render-panels`
 

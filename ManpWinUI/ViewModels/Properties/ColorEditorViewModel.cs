@@ -8,17 +8,16 @@ namespace ManpWinUI.ViewModels.Properties
     /// <summary>
     /// Defines available color palette types for fractal rendering.
     /// Week 7 Task 1: Foundation for palette selection.
+    /// Week 7 Task 2: Aligned with ManpCore.Native ColorPalette enum.
     /// </summary>
     public enum PaletteType
     {
-        Classic,        // Traditional rainbow/spectrum
-        Fire,           // Red/orange/yellow gradient
-        Ice,            // Blue/cyan/white gradient
         Grayscale,      // Black to white
+        Classic,        // Traditional blue/cyan fractal colors
+        Fire,           // Red/orange/yellow gradient
         Ocean,          // Deep blue to turquoise
-        Sunset,         // Purple/pink/orange
-        Forest,         // Green/brown earth tones
-        Custom          // User-defined gradient
+        Rainbow,        // Full spectrum colors
+        Psychedelic     // Vibrant, high-contrast colors
     }
 
     /// <summary>
@@ -168,26 +167,40 @@ namespace ManpWinUI.ViewModels.Properties
         /// <summary>
         /// Load default color palette presets.
         /// Week 7 Task 1: Initialize with built-in palettes.
-        /// Week 7 Task 2: Will expand with actual color data.
+        /// Week 7 Task 2: Aligned with ManpCore.Native palettes.
         /// </summary>
         private void LoadDefaultPalettes()
         {
             Palettes.Clear();
 
-            // Classic rainbow palette
+            // Grayscale palette
+            var grayscale = new PaletteItem
+            {
+                Name = "Grayscale",
+                Type = PaletteType.Grayscale,
+                Description = "Black to white monochrome"
+            };
+            grayscale.PreviewColors.Add("#000000"); // Black
+            grayscale.PreviewColors.Add("#404040"); // Dark gray
+            grayscale.PreviewColors.Add("#808080"); // Gray
+            grayscale.PreviewColors.Add("#C0C0C0"); // Light gray
+            grayscale.PreviewColors.Add("#FFFFFF"); // White
+            Palettes.Add(grayscale);
+
+            // Classic fractal palette (default)
             var classic = new PaletteItem
             {
                 Name = "Classic",
                 Type = PaletteType.Classic,
-                Description = "Traditional rainbow spectrum",
+                Description = "Traditional blue and cyan fractal colors",
                 IsSelected = true
             };
-            classic.PreviewColors.Add("#FF0000"); // Red
-            classic.PreviewColors.Add("#FFFF00"); // Yellow
-            classic.PreviewColors.Add("#00FF00"); // Green
-            classic.PreviewColors.Add("#00FFFF"); // Cyan
+            classic.PreviewColors.Add("#000040"); // Dark blue
             classic.PreviewColors.Add("#0000FF"); // Blue
-            classic.PreviewColors.Add("#FF00FF"); // Magenta
+            classic.PreviewColors.Add("#0080FF"); // Light blue
+            classic.PreviewColors.Add("#00FFFF"); // Cyan
+            classic.PreviewColors.Add("#80FFFF"); // Light cyan
+            classic.PreviewColors.Add("#FFFFFF"); // White
             Palettes.Add(classic);
 
             // Fire palette
@@ -205,35 +218,6 @@ namespace ManpWinUI.ViewModels.Properties
             fire.PreviewColors.Add("#FFFFFF"); // White
             Palettes.Add(fire);
 
-            // Ice palette
-            var ice = new PaletteItem
-            {
-                Name = "Ice",
-                Type = PaletteType.Ice,
-                Description = "Cool blue and cyan gradient"
-            };
-            ice.PreviewColors.Add("#000033"); // Dark blue
-            ice.PreviewColors.Add("#000080"); // Navy
-            ice.PreviewColors.Add("#0000FF"); // Blue
-            ice.PreviewColors.Add("#00BFFF"); // Deep sky blue
-            ice.PreviewColors.Add("#87CEEB"); // Sky blue
-            ice.PreviewColors.Add("#FFFFFF"); // White
-            Palettes.Add(ice);
-
-            // Grayscale palette
-            var grayscale = new PaletteItem
-            {
-                Name = "Grayscale",
-                Type = PaletteType.Grayscale,
-                Description = "Black to white monochrome"
-            };
-            grayscale.PreviewColors.Add("#000000"); // Black
-            grayscale.PreviewColors.Add("#404040"); // Dark gray
-            grayscale.PreviewColors.Add("#808080"); // Gray
-            grayscale.PreviewColors.Add("#C0C0C0"); // Light gray
-            grayscale.PreviewColors.Add("#FFFFFF"); // White
-            Palettes.Add(grayscale);
-
             // Ocean palette
             var ocean = new PaletteItem
             {
@@ -249,40 +233,40 @@ namespace ManpWinUI.ViewModels.Properties
             ocean.PreviewColors.Add("#E0FFFF"); // Light cyan
             Palettes.Add(ocean);
 
-            // Sunset palette
-            var sunset = new PaletteItem
+            // Rainbow palette
+            var rainbow = new PaletteItem
             {
-                Name = "Sunset",
-                Type = PaletteType.Sunset,
-                Description = "Purple, pink, and orange twilight"
+                Name = "Rainbow",
+                Type = PaletteType.Rainbow,
+                Description = "Full spectrum from red to violet"
             };
-            sunset.PreviewColors.Add("#191970"); // Midnight blue
-            sunset.PreviewColors.Add("#4B0082"); // Indigo
-            sunset.PreviewColors.Add("#8B008B"); // Dark magenta
-            sunset.PreviewColors.Add("#FF1493"); // Deep pink
-            sunset.PreviewColors.Add("#FF6347"); // Tomato
-            sunset.PreviewColors.Add("#FFD700"); // Gold
-            Palettes.Add(sunset);
+            rainbow.PreviewColors.Add("#FF0000"); // Red
+            rainbow.PreviewColors.Add("#FF7F00"); // Orange
+            rainbow.PreviewColors.Add("#FFFF00"); // Yellow
+            rainbow.PreviewColors.Add("#00FF00"); // Green
+            rainbow.PreviewColors.Add("#0000FF"); // Blue
+            rainbow.PreviewColors.Add("#8B00FF"); // Violet
+            Palettes.Add(rainbow);
 
-            // Forest palette
-            var forest = new PaletteItem
+            // Psychedelic palette
+            var psychedelic = new PaletteItem
             {
-                Name = "Forest",
-                Type = PaletteType.Forest,
-                Description = "Earth tones and greenery"
+                Name = "Psychedelic",
+                Type = PaletteType.Psychedelic,
+                Description = "Vibrant, high-contrast colors"
             };
-            forest.PreviewColors.Add("#1a1a0d"); // Dark brown
-            forest.PreviewColors.Add("#2F4F2F"); // Dark olive green
-            forest.PreviewColors.Add("#228B22"); // Forest green
-            forest.PreviewColors.Add("#32CD32"); // Lime green
-            forest.PreviewColors.Add("#90EE90"); // Light green
-            forest.PreviewColors.Add("#F0E68C"); // Khaki
-            Palettes.Add(forest);
+            psychedelic.PreviewColors.Add("#FF00FF"); // Magenta
+            psychedelic.PreviewColors.Add("#00FF00"); // Green
+            psychedelic.PreviewColors.Add("#FFFF00"); // Yellow
+            psychedelic.PreviewColors.Add("#00FFFF"); // Cyan
+            psychedelic.PreviewColors.Add("#FF0000"); // Red
+            psychedelic.PreviewColors.Add("#0000FF"); // Blue
+            Palettes.Add(psychedelic);
 
             // Set Classic as default selection
             _selectedPalette = classic;
 
-            System.Diagnostics.Debug.WriteLine($"[ColorEditorViewModel] Loaded {Palettes.Count} default palettes");
+            System.Diagnostics.Debug.WriteLine($"[ColorEditorViewModel] Loaded {Palettes.Count} default palettes (aligned with ManpCore.Native)");
         }
 
         /// <summary>
