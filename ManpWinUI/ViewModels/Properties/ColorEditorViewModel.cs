@@ -17,7 +17,7 @@ namespace ManpWinUI.ViewModels.Properties
         Classic,        // Traditional blue/cyan fractal colors
         Fire,           // Red/orange/yellow gradient
         Ocean,          // Deep blue to turquoise
-        Rainbow,        // Full spectrum colors
+        Afterimage,     // Inverted complementary colors (negative spectrum)
         Psychedelic,    // Vibrant, high-contrast colors
         Spectrum        // Pure HSV color wheel (S=100%, L=50%)
     }
@@ -235,20 +235,20 @@ namespace ManpWinUI.ViewModels.Properties
             ocean.PreviewColors.Add("#E0FFFF"); // Light cyan
             Palettes.Add(ocean);
 
-            // Rainbow palette
-            var rainbow = new PaletteItem
+            // Afterimage palette (inverted/complementary colors)
+            var afterimage = new PaletteItem
             {
-                Name = "Rainbow",
-                Type = PaletteType.Rainbow,
-                Description = "Full spectrum from red to violet"
+                Name = "Afterimage",
+                Type = PaletteType.Afterimage,
+                Description = "Inverted complementary colors (negative effect)"
             };
-            rainbow.PreviewColors.Add("#FF0000"); // Red
-            rainbow.PreviewColors.Add("#FF7F00"); // Orange
-            rainbow.PreviewColors.Add("#FFFF00"); // Yellow
-            rainbow.PreviewColors.Add("#00FF00"); // Green
-            rainbow.PreviewColors.Add("#0000FF"); // Blue
-            rainbow.PreviewColors.Add("#8B00FF"); // Violet
-            Palettes.Add(rainbow);
+            afterimage.PreviewColors.Add("#00FFFF"); // Cyan (inverted red)
+            afterimage.PreviewColors.Add("#00FF00"); // Green (inverted magenta)
+            afterimage.PreviewColors.Add("#0080FF"); // Sky blue (inverted orange)
+            afterimage.PreviewColors.Add("#FF00FF"); // Magenta (inverted green)
+            afterimage.PreviewColors.Add("#FFFF00"); // Yellow (inverted blue)
+            afterimage.PreviewColors.Add("#FF0080"); // Pink (inverted cyan)
+            Palettes.Add(afterimage);
 
             // Psychedelic palette
             var psychedelic = new PaletteItem

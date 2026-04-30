@@ -44,8 +44,8 @@ namespace ManpWinUI.Views
             ParameterEditorViewModel.ParameterChanged += OnParameterChanged;
 
             // Initialize ColorEditor ViewModel (Week 7 Task 2)
-            ColorEditorViewModel = new ColorEditorViewModel();
-            ColorEditor.DataContext = ColorEditorViewModel;
+            // ColorEditorView creates its own ViewModel internally, so we need to reference it
+            ColorEditorViewModel = ColorEditor.ViewModel;
 
             // Week 7 Task 2: Subscribe to palette changes to trigger re-render with new colors
             ColorEditorViewModel.PaletteChanged += OnPaletteChanged;

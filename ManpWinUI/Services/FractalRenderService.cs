@@ -96,6 +96,9 @@ Calculated View:
                 // Parse palette string to enum
                 var paletteEnum = ParsePalette(palette);
 
+                System.Diagnostics.Debug.WriteLine($"Palette string '{palette}' mapped to enum value: {paletteEnum} (int: {(int)paletteEnum})");
+                System.Diagnostics.Debug.WriteLine($"Color offset: {colorOffset}°");
+
                 // Create parameters for ManpCore.Native
                 var parameters = new FractalParameters
                 {
@@ -108,6 +111,7 @@ Calculated View:
                     Height = height,
                     MaxIterations = maxIterations,
                     Palette = paletteEnum,
+                    ColorOffset = colorOffset,  // Apply color offset for palette rotation
                     IsJuliaSet = isJuliaMode,
                     JuliaCX = juliaCX,
                     JuliaCY = juliaCY
@@ -206,7 +210,8 @@ Calculated View:
                     Width = width,
                     Height = height,
                     MaxIterations = maxIterations,
-                    Palette = paletteEnum
+                    Palette = paletteEnum,
+                    ColorOffset = colorOffset  // Apply color offset for palette rotation
                 };
 
                 EventHandler<ManpCore.Native.ProgressEventArgs>? progressHandler = null;
@@ -256,7 +261,7 @@ Calculated View:
             "Classic",
             "Fire",
             "Ocean",
-            "Rainbow",
+            "Afterimage",
             "Psychedelic",
             "Spectrum"
         };
@@ -270,7 +275,7 @@ Calculated View:
             "Classic" => ColorPalette.Classic,
             "Fire" => ColorPalette.Fire,
             "Ocean" => ColorPalette.Ocean,
-            "Rainbow" => ColorPalette.Rainbow,
+            "Afterimage" => ColorPalette.Afterimage,
             "Psychedelic" => ColorPalette.Psychedelic,
             "Spectrum" => ColorPalette.Spectrum,
             _ => ColorPalette.Classic // Default fallback

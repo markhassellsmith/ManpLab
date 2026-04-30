@@ -318,9 +318,9 @@ namespace Native {
         /// <summary>
         /// Color iteration using selected palette
         /// </summary>
-        static ColorRGB IterationToColor(double iteration, int maxIter, PaletteType palette)
+        static ColorRGB IterationToColor(double iteration, int maxIter, PaletteType palette, int colorOffset = 0)
         {
-            return ColorPalette::GetColor(iteration, maxIter, palette);
+            return ColorPalette::GetColor(iteration, maxIter, palette, colorOffset);
         }
 
         /// <summary>

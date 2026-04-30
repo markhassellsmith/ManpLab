@@ -26,7 +26,7 @@ namespace Native {
         Classic,        // Classic blue/cyan fractal colors
         Fire,           // Hot colors: black -> red -> yellow -> white
         Ocean,          // Cool colors: deep blue -> cyan -> white
-        Rainbow,        // Full spectrum
+        Afterimage,     // Inverted complementary colors (negative spectrum)
         Psychedelic,    // Vibrant, high-contrast colors
         Spectrum        // Pure HSV spectrum at full saturation (S=100%, L=50%)
     };
@@ -43,8 +43,9 @@ namespace Native {
         /// <param name="iteration">Smooth iteration count (0.0 to maxIter)</param>
         /// <param name="maxIter">Maximum iterations</param>
         /// <param name="palette">Color palette to use</param>
+        /// <param name="colorOffset">Color offset in degrees (0-360) to rotate the palette</param>
         /// <returns>RGB color</returns>
-        static ColorRGB GetColor(double iteration, int maxIter, PaletteType palette)
+        static ColorRGB GetColor(double iteration, int maxIter, PaletteType palette, int colorOffset = 0)
         {
             // Points in the set are always black
             if (iteration >= maxIter)
@@ -53,23 +54,28 @@ namespace Native {
             // Normalize iteration to 0.0 - 1.0
             double t = iteration / maxIter;
 
+            // Apply color offset (rotation)
+            // Convert offset from degrees (0-360) to normalized value (0.0-1.0)
+            double offsetNormalized = (colorOffset % 360) / 360.0;
+            t = fmod(t + offsetNormalized, 1.0);
+
             switch (palette)
             {
             case PaletteType::Grayscale:
                 return GetGrayscaleColor(t);
-            
+
             case PaletteType::Classic:
                 return GetClassicColor(t);
-            
+
             case PaletteType::Fire:
                 return GetFireColor(t);
-            
+
             case PaletteType::Ocean:
                 return GetOceanColor(t);
-            
-            case PaletteType::Rainbow:
-                return GetRainbowColor(t);
-            
+
+            case PaletteType::Afterimage:
+                return GetAfterimageColor(t);
+
             case PaletteType::Psychedelic:
                 return GetPsychedelicColor(t);
 
@@ -181,16 +187,16 @@ namespace Native {
             }
         }
 
-        // Rainbow palette (full spectrum)
-        static ColorRGB GetRainbowColor(double t)
+        // Afterimage palette (inverted/complementary colors for negative spectrum effect)
+        static ColorRGB GetAfterimageColor(double t)
         {
-            // Use HSV to RGB conversion for smooth rainbow
-            // H varies from 0 to 360, S=1, V=1
-            double h = t * 360.0;
-            double s = 1.0;
-            double v = 1.0;
+            // Use inverted hue rotation (complementary colors)
+            // Start at 180° (cyan) and rotate through inverted spectrum
+            double h = (t * 360.0 + 180.0);
+            if (h >= 360.0) h -= 360.0;
 
-            return HSVtoRGB(h, s, v);
+            // Use HSV with full saturation for vivid inverted colors
+            return HSVtoRGB(h, 1.0, 1.0);
         }
 
         // Psychedelic palette (high contrast, vibrant)
@@ -220,6 +226,47 @@ namespace Native {
             double c = v * s;
             double x = c * (1.0 - fabs(fmod(h / 60.0, 2.0) - 1.0));
             double m = v - c;
+
+            double r1, g1, b1;
+
+            if (h < 60.0)
+            {
+                r1 = c; g1 = x; b1 = 0;
+            }
+            else if (h < 120.0)
+            {
+                r1 = x; g1 = c; b1 = 0;
+            }
+            else if (h < 180.0)
+            {
+                r1 = 0; g1 = c; b1 = x;
+            }
+            else if (h < 240.0)
+            {
+                r1 = 0; g1 = x; b1 = c;
+            }
+            else if (h < 300.0)
+            {
+                r1 = x; g1 = 0; b1 = c;
+            }
+            else
+            {
+                r1 = c; g1 = 0; b1 = x;
+            }
+
+            unsigned char r = (unsigned char)((r1 + m) * 255.0);
+            unsigned char g = (unsigned char)((g1 + m) * 255.0);
+            unsigned char b = (unsigned char)((b1 + m) * 255.0);
+
+            return ColorRGB(r, g, b);
+        }
+
+        // HSL to RGB conversion helper (for more natural, lighter rainbow colors)
+        static ColorRGB HSLtoRGB(double h, double s, double l)
+        {
+            double c = (1.0 - fabs(2.0 * l - 1.0)) * s;
+            double x = c * (1.0 - fabs(fmod(h / 60.0, 2.0) - 1.0));
+            double m = l - c / 2.0;
 
             double r1, g1, b1;
 

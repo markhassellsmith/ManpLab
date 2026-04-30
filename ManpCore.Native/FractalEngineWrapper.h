@@ -28,8 +28,8 @@ namespace Native {
         /// <summary>Deep blue to cyan to white (cool ocean colors)</summary>
         Ocean = 3,
 
-        /// <summary>Full HSV spectrum (red, orange, yellow, green, cyan, blue, magenta)</summary>
-        Rainbow = 4,
+        /// <summary>Inverted complementary colors - negative spectrum effect (cyan to magenta)</summary>
+        Afterimage = 4,
 
         /// <summary>Vibrant multi-color psychedelic pattern with wave functions</summary>
         Psychedelic = 5,
@@ -371,12 +371,23 @@ namespace Native {
         /// <summary>
         /// Color palette for rendering escaped points.
         /// </summary>
-        /// <value>ColorPalette enum value (Grayscale, Classic, Fire, Ocean, Rainbow, Psychedelic)</value>
+        /// <value>ColorPalette enum value (Grayscale, Classic, Fire, Ocean, Afterimage, Psychedelic, Spectrum)</value>
         /// <remarks>
         /// Points in the set (reached MaxIterations) are always rendered black.
         /// Palette colors escaped points based on iteration count with smooth gradients.
         /// </remarks>
         property ColorPalette Palette;
+
+        /// <summary>
+        /// Color offset in degrees (0-360) for rotating the color palette.
+        /// </summary>
+        /// <value>Integer from 0 to 360, rotates the color spectrum</value>
+        /// <remarks>
+        /// Shifts the entire color palette by the specified number of degrees.
+        /// For example, offset of 180° inverts colors (red becomes cyan, etc.).
+        /// Useful for exploring different color variations of the same fractal structure.
+        /// </remarks>
+        property int ColorOffset;
 
         /// <summary>
         /// Creates FractalParameters with default Mandelbrot set values.
@@ -399,6 +410,7 @@ namespace Native {
             JuliaCX = 0.0;
             JuliaCY = 0.0;
             Palette = ColorPalette::Classic;  // Default to classic fractal colors
+            ColorOffset = 0;  // No offset by default
         }
     };
 

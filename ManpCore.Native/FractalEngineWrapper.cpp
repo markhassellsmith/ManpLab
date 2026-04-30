@@ -244,6 +244,9 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         // Convert managed palette enum to native palette enum
         ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
 
+        // Extract color offset for palette rotation
+        int colorOffset = parameters->ColorOffset;
+
         // Convert fractal type string and get calculator from registry
         std::string fractalType = ManagedToStdString(parameters->FractalType);
 
@@ -310,11 +313,12 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
                     escapedPixels++;
                 }
 
-                // Convert iteration to color using selected palette
+                // Convert iteration to color using selected palette with color offset
                 ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
                     iteration, 
                     nativeParams.maxIterations, 
-                    nativePalette
+                    nativePalette,
+                    colorOffset
                 );
 
                 // Write BGRA pixel (WinUI WriteableBitmap format)

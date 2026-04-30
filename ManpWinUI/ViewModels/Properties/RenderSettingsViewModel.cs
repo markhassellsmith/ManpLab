@@ -39,8 +39,8 @@ namespace ManpWinUI.ViewModels.Properties
         private AntialiasingLevel _antialiasingLevel = AntialiasingLevel.None;
         private bool _useDeepZoom = false;
         private bool _useSmoothColoring = false;
-        private int _renderWidth = 800;
-        private int _renderHeight = 600;
+        private int _renderWidth = 1280;
+        private int _renderHeight = 720;
 
         /// <summary>
         /// Currently selected render mode.
@@ -203,8 +203,8 @@ namespace ManpWinUI.ViewModels.Properties
             AntialiasingLevel = AntialiasingLevel.None;
             UseDeepZoom = false;
             UseSmoothColoring = false;
-            RenderWidth = 800;
-            RenderHeight = 600;
+            RenderWidth = 1280;
+            RenderHeight = 720;
 
             System.Diagnostics.Debug.WriteLine("[RenderSettingsViewModel] Reset to default settings");
         }
@@ -217,6 +217,10 @@ namespace ManpWinUI.ViewModels.Properties
         {
             switch (presetName.ToLower())
             {
+                case "sd":
+                    RenderWidth = 1280;
+                    RenderHeight = 720;
+                    break;
                 case "hd":
                     RenderWidth = 1280;
                     RenderHeight = 720;
@@ -233,8 +237,8 @@ namespace ManpWinUI.ViewModels.Properties
                     // Keep current values
                     break;
                 default:
-                    RenderWidth = 800;
-                    RenderHeight = 600;
+                    RenderWidth = 1280;
+                    RenderHeight = 720;
                     break;
             }
 
