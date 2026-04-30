@@ -23,6 +23,9 @@ public interface IFractalRenderService
     /// <param name="isJuliaMode">True to render Julia set, false for Mandelbrot</param>
     /// <param name="juliaCX">Julia constant (real part)</param>
     /// <param name="juliaCY">Julia constant (imaginary part)</param>
+    /// <param name="colorCycleSpeed">Color animation speed (0-100)</param>
+    /// <param name="colorOffset">Color rotation offset (0-360 degrees)</param>
+    /// <param name="useSmoothColoring">Enable continuous gradient coloring</param>
     /// <param name="progress">Progress callback (0.0 to 1.0)</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Rendered fractal with diagnostic information</returns>
@@ -38,6 +41,9 @@ public interface IFractalRenderService
         bool isJuliaMode = false,
         double juliaCX = 0.0,
         double juliaCY = 0.0,
+        int colorCycleSpeed = 50,
+        int colorOffset = 0,
+        bool useSmoothColoring = false,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default);
 
@@ -54,6 +60,9 @@ public interface IFractalRenderService
         int height,
         int maxIterations,
         string palette,
+        int colorCycleSpeed = 50,
+        int colorOffset = 0,
+        bool useSmoothColoring = false,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default);
 

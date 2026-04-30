@@ -195,14 +195,17 @@ namespace ManpWinUI.Views
 
         /// <summary>
         /// Handle color settings changes (cycle speed, offset) from ColorEditorViewModel.
-        /// Week 7 Task 2: Real-time color adjustments.
+        /// Week 7 Task 3: Apply color cycle/offset adjustments to render parameters.
         /// </summary>
         private void OnColorSettingsChanged(object? sender, EventArgs e)
         {
             Debug.WriteLine($"[MainPage] Color settings changed - Speed: {ColorEditorViewModel.ColorCycleSpeed}, Offset: {ColorEditorViewModel.ColorOffset}");
 
-            // TODO Week 7 Task 3: Apply color cycle/offset adjustments
-            // For now, just re-render with the adjusted palette
+            // Week 7 Task 3: Update MainViewModel with new color settings
+            ViewModel.ColorCycleSpeed = ColorEditorViewModel.ColorCycleSpeed;
+            ViewModel.ColorOffset = ColorEditorViewModel.ColorOffset;
+
+            // Re-render if we have an existing image
             if (ViewModel.FractalImage != null)
             {
                 _ = ViewModel.RenderCommand.ExecuteAsync(null);
@@ -211,31 +214,46 @@ namespace ManpWinUI.Views
 
         /// <summary>
         /// Handle render mode changes from RenderSettingsViewModel.
-        /// Week 7 Task 2: Switch between escape-time, smooth coloring, distance estimation, orbit trap.
+        /// Week 7 Task 3: Apply smooth coloring setting to render parameters.
         /// </summary>
         private void OnRenderModeChanged(object? sender, EventArgs e)
         {
             var mode = RenderSettingsViewModel.SelectedRenderMode;
             Debug.WriteLine($"[MainPage] Render mode changed to: {mode}");
 
-            // TODO Week 7 Task 3: Pass render mode to native engine
-            // For now, just log the change
+            // Week 7 Task 3: Update smooth coloring based on render mode
+            // Note: Full render mode support requires native engine enhancements
+            ViewModel.UseSmoothColoring = (mode == ViewModels.Properties.RenderMode.SmoothColoring);
+
             if (ViewModel.FractalImage != null)
             {
-                ViewModel.StatusMessage = $"Render mode: {mode} (re-render to apply)";
+                ViewModel.StatusMessage = $"Render mode: {mode} - re-rendering with {(ViewModel.UseSmoothColoring ? "smooth" : "standard")} coloring";
+                _ = ViewModel.RenderCommand.ExecuteAsync(null);
             }
         }
 
         /// <summary>
         /// Handle quality settings changes from RenderSettingsViewModel.
-        /// Week 7 Task 2: Antialiasing, smooth coloring, deep zoom toggles.
+        /// Week 7 Task 3: Apply smooth coloring toggle to render parameters.
         /// </summary>
         private void OnRenderSettingsChanged(object? sender, EventArgs e)
         {
             Debug.WriteLine($"[MainPage] Render settings changed - AA: {RenderSettingsViewModel.AntialiasingLevel}, Smooth: {RenderSettingsViewModel.UseSmoothColoring}, DeepZoom: {RenderSettingsViewModel.UseDeepZoom}");
 
-            // TODO Week 7 Task 3: Pass quality flags to native engine
-            // For now, just log the change
+            // Week 7 Task 3: Sync smooth coloring toggle to ViewModel
+            ViewModel.UseSmoothColoring = RenderSettingsViewModel.UseSmoothColoring;
+
+            // Note: Antialiasing and DeepZoom require native engine support (future enhancement)
+            if (RenderSettingsViewModel.AntialiasingLevel != ViewModels.Properties.AntialiasingLevel.None)
+            {
+                ViewModel.StatusMessage = "⚠️ Antialiasing requires native engine enhancement (coming soon)";
+            }
+
+            // Auto re-render if smooth coloring changes and we have an image
+            if (ViewModel.FractalImage != null && sender == RenderSettingsViewModel)
+            {
+                _ = ViewModel.RenderCommand.ExecuteAsync(null);
+            }
         }
 
         private async System.Threading.Tasks.Task InitializeViewModelAsync()

@@ -113,6 +113,9 @@ public partial class MainViewModel
                 IsJuliaMode,
                 JuliaCX,
                 JuliaCY,
+                ColorCycleSpeed,
+                ColorOffset,
+                UseSmoothColoring,
                 progress);
 
             // Check if render was cancelled
