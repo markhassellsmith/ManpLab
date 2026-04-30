@@ -52,14 +52,9 @@
         <None Remove="ManpWinUI.slnx" />
     </ItemGroup>
 
-    <!-- Week 7: Color and Render Settings Views -->
     <ItemGroup>
-      <Page Update="Views\Properties\ColorEditorView.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </Page>
-      <Page Update="Views\Properties\RenderSettingsView.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </Page>
+      <Page Remove="Views\Properties\ColorEditorView.xaml" />
+      <Page Remove="Views\Properties\RenderSettingsView.xaml" />
     </ItemGroup>
 
 

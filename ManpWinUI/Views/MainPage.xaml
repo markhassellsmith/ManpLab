@@ -791,29 +791,20 @@
                                 </ScrollViewer>
                             </TabViewItem>
 
-                            <!-- Colors Tab -->
+                            <!-- Colors Tab (Week 7) -->
                             <TabViewItem Header="Colors">
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="Highlight" />
                                 </TabViewItem.IconSource>
-                                <ScrollViewer Padding="16">
-                                    <StackPanel Spacing="12">
-                                        <!-- Color Palette -->
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="Color Palette" FontWeight="SemiBold" />
-                                            <ComboBox
-                                                    SelectedItem="{x:Bind ViewModel.SelectedPalette, Mode=TwoWay}"
-                                                    HorizontalAlignment="Stretch">
-                                                <x:String>Grayscale</x:String>
-                                                <x:String>Classic</x:String>
-                                                <x:String>Fire</x:String>
-                                                <x:String>Ocean</x:String>
-                                                <x:String>Rainbow</x:String>
-                                                <x:String>Psychedelic</x:String>
-                                            </ComboBox>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </ScrollViewer>
+                                <properties:ColorEditorView x:Name="ColorEditor" />
+                            </TabViewItem>
+
+                            <!-- Render Settings Tab (Week 7) -->
+                            <TabViewItem Header="Render">
+                                <TabViewItem.IconSource>
+                                    <SymbolIconSource Symbol="RepeatAll" />
+                                </TabViewItem.IconSource>
+                                <properties:RenderSettingsView x:Name="RenderSettingsView" />
                             </TabViewItem>
 
                             <!-- Info Tab -->
