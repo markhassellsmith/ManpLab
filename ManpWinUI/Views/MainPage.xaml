@@ -87,29 +87,24 @@
             <AppBarButton
                 Icon="Save"
                 Label="Save Image"
-                Click="SaveImage_Click"
                 IsEnabled="{x:Bind ViewModel.FractalImage, Mode=OneWay, Converter={StaticResource NullToBoolConverter}}">
                 <AppBarButton.Flyout>
                     <MenuFlyout>
-                        <MenuFlyoutItem Text="Save as PNG" Icon="Save" Click="SavePNG_Click" />
-                        <MenuFlyoutItem Text="Save as JPEG" Click="SaveJPEG_Click">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE91B;" />
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem Text="Save as SVG (Hailstone only)"
-                                       Click="SaveSVG_Click"
-                                       Visibility="{x:Bind ViewModel.IsHailstoneMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE7C3;" />
-                            </MenuFlyoutItem.Icon>
+                        <MenuFlyoutItem Text="Save Image..." Icon="Save" Click="SaveImageWithDialog_Click">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="S" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator />
-                        <MenuFlyoutItem Text="Copy to Clipboard" Icon="Copy" Click="CopyToClipboard_Click" />
+                        <MenuFlyoutItem Text="Copy to Clipboard" Icon="Copy" Click="CopyToClipboard_Click">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="C" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
                     </MenuFlyout>
                 </AppBarButton.Flyout>
                 <ToolTipService.ToolTip>
-                    <ToolTip Content="Save or copy fractal image (Ctrl+S)" />
+                    <ToolTip Content="Save or copy fractal image" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
             <AppBarSeparator />
