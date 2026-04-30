@@ -145,7 +145,7 @@ public partial class MainViewModel
                 }
                 else
                 {
-                    StatusMessage = $"Rendered in {renderTime.TotalMilliseconds:F0} ms ({escapePercent:F1}% escaped)";
+                    StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped)";
                 }
             });
         }
@@ -285,7 +285,7 @@ public partial class MainViewModel
             {
                 LastRenderTime = renderTime;
                 RenderProgress = 100;
-                StatusMessage = $"Rendered {result.Sequence.Count} points in {renderTime.TotalMilliseconds:F0} ms{cycleInfo}";
+                StatusMessage = $"Rendered {result.Sequence.Count} points in {renderTime.TotalSeconds:F4} s{cycleInfo}";
             });
         }
         catch (Exception ex)

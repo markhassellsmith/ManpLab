@@ -14,6 +14,7 @@ public class AppSettingsService : IAppSettingsService
     private const string BrowserVisibleKey = "BrowserPanelVisible";
     private const string PropertiesVisibleKey = "PropertiesPanelVisible";
     private const string SelectedFractalKey = "SelectedFractal";
+    private const string FractalParametersKeyPrefix = "FractalParams_"; // Week 6 Task 6
 
     // Default values
     private const double DefaultBrowserWidth = 250.0;
@@ -92,5 +93,29 @@ public class AppSettingsService : IAppSettingsService
     public void SetSelectedFractal(string fractalName)
     {
         _localSettings.Values[SelectedFractalKey] = fractalName;
+    }
+
+    /// <summary>
+    /// Gets saved parameter values for a specific fractal.
+    /// Week 6 Task 6: Persist parameter values per fractal type.
+    /// </summary>
+    public string? GetFractalParameters(string fractalName)
+    {
+        var key = FractalParametersKeyPrefix + fractalName;
+        if (_localSettings.Values.TryGetValue(key, out var value) && value is string json)
+        {
+            return json;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Saves parameter values for a specific fractal.
+    /// Week 6 Task 6: Persist parameter values per fractal type.
+    /// </summary>
+    public void SetFractalParameters(string fractalName, string parametersJson)
+    {
+        var key = FractalParametersKeyPrefix + fractalName;
+        _localSettings.Values[key] = parametersJson;
     }
 }
