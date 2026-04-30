@@ -20,6 +20,27 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial string SelectedPalette { get; set; } = "Classic";
 
+    /// <summary>
+    /// Color cycle animation speed (0-100).
+    /// Week 7 Task 3: Dynamic color palette rotation effect.
+    /// </summary>
+    [ObservableProperty]
+    private int _colorCycleSpeed = 50;
+
+    /// <summary>
+    /// Color palette rotation offset in degrees (0-360).
+    /// Week 7 Task 3: Shifts the color mapping for visual variety.
+    /// </summary>
+    [ObservableProperty]
+    private int _colorOffset = 0;
+
+    /// <summary>
+    /// Enable smooth/continuous coloring instead of discrete color bands.
+    /// Week 7 Task 3: Produces gradients without banding artifacts.
+    /// </summary>
+    [ObservableProperty]
+    private bool _useSmoothColoring = false;
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // FRACTAL TYPE SELECTION
     // ═══════════════════════════════════════════════════════════════════════════════

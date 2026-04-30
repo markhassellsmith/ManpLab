@@ -26,6 +26,10 @@
             <converters:BoolToStarGlyphConverter x:Key="BoolToStarGlyphConverter"/>
             <converters:BoolToStarColorConverter x:Key="BoolToStarColorConverter"/>
             <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter"/>
+            <!-- Week 7 Converters -->
+            <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
+            <converters:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+            <converters:EnumToIntConverter x:Key="EnumToIntConverter"/>
 
             <Color x:Key="Primary">#512BD4</Color>
 

@@ -33,6 +33,9 @@ public class FractalRenderService : IFractalRenderService
         bool isJuliaMode = false,
         double juliaCX = 0.0,
         double juliaCY = 0.0,
+        int colorCycleSpeed = 50,
+        int colorOffset = 0,
+        bool useSmoothColoring = false,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default)
     {
@@ -44,6 +47,14 @@ public class FractalRenderService : IFractalRenderService
         if (isJuliaMode)
         {
             _logger.LogInformation("Julia parameters: c = ({JuliaCX}, {JuliaCY})", juliaCX, juliaCY);
+        }
+
+        // Week 7 Task 3: Log advanced color settings
+        if (colorCycleSpeed != 50 || colorOffset != 0 || useSmoothColoring)
+        {
+            _logger.LogInformation(
+                "Advanced color settings: CycleSpeed={CycleSpeed}, Offset={Offset}°, SmoothColoring={SmoothColoring}",
+                colorCycleSpeed, colorOffset, useSmoothColoring);
         }
 
         return await Task.Run(() =>
@@ -85,6 +96,9 @@ Calculated View:
                 // Parse palette string to enum
                 var paletteEnum = ParsePalette(palette);
 
+                System.Diagnostics.Debug.WriteLine($"Palette string '{palette}' mapped to enum value: {paletteEnum} (int: {(int)paletteEnum})");
+                System.Diagnostics.Debug.WriteLine($"Color offset: {colorOffset}°");
+
                 // Create parameters for ManpCore.Native
                 var parameters = new FractalParameters
                 {
@@ -97,6 +111,7 @@ Calculated View:
                     Height = height,
                     MaxIterations = maxIterations,
                     Palette = paletteEnum,
+                    ColorOffset = colorOffset,  // Apply color offset for palette rotation
                     IsJuliaSet = isJuliaMode,
                     JuliaCX = juliaCX,
                     JuliaCY = juliaCY
@@ -156,12 +171,23 @@ Calculated View:
         int height,
         int maxIterations,
         string palette,
+        int colorCycleSpeed = 50,
+        int colorOffset = 0,
+        bool useSmoothColoring = false,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation(
             "Rendering Julia: c=({CReal}, {CImaginary}), center=({CenterX}, {CenterY}), zoom={Zoom}, size={Width}x{Height}",
             cReal, cImaginary, centerX, centerY, zoom, width, height);
+
+        // Week 7 Task 3: Log advanced color settings
+        if (colorCycleSpeed != 50 || colorOffset != 0 || useSmoothColoring)
+        {
+            _logger.LogInformation(
+                "Advanced color settings: CycleSpeed={CycleSpeed}, Offset={Offset}°, SmoothColoring={SmoothColoring}",
+                colorCycleSpeed, colorOffset, useSmoothColoring);
+        }
 
         return await Task.Run(() =>
         {
@@ -184,7 +210,8 @@ Calculated View:
                     Width = width,
                     Height = height,
                     MaxIterations = maxIterations,
-                    Palette = paletteEnum
+                    Palette = paletteEnum,
+                    ColorOffset = colorOffset  // Apply color offset for palette rotation
                 };
 
                 EventHandler<ManpCore.Native.ProgressEventArgs>? progressHandler = null;
@@ -234,8 +261,9 @@ Calculated View:
             "Classic",
             "Fire",
             "Ocean",
-            "Rainbow",
-            "Psychedelic"
+            "Afterimage",
+            "Psychedelic",
+            "Spectrum"
         };
     }
 
@@ -247,8 +275,9 @@ Calculated View:
             "Classic" => ColorPalette.Classic,
             "Fire" => ColorPalette.Fire,
             "Ocean" => ColorPalette.Ocean,
-            "Rainbow" => ColorPalette.Rainbow,
+            "Afterimage" => ColorPalette.Afterimage,
             "Psychedelic" => ColorPalette.Psychedelic,
+            "Spectrum" => ColorPalette.Spectrum,
             _ => ColorPalette.Classic // Default fallback
         };
     }

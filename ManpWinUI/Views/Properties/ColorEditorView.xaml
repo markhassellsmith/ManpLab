@@ -1,0 +1,150 @@
+<UserControl
+    x:Class="ManpWinUI.Views.Properties.ColorEditorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
+        <StackPanel Spacing="16">
+
+            <!-- Header -->
+            <TextBlock 
+                Text="Color Palette" 
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Margin="0,0,0,8"/>
+
+            <!-- Palette Selection -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Select Palette:" FontWeight="SemiBold"/>
+
+                <ItemsControl ItemsSource="{x:Bind ViewModel.Palettes, Mode=OneWay}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="2"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button 
+                                Click="PaletteButton_Click"
+                                Tag="{Binding}"
+                                Margin="0,0,8,8"
+                                Width="180"
+                                Height="80"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                BorderThickness="2"
+                                CornerRadius="4">
+                                <Button.BorderBrush>
+                                    <SolidColorBrush Color="{ThemeResource SystemAccentColor}" 
+                                                   Opacity="{Binding IsSelected, Converter={StaticResource BoolToOpacityConverter}}"/>
+                                </Button.BorderBrush>
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock 
+                                        Text="{Binding Name}" 
+                                        FontWeight="SemiBold"
+                                        HorizontalAlignment="Center"/>
+
+                                    <!-- Color preview bar -->
+                                    <ItemsControl ItemsSource="{Binding PreviewColors}" Height="24">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="25" Height="24">
+                                                    <Border.Background>
+                                                        <SolidColorBrush Color="{Binding}"/>
+                                                    </Border.Background>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <TextBlock 
+                                        Text="{Binding Description}" 
+                                        FontSize="11"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        TextWrapping="Wrap"
+                                        HorizontalAlignment="Center"
+                                        MaxWidth="160"/>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Color Adjustments -->
+            <StackPanel Spacing="12" Margin="0,8,0,0">
+                <TextBlock Text="Color Adjustments" FontWeight="SemiBold"/>
+
+                <!-- Color Cycle Speed -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Cycle Speed:" FontSize="12"/>
+                    <Grid ColumnDefinitions="*,60">
+                        <Slider 
+                            Grid.Column="0"
+                            Minimum="0" 
+                            Maximum="100" 
+                            Value="{x:Bind ViewModel.ColorCycleSpeed, Mode=TwoWay}"
+                            StepFrequency="5"
+                            TickFrequency="25"
+                            TickPlacement="Outside"/>
+                        <TextBlock 
+                            Grid.Column="1"
+                            Text="{x:Bind ViewModel.ColorCycleSpeed, Mode=OneWay}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            FontSize="12"/>
+                    </Grid>
+                    <TextBlock 
+                        Text="Controls how quickly colors transition through the palette"
+                        FontSize="11"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Color Offset -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Color Offset:" FontSize="12"/>
+                    <Grid ColumnDefinitions="*,60">
+                        <Slider 
+                            Grid.Column="0"
+                            Minimum="0" 
+                            Maximum="360" 
+                            Value="{x:Bind ViewModel.ColorOffset, Mode=TwoWay}"
+                            StepFrequency="10"
+                            TickFrequency="90"
+                            TickPlacement="Outside"/>
+                        <TextBlock 
+                            Grid.Column="1"
+                            Text="{x:Bind ViewModel.ColorOffset, Mode=OneWay}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            FontSize="12"/>
+                    </Grid>
+                    <TextBlock 
+                        Text="Rotates the color palette around the spectrum"
+                        FontSize="11"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Reset Button -->
+            <Button 
+                Content="Reset to Defaults"
+                Click="ResetButton_Click"
+                HorizontalAlignment="Stretch"
+                Margin="0,8,0,0"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
