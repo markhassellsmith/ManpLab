@@ -130,6 +130,11 @@ public partial class MainViewModel
                 ImageHeight = 2160;
                 StatusMessage = "Resolution set to 4K (3840×2160)";
                 break;
+            case "4K+":
+                ImageWidth = 4096;
+                ImageHeight = 2160;
+                StatusMessage = "Resolution set to 4K+ (4096×2160)";
+                break;
             default:
                 StatusMessage = "Unknown resolution preset";
                 break;

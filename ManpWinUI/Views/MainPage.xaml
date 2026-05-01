@@ -706,6 +706,7 @@
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
 
                                             <Button Grid.Row="0" Grid.Column="0"
@@ -732,6 +733,12 @@
                                             CommandParameter="4K"
                                             ToolTipService.ToolTip="3840x2160"
                                             Style="{StaticResource AccentButtonStyle}"
+                                            HorizontalAlignment="Stretch" />
+                                            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                            Content="4K+ (4096×2160)"
+                                            Command="{x:Bind ViewModel.SetResolutionCommand}"
+                                            CommandParameter="4K+"
+                                            ToolTipService.ToolTip="4096x2160 - DCI 4K Cinema Standard"
                                             HorizontalAlignment="Stretch" />
                                         </Grid>
 
