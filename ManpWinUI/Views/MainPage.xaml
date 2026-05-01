@@ -19,6 +19,10 @@
         <KeyboardAccelerator Key="B" Modifiers="Control" Invoked="ToggleBrowserPanel_Invoked" />
         <!-- Ctrl+P: Toggle Properties Panel -->
         <KeyboardAccelerator Key="P" Modifiers="Control" Invoked="TogglePropertiesPanel_Invoked" />
+        <!-- Ctrl+Z: Undo Navigation -->
+        <KeyboardAccelerator Key="Z" Modifiers="Control" Invoked="UndoNavigation_Invoked" />
+        <!-- Ctrl+Y: Redo Navigation -->
+        <KeyboardAccelerator Key="Y" Modifiers="Control" Invoked="RedoNavigation_Invoked" />
     </Page.KeyboardAccelerators>
 
     <Grid>
@@ -81,6 +85,30 @@
                 </AppBarButton.Flyout>
                 <ToolTipService.ToolTip>
                     <ToolTip Content="Pan view (Arrow keys or right-click drag)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
+            <AppBarSeparator />
+            <!-- Navigation History Buttons (Week 8) -->
+            <AppBarButton
+                Label="Back"
+                Command="{x:Bind ViewModel.UndoNavigationCommand}"
+                IsEnabled="{x:Bind ViewModel.CanUndo, Mode=OneWay}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE72B;" />
+                </AppBarButton.Icon>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Go back in navigation history (Ctrl+Z)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
+            <AppBarButton
+                Label="Forward"
+                Command="{x:Bind ViewModel.RedoNavigationCommand}"
+                IsEnabled="{x:Bind ViewModel.CanRedo, Mode=OneWay}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE72A;" />
+                </AppBarButton.Icon>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Go forward in navigation history (Ctrl+Y)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
             <AppBarSeparator />
@@ -847,6 +875,85 @@
                                                        FontSize="11"
                                                        FontStyle="Italic"
                                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabViewItem>
+
+                            <!-- Navigation History Tab (Week 8) -->
+                            <TabViewItem Header="History">
+                                <TabViewItem.IconSource>
+                                    <SymbolIconSource Symbol="Clock" />
+                                </TabViewItem.IconSource>
+                                <ScrollViewer Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <!-- Header -->
+                                        <Grid>
+                                            <TextBlock Text="Navigation History"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="16"
+                                                       VerticalAlignment="Center" />
+                                            <Button Content="Clear All"
+                                                    Command="{x:Bind ViewModel.ClearNavigationHistoryCommand}"
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource SubtleButtonStyle}"
+                                                    ToolTipService.ToolTip="Clear all navigation history" />
+                                        </Grid>
+
+                                        <TextBlock TextWrapping="Wrap"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="Navigate through your fractal exploration history. Use " />
+                                            <Run Text="Ctrl+Z" FontWeight="SemiBold" />
+                                            <Run Text=" to undo and " />
+                                            <Run Text="Ctrl+Y" FontWeight="SemiBold" />
+                                            <Run Text=" to redo." />
+                                        </TextBlock>
+
+                                        <MenuFlyoutSeparator />
+
+                                        <!-- History List -->
+                                        <TextBlock FontSize="12"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="Total entries: " />
+                                            <Run Text="{x:Bind ViewModel.NavigationHistory.Count, Mode=OneWay}" />
+                                        </TextBlock>
+
+                                        <ListView ItemsSource="{x:Bind ViewModel.NavigationHistory, Mode=OneWay}"
+                                                  SelectionMode="None"
+                                                  MaxHeight="500">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate x:DataType="models:NavigationHistoryEntry">
+                                                    <Grid Padding="8,12" ColumnSpacing="8">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <!-- Entry Info -->
+                                                        <StackPanel Grid.Column="0" Spacing="4">
+                                                            <TextBlock Text="{x:Bind Description}"
+                                                                       FontWeight="SemiBold"
+                                                                       TextWrapping="Wrap" />
+                                                            <TextBlock FontSize="11"
+                                                                       Opacity="0.7"
+                                                                       TextWrapping="Wrap">
+                                                                <Run Text="{x:Bind CoordinateDisplay}" />
+                                                            </TextBlock>
+                                                            <TextBlock Text="{x:Bind TimeDisplay}"
+                                                                       FontSize="10"
+                                                                       Opacity="0.6" />
+                                                        </StackPanel>
+
+                                                        <!-- Go Button -->
+                                                        <Button Grid.Column="1"
+                                                                Content="&#xE768;"
+                                                                FontFamily="Segoe MDL2 Assets"
+                                                                Click="HistoryEntry_Click"
+                                                                Style="{StaticResource SubtleButtonStyle}"
+                                                                ToolTipService.ToolTip="Jump to this state" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
                                     </StackPanel>
                                 </ScrollViewer>
                             </TabViewItem>

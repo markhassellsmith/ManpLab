@@ -425,5 +425,22 @@ namespace ManpWinUI.Views
             // Update Hailstone labels when the canvas size changes (window resize)
             UpdateHailstoneLabels();
         }
+
+        /// <summary>
+        /// Handles clicking on a navigation history entry to jump to that state.
+        /// </summary>
+        private async void HistoryEntry_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.Controls.Button button && 
+                button.DataContext is ManpWinUI.Models.NavigationHistoryEntry entry)
+            {
+                // Find the index of this entry in the history
+                var index = ViewModel.NavigationHistory.IndexOf(entry);
+                if (index >= 0)
+                {
+                    await ViewModel.JumpToHistoryCommand.ExecuteAsync(index);
+                }
+            }
+        }
     }
 }
