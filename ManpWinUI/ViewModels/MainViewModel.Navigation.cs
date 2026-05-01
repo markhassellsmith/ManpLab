@@ -1,13 +1,171 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ManpWinUI.Models;
+using System.Collections.ObjectModel;
 
 namespace ManpWinUI.ViewModels;
 
 /// <summary>
 /// MainViewModel partial class - Navigation and view manipulation commands.
-/// Handles zoom, pan, reset, and resolution preset commands.
+/// Handles zoom, pan, reset, resolution presets, and navigation history (undo/redo).
 /// </summary>
 public partial class MainViewModel
 {
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // NAVIGATION HISTORY
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Collection of navigation history entries displayed in the UI.
+    /// </summary>
+    public ObservableCollection<NavigationHistoryEntry> NavigationHistory { get; } = new();
+
+    /// <summary>
+    /// Gets whether undo (go back) is available.
+    /// </summary>
+    public bool CanUndo => _navigationHistoryService.CanUndo;
+
+    /// <summary>
+    /// Gets whether redo (go forward) is available.
+    /// </summary>
+    public bool CanRedo => _navigationHistoryService.CanRedo;
+
+    /// <summary>
+    /// Flag to prevent recording history during restore operations.
+    /// </summary>
+    private bool _isRestoringFromHistory = false;
+
+    /// <summary>
+    /// Refreshes the navigation history collection from the service.
+    /// </summary>
+    private void RefreshNavigationHistory()
+    {
+        NavigationHistory.Clear();
+        foreach (var entry in _navigationHistoryService.History)
+        {
+            NavigationHistory.Add(entry);
+        }
+
+        // Notify that CanUndo/CanRedo may have changed
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+    }
+
+    /// <summary>
+    /// Records current navigation state to history.
+    /// Call this after user-initiated zoom, pan, or parameter changes.
+    /// </summary>
+    private void RecordNavigationState(string? customDescription = null)
+    {
+        // Don't record if we're currently restoring from history
+        if (_isRestoringFromHistory)
+            return;
+
+        // Don't record for Hailstone mode (uses different navigation model)
+        if (IsHailstoneMode)
+            return;
+
+        var entry = NavigationHistoryEntry.FromCurrentState(
+            fractalType: SelectedFractalType,
+            iterationMode: SelectedIterationMode,
+            centerX: CenterX,
+            centerY: CenterY,
+            zoom: Zoom,
+            maxIterations: MaxIterations,
+            colorPalette: SelectedPalette,
+            juliaCX: IsJuliaMode ? JuliaCX : null,
+            juliaCY: IsJuliaMode ? JuliaCY : null,
+            customDescription: customDescription
+        );
+
+        _navigationHistoryService.RecordState(entry);
+        RefreshNavigationHistory();
+    }
+
+    /// <summary>
+    /// Restores a navigation state from history.
+    /// </summary>
+    private async Task RestoreNavigationStateAsync(NavigationHistoryEntry? entry)
+    {
+        if (entry == null)
+            return;
+
+        _isRestoringFromHistory = true;
+
+        try
+        {
+            // Restore all parameters
+            SelectedFractalType = entry.FractalType;
+            SelectedIterationMode = entry.IterationMode;
+            CenterX = entry.CenterX;
+            CenterY = entry.CenterY;
+            Zoom = entry.Zoom;
+            MaxIterations = entry.MaxIterations;
+            SelectedPalette = entry.ColorPalette;
+
+            if (entry.JuliaC != null)
+            {
+                JuliaCX = entry.JuliaC.Real;
+                JuliaCY = entry.JuliaC.Imaginary;
+            }
+
+            StatusMessage = $"Navigated to: {entry.Description}";
+
+            // Auto-render
+            await Task.Delay(10);
+            if (RenderCommand.CanExecute(null))
+            {
+                await RenderCommand.ExecuteAsync(null);
+            }
+        }
+        finally
+        {
+            _isRestoringFromHistory = false;
+        }
+
+        RefreshNavigationHistory();
+    }
+
+    /// <summary>
+    /// Undo navigation (go back in history).
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanUndo))]
+    private async Task UndoNavigationAsync()
+    {
+        var entry = _navigationHistoryService.Undo();
+        await RestoreNavigationStateAsync(entry);
+    }
+
+    /// <summary>
+    /// Redo navigation (go forward in history).
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRedo))]
+    private async Task RedoNavigationAsync()
+    {
+        var entry = _navigationHistoryService.Redo();
+        await RestoreNavigationStateAsync(entry);
+    }
+
+    /// <summary>
+    /// Jumps to a specific position in navigation history.
+    /// </summary>
+    [RelayCommand]
+    private async Task JumpToHistoryAsync(int index)
+    {
+        var entry = _navigationHistoryService.JumpTo(index);
+        await RestoreNavigationStateAsync(entry);
+    }
+
+    /// <summary>
+    /// Clears all navigation history.
+    /// </summary>
+    [RelayCommand]
+    private void ClearNavigationHistory()
+    {
+        _navigationHistoryService.Clear();
+        RefreshNavigationHistory();
+        StatusMessage = "Navigation history cleared";
+    }
     // ═══════════════════════════════════════════════════════════════════════════════
     // VIEW RESET
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -72,6 +230,9 @@ public partial class MainViewModel
         {
             await RenderCommand.ExecuteAsync(null);
         }
+
+        // Record navigation state after render completes
+        RecordNavigationState($"Zoomed in 2x to {Zoom:F2}x");
     }
 
     /// <summary>
@@ -96,6 +257,9 @@ public partial class MainViewModel
         {
             await RenderCommand.ExecuteAsync(null);
         }
+
+        // Record navigation state after render completes
+        RecordNavigationState($"Zoomed out 2x to {Zoom:F2}x");
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════

@@ -118,6 +118,7 @@ namespace ManpWinUI
             services.AddSingleton<IImageExportService, ImageExportService>();
             services.AddSingleton<IHailstoneExportService, HailstoneExportService>();
             services.AddSingleton<IBookmarkService, BookmarkService>();
+            services.AddSingleton<INavigationHistoryService, NavigationHistoryService>();
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
 
             // ViewModels
