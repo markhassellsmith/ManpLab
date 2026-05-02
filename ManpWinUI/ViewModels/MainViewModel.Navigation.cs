@@ -49,6 +49,10 @@ public partial class MainViewModel
         // Notify that CanUndo/CanRedo may have changed
         OnPropertyChanged(nameof(CanUndo));
         OnPropertyChanged(nameof(CanRedo));
+
+        // Notify commands to re-evaluate their CanExecute state
+        UndoNavigationCommand.NotifyCanExecuteChanged();
+        RedoNavigationCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>
@@ -111,12 +115,15 @@ public partial class MainViewModel
 
             StatusMessage = $"Navigated to: {entry.Description}";
 
-            // Auto-render
+            // Auto-render on UI thread
             await Task.Delay(10);
-            if (RenderCommand.CanExecute(null))
+            _dispatcherQueue.TryEnqueue(async () =>
             {
-                await RenderCommand.ExecuteAsync(null);
-            }
+                if (!IsRendering && RenderCommand.CanExecute(null))
+                {
+                    await RenderCommand.ExecuteAsync(null);
+                }
+            });
         }
         finally
         {
@@ -196,12 +203,15 @@ public partial class MainViewModel
             StatusMessage = "Resetting to full Mandelbrot view...";
         }
 
-        // Auto-render after reset
+        // Auto-render after reset on UI thread
         await Task.Delay(10); // Small delay to ensure UI updates
-        if (RenderCommand.CanExecute(null))
+        _dispatcherQueue.TryEnqueue(async () =>
         {
-            await RenderCommand.ExecuteAsync(null);
-        }
+            if (!IsRendering && RenderCommand.CanExecute(null))
+            {
+                await RenderCommand.ExecuteAsync(null);
+            }
+        });
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -224,15 +234,16 @@ public partial class MainViewModel
         Zoom *= 2.0;
         StatusMessage = $"Zooming in to {Zoom:F2}x...";
 
-        // Auto-render after zoom
+        // Auto-render after zoom on UI thread
         await Task.Delay(10); // Small delay to ensure UI updates
-        if (RenderCommand.CanExecute(null))
+        _dispatcherQueue.TryEnqueue(async () =>
         {
-            await RenderCommand.ExecuteAsync(null);
-        }
-
-        // Record navigation state after render completes
-        RecordNavigationState($"Zoomed in 2x to {Zoom:F2}x");
+            if (!IsRendering && RenderCommand.CanExecute(null))
+            {
+                await RenderCommand.ExecuteAsync(null);
+            }
+        });
+        // Note: RecordNavigationState() is called by render completion
     }
 
     /// <summary>
@@ -251,15 +262,16 @@ public partial class MainViewModel
         Zoom /= 2.0;
         StatusMessage = $"Zooming out to {Zoom:F2}x...";
 
-        // Auto-render after zoom
+        // Auto-render after zoom on UI thread
         await Task.Delay(10); // Small delay to ensure UI updates
-        if (RenderCommand.CanExecute(null))
+        _dispatcherQueue.TryEnqueue(async () =>
         {
-            await RenderCommand.ExecuteAsync(null);
-        }
-
-        // Record navigation state after render completes
-        RecordNavigationState($"Zoomed out 2x to {Zoom:F2}x");
+            if (!IsRendering && RenderCommand.CanExecute(null))
+            {
+                await RenderCommand.ExecuteAsync(null);
+            }
+        });
+        // Note: RecordNavigationState() is called by render completion
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -304,9 +316,14 @@ public partial class MainViewModel
                 break;
         }
 
-        // Notify that TotalPixels has changed
+        // Notify that computed properties have changed
         OnPropertyChanged(nameof(TotalPixels));
         OnPropertyChanged(nameof(CurrentViewWidth));
         OnPropertyChanged(nameof(CurrentViewHeight));
+        OnPropertyChanged(nameof(IsHDResolution));
+        OnPropertyChanged(nameof(IsFullHDResolution));
+        OnPropertyChanged(nameof(Is2KResolution));
+        OnPropertyChanged(nameof(Is4KResolution));
+        OnPropertyChanged(nameof(Is4KPlusResolution));
     }
 }

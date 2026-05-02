@@ -123,8 +123,10 @@
 
 ---
 
-### Test 5: History Persistence
-**Goal**: Verify history survives app restart
+### Test 5: History Per-Session Behavior
+**Goal**: Verify history is session-based (not persistent across restarts)
+
+**Design Note**: Navigation history is intentionally cleared on each app launch to avoid confusion. Each session starts with a clean history so undo/redo only affects actions from the current session.
 
 1. **Build up history** - Zoom in/out 5-6 times
 2. **Open History tab** - Verify entries visible
@@ -132,13 +134,15 @@
 4. **Close application** - Click X button to exit
 5. **Relaunch application** - Start app again in Visual Studio
 6. **Open History tab** immediately
-   - ✅ **VERIFY**: Previous history entries are restored
-   - ✅ **VERIFY**: Entry count matches what you had before
-7. **Press Ctrl+Z**
-   - ✅ **VERIFY**: Can undo to previous session's state
-   - ✅ **VERIFY**: Fractal renders with saved parameters
+   - ✅ **VERIFY**: History is empty (starts fresh each session)
+   - ✅ **VERIFY**: "Total entries: 0" displayed
+   - ✅ **VERIFY**: Back/Forward buttons are disabled
+7. **Zoom in once**
+   - ✅ **VERIFY**: New history entry appears for current session
+8. **Press Ctrl+Z**
+   - ✅ **VERIFY**: Undoes to current session's initial state (not previous session)
 
-**Expected Result**: History persists across sessions ✅
+**Expected Result**: Each session has independent navigation history ✅
 
 ---
 

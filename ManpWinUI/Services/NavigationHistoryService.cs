@@ -26,8 +26,10 @@ public class NavigationHistoryService : INavigationHistoryService
     public IReadOnlyList<NavigationHistoryEntry> History => _history.AsReadOnly();
 
     /// <summary>
-    /// Gets the current position in the history stack (0-based index).
-    /// -1 if no history.
+    /// Gets the current position in the history stack.
+    /// -1 = no history
+    /// 0 to Count-1 = at a specific history entry
+    /// Count = at "present" (past all history entries)
     /// </summary>
     public int CurrentPosition => _currentPosition;
 
@@ -44,6 +46,7 @@ public class NavigationHistoryService : INavigationHistoryService
     /// <summary>
     /// Records a new navigation state.
     /// Clears any forward history (redo stack) when new state is added.
+    /// Position is set to "present" (past all history) after recording.
     /// </summary>
     public void RecordState(NavigationHistoryEntry entry, bool forceRecord = false)
     {
@@ -61,11 +64,12 @@ public class NavigationHistoryService : INavigationHistoryService
         // Clear any forward history (redo entries)
         if (_currentPosition < _history.Count - 1)
         {
-            _history.RemoveRange(_currentPosition + 1, _history.Count - _currentPosition - 1);
-            System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Cleared {_history.Count - _currentPosition - 1} forward entries");
+            var removeCount = _history.Count - _currentPosition - 1;
+            _history.RemoveRange(_currentPosition + 1, removeCount);
+            System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Cleared {removeCount} forward entries");
         }
 
-        // Add new entry
+        // Add new entry and point to it
         _history.Add(entry);
         _currentPosition = _history.Count - 1;
 
@@ -146,9 +150,20 @@ public class NavigationHistoryService : INavigationHistoryService
 
     /// <summary>
     /// Loads history from persistent storage.
+    /// NOTE: Currently, we don't load previous session history to avoid confusion.
+    /// Each session starts with empty history for better user experience.
+    /// Old implementation persisted history but users found it confusing when
+    /// undo/redo jumped to previous session states.
     /// </summary>
     public async Task LoadHistoryAsync()
     {
+        // Start fresh each session
+        _history.Clear();
+        _currentPosition = -1;
+        System.Diagnostics.Debug.WriteLine("[NavigationHistory] Starting new session with empty history");
+
+        // If we want to restore old history later, uncomment this:
+        /*
         try
         {
             var localFolder = ApplicationData.Current.LocalFolder;
@@ -163,9 +178,9 @@ public class NavigationHistoryService : INavigationHistoryService
                 {
                     _history.Clear();
                     _history.AddRange(data.Entries);
-                    _currentPosition = Math.Min(data.CurrentPosition, _history.Count - 1);
+                    _currentPosition = _history.Count - 1; // Start at end for new session
 
-                    System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Loaded {_history.Count} entries, position {_currentPosition}");
+                    System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Loaded {_history.Count} entries from previous session");
                     return;
                 }
             }
@@ -174,10 +189,9 @@ public class NavigationHistoryService : INavigationHistoryService
         {
             System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Error loading history: {ex.Message}");
         }
+        */
 
-        // Initialize empty if load failed
-        _history.Clear();
-        _currentPosition = -1;
+        await Task.CompletedTask; // Keep async signature
     }
 
     /// <summary>

@@ -51,7 +51,8 @@ public partial class MainViewModel
             juliaCX: IsJuliaMode ? JuliaCX : null,
             juliaCY: IsJuliaMode ? JuliaCY : null,
             renderTime: LastRenderTime,
-            hailstone: hailstoneParams
+            hailstone: hailstoneParams,
+            visualizationName: string.IsNullOrWhiteSpace(CurrentVisualizationName) ? null : CurrentVisualizationName
         );
     }
 }

@@ -209,15 +209,6 @@ namespace ManpWinUI.Views
                     _ = SaveImageAsync(Services.ImageFormat.PNG);
                     e.Handled = true;
                     break;
-
-                // B: Toggle Bookmarks Panel (without Ctrl, legacy support)
-                case VirtualKey.B when !ctrlPressed:
-                    if (ViewModel.ToggleBookmarksPanelCommand.CanExecute(null))
-                    {
-                        ViewModel.ToggleBookmarksPanelCommand.Execute(null);
-                        e.Handled = true;
-                    }
-                    break;
             }
         }
 

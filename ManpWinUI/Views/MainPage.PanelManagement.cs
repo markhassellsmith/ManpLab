@@ -18,7 +18,7 @@ namespace ManpWinUI.Views
         private double _propertiesPanelStartWidth = 0;
 
         // ═══════════════════════════════════════════════════════════════════════════════
-        // BROWSER PANEL SPLITTER
+        // LEFT PANEL SPLITTER (Browser/Bookmarks)
         // ═══════════════════════════════════════════════════════════════════════════════
 
         private void BrowserSplitter_PointerEntered(object sender, PointerRoutedEventArgs e)

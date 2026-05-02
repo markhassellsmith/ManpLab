@@ -19,6 +19,9 @@ public class FractalMetadata
     [JsonPropertyName("fractalType")]
     public string FractalType { get; set; } = "Mandelbrot";
 
+    [JsonPropertyName("visualizationName")]
+    public string? VisualizationName { get; set; }
+
     [JsonPropertyName("iterationMode")]
     public string IterationMode { get; set; } = "Standard";
 
@@ -75,11 +78,13 @@ public class FractalMetadata
         double? juliaCX = null,
         double? juliaCY = null,
         TimeSpan? renderTime = null,
-        HailstoneParameters? hailstone = null)
+        HailstoneParameters? hailstone = null,
+        string? visualizationName = null)
     {
         return new FractalMetadata
         {
             FractalType = fractalType,
+            VisualizationName = visualizationName,
             IterationMode = iterationMode,
             CenterX = centerX,
             CenterY = centerY,

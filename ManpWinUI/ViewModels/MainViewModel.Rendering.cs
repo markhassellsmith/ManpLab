@@ -19,18 +19,55 @@ public partial class MainViewModel
     /// Image width in pixels.
     /// </summary>
     [ObservableProperty]
-    public partial int ImageWidth { get; set; } = 1200;
+    [NotifyPropertyChangedFor(nameof(TotalPixels))]
+    [NotifyPropertyChangedFor(nameof(IsHDResolution))]
+    [NotifyPropertyChangedFor(nameof(IsFullHDResolution))]
+    [NotifyPropertyChangedFor(nameof(Is2KResolution))]
+    [NotifyPropertyChangedFor(nameof(Is4KResolution))]
+    [NotifyPropertyChangedFor(nameof(Is4KPlusResolution))]
+    public partial int ImageWidth { get; set; } = 3840;
 
     /// <summary>
     /// Image height in pixels.
     /// </summary>
     [ObservableProperty]
-    public partial int ImageHeight { get; set; } = 900;
+    [NotifyPropertyChangedFor(nameof(TotalPixels))]
+    [NotifyPropertyChangedFor(nameof(IsHDResolution))]
+    [NotifyPropertyChangedFor(nameof(IsFullHDResolution))]
+    [NotifyPropertyChangedFor(nameof(Is2KResolution))]
+    [NotifyPropertyChangedFor(nameof(Is4KResolution))]
+    [NotifyPropertyChangedFor(nameof(Is4KPlusResolution))]
+    public partial int ImageHeight { get; set; } = 2160;
 
     /// <summary>
     /// Computed property for total megapixels.
     /// </summary>
     public string TotalPixels => $"{(ImageWidth * ImageHeight / 1_000_000.0):F2}";
+
+    /// <summary>
+    /// Gets whether the current resolution is HD (1280×720).
+    /// </summary>
+    public bool IsHDResolution => ImageWidth == 1280 && ImageHeight == 720;
+
+    /// <summary>
+    /// Gets whether the current resolution is Full HD (1920×1080).
+    /// </summary>
+    public bool IsFullHDResolution => ImageWidth == 1920 && ImageHeight == 1080;
+
+    /// <summary>
+    /// Gets whether the current resolution is 2K (2560×1440).
+    /// </summary>
+    public bool Is2KResolution => ImageWidth == 2560 && ImageHeight == 1440;
+
+    /// <summary>
+    /// Gets whether the current resolution is 4K (3840×2160).
+    /// </summary>
+    public bool Is4KResolution => ImageWidth == 3840 && ImageHeight == 2160;
+
+    /// <summary>
+    /// Gets whether the current resolution is 4K+ (4096×2160).
+    /// </summary>
+    public bool Is4KPlusResolution => ImageWidth == 4096 && ImageHeight == 2160;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // RENDERING STATE

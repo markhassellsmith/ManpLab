@@ -42,4 +42,14 @@ public interface IBookmarkService
     /// Updates an existing bookmark.
     /// </summary>
     Task UpdateBookmarkAsync(FractalBookmark bookmark);
+
+    /// <summary>
+    /// Exports bookmarks to a JSON file chosen by the user.
+    /// </summary>
+    Task<bool> ExportBookmarksAsync();
+
+    /// <summary>
+    /// Imports bookmarks from a JSON file chosen by the user.
+    /// </summary>
+    Task<bool> ImportBookmarksAsync();
 }

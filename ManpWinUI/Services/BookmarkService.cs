@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 
 namespace ManpWinUI.Services;
 
@@ -260,5 +261,98 @@ public class BookmarkService : IBookmarkService
                 IsFavorite = true
             }
         };
+    }
+
+    /// <summary>
+    /// Exports bookmarks to a JSON file chosen by the user.
+    /// </summary>
+    public async Task<bool> ExportBookmarksAsync()
+    {
+        try
+        {
+            var savePicker = new FileSavePicker();
+
+            // Get the window handle for the picker
+            var window = App.Current.MainWindow;
+            if (window == null)
+                return false;
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+
+            savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            savePicker.FileTypeChoices.Add("JSON Files", new List<string>() { ".json" });
+            savePicker.SuggestedFileName = $"ManpLab_Bookmarks_{DateTime.Now:yyyyMMdd_HHmmss}";
+
+            var file = await savePicker.PickSaveFileAsync();
+            if (file == null)
+                return false;
+
+            // Export user bookmarks only (exclude presets)
+            var userBookmarks = _bookmarks.Where(b => !b.IsPreset).ToList();
+
+            var json = JsonSerializer.Serialize(userBookmarks, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            await FileIO.WriteTextAsync(file, json);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error exporting bookmarks: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Imports bookmarks from a JSON file chosen by the user.
+    /// </summary>
+    public async Task<bool> ImportBookmarksAsync()
+    {
+        try
+        {
+            var openPicker = new FileOpenPicker();
+
+            // Get the window handle for the picker
+            var window = App.Current.MainWindow;
+            if (window == null)
+                return false;
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+            WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hwnd);
+
+            openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            openPicker.FileTypeFilter.Add(".json");
+
+            var file = await openPicker.PickSingleFileAsync();
+            if (file == null)
+                return false;
+
+            var json = await FileIO.ReadTextAsync(file);
+            var importedBookmarks = JsonSerializer.Deserialize<List<FractalBookmark>>(json);
+
+            if (importedBookmarks != null && importedBookmarks.Count > 0)
+            {
+                // Add imported bookmarks, marking them as non-preset
+                foreach (var bookmark in importedBookmarks)
+                {
+                    bookmark.IsPreset = false;
+                    bookmark.Id = Guid.NewGuid().ToString(); // Generate new ID to avoid conflicts
+                    _bookmarks.Add(bookmark);
+                }
+
+                await SaveBookmarksAsync();
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error importing bookmarks: {ex.Message}");
+            return false;
+        }
     }
 }

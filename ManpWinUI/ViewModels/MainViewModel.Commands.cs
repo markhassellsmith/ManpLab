@@ -150,6 +150,9 @@ public partial class MainViewModel
                 {
                     StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped)";
                 }
+
+                // Record navigation state after successful render
+                RecordNavigationState();
             });
         }
         catch (Exception ex)
@@ -289,6 +292,9 @@ public partial class MainViewModel
                 LastRenderTime = renderTime;
                 RenderProgress = 100;
                 StatusMessage = $"Rendered {result.Sequence.Count} points in {renderTime.TotalSeconds:F4} s{cycleInfo}";
+
+                // Record navigation state after successful render
+                RecordNavigationState();
             });
         }
         catch (Exception ex)

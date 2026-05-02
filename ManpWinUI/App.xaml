@@ -26,6 +26,7 @@
             <converters:BoolToStarGlyphConverter x:Key="BoolToStarGlyphConverter"/>
             <converters:BoolToStarColorConverter x:Key="BoolToStarColorConverter"/>
             <converters:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter"/>
+            <converters:BoolToButtonStyleConverter x:Key="BoolToButtonStyleConverter"/>
             <!-- Week 7 Converters -->
             <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
             <converters:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
