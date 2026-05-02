@@ -12,11 +12,44 @@ namespace Native {
     // Simple complex number structure for C++ calculations
     struct ComplexD
     {
-        double x;  // real
-        double y;  // imaginary
+        union {
+            struct { double x, y; };      // For compatibility with existing Complex class
+            struct { double real, imag; }; // For new code readability
+        };
 
         ComplexD() : x(0.0), y(0.0) {}
-        ComplexD(double real, double imag) : x(real), y(imag) {}
+        ComplexD(double r, double i) : x(r), y(i) {}
+
+        // Basic arithmetic operators
+        ComplexD operator+(const ComplexD& other) const {
+            return ComplexD(x + other.x, y + other.y);
+        }
+
+        ComplexD operator-(const ComplexD& other) const {
+            return ComplexD(x - other.x, y - other.y);
+        }
+
+        ComplexD operator*(const ComplexD& other) const {
+            return ComplexD(x * other.x - y * other.y, x * other.y + y * other.x);
+        }
+
+        ComplexD operator/(const ComplexD& other) const {
+            double denom = other.x * other.x + other.y * other.y;
+            return ComplexD((x * other.x + y * other.y) / denom,
+                          (y * other.x - x * other.y) / denom);
+        }
+
+        ComplexD operator*(double scalar) const {
+            return ComplexD(x * scalar, y * scalar);
+        }
+
+        ComplexD operator/(double scalar) const {
+            return ComplexD(x / scalar, y / scalar);
+        }
+
+        friend ComplexD operator*(double scalar, const ComplexD& c) {
+            return ComplexD(c.x * scalar, c.y * scalar);
+        }
     };
 
     /// <summary>

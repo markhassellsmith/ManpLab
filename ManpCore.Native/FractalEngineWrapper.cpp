@@ -214,6 +214,17 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
     if (parameters == nullptr)
         throw gcnew ArgumentNullException("parameters");
 
+    // Validate parameters
+    if (parameters->Width <= 0 || parameters->Width > 8192)
+        throw gcnew ArgumentOutOfRangeException("Width", parameters->Width, "Width must be between 1 and 8192");
+    if (parameters->Height <= 0 || parameters->Height > 8192)
+        throw gcnew ArgumentOutOfRangeException("Height", parameters->Height, "Height must be between 1 and 8192");
+    if (parameters->MaxIterations <= 0 || parameters->MaxIterations > 100000)
+        throw gcnew ArgumentOutOfRangeException("MaxIterations", parameters->MaxIterations, "MaxIterations must be between 1 and 100000");
+
+    Debug::WriteLine(String::Format("Native Calculate: Parameters validated - {0}x{1}, {2} iterations", 
+        parameters->Width, parameters->Height, parameters->MaxIterations));
+
     m_cancelled = false;
     auto stopwatch = Stopwatch::StartNew();
 
@@ -221,12 +232,28 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
     {
         int width = parameters->Width;
         int height = parameters->Height;
-        int pixelCount = width * height * 4; // RGBA
+        int pixelCount = width * height * 4; // BGRA (Blue, Green, Red, Alpha)
+
+        Debug::WriteLine(String::Format("Native Calculate: Creating result for {0}x{1} ({2} bytes)", width, height, pixelCount));
 
         auto result = gcnew FractalResult();
         result->Width = width;
         result->Height = height;
-        result->PixelData = gcnew array<Byte>(pixelCount);
+
+        Debug::WriteLine("Native Calculate: Allocating pixel data array...");
+        try
+        {
+            result->PixelData = gcnew array<Byte>(pixelCount);
+            Debug::WriteLine(String::Format("Native Calculate: Pixel array allocated successfully ({0} bytes)", pixelCount));
+        }
+        catch (Exception^ ex)
+        {
+            Debug::WriteLine(String::Format("ERROR: Failed to allocate pixel array: {0}", ex->Message));
+            throw gcnew ArgumentException(String::Format("Failed to allocate pixel buffer for {0}x{1} image ({2} bytes): {3}", 
+                width, height, pixelCount, ex->Message));
+        }
+
+        Debug::WriteLine("Native Calculate: Setting up parameters...");
 
         // Setup native Mandelbrot parameters
         ::Native::MandelbrotParams nativeParams;
@@ -241,32 +268,45 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         nativeParams.juliaCX = parameters->JuliaCX;
         nativeParams.juliaCY = parameters->JuliaCY;
 
+        Debug::WriteLine(String::Format("Native Calculate: Parameters set - {0}x{1}, maxIter={2}", width, height, parameters->MaxIterations));
+
         // Convert managed palette enum to native palette enum
         ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
+        Debug::WriteLine(String::Format("Native Calculate: Palette={0}", (int)nativePalette));
 
         // Extract color offset for palette rotation
         int colorOffset = parameters->ColorOffset;
+        Debug::WriteLine(String::Format("Native Calculate: ColorOffset={0}", colorOffset));
 
         // Convert fractal type string and get calculator from registry
         std::string fractalType = ManagedToStdString(parameters->FractalType);
+        Debug::WriteLine(String::Format("Native Calculate: Fractal type: {0}", gcnew String(fractalType.c_str())));
 
         // Initialize registry if not already done
         static bool registryInitialized = false;
         if (!registryInitialized)
         {
+            Debug::WriteLine("Native Calculate: Initializing fractal registry...");
             ::Native::FractalRegistry::InitializeBuiltins();
             registryInitialized = true;
+            Debug::WriteLine("Native Calculate: Registry initialized");
         }
 
-        // Get calculator from registry
-        auto calculator = ::Native::FractalRegistry::GetCalculator(fractalType);
+        Debug::WriteLine("Native Calculate: Verifying fractal registration...");
+        Debug::WriteLine(String::Format("Native Calculate: Looking up fractal: '{0}'", gcnew String(fractalType.c_str())));
+
+        // Check if fractal is registered
+        bool isRegistered = ::Native::FractalRegistry::IsRegistered(fractalType);
+        Debug::WriteLine(String::Format("Native Calculate: Is '{0}' registered? {1}", gcnew String(fractalType.c_str()), isRegistered));
 
         // Fallback to Mandelbrot if type not found
-        if (!calculator)
+        if (!isRegistered)
         {
+            Debug::WriteLine(String::Format("Native Calculate: Fractal '{0}' not found, falling back to Mandelbrot", gcnew String(fractalType.c_str())));
             fractalType = "Mandelbrot";
-            calculator = ::Native::FractalRegistry::GetCalculator(fractalType);
         }
+
+        Debug::WriteLine(String::Format("Native Calculate: Using fractal: '{0}'", gcnew String(fractalType.c_str())));
 
         // Prepare parameter map for extensibility (currently empty, but ready for custom params)
         ::Native::ParamMap customParams;
@@ -274,18 +314,25 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         long long totalIterations = 0;
         int escapedPixels = 0;
 
-        // Calculate Mandelbrot set using native C++ code
+        Debug::WriteLine("Native Calculate: Starting pixel loop...");
+
+        // Calculate fractal using native C++ code
         for (int y = 0; y < height; y++)
         {
             // Report progress every 10 lines
             if (y % 10 == 0)
             {
-                auto progressArgs = gcnew ProgressEventArgs();
-                progressArgs->Percentage = (y * 100.0) / height;
-                progressArgs->CurrentLine = y;
-                progressArgs->TotalLines = height;
-                progressArgs->StatusMessage = String::Format("Calculating line {0} of {1}", y, height);
-                OnProgressChanged(progressArgs);
+                // Only raise progress event if there are subscribers
+                if (m_progressChangedDelegate != nullptr)
+                {
+                    auto progressArgs = gcnew ProgressEventArgs();
+                    progressArgs->Percentage = (y * 100.0) / height;
+                    progressArgs->CurrentLine = y;
+                    progressArgs->TotalLines = height;
+                    progressArgs->StatusMessage = String::Format("Calculating line {0} of {1}", y, height);
+                    ProgressChanged(this, progressArgs);  // Raise the event
+                }
+                Debug::WriteLine(String::Format("Native Calculate: Line {0} of {1}", y, height));
             }
 
             if (m_cancelled)
@@ -296,14 +343,42 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
                 // Map pixel to complex plane
                 ::Native::ComplexD c = ::Native::MandelbrotCalculator::PixelToComplex(x, y, nativeParams);
 
-                // Calculate using registry dispatcher - single line replaces entire if-else chain!
-                double iteration = calculator(
-                    c, 
-                    nativeParams.maxIterations,
-                    nativeParams.isJulia,
-                    ::Native::ComplexD(nativeParams.juliaCX, nativeParams.juliaCY),
-                    customParams
-                );
+                // DIAGNOSTIC: Log first pixel only
+                if (x == 0 && y == 0)
+                {
+                    Debug::WriteLine(String::Format("First pixel: c=({0}, {1})", c.real, c.imag));
+                    Debug::WriteLine(String::Format("About to call FractalRegistry::Calculate with fractalType='{0}'", gcnew String(fractalType.c_str())));
+                }
+
+                // Calculate using registry - entirely in native code, no std::function boundary crossing
+                double iteration;
+                try
+                {
+                    iteration = ::Native::FractalRegistry::Calculate(
+                        fractalType,
+                        c, 
+                        nativeParams.maxIterations,
+                        nativeParams.isJulia,
+                        ::Native::ComplexD(nativeParams.juliaCX, nativeParams.juliaCY),
+                        customParams
+                    );
+
+                    // DIAGNOSTIC: Confirm first pixel calculated
+                    if (x == 0 && y == 0)
+                    {
+                        Debug::WriteLine(String::Format("First pixel calculated: iteration={0}", iteration));
+                    }
+                }
+                catch (const std::exception& ex)
+                {
+                    Debug::WriteLine(String::Format("ERROR in Calculate at pixel ({0},{1}): {2}", x, y, gcnew String(ex.what())));
+                    throw;
+                }
+                catch (...)
+                {
+                    Debug::WriteLine(String::Format("ERROR in Calculate at pixel ({0},{1}): Unknown exception", x, y));
+                    throw;
+                }
 
                 totalIterations += (long long)iteration;
 
@@ -311,6 +386,12 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
                 if (iteration < nativeParams.maxIterations)
                 {
                     escapedPixels++;
+                }
+
+                // DIAGNOSTIC: Log before color conversion (first pixel only)
+                if (x == 0 && y == 0)
+                {
+                    Debug::WriteLine(String::Format("About to convert to color: iteration={0}, maxIter={1}, palette={2}", iteration, nativeParams.maxIterations, (int)nativePalette));
                 }
 
                 // Convert iteration to color using selected palette with color offset
@@ -321,12 +402,26 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
                     colorOffset
                 );
 
+                // DIAGNOSTIC: Log after color conversion (first pixel only)
+                if (x == 0 && y == 0)
+                {
+                    Debug::WriteLine(String::Format("Color converted: R={0}, G={1}, B={2}", color.r, color.g, color.b));
+                    int testIndex = (y * width + x) * 4;
+                    Debug::WriteLine(String::Format("About to write to pixel array at index {0} (array length={1})", testIndex, result->PixelData->Length));
+                }
+
                 // Write BGRA pixel (WinUI WriteableBitmap format)
                 int index = (y * width + x) * 4;
                 result->PixelData[index + 0] = color.b;  // Blue
                 result->PixelData[index + 1] = color.g;  // Green
                 result->PixelData[index + 2] = color.r;  // Red
                 result->PixelData[index + 3] = 255;      // Alpha (full opacity)
+
+                // DIAGNOSTIC: Log after write (first pixel only)
+                if (x == 0 && y == 0)
+                {
+                    Debug::WriteLine("First pixel written successfully");
+                }
             }
         }
 
@@ -335,13 +430,16 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         result->IterationCount = totalIterations;
         result->EscapedPixelCount = escapedPixels;
 
-        // Final progress update
-        auto finalProgress = gcnew ProgressEventArgs();
-        finalProgress->Percentage = 100.0;
-        finalProgress->CurrentLine = height;
-        finalProgress->TotalLines = height;
-        finalProgress->StatusMessage = "Complete";
-        OnProgressChanged(finalProgress);
+        // Final progress update (only if there are subscribers)
+        if (m_progressChangedDelegate != nullptr)
+        {
+            auto finalProgress = gcnew ProgressEventArgs();
+            finalProgress->Percentage = 100.0;
+            finalProgress->CurrentLine = height;
+            finalProgress->TotalLines = height;
+            finalProgress->StatusMessage = "Complete";
+            ProgressChanged(this, finalProgress);
+        }
 
         return result;
     }

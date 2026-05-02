@@ -522,7 +522,7 @@
                                         <StackPanel Spacing="4">
                                             <TextBlock Text="Fractal Type" FontWeight="SemiBold" />
                                             <ComboBox
-                                        SelectedItem="{x:Bind ViewModel.SelectedFractalType, Mode=TwoWay}"
+                                        SelectedItem="{x:Bind ViewModel.SelectedFractalType, Mode=OneWay}"
                                         HorizontalAlignment="Stretch">
                                                 <!-- Classic Fractals -->
                                                 <x:String>Mandelbrot</x:String>

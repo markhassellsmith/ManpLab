@@ -17,6 +17,7 @@ public partial class MainViewModel
 
     /// <summary>
     /// Image width in pixels.
+    /// Default: HD (1280×720) for testing - smaller memory footprint.
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TotalPixels))]
@@ -25,10 +26,11 @@ public partial class MainViewModel
     [NotifyPropertyChangedFor(nameof(Is2KResolution))]
     [NotifyPropertyChangedFor(nameof(Is4KResolution))]
     [NotifyPropertyChangedFor(nameof(Is4KPlusResolution))]
-    public partial int ImageWidth { get; set; } = 3840;
+    public partial int ImageWidth { get; set; } = 1280;
 
     /// <summary>
     /// Image height in pixels.
+    /// Default: HD (1280×720) for testing - smaller memory footprint.
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TotalPixels))]
@@ -37,7 +39,7 @@ public partial class MainViewModel
     [NotifyPropertyChangedFor(nameof(Is2KResolution))]
     [NotifyPropertyChangedFor(nameof(Is4KResolution))]
     [NotifyPropertyChangedFor(nameof(Is4KPlusResolution))]
-    public partial int ImageHeight { get; set; } = 2160;
+    public partial int ImageHeight { get; set; } = 720;
 
     /// <summary>
     /// Computed property for total megapixels.
@@ -130,17 +132,48 @@ public partial class MainViewModel
     /// <param name="height">Image height in pixels.</param>
     private void ConvertPixelDataToBitmap(byte[] pixelData, int width, int height)
     {
-        // Create or reuse WriteableBitmap
-        if (FractalImage == null || FractalImage.PixelWidth != width || FractalImage.PixelHeight != height)
+        try
         {
-            FractalImage = new WriteableBitmap(width, height);
+            // Validate input parameters
+            var expectedSize = width * height * 4; // BGRA = 4 bytes per pixel
+            if (pixelData == null)
+            {
+                throw new ArgumentNullException(nameof(pixelData), "Pixel data is null");
+            }
+            if (pixelData.Length != expectedSize)
+            {
+                throw new ArgumentException(
+                    $"Pixel data size mismatch: expected {expectedSize} bytes for {width}×{height} image, got {pixelData.Length} bytes");
+            }
+            if (width <= 0 || height <= 0)
+            {
+                throw new ArgumentException($"Invalid dimensions: {width}×{height}");
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Creating bitmap: {width}×{height}, data size: {pixelData.Length} bytes");
+
+            // Create or reuse WriteableBitmap
+            if (FractalImage == null || FractalImage.PixelWidth != width || FractalImage.PixelHeight != height)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Creating new WriteableBitmap({width}, {height})");
+                FractalImage = new WriteableBitmap(width, height);
+                System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Bitmap created successfully. PixelBuffer capacity: {FractalImage.PixelBuffer.Capacity}");
+            }
+
+            // Write pixel data to bitmap buffer using WindowsRuntimeBufferExtensions
+            System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Copying {pixelData.Length} bytes to PixelBuffer");
+            WindowsRuntimeBufferExtensions.CopyTo(pixelData, 0, FractalImage.PixelBuffer, 0, pixelData.Length);
+
+            // Invalidate the bitmap to trigger redraw
+            FractalImage.Invalidate();
+            System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Bitmap updated successfully");
         }
-
-        // Write pixel data to bitmap buffer using WindowsRuntimeBufferExtensions
-        WindowsRuntimeBufferExtensions.CopyTo(pixelData, 0, FractalImage.PixelBuffer, 0, pixelData.Length);
-
-        // Invalidate the bitmap to trigger redraw
-        FractalImage.Invalidate();
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] ERROR: {ex.GetType().Name}: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Stack trace: {ex.StackTrace}");
+            throw;
+        }
     }
 
     // NOTE: Render command implementations (RenderMandelbrotAsync, RenderHailstoneAsync, etc.)

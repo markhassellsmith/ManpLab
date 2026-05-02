@@ -100,6 +100,10 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="BatchRenderer.cpp" />
     <ClCompile Include="BurningShipFamily.cpp" />
+    <ClCompile Include="BarnsleyFamily.cpp" />
+    <ClCompile Include="SpecialExoticFamily.cpp" />
+    <ClCompile Include="Attractors3DFamily.cpp" />
+    <ClCompile Include="ClassicEscapeTimeFamily.cpp" />
     <ClCompile Include="FractalEngineWrapper.cpp" />
     <ClCompile Include="..\ManpWIN64\Complex.cpp">
       <CompileAsManaged>false</CompileAsManaged>
@@ -123,3 +127,7 @@
     <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(SolutionDir)x64\$(Configuration)" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
   </Target>
 </Project>
+
+
+
+
