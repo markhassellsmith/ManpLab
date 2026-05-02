@@ -100,23 +100,53 @@ public partial class MainViewModel
             };
             var progress = new Progress<double>(progressCallback);
 
-            // Call FractalRenderService to render the fractal
-            var result = await _renderService.RenderMandelbrotAsync(
-                CenterX,
-                CenterY,
-                Zoom,
-                ImageWidth,
-                ImageHeight,
-                MaxIterations,
-                SelectedPalette,
-                SelectedFractalType,
-                IsJuliaMode,
-                JuliaCX,
-                JuliaCY,
-                ColorCycleSpeed,
-                ColorOffset,
-                UseSmoothColoring,
-                progress);
+            // ═════════════════════════════════════════════════════════════════════════
+            // TASK 6: Use parameter system if available (new architecture)
+            // ═════════════════════════════════════════════════════════════════════════
+            FractalRenderResult result;
+
+            if (CurrentParameters != null && UseParameterSystem)
+            {
+                System.Diagnostics.Debug.WriteLine("[RenderCommand] Using PARAMETER SYSTEM for render");
+
+                // Create structured parameters from parameter set
+                var renderParams = CurrentParameters.ToStructuredRenderParameters(ImageWidth, ImageHeight);
+
+                // Override color settings from ViewModel (not part of parameter set)
+                renderParams.Palette = SelectedPalette;
+                renderParams.ColorCycleSpeed = ColorCycleSpeed;
+                renderParams.ColorOffset = ColorOffset;
+                renderParams.UseSmoothColoring = UseSmoothColoring;
+
+                // Call new parameter-based render method
+                result = await _renderService.RenderFractalAsync(
+                    renderParams,
+                    progress);
+
+                System.Diagnostics.Debug.WriteLine("[RenderCommand] Parameter-based render completed");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("[RenderCommand] Using LEGACY property-based render (fallback)");
+
+                // Fallback: use old individual-property method
+                result = await _renderService.RenderMandelbrotAsync(
+                    CenterX,
+                    CenterY,
+                    Zoom,
+                    ImageWidth,
+                    ImageHeight,
+                    MaxIterations,
+                    SelectedPalette,
+                    SelectedFractalType,
+                    IsJuliaMode,
+                    JuliaCX,
+                    JuliaCY,
+                    ColorCycleSpeed,
+                    ColorOffset,
+                    UseSmoothColoring,
+                    progress);
+            }
 
             // Check if render was cancelled
             if (cancellationToken.IsCancellationRequested)

@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ManpWinUI.Models.Parameters;
 
 namespace ManpWinUI.Services;
 
@@ -70,4 +71,17 @@ public interface IFractalRenderService
     /// Gets available color palette names.
     /// </summary>
     string[] GetAvailablePalettes();
+
+    /// <summary>
+    /// Renders a fractal using structured parameters (Task 6: Parameter System Integration).
+    /// This is the NEW way to render fractals - replaces individual parameter passing.
+    /// </summary>
+    /// <param name="parameters">Structured render parameters from parameter system</param>
+    /// <param name="progress">Progress callback (0.0 to 1.0)</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Rendered fractal with diagnostic information</returns>
+    Task<FractalRenderResult> RenderFractalAsync(
+        RenderParameters parameters,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default);
 }

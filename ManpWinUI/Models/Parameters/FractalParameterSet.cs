@@ -274,6 +274,58 @@ public partial class FractalParameterSet : ObservableObject
     }
 
     /// <summary>
+    /// Converts current parameter values to a structured RenderParameters object.
+    /// Maps known parameters to strongly-typed fields, and places unknown parameters
+    /// in ExtendedParameters dictionary.
+    /// </summary>
+    public RenderParameters ToStructuredRenderParameters(int imageWidth, int imageHeight)
+    {
+        var renderParams = new RenderParameters
+        {
+            FractalType = FractalType,
+            Width = imageWidth,
+            Height = imageHeight
+        };
+
+        // Map known parameters to strongly-typed fields
+        renderParams.CenterX = GetValue<double>("center_x");
+        renderParams.CenterY = GetValue<double>("center_y");
+        renderParams.Zoom = GetValue<double>("zoom");
+        renderParams.MaxIterations = GetValue<int>("max_iterations");
+        renderParams.EscapeRadius = GetValue<double>("escape_radius");
+
+        // Julia mode
+        renderParams.IsJuliaMode = GetValue<bool>("julia_mode");
+        renderParams.JuliaCReal = GetValue<double>("julia_c_real");
+        renderParams.JuliaCImaginary = GetValue<double>("julia_c_imag");
+
+        // Note: Color parameters are typically set at ViewModel level, not per-fractal
+        // They're handled separately in the render command
+
+        // Collect all other parameters as extended
+        foreach (var descriptor in Parameters)
+        {
+            // Skip parameters we've already mapped
+            var knownKeys = new[] 
+            { 
+                "center_x", "center_y", "zoom", "max_iterations", "escape_radius",
+                "julia_mode", "julia_c_real", "julia_c_imag"
+            };
+
+            if (!knownKeys.Contains(descriptor.Key))
+            {
+                var value = GetValue(descriptor.Key);
+                if (value != null)
+                {
+                    renderParams.ExtendedParameters[descriptor.Key] = value;
+                }
+            }
+        }
+
+        return renderParams;
+    }
+
+    /// <summary>
     /// Imports parameter values from a dictionary.
     /// Validates each value before setting.
     /// Returns number of successfully imported parameters.
