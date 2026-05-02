@@ -77,6 +77,13 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial string StatusMessage { get; set; } = "Ready";
 
+    /// <summary>
+    /// Current visualization name displayed in the status bar.
+    /// Shows bookmark name or browser selection.
+    /// </summary>
+    [ObservableProperty]
+    public partial string CurrentVisualizationName { get; set; } = "";
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // FRACTAL TYPE CHANGE HANDLER
     // ═══════════════════════════════════════════════════════════════════════════════

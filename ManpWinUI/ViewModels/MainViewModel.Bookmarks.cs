@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ManpWinUI.Models;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ManpWinUI.ViewModels;
 
@@ -21,6 +22,11 @@ public partial class MainViewModel
     public ObservableCollection<FractalBookmark> Bookmarks { get; } = new();
 
     /// <summary>
+    /// Filtered collection of bookmarks based on ShowFavoritesOnly filter.
+    /// </summary>
+    public ObservableCollection<FractalBookmark> FilteredBookmarks { get; } = new();
+
+    /// <summary>
     /// Currently selected bookmark in the bookmarks panel.
     /// </summary>
     [ObservableProperty]
@@ -28,9 +34,22 @@ public partial class MainViewModel
 
     /// <summary>
     /// Whether the bookmarks panel is currently visible/open.
+    /// Now used for persistent panel visibility (like Browser/Properties).
     /// </summary>
     [ObservableProperty]
     public partial bool IsBookmarksPanelOpen { get; set; }
+
+    /// <summary>
+    /// Whether to show only favorited bookmarks or all bookmarks.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(BookmarkFilterLabel))]
+    private bool _showFavoritesOnly;
+
+    /// <summary>
+    /// Label for the current bookmark filter state.
+    /// </summary>
+    public string BookmarkFilterLabel => _showFavoritesOnly ? "⭐ Favorites" : "📚 All";
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // BOOKMARK INITIALIZATION
@@ -47,6 +66,30 @@ public partial class MainViewModel
         {
             Bookmarks.Add(bookmark);
         }
+
+        ApplyBookmarkFilter();
+    }
+
+    /// <summary>
+    /// Applies the current filter to the bookmarks collection.
+    /// </summary>
+    private void ApplyBookmarkFilter()
+    {
+        FilteredBookmarks.Clear();
+
+        var source = _showFavoritesOnly 
+            ? Bookmarks.Where(b => b.IsFavorite) 
+            : Bookmarks;
+
+        foreach (var bookmark in source)
+        {
+            FilteredBookmarks.Add(bookmark);
+        }
+    }
+
+    partial void OnShowFavoritesOnlyChanged(bool value)
+    {
+        ApplyBookmarkFilter();
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -78,6 +121,8 @@ public partial class MainViewModel
             JuliaCY = bookmark.JuliaC.Imaginary;
         }
 
+        // Set the current visualization name to the bookmark name
+        CurrentVisualizationName = bookmark.Name;
         StatusMessage = $"Loaded bookmark: {bookmark.Name}";
 
         // Auto-render
@@ -151,11 +196,67 @@ public partial class MainViewModel
     }
 
     /// <summary>
-    /// Toggles the visibility of the bookmarks panel.
+    /// Toggles the favorites filter on/off.
     /// </summary>
     [RelayCommand]
-    private void ToggleBookmarksPanel()
+    private void ToggleFavoritesFilter()
     {
-        IsBookmarksPanelOpen = !IsBookmarksPanelOpen;
+        ShowFavoritesOnly = !ShowFavoritesOnly;
+        StatusMessage = ShowFavoritesOnly ? "Showing favorites only" : "Showing all bookmarks";
+    }
+
+    /// <summary>
+    /// Exports bookmarks to a JSON file.
+    /// </summary>
+    [RelayCommand]
+    private async Task ExportBookmarksAsync()
+    {
+        var success = await _bookmarkService.ExportBookmarksAsync();
+        if (success)
+        {
+            StatusMessage = "Bookmarks exported successfully";
+        }
+        else
+        {
+            StatusMessage = "Export cancelled or failed";
+        }
+    }
+
+    /// <summary>
+    /// Imports bookmarks from a JSON file.
+    /// </summary>
+    [RelayCommand]
+    private async Task ImportBookmarksAsync()
+    {
+        var success = await _bookmarkService.ImportBookmarksAsync();
+        if (success)
+        {
+            RefreshBookmarks();
+            StatusMessage = "Bookmarks imported successfully";
+        }
+        else
+        {
+            StatusMessage = "Import cancelled or failed";
+        }
+    }
+
+    /// <summary>
+    /// Promotes a navigation history entry to a bookmark.
+    /// </summary>
+    [RelayCommand]
+    private async Task PromoteHistoryToBookmarkAsync(NavigationHistoryEntry? entry)
+    {
+        if (entry == null)
+            return;
+
+        // Use a simple prompt for the bookmark name
+        // In a real app, this would be a dialog
+        var name = $"{entry.FractalType} - {DateTime.Now:g}";
+        var bookmark = FractalBookmark.FromHistoryEntry(entry, name, entry.Description);
+
+        await _bookmarkService.AddBookmarkAsync(bookmark);
+        RefreshBookmarks();
+
+        StatusMessage = $"History entry promoted to bookmark: {name}";
     }
 }

@@ -31,6 +31,7 @@ namespace ManpWinUI.ViewModels;
 public partial class MainViewModel(
     IFractalRenderService renderService, 
     IBookmarkService bookmarkService,
+    INavigationHistoryService navigationHistoryService,
     IHailstoneService hailstoneService,
     IHailstoneRenderService hailstoneRenderService,
     IAppSettingsService settingsService) : ObservableObject
@@ -42,6 +43,7 @@ public partial class MainViewModel(
     private readonly DispatcherQueue _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
     private readonly IFractalRenderService _renderService = renderService;
     private readonly IBookmarkService _bookmarkService = bookmarkService;
+    private readonly INavigationHistoryService _navigationHistoryService = navigationHistoryService;
     private readonly IHailstoneService _hailstoneService = hailstoneService;
     private readonly IHailstoneRenderService _hailstoneRenderService = hailstoneRenderService;
     private readonly IAppSettingsService _settingsService = settingsService;
@@ -51,13 +53,17 @@ public partial class MainViewModel(
     // ═══════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Initializes bookmarks from storage and restores panel state.
-    /// Call this after construction to load saved bookmarks and UI settings.
+    /// Initializes bookmarks and navigation history from storage and restores panel state.
+    /// Call this after construction to load saved state and UI settings.
     /// </summary>
     public async Task InitializeAsync()
     {
         await _bookmarkService.LoadBookmarksAsync();
         RefreshBookmarks();
+
+        await _navigationHistoryService.LoadHistoryAsync();
+        RefreshNavigationHistory();
+
         RestorePanelState();
     }
 }

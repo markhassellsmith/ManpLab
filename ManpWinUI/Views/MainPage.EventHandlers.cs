@@ -12,24 +12,33 @@ namespace ManpWinUI.Views
     {
         private void MatchWindowSize_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            // Get the actual size of the fractal display area (Grid Row 1)
-            if (FractalViewbox?.ActualWidth > 0 && FractalViewbox?.ActualHeight > 0)
+            // Get the actual size of the fractal display grid (the container for the fractal)
+            System.Diagnostics.Debug.WriteLine($"Match Window clicked - FractalDisplayGrid null: {FractalDisplayGrid == null}");
+
+            if (FractalDisplayGrid != null)
             {
-                // Use the Viewbox size as the target resolution
-                var width = (int)FractalViewbox.ActualWidth;
-                var height = (int)FractalViewbox.ActualHeight;
+                System.Diagnostics.Debug.WriteLine($"FractalDisplayGrid ActualWidth: {FractalDisplayGrid.ActualWidth}, ActualHeight: {FractalDisplayGrid.ActualHeight}");
+            }
+
+            if (FractalDisplayGrid?.ActualWidth > 0 && FractalDisplayGrid?.ActualHeight > 0)
+            {
+                // Use the Grid size as the target resolution
+                var width = (int)FractalDisplayGrid.ActualWidth;
+                var height = (int)FractalDisplayGrid.ActualHeight;
 
                 // Round to nearest multiple of 16 for better performance
                 width = (width / 16) * 16;
                 height = (height / 16) * 16;
 
+                System.Diagnostics.Debug.WriteLine($"Setting resolution to: {width}×{height}");
                 ViewModel.ImageWidth = width;
                 ViewModel.ImageHeight = height;
                 ViewModel.StatusMessage = $"Resolution matched to window: {width}×{height}";
             }
             else
             {
-                ViewModel.StatusMessage = "Window size not available yet";
+                System.Diagnostics.Debug.WriteLine("Window size not available - dimensions are zero or negative");
+                ViewModel.StatusMessage = "Window size not available yet - try resizing the window first";
             }
         }
 
@@ -424,6 +433,23 @@ namespace ManpWinUI.Views
         {
             // Update Hailstone labels when the canvas size changes (window resize)
             UpdateHailstoneLabels();
+        }
+
+        /// <summary>
+        /// Handles clicking on a navigation history entry to jump to that state.
+        /// </summary>
+        private async void HistoryEntry_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.Controls.Button button && 
+                button.DataContext is ManpWinUI.Models.NavigationHistoryEntry entry)
+            {
+                // Find the index of this entry in the history
+                var index = ViewModel.NavigationHistory.IndexOf(entry);
+                if (index >= 0)
+                {
+                    await ViewModel.JumpToHistoryCommand.ExecuteAsync(index);
+                }
+            }
         }
     }
 }

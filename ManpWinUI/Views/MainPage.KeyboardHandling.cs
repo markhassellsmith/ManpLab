@@ -209,15 +209,6 @@ namespace ManpWinUI.Views
                     _ = SaveImageAsync(Services.ImageFormat.PNG);
                     e.Handled = true;
                     break;
-
-                // B: Toggle Bookmarks Panel (without Ctrl, legacy support)
-                case VirtualKey.B when !ctrlPressed:
-                    if (ViewModel.ToggleBookmarksPanelCommand.CanExecute(null))
-                    {
-                        ViewModel.ToggleBookmarksPanelCommand.Execute(null);
-                        e.Handled = true;
-                    }
-                    break;
             }
         }
 
@@ -351,6 +342,12 @@ Ctrl+S             Save image
 B                  Toggle bookmarks panel
 
 ═══════════════════════════════════════
+NAVIGATION HISTORY (Week 8)
+═══════════════════════════════════════
+Ctrl+Z             Undo - Go back in history
+Ctrl+Y             Redo - Go forward in history
+
+═══════════════════════════════════════
 PANELS
 ═══════════════════════════════════════
 Ctrl+B             Toggle Browser panel
@@ -367,6 +364,30 @@ F1                 Show this help dialog",
             };
 
             await dialog.ShowAsync();
+        }
+
+        /// <summary>
+        /// Keyboard accelerator handler for Undo Navigation (Ctrl+Z).
+        /// </summary>
+        private async void UndoNavigation_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (ViewModel.UndoNavigationCommand.CanExecute(null))
+            {
+                await ViewModel.UndoNavigationCommand.ExecuteAsync(null);
+                args.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Keyboard accelerator handler for Redo Navigation (Ctrl+Y).
+        /// </summary>
+        private async void RedoNavigation_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            if (ViewModel.RedoNavigationCommand.CanExecute(null))
+            {
+                await ViewModel.RedoNavigationCommand.ExecuteAsync(null);
+                args.Handled = true;
+            }
         }
     }
 }

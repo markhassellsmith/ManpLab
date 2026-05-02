@@ -88,6 +88,29 @@ public class FractalBookmark
     }
 
     /// <summary>
+    /// Creates a bookmark from a navigation history entry.
+    /// Promotes a history entry to a saved bookmark.
+    /// </summary>
+    public static FractalBookmark FromHistoryEntry(NavigationHistoryEntry entry, string name, string? description = null)
+    {
+        return new FractalBookmark
+        {
+            Name = name,
+            Description = description ?? entry.Description,
+            FractalType = entry.FractalType,
+            IterationMode = entry.IterationMode,
+            CenterX = entry.CenterX,
+            CenterY = entry.CenterY,
+            Zoom = entry.Zoom,
+            MaxIterations = entry.MaxIterations,
+            ColorPalette = entry.ColorPalette,
+            JuliaC = entry.JuliaC,
+            IsFavorite = false,
+            IsPreset = false
+        };
+    }
+
+    /// <summary>
     /// Gets a display-friendly coordinate string.
     /// </summary>
     public string CoordinateDisplay => $"({CenterX:F8}, {CenterY:F8}) @ {Zoom:F2}x";

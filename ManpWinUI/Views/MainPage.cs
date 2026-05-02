@@ -134,6 +134,9 @@ namespace ManpWinUI.Views
             ViewModel.Zoom = fractalInfo.DefaultZoom;
             ViewModel.SelectedIterationMode = "Standard"; // Reset to standard mode when switching fractals
 
+            // Set the current visualization name from the browser
+            ViewModel.CurrentVisualizationName = fractalInfo.DisplayName;
+
             // Week 6 Task 2: Load parameters in ParameterEditor
             ParameterEditorViewModel.LoadParametersForFractal(e.Fractal.Name);
 

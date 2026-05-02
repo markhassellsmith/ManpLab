@@ -118,6 +118,7 @@ namespace ManpWinUI
             services.AddSingleton<IImageExportService, ImageExportService>();
             services.AddSingleton<IHailstoneExportService, HailstoneExportService>();
             services.AddSingleton<IBookmarkService, BookmarkService>();
+            services.AddSingleton<INavigationHistoryService, NavigationHistoryService>();
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
 
             // ViewModels
@@ -143,9 +144,37 @@ namespace ManpWinUI
             }
 
             _ = rootFrame.Navigate(typeof(MainPage), e.Arguments);
+
+            // Subscribe to window close event to save navigation history
+            window.Closed += OnWindowClosed;
+
             window.Activate();
 
             Log.Information("ManpWinUI window activated");
+        }
+
+        /// <summary>
+        /// Invoked when the application window is closing.
+        /// Saves navigation history to persistent storage.
+        /// </summary>
+        private async void OnWindowClosed(object sender, WindowEventArgs args)
+        {
+            try
+            {
+                var historyService = _serviceProvider.GetService<INavigationHistoryService>();
+                if (historyService != null)
+                {
+                    await historyService.SaveHistoryAsync();
+                    Log.Information("Navigation history saved on app close");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error saving navigation history on close");
+            }
+
+            Log.Information("ManpWinUI application closing");
+            Log.CloseAndFlush();
         }
 
         /// <summary>

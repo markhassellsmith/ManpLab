@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Page
+    x:Name="Page"
     x:Class="ManpWinUI.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -19,6 +20,10 @@
         <KeyboardAccelerator Key="B" Modifiers="Control" Invoked="ToggleBrowserPanel_Invoked" />
         <!-- Ctrl+P: Toggle Properties Panel -->
         <KeyboardAccelerator Key="P" Modifiers="Control" Invoked="TogglePropertiesPanel_Invoked" />
+        <!-- Ctrl+Z: Undo Navigation -->
+        <KeyboardAccelerator Key="Z" Modifiers="Control" Invoked="UndoNavigation_Invoked" />
+        <!-- Ctrl+Y: Redo Navigation -->
+        <KeyboardAccelerator Key="Y" Modifiers="Control" Invoked="RedoNavigation_Invoked" />
     </Page.KeyboardAccelerators>
 
     <Grid>
@@ -84,6 +89,30 @@
                 </ToolTipService.ToolTip>
             </AppBarButton>
             <AppBarSeparator />
+            <!-- Navigation History Buttons (Week 8) -->
+            <AppBarButton
+                Label="Back"
+                Command="{x:Bind ViewModel.UndoNavigationCommand}"
+                IsEnabled="{x:Bind ViewModel.CanUndo, Mode=OneWay}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE72B;" />
+                </AppBarButton.Icon>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Go back in navigation history (Ctrl+Z)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
+            <AppBarButton
+                Label="Forward"
+                Command="{x:Bind ViewModel.RedoNavigationCommand}"
+                IsEnabled="{x:Bind ViewModel.CanRedo, Mode=OneWay}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE72A;" />
+                </AppBarButton.Icon>
+                <ToolTipService.ToolTip>
+                    <ToolTip Content="Go forward in navigation history (Ctrl+Y)" />
+                </ToolTipService.ToolTip>
+            </AppBarButton>
+            <AppBarSeparator />
             <AppBarButton
                 Icon="Save"
                 Label="Save Image"
@@ -107,332 +136,322 @@
                     <ToolTip Content="Save or copy fractal image" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
-            <AppBarSeparator />
-            <AppBarButton
-                Label="Bookmarks"
-                Command="{x:Bind ViewModel.ToggleBookmarksPanelCommand}">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE734;" />
-                </AppBarButton.Icon>
-                <ToolTipService.ToolTip>
-                    <ToolTip Content="View and manage fractal bookmarks (B)" />
-                </ToolTipService.ToolTip>
-            </AppBarButton>
         </CommandBar>
 
         <!-- Main Content Area -->
-        <SplitView Grid.Row="1"
-                   IsPaneOpen="{x:Bind ViewModel.IsBookmarksPanelOpen, Mode=TwoWay}"
-                   DisplayMode="Overlay"
-                   PanePlacement="Left"
-                   OpenPaneLength="350"
-                   CompactPaneLength="0">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{x:Bind ViewModel.BrowserPanelWidth, Mode=OneWay, Converter={StaticResource DoubleToGridLengthConverter}}" />
+                <!-- Left Panel (Browser/Bookmarks) - width persisted -->
+                <ColumnDefinition Width="Auto" />
+                <!-- GridSplitter for left panel -->
+                <ColumnDefinition Width="*" />
+                <!-- Fractal Display -->
+                <ColumnDefinition Width="Auto" />
+                <!-- GridSplitter for properties panel -->
+                <ColumnDefinition Width="{x:Bind ViewModel.PropertiesPanelWidth, Mode=OneWay, Converter={StaticResource DoubleToGridLengthConverter}}" />
+                <!-- Properties Panel - width persisted -->
+            </Grid.ColumnDefinitions>
 
-            <!-- Bookmarks Panel (Pane) -->
-            <SplitView.Pane>
-                <Grid Background="{ThemeResource LayerFillColorDefaultBrush}">
-                    <ScrollViewer Padding="16">
-                        <StackPanel Spacing="12">
-                            <Grid>
-                                <TextBlock Text="Bookmarks"
-                                          FontWeight="Bold"
-                                          FontSize="20"
-                                          VerticalAlignment="Center" />
-                                <Button Content="&#xE711;"
-                                       FontFamily="Segoe MDL2 Assets"
-                                       Command="{x:Bind ViewModel.ToggleBookmarksPanelCommand}"
-                                       HorizontalAlignment="Right"
-                                       Style="{StaticResource SubtleButtonStyle}"
-                                       ToolTipService.ToolTip="Close bookmarks" />
-                            </Grid>
+            <!-- Left Panel with Browser and Bookmarks Tabs -->
+            <Grid Grid.Column="0"
+                  Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Background="{ThemeResource LayerFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                  BorderThickness="0,0,1,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <!-- Header with collapse button -->
+                    <RowDefinition Height="*" />
+                    <!-- Tabbed content -->
+                </Grid.RowDefinitions>
 
-                            <MenuFlyoutSeparator />
-
-                            <!-- Save Current View -->
-                            <StackPanel Spacing="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="12" CornerRadius="8">
-                                <TextBlock Text="Save Current View" FontWeight="SemiBold" />
-                                <TextBox x:Name="NewBookmarkNameTextBox"
-                                        PlaceholderText="Enter bookmark name..."
-                                        Header="Name" />
-                                <Button Command="{x:Bind ViewModel.SaveCurrentAsBookmarkCommand}"
-                                       CommandParameter="{x:Bind NewBookmarkNameTextBox.Text, Mode=OneWay}"
-                                       HorizontalAlignment="Stretch">
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
-                                        <FontIcon Glyph="&#xE710;" FontSize="16" />
-                                        <TextBlock Text="Save Bookmark" />
-                                    </StackPanel>
-                                </Button>
-                            </StackPanel>
-
-                            <MenuFlyoutSeparator />
-
-                            <!-- Bookmarks List -->
-                            <TextBlock Text="Saved Locations" FontWeight="SemiBold" />
-
-                            <ListView ItemsSource="{x:Bind ViewModel.Bookmarks, Mode=OneWay}"
-                                     SelectedItem="{x:Bind ViewModel.SelectedBookmark, Mode=TwoWay}"
-                                     SelectionMode="Single">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:FractalBookmark">
-                                        <Grid Padding="8" ColumnSpacing="8">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-
-                                            <!-- Favorite Star -->
-                                            <FontIcon Grid.Column="0"
-                                                     Glyph="{x:Bind IsFavorite, Mode=OneWay, Converter={StaticResource BoolToStarGlyphConverter}}"
-                                                     FontSize="16"
-                                                     Foreground="{x:Bind IsFavorite, Mode=OneWay, Converter={StaticResource BoolToStarColorConverter}}" />
-
-                                            <!-- Bookmark Info -->
-                                            <StackPanel Grid.Column="1" Spacing="2">
-                                                <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
-                                                <TextBlock Text="{x:Bind CoordinateDisplay}"
-                                                          FontSize="11"
-                                                          Opacity="0.7"
-                                                          TextWrapping="Wrap" />
-                                                <TextBlock Text="{x:Bind Description}"
-                                                          FontSize="10"
-                                                          Opacity="0.6"
-                                                          TextWrapping="Wrap"
-                                                          Visibility="{x:Bind Description, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
-                                            </StackPanel>
-
-                                            <!-- Load Button -->
-                                            <Button Grid.Column="2"
-                                                   Content="&#xE768;"
-                                                   FontFamily="Segoe MDL2 Assets"
-                                                   Command="{Binding ElementName=Page, Path=ViewModel.LoadBookmarkCommand}"
-                                                   CommandParameter="{x:Bind}"
-                                                   Style="{StaticResource SubtleButtonStyle}"
-                                                   ToolTipService.ToolTip="Load this bookmark" />
-
-                                            <!-- Delete Button (not for presets) -->
-                                            <Button Grid.Column="3"
-                                                   Content="&#xE74D;"
-                                                   FontFamily="Segoe MDL2 Assets"
-                                                   Command="{Binding ElementName=Page, Path=ViewModel.DeleteBookmarkCommand}"
-                                                   CommandParameter="{x:Bind}"
-                                                   Style="{StaticResource SubtleButtonStyle}"
-                                                   Visibility="{x:Bind IsPreset, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
-                                                   ToolTipService.ToolTip="Delete bookmark" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </StackPanel>
-                    </ScrollViewer>
-                </Grid>
-            </SplitView.Pane>
-
-            <!-- Main Content (Content) -->
-            <SplitView.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="{x:Bind ViewModel.BrowserPanelWidth, Mode=OneWay, Converter={StaticResource DoubleToGridLengthConverter}}" />
-                        <!-- Browser Panel - width persisted -->
-                        <ColumnDefinition Width="Auto" />
-                        <!-- GridSplitter for browser panel -->
-                        <ColumnDefinition Width="*" />
-                        <!-- Fractal Display -->
-                        <ColumnDefinition Width="Auto" />
-                        <!-- GridSplitter for properties panel -->
-                        <ColumnDefinition Width="{x:Bind ViewModel.PropertiesPanelWidth, Mode=OneWay, Converter={StaticResource DoubleToGridLengthConverter}}" />
-                        <!-- Properties Panel - width persisted -->
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Browser Panel -->
-                    <Grid Grid.Column="0"
-                          Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                          BorderThickness="0,0,1,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <!-- Header with collapse button -->
-                            <RowDefinition Height="*" />
-                            <!-- Browser content -->
-                        </Grid.RowDefinitions>
-
-                        <!-- Browser Panel Header -->
-                        <Grid Grid.Row="0"
-                              Padding="12,8"
-                              Background="{ThemeResource LayerFillColorDefaultBrush}"
-                              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                              BorderThickness="0,0,0,1">
-                            <TextBlock Text="Browser"
-                                       FontWeight="SemiBold"
-                                       VerticalAlignment="Center" />
-                            <Button Content="&#xE76C;"
-                                    FontFamily="Segoe MDL2 Assets"
-                                    Command="{x:Bind ViewModel.ToggleBrowserPanelCommand}"
-                                    HorizontalAlignment="Right"
-                                    Style="{StaticResource SubtleButtonStyle}"
-                                    ToolTipService.ToolTip="Collapse browser panel (Ctrl+B)" />
-                        </Grid>
-
-                        <!-- Browser Content -->
-                        <Grid Grid.Row="1">
-                            <browser:FractalBrowserView x:Name="BrowserView" />
-                        </Grid>
-                    </Grid>
-
-                    <!-- Collapsed Browser Panel Button -->
-                    <Button Grid.Column="0"
-                            Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
-                            Content="&#xE76B;"
+                <!-- Left Panel Header -->
+                <Grid Grid.Row="0"
+                      Padding="12,8"
+                      Background="{ThemeResource LayerFillColorDefaultBrush}"
+                      BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                      BorderThickness="0,0,0,1">
+                    <TextBlock Text="Explorer"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center" />
+                    <Button Content="&#xE76C;"
                             FontFamily="Segoe MDL2 Assets"
                             Command="{x:Bind ViewModel.ToggleBrowserPanelCommand}"
-                            VerticalAlignment="Top"
-                            Margin="4"
+                            HorizontalAlignment="Right"
                             Style="{StaticResource SubtleButtonStyle}"
-                            ToolTipService.ToolTip="Expand browser panel (Ctrl+B)"
-                            Background="{ThemeResource LayerFillColorDefaultBrush}"
-                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                            BorderThickness="1" />
+                            ToolTipService.ToolTip="Collapse explorer panel (Ctrl+B)" />
+                </Grid>
 
-                    <!-- GridSplitter for Browser Panel -->
-                    <Border Grid.Column="1"
-                            Width="4"
-                            Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Background="{ThemeResource DividerStrokeColorDefaultBrush}"
-                            PointerEntered="BrowserSplitter_PointerEntered"
-                            PointerExited="BrowserSplitter_PointerExited"
-                            PointerPressed="BrowserSplitter_PointerPressed"
-                            PointerMoved="BrowserSplitter_PointerMoved"
-                            PointerReleased="BrowserSplitter_PointerReleased" />
+                <!-- Tabbed Content -->
+                <TabView Grid.Row="1">
+                    <TabView.Resources>
+                        <Style TargetType="TabViewItem">
+                            <Setter Property="FontSize" Value="11" />
+                        </Style>
+                    </TabView.Resources>
+                    <!-- Browser Tab -->
+                    <TabViewItem Header="Browser">
+                        <TabViewItem.IconSource>
+                            <SymbolIconSource Symbol="Library" />
+                        </TabViewItem.IconSource>
+                        <browser:FractalBrowserView x:Name="BrowserView" />
+                    </TabViewItem>
 
-                    <!-- Fractal Canvas -->
-                    <Grid Grid.Column="2"
+                    <!-- Bookmarks Tab -->
+                    <TabViewItem Header="Bookmarks">
+                        <TabViewItem.IconSource>
+                            <SymbolIconSource Symbol="Favorite" />
+                        </TabViewItem.IconSource>
+                        <ScrollViewer Padding="16">
+                            <StackPanel Spacing="12">
+                                <!-- Save Current View -->
+                                <StackPanel Spacing="8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="12" CornerRadius="8">
+                                    <TextBlock Text="Save Current View" FontWeight="SemiBold" />
+                                    <TextBox x:Name="NewBookmarkNameTextBox"
+                                            PlaceholderText="Enter bookmark name..."
+                                            Header="Name" />
+                                    <Button Command="{x:Bind ViewModel.SaveCurrentAsBookmarkCommand}"
+                                           CommandParameter="{x:Bind NewBookmarkNameTextBox.Text, Mode=OneWay}"
+                                           HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon Glyph="&#xE710;" FontSize="16" />
+                                            <TextBlock Text="Save Bookmark" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+
+                                <MenuFlyoutSeparator />
+
+                                <!-- Bookmarks List -->
+                                <Grid>
+                                    <TextBlock Text="Saved Locations" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                    <Button Content="{x:Bind ViewModel.BookmarkFilterLabel, Mode=OneWay}"
+                                            Command="{x:Bind ViewModel.ToggleFavoritesFilterCommand}"
+                                            HorizontalAlignment="Right"
+                                            ToolTipService.ToolTip="Toggle favorites filter" />
+                                </Grid>
+
+                                <ListView ItemsSource="{x:Bind ViewModel.FilteredBookmarks, Mode=OneWay}"
+                                         SelectedItem="{x:Bind ViewModel.SelectedBookmark, Mode=TwoWay}"
+                                         SelectionMode="Single">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:FractalBookmark">
+                                            <Grid Padding="8" ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Favorite Star Button -->
+                                                <Button Grid.Column="0"
+                                                       Content="{x:Bind IsFavorite, Mode=OneWay, Converter={StaticResource BoolToStarGlyphConverter}}"
+                                                       FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="16"
+                                                       Foreground="{x:Bind IsFavorite, Mode=OneWay, Converter={StaticResource BoolToStarColorConverter}}"
+                                                       Command="{Binding ElementName=Page, Path=ViewModel.ToggleBookmarkFavoriteCommand}"
+                                                       CommandParameter="{x:Bind}"
+                                                       Style="{StaticResource SubtleButtonStyle}"
+                                                       ToolTipService.ToolTip="Toggle favorite" />
+
+                                                <!-- Bookmark Info -->
+                                                <StackPanel Grid.Column="1" Spacing="2">
+                                                    <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                                    <TextBlock Text="{x:Bind CoordinateDisplay}"
+                                                              FontSize="11"
+                                                              Opacity="0.7"
+                                                              TextWrapping="Wrap" />
+                                                    <TextBlock Text="{x:Bind Description}"
+                                                              FontSize="10"
+                                                              Opacity="0.6"
+                                                              TextWrapping="Wrap"
+                                                              Visibility="{x:Bind Description, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
+                                                </StackPanel>
+
+                                                <!-- Load Button -->
+                                                <Button Grid.Column="2"
+                                                       Content="&#xE768;"
+                                                       FontFamily="Segoe MDL2 Assets"
+                                                       Command="{Binding ElementName=Page, Path=ViewModel.LoadBookmarkCommand}"
+                                                       CommandParameter="{x:Bind}"
+                                                       Style="{StaticResource SubtleButtonStyle}"
+                                                       ToolTipService.ToolTip="Load this bookmark" />
+
+                                                <!-- Delete Button (not for presets) -->
+                                                <Button Grid.Column="3"
+                                                       Content="&#xE74D;"
+                                                       FontFamily="Segoe MDL2 Assets"
+                                                       Command="{Binding ElementName=Page, Path=ViewModel.DeleteBookmarkCommand}"
+                                                       CommandParameter="{x:Bind}"
+                                                       Style="{StaticResource SubtleButtonStyle}"
+                                                       Visibility="{x:Bind IsPreset, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
+                                                       ToolTipService.ToolTip="Delete bookmark" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabViewItem>
+                </TabView>
+            </Grid>
+
+            <!-- Collapsed Left Panel Button -->
+            <Button Grid.Column="0"
+                    Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
+                    Content="&#xE76B;"
+                    FontFamily="Segoe MDL2 Assets"
+                    Command="{x:Bind ViewModel.ToggleBrowserPanelCommand}"
+                    VerticalAlignment="Top"
+                    Margin="4"
+                    Style="{StaticResource SubtleButtonStyle}"
+                    ToolTipService.ToolTip="Expand explorer panel (Ctrl+B)"
+                    Background="{ThemeResource LayerFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    BorderThickness="1" />
+
+            <!-- GridSplitter for Left Panel -->
+            <Border Grid.Column="1"
+                    Width="4"
+                    Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    PointerEntered="BrowserSplitter_PointerEntered"
+                    PointerExited="BrowserSplitter_PointerExited"
+                    PointerPressed="BrowserSplitter_PointerPressed"
+                    PointerMoved="BrowserSplitter_PointerMoved"
+                    PointerReleased="BrowserSplitter_PointerReleased" />
+
+            <!-- Fractal Canvas -->
+            <Grid x:Name="FractalDisplayGrid"
+                  Grid.Column="2"
                   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                   PointerPressed="FractalImage_PointerPressed"
                   PointerMoved="FractalImage_PointerMoved"
                   PointerReleased="FractalImage_PointerReleased"
                   PointerWheelChanged="FractalImage_PointerWheelChanged">
-                        <!-- Fractal Image Display -->
-                        <Viewbox x:Name="FractalViewbox" Stretch="Uniform" SizeChanged="FractalViewbox_SizeChanged">
-                            <Image
+                <!-- Fractal Image Display -->
+                <Viewbox x:Name="FractalViewbox" Stretch="Uniform" SizeChanged="FractalViewbox_SizeChanged">
+                    <Image
                         x:Name="FractalImage"
                         Source="{x:Bind ViewModel.FractalImage, Mode=OneWay}"
                         Stretch="None" />
-                        </Viewbox>
+                </Viewbox>
 
-                        <!-- Selection Rectangle Overlay -->
-                        <Canvas x:Name="SelectionCanvas" Canvas.ZIndex="10">
-                            <Rectangle
+                <!-- Selection Rectangle Overlay -->
+                <Canvas x:Name="SelectionCanvas" Canvas.ZIndex="10">
+                    <Rectangle
                         x:Name="SelectionRectangle"
                         Stroke="Cyan"
                         StrokeThickness="3"
                         Fill="#40FFFFFF"
                         Visibility="Collapsed"
                         StrokeDashArray="5,3">
-                                <Rectangle.Shadow>
-                                    <ThemeShadow />
-                                </Rectangle.Shadow>
-                            </Rectangle>
-                        </Canvas>
+                        <Rectangle.Shadow>
+                            <ThemeShadow />
+                        </Rectangle.Shadow>
+                    </Rectangle>
+                </Canvas>
 
-                        <!-- Coordinate Axes Overlay (for Mandelbrot/Julia only, not for Hailstone) -->
-                        <Canvas x:Name="CoordinateAxesCanvas"
+                <!-- Coordinate Axes Overlay (for Mandelbrot/Julia only, not for Hailstone) -->
+                <Canvas x:Name="CoordinateAxesCanvas"
                     Canvas.ZIndex="5"
                     IsHitTestVisible="False"
                     Visibility="{x:Bind ViewModel.ShowMandelbrotAxes, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     SizeChanged="CoordinateAxesCanvas_SizeChanged">
-                        </Canvas>
+                </Canvas>
 
-                        <!-- Hailstone Labels Overlay -->
-                        <Canvas x:Name="HailstoneLabelsCanvas"
+                <!-- Hailstone Labels Overlay -->
+                <Canvas x:Name="HailstoneLabelsCanvas"
                     Canvas.ZIndex="6"
                     IsHitTestVisible="False"
                     Visibility="{x:Bind ViewModel.IsHailstoneMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                     SizeChanged="HailstoneLabelsCanvas_SizeChanged">
-                        </Canvas>
+                </Canvas>
 
-                        <!-- Welcome Overlay (shown when no fractal is rendered) -->
-                        <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Spacing="16"
-                Visibility="{x:Bind ViewModel.FractalImage, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock
-                    Text="ManpLab - Fractal Explorer"
-                    FontSize="32"
-                    FontWeight="Bold"
-                    HorizontalAlignment="Center" />
-                            <TextBlock
-                    Text="Phase 3: WinUI MVVM Architecture"
-                    FontSize="16"
-                    Opacity="0.7"
-                    HorizontalAlignment="Center" />
-                            <TextBlock
-                    Text="Adjust parameters in the side panel and click 'Render' to generate your first fractal!"
-                    FontSize="14"
-                    Opacity="0.6"
+                <!-- Welcome Overlay (shown when no fractal is rendered) -->
+                <StackPanel
                     HorizontalAlignment="Center"
-                    TextWrapping="Wrap"
-                    MaxWidth="400" />
+                    VerticalAlignment="Center"
+                    Spacing="16"
+                    Visibility="{x:Bind ViewModel.FractalImage, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
+                    <TextBlock
+                        Text="ManpLab - Fractal Explorer"
+                        FontSize="32"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center" />
+                    <TextBlock
+                        Text="WinUI Interface, MVVM Architecture, C++ Computation Engine"
+                        FontSize="16"
+                        Opacity="0.7"
+                        HorizontalAlignment="Center" />
+                    <TextBlock
+                        Text="Adjust parameters in the side panel and click 'Render' to generate your first fractal!"
+                        FontSize="14"
+                        Opacity="0.6"
+                        HorizontalAlignment="Center"
+                        TextWrapping="Wrap"
+                        MaxWidth="400" />
+                </StackPanel>
+
+                <!-- Progress Overlay -->
+                <Grid
+                    Background="{ThemeResource SystemControlAcrylicElementBrush}"
+                    Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Canvas.ZIndex="100">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16">
+
+                        <!-- Progress Ring -->
+                        <ProgressRing
+                            IsActive="True"
+                            Width="60"
+                            Height="60" />
+
+                        <TextBlock
+                            Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                            FontSize="16"
+                            HorizontalAlignment="Center"
+                            TextWrapping="Wrap"
+                            MaxWidth="400"
+                            TextAlignment="Center" />
+                        <ProgressBar
+                            Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
+                            Width="300"
+                            Maximum="100" />
+
+                        <!-- Render Control Buttons -->
+                        <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,8,0,0">
+                            <Button
+                                Command="{x:Bind ViewModel.StopRenderCommand}"
+                                Content="Stop Render"
+                                Style="{StaticResource AccentButtonStyle}"
+                                MinWidth="120">
+                                <Button.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="Escape" />
+                                </Button.KeyboardAccelerators>
+                            </Button>
                         </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
 
-                        <!-- Progress Overlay -->
-                        <Grid
-                                Background="{ThemeResource SystemControlAcrylicElementBrush}"
-                                Visibility="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Canvas.ZIndex="100">
-                            <StackPanel
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Spacing="16">
+            <!-- GridSplitter for Properties Panel -->
+            <Border Grid.Column="3"
+                    Width="4"
+                    Visibility="{x:Bind ViewModel.IsPropertiesPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                    PointerEntered="PropertiesSplitter_PointerEntered"
+                    PointerExited="PropertiesSplitter_PointerExited"
+                    PointerPressed="PropertiesSplitter_PointerPressed"
+                    PointerMoved="PropertiesSplitter_PointerMoved"
+                    PointerReleased="PropertiesSplitter_PointerReleased" />
 
-                                <!-- Progress Ring -->
-                                <ProgressRing
-                                        IsActive="True"
-                                        Width="60"
-                                        Height="60" />
-
-                                <TextBlock
-                                        Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
-                                        FontSize="16"
-                                        HorizontalAlignment="Center"
-                                        TextWrapping="Wrap"
-                                        MaxWidth="400"
-                                        TextAlignment="Center" />
-                                <ProgressBar
-                                        Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
-                                        Width="300"
-                                        Maximum="100" />
-
-                                <!-- Render Control Buttons -->
-                                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,8,0,0">
-                                    <Button
-                                            Command="{x:Bind ViewModel.StopRenderCommand}"
-                                            Content="Stop Render"
-                                            Style="{StaticResource AccentButtonStyle}"
-                                            MinWidth="120">
-                                        <Button.KeyboardAccelerators>
-                                            <KeyboardAccelerator Key="Escape" />
-                                        </Button.KeyboardAccelerators>
-                                    </Button>
-                                </StackPanel>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-
-                    <!-- GridSplitter for Properties Panel -->
-                    <Border Grid.Column="3"
-                            Width="4"
-                            Visibility="{x:Bind ViewModel.IsPropertiesPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Background="{ThemeResource DividerStrokeColorDefaultBrush}"
-                            PointerEntered="PropertiesSplitter_PointerEntered"
-                            PointerExited="PropertiesSplitter_PointerExited"
-                            PointerPressed="PropertiesSplitter_PointerPressed"
-                            PointerMoved="PropertiesSplitter_PointerMoved"
-                            PointerReleased="PropertiesSplitter_PointerReleased" />
-
-                    <!-- Properties Panel with Tabs -->
-                    <Grid Grid.Column="4"
+            <!-- Properties Panel with Tabs -->
+            <Grid Grid.Column="4"
                           Visibility="{x:Bind ViewModel.IsPropertiesPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                           Background="{ThemeResource LayerFillColorDefaultBrush}"
                           BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
@@ -463,6 +482,11 @@
 
                         <!-- Properties Content -->
                         <TabView Grid.Row="1">
+                            <TabView.Resources>
+                                <Style TargetType="TabViewItem">
+                                    <Setter Property="FontSize" Value="10" />
+                                </Style>
+                            </TabView.Resources>
                             <!-- Parameters Tab -->
                             <TabViewItem Header="Parameters">
                                 <TabViewItem.IconSource>
@@ -714,31 +738,35 @@
                                             Command="{x:Bind ViewModel.SetResolutionCommand}"
                                             CommandParameter="HD"
                                             ToolTipService.ToolTip="1280x720"
+                                            Style="{x:Bind ViewModel.IsHDResolution, Mode=OneWay, Converter={StaticResource BoolToButtonStyleConverter}}"
                                             HorizontalAlignment="Stretch" />
                                             <Button Grid.Row="0" Grid.Column="1"
                                             Content="FHD"
                                             Command="{x:Bind ViewModel.SetResolutionCommand}"
                                             CommandParameter="FullHD"
                                             ToolTipService.ToolTip="1920x1080"
+                                            Style="{x:Bind ViewModel.IsFullHDResolution, Mode=OneWay, Converter={StaticResource BoolToButtonStyleConverter}}"
                                             HorizontalAlignment="Stretch" />
                                             <Button Grid.Row="1" Grid.Column="0"
                                             Content="2K"
                                             Command="{x:Bind ViewModel.SetResolutionCommand}"
                                             CommandParameter="2K"
                                             ToolTipService.ToolTip="2560x1440"
+                                            Style="{x:Bind ViewModel.Is2KResolution, Mode=OneWay, Converter={StaticResource BoolToButtonStyleConverter}}"
                                             HorizontalAlignment="Stretch" />
                                             <Button Grid.Row="1" Grid.Column="1"
                                             Content="4K"
                                             Command="{x:Bind ViewModel.SetResolutionCommand}"
                                             CommandParameter="4K"
                                             ToolTipService.ToolTip="3840x2160"
-                                            Style="{StaticResource AccentButtonStyle}"
+                                            Style="{x:Bind ViewModel.Is4KResolution, Mode=OneWay, Converter={StaticResource BoolToButtonStyleConverter}}"
                                             HorizontalAlignment="Stretch" />
                                             <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                             Content="4K+ (4096×2160)"
                                             Command="{x:Bind ViewModel.SetResolutionCommand}"
                                             CommandParameter="4K+"
                                             ToolTipService.ToolTip="4096x2160 - DCI 4K Cinema Standard"
+                                            Style="{x:Bind ViewModel.Is4KPlusResolution, Mode=OneWay, Converter={StaticResource BoolToButtonStyleConverter}}"
                                             HorizontalAlignment="Stretch" />
                                         </Grid>
 
@@ -837,16 +865,138 @@
                                 </TabViewItem.IconSource>
                                 <ScrollViewer Padding="16">
                                     <StackPanel Spacing="12">
+                                        <!-- Header -->
                                         <TextBlock Text="Bookmark Management"
                                                        FontWeight="SemiBold"
                                                        FontSize="16" />
-                                        <TextBlock Text="Use the Bookmarks button in the toolbar to manage saved locations."
+
+                                        <TextBlock Text="Save and organize your favorite fractal locations. Click the Bookmarks button in the toolbar to manage your collection."
                                                        TextWrapping="Wrap"
                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                        <TextBlock Text="Future: Bookmarks will be managed here instead of overlay panel"
-                                                       FontSize="11"
-                                                       FontStyle="Italic"
-                                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+
+                                        <MenuFlyoutSeparator />
+
+                                        <!-- Import/Export Section -->
+                                        <TextBlock Text="Share Bookmarks"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="14" />
+
+                                        <TextBlock Text="Export your bookmarks to share with others, or import bookmarks from a file."
+                                                   TextWrapping="Wrap"
+                                                   FontSize="12"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Button Command="{x:Bind ViewModel.ExportBookmarksCommand}"
+                                                    Style="{StaticResource AccentButtonStyle}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xEDE1;" FontSize="16" />
+                                                    <TextBlock Text="Export Bookmarks" />
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Command="{x:Bind ViewModel.ImportBookmarksCommand}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE8B5;" FontSize="16" />
+                                                    <TextBlock Text="Import Bookmarks" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+
+                                        <InfoBar
+                                            IsOpen="True"
+                                            Severity="Informational"
+                                            IsClosable="False"
+                                            Message="Exported files contain only your custom bookmarks, not the built-in presets." />
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabViewItem>
+
+                            <!-- Navigation History Tab (Week 8) -->
+                            <TabViewItem Header="History">
+                                <TabViewItem.IconSource>
+                                    <SymbolIconSource Symbol="Clock" />
+                                </TabViewItem.IconSource>
+                                <ScrollViewer Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <!-- Header -->
+                                        <Grid>
+                                            <TextBlock Text="Navigation History"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="16"
+                                                       VerticalAlignment="Center" />
+                                            <Button Content="Clear All"
+                                                    Command="{x:Bind ViewModel.ClearNavigationHistoryCommand}"
+                                                    HorizontalAlignment="Right"
+                                                    Style="{StaticResource SubtleButtonStyle}"
+                                                    ToolTipService.ToolTip="Clear all navigation history" />
+                                        </Grid>
+
+                                        <TextBlock TextWrapping="Wrap"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="Navigate through your fractal exploration history. Use " />
+                                            <Run Text="Ctrl+Z" FontWeight="SemiBold" />
+                                            <Run Text=" to undo and " />
+                                            <Run Text="Ctrl+Y" FontWeight="SemiBold" />
+                                            <Run Text=" to redo." />
+                                        </TextBlock>
+
+                                        <MenuFlyoutSeparator />
+
+                                        <!-- History List -->
+                                        <TextBlock FontSize="12"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="Total entries: " />
+                                            <Run Text="{x:Bind ViewModel.NavigationHistory.Count, Mode=OneWay}" />
+                                        </TextBlock>
+
+                                        <ListView ItemsSource="{x:Bind ViewModel.NavigationHistory, Mode=OneWay}"
+                                                  SelectionMode="None"
+                                                  MaxHeight="500">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate x:DataType="models:NavigationHistoryEntry">
+                                                    <Grid Padding="8,12" ColumnSpacing="8">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <!-- Entry Info -->
+                                                        <StackPanel Grid.Column="0" Spacing="4">
+                                                            <TextBlock Text="{x:Bind Description}"
+                                                                       FontWeight="SemiBold"
+                                                                       TextWrapping="Wrap" />
+                                                            <TextBlock FontSize="11"
+                                                                       Opacity="0.7"
+                                                                       TextWrapping="Wrap">
+                                                                <Run Text="{x:Bind CoordinateDisplay}" />
+                                                            </TextBlock>
+                                                            <TextBlock Text="{x:Bind TimeDisplay}"
+                                                                       FontSize="10"
+                                                                       Opacity="0.6" />
+                                                        </StackPanel>
+
+                                                        <!-- Promote to Bookmark Button -->
+                                                        <Button Grid.Column="1"
+                                                                Content="&#xE734;"
+                                                                FontFamily="Segoe MDL2 Assets"
+                                                                Command="{Binding ElementName=Page, Path=ViewModel.PromoteHistoryToBookmarkCommand}"
+                                                                CommandParameter="{x:Bind}"
+                                                                Style="{StaticResource SubtleButtonStyle}"
+                                                                ToolTipService.ToolTip="Save as bookmark" />
+
+                                                        <!-- Go Button -->
+                                                        <Button Grid.Column="2"
+                                                                Content="&#xE768;"
+                                                                FontFamily="Segoe MDL2 Assets"
+                                                                Click="HistoryEntry_Click"
+                                                                Style="{StaticResource SubtleButtonStyle}"
+                                                                ToolTipService.ToolTip="Jump to this state" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
                                     </StackPanel>
                                 </ScrollViewer>
                             </TabViewItem>
@@ -867,9 +1017,7 @@
                             Background="{ThemeResource LayerFillColorDefaultBrush}"
                             BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
                             BorderThickness="1" />
-                </Grid>
-            </SplitView.Content>
-        </SplitView>
+        </Grid>
 
         <!-- Streamlined Status Bar -->
         <Grid Grid.Row="2"
@@ -877,18 +1025,27 @@
                           Padding="12,6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!-- Left: Status message -->
+            <!-- Left: Visualization name -->
             <TextBlock Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,16,0"
+                                   FontWeight="SemiBold"
+                                   Text="{x:Bind ViewModel.CurrentVisualizationName, Mode=OneWay}"
+                                   Visibility="{x:Bind ViewModel.CurrentVisualizationName, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}" />
+
+            <!-- Left-Center: Status message -->
+            <TextBlock Grid.Column="1"
                                    VerticalAlignment="Center"
                                    Margin="0,0,16,0"
                                    Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
 
             <!-- Center: View dimensions in fractal coordinates -->
-            <TextBlock Grid.Column="1"
+            <TextBlock Grid.Column="2"
                                    VerticalAlignment="Center"
                                    Opacity="0.8"
                                    FontSize="12">
@@ -900,7 +1057,7 @@
             </TextBlock>
 
             <!-- Right: Render time -->
-            <TextBlock Grid.Column="2"
+            <TextBlock Grid.Column="3"
                                    VerticalAlignment="Center"
                                    Opacity="0.7"
                                    FontSize="12">
