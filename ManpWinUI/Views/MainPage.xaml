@@ -39,7 +39,8 @@
 
         <!-- Toolbar -->
         <CommandBar Grid.Row="0"
-                    DefaultLabelPosition="Right">
+                    DefaultLabelPosition="Right"
+                    Background="{ThemeResource CommandBarBackground}">
             <AppBarButton
                 Icon="Play"
                 Label="Render"
@@ -482,7 +483,9 @@
                         </Grid>
 
                         <!-- Properties Content -->
-                        <TabView Grid.Row="1">
+                        <TabView x:Name="PropertiesTabView"
+                                 Grid.Row="1"
+                                 SelectedIndex="{x:Bind ViewModel.SelectedPropertiesTabIndex, Mode=TwoWay}">
                             <TabView.Resources>
                                 <Style TargetType="TabViewItem">
                                     <Setter Property="FontSize" Value="10" />

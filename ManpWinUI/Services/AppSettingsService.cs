@@ -13,6 +13,7 @@ public class AppSettingsService : IAppSettingsService
     private const string PropertiesWidthKey = "PropertiesPanelWidth";
     private const string BrowserVisibleKey = "BrowserPanelVisible";
     private const string PropertiesVisibleKey = "PropertiesPanelVisible";
+    private const string PropertiesTabIndexKey = "PropertiesTabIndex";
     private const string SelectedFractalKey = "SelectedFractal";
     private const string FractalParametersKeyPrefix = "FractalParams_"; // Week 6 Task 6
 
@@ -198,5 +199,19 @@ public class AppSettingsService : IAppSettingsService
     public void SetDefaultAntialiasingLevel(string level)
     {
         _localSettings.Values[DefaultAntialiasingLevelKey] = level;
+    }
+
+    public int? GetPropertiesTabIndex()
+    {
+        if (_localSettings.Values.TryGetValue(PropertiesTabIndexKey, out var value) && value is int index)
+        {
+            return index;
+        }
+        return null;
+    }
+
+    public void SetPropertiesTabIndex(int index)
+    {
+        _localSettings.Values[PropertiesTabIndexKey] = index;
     }
 }

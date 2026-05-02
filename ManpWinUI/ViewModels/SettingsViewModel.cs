@@ -12,6 +12,7 @@ namespace ManpWinUI.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly IAppSettingsService _settingsService;
+    private bool _isInitializing = false;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // THEME SETTINGS
@@ -20,7 +21,7 @@ public partial class SettingsViewModel : ObservableObject
     /// <summary>
     /// Available theme options.
     /// </summary>
-    public List<string> AvailableThemes { get; } = new() { "Light", "Dark", "System" };
+    public List<string> AvailableThemes { get; } = new() { "Light", "Dark", "Ocean Blue", "System" };
 
     /// <summary>
     /// Currently selected application theme.
@@ -32,8 +33,8 @@ public partial class SettingsViewModel : ObservableObject
     {
         _settingsService.SetTheme(value);
 
-        // Apply theme immediately to the running application
-        if (App.Current?.MainWindow != null)
+        // Only apply theme if not initializing (user actively changed it)
+        if (!_isInitializing && App.Current?.MainWindow != null)
         {
             App.Current.ApplyTheme();
         }
@@ -136,11 +137,13 @@ public partial class SettingsViewModel : ObservableObject
     /// </summary>
     private void LoadSettings()
     {
+        _isInitializing = true;
         SelectedTheme = _settingsService.GetTheme();
         DefaultPalette = _settingsService.GetDefaultPalette();
         ShowAxesByDefault = _settingsService.GetShowAxesByDefault();
         UseSmoothColoringByDefault = _settingsService.GetUseSmoothColoringByDefault();
         DefaultAntialiasingLevel = _settingsService.GetDefaultAntialiasingLevel();
+        _isInitializing = false;
     }
 
     /// <summary>

@@ -126,4 +126,15 @@ public interface IAppSettingsService
     /// Saves the default antialiasing level.
     /// </summary>
     void SetDefaultAntialiasingLevel(string level);
+
+    /// <summary>
+    /// Gets the saved properties panel tab index, or null if not previously saved.
+    /// Used to restore which tab was selected (Parameters, Colors, Render, Settings, etc.).
+    /// </summary>
+    int? GetPropertiesTabIndex();
+
+    /// <summary>
+    /// Saves the properties panel tab index.
+    /// </summary>
+    void SetPropertiesTabIndex(int index);
 }

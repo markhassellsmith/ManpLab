@@ -20,15 +20,20 @@
                 <ResourceDictionary x:Key="Light">
                     <!-- Light theme uses default system brush -->
                     <SolidColorBrush x:Key="SidePanelBackgroundBrush" Color="{ThemeResource LayerFillColorDefault}" />
+                    <SolidColorBrush x:Key="CommandBarBackground" Color="{ThemeResource LayerFillColorDefault}" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <!-- Dark theme uses much darker gray - RGB(18, 18, 18) -->
                     <SolidColorBrush x:Key="SidePanelBackgroundBrush" Color="#121212" />
+                    <SolidColorBrush x:Key="CommandBarBackground" Color="#1E1E1E" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Default">
                     <!-- System theme uses default -->
                     <SolidColorBrush x:Key="SidePanelBackgroundBrush" Color="{ThemeResource LayerFillColorDefault}" />
+                    <SolidColorBrush x:Key="CommandBarBackground" Color="{ThemeResource LayerFillColorDefault}" />
                 </ResourceDictionary>
+
+                <!-- Ocean Blue theme moved to Themes/OceanBlue.xaml - loaded dynamically -->
             </ResourceDictionary.ThemeDictionaries>
 
             <!-- Other app resources here -->

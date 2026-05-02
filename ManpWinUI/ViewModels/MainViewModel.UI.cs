@@ -189,6 +189,17 @@ public partial class MainViewModel
     }
 
     /// <summary>
+    /// Selected tab index in the properties panel TabView (0=Parameters, 1=Colors, 2=Render, 3=Info, 4=Bookmarks, 5=History, 6=Settings).
+    /// </summary>
+    [ObservableProperty]
+    private int selectedPropertiesTabIndex = 0;
+
+    partial void OnSelectedPropertiesTabIndexChanged(int value)
+    {
+        _settingsService.SetPropertiesTabIndex(value);
+    }
+
+    /// <summary>
     /// Browser panel width in pixels.
     /// </summary>
     [ObservableProperty]
@@ -257,5 +268,8 @@ public partial class MainViewModel
         // Restore sizes (with fallback to defaults)
         BrowserPanelWidth = _settingsService.GetBrowserPanelWidth() ?? 250.0;
         PropertiesPanelWidth = _settingsService.GetPropertiesPanelWidth() ?? 300.0;
+
+        // Restore selected tab index (default to 0 = Parameters)
+        SelectedPropertiesTabIndex = _settingsService.GetPropertiesTabIndex() ?? 0;
     }
 }
