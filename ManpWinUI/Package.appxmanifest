@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -15,7 +15,7 @@
   <mp:PhoneIdentity PhoneProductId="6335fa26-c01e-4e88-b714-effc8096fc01" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>ManpWinUI</DisplayName>
+    <DisplayName>ManpLab - Fractal Explorer</DisplayName>
     <PublisherDisplayName>User Name</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -35,7 +35,7 @@
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
         DisplayName="ManpWinUI"
-        Description="ManpWinUI"
+        Description="ManpLab - Fractal Explorer"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">

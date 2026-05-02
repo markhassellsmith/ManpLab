@@ -165,6 +165,9 @@ namespace ManpWinUI
 
             _ = rootFrame.Navigate(typeof(MainPage), e.Arguments);
 
+            // Set window title
+            window.Title = "ManpLab - Fractal Explorer";
+
             // Subscribe to window close event to save navigation history
             window.Closed += OnWindowClosed;
 
