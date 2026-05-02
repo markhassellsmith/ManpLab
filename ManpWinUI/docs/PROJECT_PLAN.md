@@ -1,8 +1,164 @@
 # ManpLab Production Plan
 
 **Vision**: Expose all 240+ C++ fractals through a modern WinUI 3 interface  
-**Timeline**: 12 weeks to production release  
+**Original Timeline**: 12 weeks to production release  
+**Updated Delivery Target**: May 31, 2026 (29 days from May 2)  
 **Architecture**: Keep C++ for computation, WinUI for interface
+
+---
+
+# 🚀 FINAL SPRINT ROADMAP (May 2 - May 31, 2026)
+
+## 🎯 Strategy: Early Integration, Iterative Expansion
+
+**Current Status (May 2):** Architecture complete, Mandelbrot/Julia working, 240+ fractals in native library awaiting UI integration
+
+**Goal:** Get all fractals rendering through the UI by early May, then scale up systematically.
+
+---
+
+## **Week 1: May 2-8 (7 days) - FOUNDATION & PROOF OF CONCEPT**
+
+### **Days 1-2 (May 2-3): Browser-Registry Integration**
+**Priority: CRITICAL**
+- Connect FractalBrowserViewModel to FractalRegistryWrapper
+- Load fractal list from native library into Browser UI
+- Display fractal names, categories, descriptions in the browser panel
+- **Deliverable:** See all 240+ fractals listed in the Browser
+
+### **Days 3-4 (May 4-5): First 5 Fractals Working**
+**Priority: CRITICAL**
+- Pick 5 diverse fractals (different parameter sets)
+- Map parameters from FractalRegistry to MainViewModel
+- Wire up "Select Fractal" from Browser → Render
+- **Deliverable:** 5 fractals fully rendering from Browser selection
+
+### **Day 5 (May 6): Testing & Parameter Framework**
+- Test the 5 fractals thoroughly
+- Identify common parameter patterns
+- Create parameter mapping abstraction layer
+- **Deliverable:** Reusable pattern for adding more fractals
+
+### **Days 6-7 (May 7-8): Scale to 20 Fractals**
+- Apply the pattern to add 15 more fractals
+- Test rendering, zoom, Julia modes
+- Fix bugs discovered during expansion
+- **Deliverable:** 20 fractals working end-to-end
+
+---
+
+## **Week 2: May 9-15 (7 days) - RAPID EXPANSION**
+
+### **Days 8-10 (May 9-11): Add 60 Fractals (Total: 80)**
+- Focus on speed: 20 fractals/day
+- Group by category for efficiency
+- Automated testing where possible
+- Log any fractals that need special handling
+
+### **Days 11-13 (May 12-14): Add 80 Fractals (Total: 160)**
+- Continue systematic integration
+- Track problem fractals separately
+- Build a "known issues" list
+- **Deliverable:** 2/3 of fractals integrated
+
+### **Day 14 (May 15): Mid-Project Testing & Fixes**
+- Comprehensive testing of 160 fractals
+- Fix critical bugs
+- Performance profiling
+- Update roadmap based on findings
+
+---
+
+## **Week 3: May 16-22 (7 days) - COMPLETION & STABILITY**
+
+### **Days 15-17 (May 16-18): Complete Remaining 80+ Fractals**
+- Final push to 240+ fractals
+- Handle edge cases and special fractals
+- Document any limitations
+- **Deliverable:** All fractals integrated
+
+### **Days 18-19 (May 19-20): Bug Bash & Stabilization**
+- Fix crashes, rendering glitches
+- Optimize slow fractals
+- Memory leak testing
+- Error handling improvements
+
+### **Days 20-21 (May 21-22): User Testing**
+- Walk through all major workflows
+- Test bookmarks, export, navigation
+- Verify keyboard shortcuts
+- Check theme switching
+
+---
+
+## **Week 4: May 23-29 (7 days) - POLISH & PACKAGING**
+
+### **Days 22-23 (May 23-24): Documentation**
+- Update README.md
+- Create user guide (basic)
+- In-app help text (if time)
+- Developer notes for future work
+
+### **Days 24-25 (May 25-26): Packaging & Distribution**
+- MSIX package refinement
+- Test installation on clean machine
+- Create release notes
+- Version numbering (v1.0)
+
+### **Days 26-27 (May 27-28): Final Polish**
+- UI tweaks based on testing
+- Performance optimization
+- Fix remaining minor bugs
+- Code cleanup
+
+### **Day 28 (May 29): Release Candidate**
+- Final build
+- Complete testing pass
+- Sign off on release
+
+---
+
+## **Buffer Days: May 30-31 (2 days) - SAFETY NET**
+- Handle unexpected issues
+- Last-minute fixes
+- Deployment preparation
+- **Final delivery: May 31**
+
+---
+
+## 🚨 Risk Mitigation
+
+**High Risk Items:**
+1. **Parameter mapping complexity** - Mitigated by testing 5 fractals first
+2. **Rendering failures** - Caught early with incremental testing
+3. **Performance issues** - Weekly profiling and optimization
+
+**Scope Control:**
+- ❌ **Cut:** Advanced features, icon polish, animations, video export
+- ✅ **Keep:** Core fractal rendering, bookmarks, export, browser
+- 🟡 **Optional:** Enhanced documentation, additional themes
+
+---
+
+## 📊 Success Metrics by Week
+
+- **Week 1 (May 2-8):** 20 fractals working → **Proof of concept success**
+- **Week 2 (May 9-15):** 160 fractals integrated → **On track**
+- **Week 3 (May 16-22):** All 240+ fractals + stable → **Feature complete**
+- **Week 4 (May 23-29):** Packaged & tested → **Ship ready**
+- **May 30-31:** Buffer for unexpected issues → **Launch v1.0**
+
+---
+
+## 🎯 Immediate Next Steps (Starting May 3)
+
+1. Wire up FractalBrowserViewModel to FractalRegistryWrapper
+2. Display the full fractal list in the UI
+3. Select first 5 test fractals for proof of concept
+
+---
+
+# ORIGINAL 12-WEEK PLAN (Historical Reference)
 
 ---
 
