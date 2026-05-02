@@ -6,6 +6,18 @@
 
 ---
 
+## Repository Structure Notes
+
+**Solution Files:**
+- ✅ `ManpLab.sln` - Main solution (use this)
+- ❌ `ManpWIN64.sln` - DELETED (legacy, redundant)
+- ❌ `ManpWinUI.slnx` - DELETED (XML format, not needed)
+- ✅ `MPEG/mpeg.sln` - **KEEP** - Required for animation video export (Week 10)
+
+**MPEG Encoder:** The `MPEG/` folder contains Paul DeLeeuw's MPEG-2 encoder used by `ManpWIN64/MPEGWrite.cpp` for exporting fractal animations to video. This will be used in Week 10 and can be modernized post-release.
+
+---
+
 ## Quick Overview
 
 ```
@@ -258,9 +270,38 @@ Save locations, navigation undo/redo
 - Enhanced status bar
 
 ### Week 10: Animation System
-- Animation builder dialog
-- Frame interpolation
-- Batch export
+**Build UI for creating fractal animations and export to video**
+
+Features:
+- Animation builder dialog (keyframe editor UI)
+- Frame interpolation (leverage existing BatchRenderer with 5 modes)
+- Batch export to image sequences
+- Video export integration
+
+**🎬 Video Export Architecture:**
+
+Current State:
+- ✅ `BatchRenderer` (Week 3) provides frame generation infrastructure
+- ✅ Legacy `MPEG/` folder contains working MPEG-2 encoder from Paul DeLeeuw
+- ✅ `ManpWIN64/MPEGWrite.cpp` provides integration interface
+- ✅ `ManpWIN64/anim.h` defines animation frame structures
+
+**Recommended Approach:**
+
+**Phase 1 (Week 10 MVP):** Use existing MPEG-2 encoder
+- Wrap `MPEGWrite.cpp` functionality in C++/CLI bridge
+- Export animation frames via `BatchRenderer` → MPEG-2 file
+- Pros: Proven, already integrated, unblocks animation feature
+- Cons: MPEG-2 is outdated, large file sizes
+
+**Phase 2 (Post-Release Enhancement):** Modernize to MP4/H.264
+- Replace MPEG-2 with Windows Media Foundation or FFmpeg wrapper
+- Smaller file sizes, better browser/device compatibility
+- Keep `mpeg.sln` as reference but can be archived after migration
+
+**Decision Point:** Keep `MPEG/` folder until video modernization is complete.
+
+**Note:** The MPEG project (`mpeg.sln`) should NOT be deleted - it's required for animation video export functionality.
 
 ---
 
