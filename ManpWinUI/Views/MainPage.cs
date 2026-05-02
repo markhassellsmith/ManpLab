@@ -122,6 +122,7 @@ namespace ManpWinUI.Views
         /// Week 5 Task 6: Load selected fractal with default view parameters.
         /// Week 6 Task 2: Load parameters in ParameterEditorViewModel.
         /// Task 3: Use cached metadata service instead of direct P/Invoke.
+        /// Task 7: Use flexible parameter system when available.
         /// </summary>
         private void OnFractalSelected(object? sender, ViewModels.Browser.FractalSelectedEventArgs e)
         {
@@ -143,8 +144,27 @@ namespace ManpWinUI.Views
             // Set the current visualization name from the browser
             ViewModel.CurrentVisualizationName = metadata.DisplayName;
 
-            // Week 6 Task 2: Load parameters in ParameterEditor
-            ParameterEditorViewModel.LoadParametersForFractal(e.Fractal.Name);
+            // ═════════════════════════════════════════════════════════════════════════
+            // TASK 7: Load parameter editor from flexible parameter system
+            // ═════════════════════════════════════════════════════════════════════════
+            if (ViewModel.CurrentParameters != null)
+            {
+                Debug.WriteLine($"[MainPage] Loading parameter editor from flexible system ({ViewModel.CurrentParameters.Parameters.Count} parameters)");
+                ParameterEditorViewModel.LoadFromParameterSet(ViewModel.CurrentParameters);
+
+                // Subscribe to parameter changes for MainViewModel sync
+                if (ViewModel.CurrentParameters != null)
+                {
+                    ViewModel.CurrentParameters.ParameterChanged -= OnFlexibleParameterChanged;
+                    ViewModel.CurrentParameters.ParameterChanged += OnFlexibleParameterChanged;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[MainPage] Using legacy parameter loading (CurrentParameters is null)");
+                // Fallback to old method
+                ParameterEditorViewModel.LoadParametersForFractal(e.Fractal.Name);
+            }
 
             // Auto-render the selected fractal
             ViewModel.StatusMessage = $"Loading {metadata.DisplayName}...";
@@ -178,6 +198,20 @@ namespace ManpWinUI.Views
 
             // Trigger re-render with updated parameters
             _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>
+        /// Handle parameter changes from flexible parameter system (Task 7).
+        /// Parameters change in MainViewModel → update ParameterEditor UI.
+        /// </summary>
+        private void OnFlexibleParameterChanged(object? sender, ManpWinUI.Models.Parameters.ParameterChangedEventArgs e)
+        {
+            Debug.WriteLine($"[MainPage] Flexible parameter '{e.ParameterKey}' changed: {e.OldValue} → {e.NewValue}");
+
+            // Parameter system already updated MainViewModel properties via bidirectional sync
+            // No need to manually sync - just refresh parameter editor display if needed
+
+            // Future: Could implement real-time UI updates here if ParameterEditor needs refresh
         }
 
         /// <summary>
