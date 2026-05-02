@@ -52,12 +52,22 @@
         <None Remove="ManpWinUI.slnx" />
     </ItemGroup>
 
+    <ItemGroup>
+      <!-- Ocean Blue Theme: Loaded dynamically, not compiled as Page -->
+      <Content Include="Themes\OceanBlue.xaml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
     <!-- Week 7: Color and Render Settings Views -->
     <ItemGroup>
       <Page Update="Views\Properties\ColorEditorView.xaml">
         <Generator>MSBuild:Compile</Generator>
       </Page>
       <Page Update="Views\Properties\RenderSettingsView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
+      <Page Update="Views\Settings\SettingsView.xaml">
         <Generator>MSBuild:Compile</Generator>
       </Page>
     </ItemGroup>
@@ -123,6 +133,9 @@
         <ProjectCapability Include="Msix" />
     </ItemGroup>
     <ItemGroup>
+      <None Update="Themes\OceanBlue.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </None>
       <None Update="Views\Canvas\FractalCanvasView.xaml">
         <Generator>MSBuild:Compile</Generator>
       </None>
@@ -133,6 +146,9 @@
         <Generator>MSBuild:Compile</Generator>
       </None>
       <None Update="Views\Properties\RenderSettingsView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </None>
+      <None Update="Views\Settings\SettingsView.xaml">
         <Generator>MSBuild:Compile</Generator>
       </None>
     </ItemGroup>

@@ -8,6 +8,7 @@ using ManpCore.Services.Color;
 using Serilog;
 using System;
 using System.IO;
+using Microsoft.UI.Xaml;
 
 namespace ManpWinUI
 {
@@ -18,6 +19,7 @@ namespace ManpWinUI
     {
         private Window? window;
         private readonly IServiceProvider _serviceProvider;
+        private ResourceDictionary? _customThemeDict; // Track loaded custom theme
 
         /// <summary>
         /// Gets the current App instance as a strongly-typed object.
@@ -136,10 +138,28 @@ namespace ManpWinUI
         {
             window ??= new Window();
 
+            // Get settings service for theme configuration
+            var settingsService = _serviceProvider.GetRequiredService<IAppSettingsService>();
+
             if (window.Content is not Frame rootFrame)
             {
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
+
+                // Apply saved theme BEFORE setting window content to avoid double-initialization
+                var themeName = settingsService.GetTheme();
+
+                // Handle custom themes
+                if (themeName == "Ocean Blue")
+                {
+                    LoadCustomTheme("ms-appx:///Themes/OceanBlue.xaml");
+                    rootFrame.RequestedTheme = ElementTheme.Light;
+                }
+                else
+                {
+                    rootFrame.RequestedTheme = ThemeNameToElementTheme(themeName);
+                }
+
                 window.Content = rootFrame;
             }
 
@@ -150,7 +170,7 @@ namespace ManpWinUI
 
             window.Activate();
 
-            Log.Information("ManpWinUI window activated");
+            Log.Information("ManpWinUI window activated with theme: {Theme}", settingsService.GetTheme());
         }
 
         /// <summary>
@@ -186,6 +206,141 @@ namespace ManpWinUI
         {
             Log.Error("Navigation failed to {PageType}", e.SourcePageType.FullName);
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // THEME SUPPORT
+        // ═══════════════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Applies the saved theme preference to the application window.
+        /// Supports custom themes (Ocean Blue) via dynamic resource dictionary loading.
+        /// Forces a complete UI refresh to ensure theme changes are visible.
+        /// Preserves properties panel visibility and selected tab to ensure smooth UX during theme changes.
+        /// </summary>
+        public void ApplyTheme()
+        {
+            if (window == null)
+                return;
+
+            try
+            {
+                var settingsService = _serviceProvider.GetRequiredService<IAppSettingsService>();
+                var themeName = settingsService.GetTheme();
+
+                // Save the current properties panel state before reloading
+                // This ensures the panel reopens to the same tab after theme change for a smoother experience
+                bool wasPropertiesPanelVisible = settingsService.GetPropertiesPanelVisible();
+                int? currentTabIndex = settingsService.GetPropertiesTabIndex();
+
+                // If the properties panel is currently visible, ensure it stays open after reload
+                // and preserve the selected tab index (especially important for Settings tab)
+                if (wasPropertiesPanelVisible)
+                {
+                    settingsService.SetPropertiesPanelVisible(true);
+                    if (currentTabIndex.HasValue)
+                    {
+                        settingsService.SetPropertiesTabIndex(currentTabIndex.Value);
+                    }
+                }
+
+                if (window.Content is Frame rootFrame)
+                {
+                    // Handle custom themes (Ocean Blue)
+                    if (themeName == "Ocean Blue")
+                    {
+                        // Unload any previous custom theme first
+                        UnloadCustomTheme();
+
+                        // Load custom theme resources
+                        LoadCustomTheme("ms-appx:///Themes/OceanBlue.xaml");
+
+                        // Use Light as base for custom themes
+                        rootFrame.RequestedTheme = ElementTheme.Light;
+                    }
+                    else
+                    {
+                        // Unload any custom theme first
+                        UnloadCustomTheme();
+
+                        // Apply built-in theme
+                        var elementTheme = ThemeNameToElementTheme(themeName);
+                        rootFrame.RequestedTheme = elementTheme;
+                    }
+
+                    // Force complete UI refresh by recreating the Frame
+                    // This is the only reliable way to make WinUI 3 re-evaluate all ThemeResource bindings
+                    var newFrame = new Frame
+                    {
+                        RequestedTheme = rootFrame.RequestedTheme
+                    };
+                    newFrame.NavigationFailed += OnNavigationFailed;
+
+                    window.Content = newFrame;
+                    newFrame.Navigate(typeof(MainPage));
+
+                    Log.Information("Applied theme: {Theme} (Properties panel will reopen: {PanelState}, Tab index: {TabIndex})", 
+                        themeName, wasPropertiesPanelVisible, currentTabIndex ?? 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to apply theme");
+            }
+        }
+
+        /// <summary>
+        /// Loads a custom theme dictionary from the specified URI.
+        /// </summary>
+        private void LoadCustomTheme(string uri)
+        {
+            try
+            {
+                // Unload previous custom theme if any
+                UnloadCustomTheme();
+
+                // Create and load new custom theme
+                _customThemeDict = new ResourceDictionary { Source = new Uri(uri) };
+
+                // Add at the END so it takes precedence (WinUI evaluates merged dictionaries in reverse order)
+                Application.Current.Resources.MergedDictionaries.Add(_customThemeDict);
+
+                Log.Information("Loaded custom theme from {Uri}", uri);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to load custom theme from {Uri}", uri);
+                _customThemeDict = null;
+            }
+        }
+
+        /// <summary>
+        /// Unloads the currently loaded custom theme dictionary.
+        /// </summary>
+        private void UnloadCustomTheme()
+        {
+            if (_customThemeDict != null)
+            {
+                Application.Current.Resources.MergedDictionaries.Remove(_customThemeDict);
+                _customThemeDict = null;
+                Log.Information("Unloaded custom theme");
+            }
+        }
+
+        /// <summary>
+        /// Converts a theme name string to an ElementTheme enum value.
+        /// For custom themes like Ocean Blue, we use Default and rely on custom ResourceDictionary.
+        /// </summary>
+        private static ElementTheme ThemeNameToElementTheme(string themeName)
+        {
+            return themeName switch
+            {
+                "Light" => ElementTheme.Light,
+                "Dark" => ElementTheme.Dark,
+                "Ocean Blue" => ElementTheme.Default, // Uses custom ResourceDictionary
+                "System" => ElementTheme.Default,
+                _ => ElementTheme.Default
+            };
         }
     }
 }

@@ -68,12 +68,6 @@
                         <GenerateDebugInformation>true</GenerateDebugInformation>
                         <AssemblyDebug>true</AssemblyDebug>
                       </Link>
-                      <PostBuildEvent>
-                        <Command>if not exist "$(ProjectDir)..\x64\$(Configuration)\" mkdir "$(ProjectDir)..\x64\$(Configuration)\"
-                xcopy /Y "$(TargetPath)" "$(ProjectDir)..\x64\$(Configuration)\"
-                if exist "$(TargetDir)$(TargetName).pdb" xcopy /Y "$(TargetDir)$(TargetName).pdb" "$(ProjectDir)..\x64\$(Configuration)\"</Command>
-                        <Message>Copying $(TargetFileName) to solution x64\$(Configuration) directory</Message>
-                      </PostBuildEvent>
                     </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
