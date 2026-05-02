@@ -56,6 +56,26 @@ FractalCalculator FractalRegistry::GetCalculator(const std::string& name)
     return nullptr;
 }
 
+double FractalRegistry::Calculate(
+    const std::string& fractalName,
+    ComplexD c,
+    int maxIter,
+    bool isJulia,
+    ComplexD juliaC,
+    const ParamMap& params)
+{
+    const FractalSpec* spec = GetSpec(fractalName);
+
+    if (spec && spec->calculator)
+    {
+        // Call the calculator entirely in native code - no boundary crossing
+        return spec->calculator(c, maxIter, isJulia, juliaC, params);
+    }
+
+    // Fallback: return max iterations (point is in the set)
+    return static_cast<double>(maxIter);
+}
+
 bool FractalRegistry::IsRegistered(const std::string& name)
 {
     return GetSpec(name) != nullptr;
@@ -128,6 +148,10 @@ extern void RegisterPhoenixFamily();
 extern void RegisterMultibrotFamily();
 extern void RegisterNewtonFamily();
 extern void RegisterMagnetFamily();
+extern void RegisterClassicEscapeTimeFamily();  // Lambda, Manowar, Sierpinski, etc.
+extern void RegisterBarnsleyFamily();           // Barnsley M1/J1/M2/J2/M3/J3
+extern void RegisterSpecialExoticFamily();      // Hailstone, Buddhabrot, Lyapunov, etc.
+extern void RegisterAttractors3DFamily();       // Lorenz, Rossler, Henon, Chua, etc.
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -135,14 +159,18 @@ void FractalRegistry::InitializeBuiltins()
         return;
 
     // Register all built-in fractal families
-    RegisterMandelbrotFamily();      // Mandelbrot + 3 Julia presets = 4
-    RegisterBurningShipFamily();     // Burning Ship = 1
-    RegisterTricornFamily();         // Tricorn = 1
-    RegisterPhoenixFamily();         // Phoenix = 1
-    RegisterMultibrotFamily();       // Multibrot 3,4,5 = 3
-    RegisterNewtonFamily();          // Newton, Nova = 2
-    RegisterMagnetFamily();          // Magnet I, II = 2
-    // Total: 14 fractals
+    RegisterMandelbrotFamily();         // Mandelbrot + 3 Julia presets = 4
+    RegisterBurningShipFamily();        // Burning Ship = 1
+    RegisterTricornFamily();            // Tricorn = 1
+    RegisterPhoenixFamily();            // Phoenix = 1
+    RegisterMultibrotFamily();          // Multibrot 3,4,5 = 3
+    RegisterNewtonFamily();             // Newton, Nova = 2
+    RegisterMagnetFamily();             // Magnet I, II = 2
+    RegisterClassicEscapeTimeFamily();  // Lambda, Manowar, Sierpinski, Unity, Spider, Tetrate, etc. = 8
+    RegisterBarnsleyFamily();           // Barnsley M1/J1/M2/J2/M3/J3 = 6
+    RegisterSpecialExoticFamily();      // Hailstone, NumFractal, Buddhabrot, Lyapunov, Popcorn, Mandelbar, Thorn, Tetration = 8
+    RegisterAttractors3DFamily();       // Lorenz, Rossler, Henon, Pickover, Gingerbread, Chua, Ikeda, Hopalong = 8
+    // Total: 44 fractals
 
     s_initialized = true;
 }

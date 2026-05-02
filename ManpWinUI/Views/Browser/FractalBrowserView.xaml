@@ -54,7 +54,7 @@
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:FractalNode">
                                         <Button Content="{x:Bind DisplayName}"
-                                                Command="{Binding ElementName=BrowserViewRoot, Path=ViewModel.SelectFractalCommand}"
+                                                Command="{Binding SelectFractalCommand}"
                                                 CommandParameter="{x:Bind}"
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Left"

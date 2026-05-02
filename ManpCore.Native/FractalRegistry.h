@@ -125,6 +125,16 @@ public:
     // Get calculator function only (lightweight)
     static FractalCalculator GetCalculator(const std::string& name);
 
+    // Calculate a single point (pure native, no std::function crossing boundary)
+    // Use this from C++/CLI instead of GetCalculator() to avoid marshaling issues
+    static double Calculate(
+        const std::string& fractalName,
+        ComplexD c,
+        int maxIter,
+        bool isJulia,
+        ComplexD juliaC,
+        const ParamMap& params);
+
     // Get all registered fractal names
     static std::vector<std::string> GetRegisteredNames();
 

@@ -68,6 +68,12 @@ public partial class MainViewModel
         // Allow higher values for very deep zooms into nodules and mini-brots
         if (value < 50) MaxIterations = 50;
         if (value > 50000) MaxIterations = 50000;
+
+        // TASK 5: Sync to parameter system
+        if (UseParameterSystem && CurrentParameters != null)
+        {
+            SetParameter("max_iterations", value);
+        }
     }
 
     partial void OnSelectedIterationModeChanged(string value)
@@ -87,6 +93,12 @@ public partial class MainViewModel
 
         // Ensure render command updates its CanExecute state
         RenderMandelbrotCommand.NotifyCanExecuteChanged();
+
+        // TASK 5: Sync to parameter system
+        if (UseParameterSystem && CurrentParameters != null)
+        {
+            SetParameter("julia_mode", value == "Julia");
+        }
     }
 
     partial void OnZoomChanged(double value)
@@ -99,16 +111,34 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(CurrentViewHeight));
 
         System.Diagnostics.Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
+
+        // TASK 5: Sync to parameter system
+        if (UseParameterSystem && CurrentParameters != null)
+        {
+            SetParameter("zoom", value);
+        }
     }
 
     partial void OnCenterXChanged(double value)
     {
         System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
+
+        // TASK 5: Sync to parameter system
+        if (UseParameterSystem && CurrentParameters != null)
+        {
+            SetParameter("center_x", value);
+        }
     }
 
     partial void OnCenterYChanged(double value)
     {
         System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
+
+        // TASK 5: Sync to parameter system
+        if (UseParameterSystem && CurrentParameters != null)
+        {
+            SetParameter("center_y", value);
+        }
     }
 
     partial void OnImageWidthChanged(int value)

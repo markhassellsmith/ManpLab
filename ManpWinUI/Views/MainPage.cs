@@ -17,6 +17,8 @@ namespace ManpWinUI.Views
         private ParameterEditorViewModel ParameterEditorViewModel { get; }
         private ColorEditorViewModel ColorEditorViewModel { get; }
         private RenderSettingsViewModel RenderSettingsViewModel { get; }
+        private ViewModels.Browser.FractalBrowserViewModel BrowserViewModel { get; } // Task 2: Inject browser ViewModel
+        private IFractalMetadataService MetadataService { get; } // Task 3: Cached metadata service
 
         private bool _isDragging;
         private bool _isPanning; // Track if we're panning (right-click) vs zooming (left-click)
@@ -31,6 +33,12 @@ namespace ManpWinUI.Views
             // Get ViewModel from DI container
             ViewModel = App.Current.Services.GetRequiredService<MainViewModel>();
             DataContext = ViewModel;
+
+            // Task 2: Get BrowserViewModel from DI container
+            BrowserViewModel = App.Current.Services.GetRequiredService<ViewModels.Browser.FractalBrowserViewModel>();
+
+            // Task 3: Get MetadataService from DI container
+            MetadataService = App.Current.Services.GetRequiredService<IFractalMetadataService>();
 
             // Get settings service from DI container
             var settingsService = App.Current.Services.GetRequiredService<IAppSettingsService>();
@@ -59,8 +67,10 @@ namespace ManpWinUI.Views
             RenderSettingsViewModel.RenderModeChanged += OnRenderModeChanged;
             RenderSettingsViewModel.RenderSettingsChanged += OnRenderSettingsChanged;
 
-            // Subscribe to browser fractal selection (Week 5 Task 6)
-            BrowserView.ViewModel.FractalSelected += OnFractalSelected;
+            // Task 2: Set BrowserView's ViewModel and subscribe to fractal selection
+            BrowserView.ViewModel = BrowserViewModel;
+            BrowserView.DataContext = BrowserViewModel;
+            BrowserViewModel.FractalSelected += OnFractalSelected;
 
             // Initialize ViewModel asynchronously
             _ = InitializeViewModelAsync();
@@ -111,6 +121,7 @@ namespace ManpWinUI.Views
         /// Handle fractal selection from browser.
         /// Week 5 Task 6: Load selected fractal with default view parameters.
         /// Week 6 Task 2: Load parameters in ParameterEditorViewModel.
+        /// Task 3: Use cached metadata service instead of direct P/Invoke.
         /// </summary>
         private void OnFractalSelected(object? sender, ViewModels.Browser.FractalSelectedEventArgs e)
         {
@@ -119,29 +130,24 @@ namespace ManpWinUI.Views
 
             Debug.WriteLine($"[MainPage] Loading fractal: {e.Fractal.Name}");
 
-            // Get fractal metadata from registry
-            var fractalInfo = ManpCore.Native.FractalRegistryWrapper.GetFractalInfo(e.Fractal.Name);
-            if (fractalInfo == null)
-            {
-                ViewModel.StatusMessage = $"Error: Fractal '{e.Fractal.Name}' not found in registry";
-                return;
-            }
+            // Task 3: Get fractal metadata from cache (no P/Invoke!)
+            var metadata = MetadataService.GetFractalOrDefault(e.Fractal.Name);
 
             // Update ViewModel with fractal selection and default view
-            ViewModel.SelectedFractalType = e.Fractal.Name;
-            ViewModel.CenterX = fractalInfo.DefaultCenterX;
-            ViewModel.CenterY = fractalInfo.DefaultCenterY;
-            ViewModel.Zoom = fractalInfo.DefaultZoom;
+            ViewModel.SelectedFractalType = metadata.Name;
+            ViewModel.CenterX = metadata.DefaultCenterX;
+            ViewModel.CenterY = metadata.DefaultCenterY;
+            ViewModel.Zoom = metadata.DefaultZoom;
             ViewModel.SelectedIterationMode = "Standard"; // Reset to standard mode when switching fractals
 
             // Set the current visualization name from the browser
-            ViewModel.CurrentVisualizationName = fractalInfo.DisplayName;
+            ViewModel.CurrentVisualizationName = metadata.DisplayName;
 
             // Week 6 Task 2: Load parameters in ParameterEditor
             ParameterEditorViewModel.LoadParametersForFractal(e.Fractal.Name);
 
             // Auto-render the selected fractal
-            ViewModel.StatusMessage = $"Loading {fractalInfo.DisplayName}...";
+            ViewModel.StatusMessage = $"Loading {metadata.DisplayName}...";
             _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
         }
 

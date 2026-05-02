@@ -22,6 +22,7 @@ namespace ManpWinUI.ViewModels;
 /// - MainViewModel.UI.cs: UI state, visual settings, fractal type selection
 /// - MainViewModel.Rendering.cs: Image resolution, render state, fractal image output
 /// - MainViewModel.StandardFractals.cs: Mandelbrot/Julia parameters
+/// - MainViewModel.Parameters.cs: Flexible parameter system integration (Task 5)
 /// - MainViewModel.Hailstone.cs: Hailstone sequence parameters
 /// - MainViewModel.Bookmarks.cs: Bookmark management
 /// - MainViewModel.Commands.cs: Rendering commands (Mandelbrot, Hailstone)
@@ -34,7 +35,8 @@ public partial class MainViewModel(
     INavigationHistoryService navigationHistoryService,
     IHailstoneService hailstoneService,
     IHailstoneRenderService hailstoneRenderService,
-    IAppSettingsService settingsService) : ObservableObject
+    IAppSettingsService settingsService,
+    IFractalParameterService fractalParameterService) : ObservableObject
 {
     // ═══════════════════════════════════════════════════════════════════════════════
     // SERVICE DEPENDENCIES
@@ -47,6 +49,7 @@ public partial class MainViewModel(
     private readonly IHailstoneService _hailstoneService = hailstoneService;
     private readonly IHailstoneRenderService _hailstoneRenderService = hailstoneRenderService;
     private readonly IAppSettingsService _settingsService = settingsService;
+    private readonly IFractalParameterService _fractalParameterService = fractalParameterService;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // INITIALIZATION

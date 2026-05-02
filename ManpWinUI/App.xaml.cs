@@ -122,9 +122,12 @@ namespace ManpWinUI
             services.AddSingleton<IBookmarkService, BookmarkService>();
             services.AddSingleton<INavigationHistoryService, NavigationHistoryService>();
             services.AddSingleton<IAppSettingsService, AppSettingsService>();
+            services.AddSingleton<IFractalParameterService, FractalParameterService>(); // Task 1: Flexible parameter system
+            services.AddSingleton<IFractalMetadataService, FractalMetadataService>(); // Task 3: Metadata caching
 
             // ViewModels
             services.AddTransient<MainViewModel>();
+            services.AddSingleton<ViewModels.Browser.FractalBrowserViewModel>(); // Task 2: Fix DI pattern
 
             return services.BuildServiceProvider();
         }
@@ -174,6 +177,39 @@ namespace ManpWinUI
             window.Activate();
 
             Log.Information("ManpWinUI window activated with theme: {Theme}", settingsService.GetTheme());
+
+            // Initialize services (Tasks 1 & 3)
+            _ = InitializeServicesAsync();
+        }
+
+        /// <summary>
+        /// Initialize services that require async loading after app startup.
+        /// Tasks 1 & 3: Parameter system and metadata caching.
+        /// </summary>
+        private async System.Threading.Tasks.Task InitializeServicesAsync()
+        {
+            try
+            {
+                // Task 3: Initialize metadata cache first (required for parameter service)
+                var metadataService = _serviceProvider.GetService<IFractalMetadataService>();
+                if (metadataService != null)
+                {
+                    await metadataService.InitializeAsync();
+                    Log.Information("FractalMetadataService initialized with {Count} fractals", metadataService.Count);
+                }
+
+                // Task 1: Initialize parameter service
+                var paramService = _serviceProvider.GetService<IFractalParameterService>();
+                if (paramService != null)
+                {
+                    await paramService.InitializeAsync();
+                    Log.Information("FractalParameterService initialized");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to initialize services");
+            }
         }
 
         /// <summary>

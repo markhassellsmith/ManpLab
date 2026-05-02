@@ -51,6 +51,12 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial string SelectedFractalType { get; set; } = "Mandelbrot";
 
+    partial void OnSelectedFractalTypeChanging(string value)
+    {
+        System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanging] ABOUT TO CHANGE from '{SelectedFractalType}' to '{value}'");
+        System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanging] Caller:\n{Environment.StackTrace}");
+    }
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // COORDINATE AXES & VISUAL TOGGLES
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -95,6 +101,7 @@ public partial class MainViewModel
     partial void OnSelectedFractalTypeChanged(string value)
     {
         System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanged] Fractal type changed to: {value}");
+        System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanged] Stack trace:\n{Environment.StackTrace}");
 
         // Notify that computed properties have changed
         OnPropertyChanged(nameof(IsHailstoneMode));
@@ -117,7 +124,13 @@ public partial class MainViewModel
         FractalImage = null;
         StatusMessage = $"Switched to {value} - Click Render to generate";
 
+        // ═══════════════════════════════════════════════════════════════════════════
+        // TASK 5: Initialize flexible parameter system for this fractal type
+        // ═══════════════════════════════════════════════════════════════════════════
+        InitializeParametersForFractal(value);
+
         // Set appropriate default view parameters for each fractal type
+        // Only set defaults for specific known types; for others (registry-based), let MainPage set them
         switch (value)
         {
             case "Mandelbrot":
@@ -159,7 +172,17 @@ public partial class MainViewModel
                 HailstoneMaxIterations = 150;
                 StatusMessage = "Hailstone Mode - Click Render to generate sequence";
                 break;
+            default:
+                // For fractals from the registry (Lambda, Tetrate, etc.),
+                // defaults will be set by MainPage.OnFractalSelected from registry metadata
+                System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanged] Using registry defaults for: {value}");
+                break;
         }
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // TASK 5: After defaults are set, sync them to the parameter system
+        // ═══════════════════════════════════════════════════════════════════════════
+        SyncPropertiesToParameters();
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
