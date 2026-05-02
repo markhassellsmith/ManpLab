@@ -16,6 +16,13 @@ public class AppSettingsService : IAppSettingsService
     private const string SelectedFractalKey = "SelectedFractal";
     private const string FractalParametersKeyPrefix = "FractalParams_"; // Week 6 Task 6
 
+    // Application Settings Keys
+    private const string ThemeKey = "AppTheme";
+    private const string DefaultPaletteKey = "DefaultPalette";
+    private const string ShowAxesByDefaultKey = "ShowAxesByDefault";
+    private const string UseSmoothColoringByDefaultKey = "UseSmoothColoringByDefault";
+    private const string DefaultAntialiasingLevelKey = "DefaultAntialiasingLevel";
+
     // Default values
     private const double DefaultBrowserWidth = 250.0;
     private const double DefaultPropertiesWidth = 300.0;
@@ -117,5 +124,79 @@ public class AppSettingsService : IAppSettingsService
     {
         var key = FractalParametersKeyPrefix + fractalName;
         _localSettings.Values[key] = parametersJson;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // APPLICATION SETTINGS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    public string GetTheme()
+    {
+        if (_localSettings.Values.TryGetValue(ThemeKey, out var value) && value is string theme)
+        {
+            return theme;
+        }
+        return "System"; // Default to system theme
+    }
+
+    public void SetTheme(string theme)
+    {
+        _localSettings.Values[ThemeKey] = theme;
+    }
+
+    public string GetDefaultPalette()
+    {
+        if (_localSettings.Values.TryGetValue(DefaultPaletteKey, out var value) && value is string palette)
+        {
+            return palette;
+        }
+        return "Classic"; // Default palette
+    }
+
+    public void SetDefaultPalette(string palette)
+    {
+        _localSettings.Values[DefaultPaletteKey] = palette;
+    }
+
+    public bool GetShowAxesByDefault()
+    {
+        if (_localSettings.Values.TryGetValue(ShowAxesByDefaultKey, out var value) && value is bool show)
+        {
+            return show;
+        }
+        return true; // Default to showing axes
+    }
+
+    public void SetShowAxesByDefault(bool show)
+    {
+        _localSettings.Values[ShowAxesByDefaultKey] = show;
+    }
+
+    public bool GetUseSmoothColoringByDefault()
+    {
+        if (_localSettings.Values.TryGetValue(UseSmoothColoringByDefaultKey, out var value) && value is bool use)
+        {
+            return use;
+        }
+        return false; // Default to standard coloring
+    }
+
+    public void SetUseSmoothColoringByDefault(bool use)
+    {
+        _localSettings.Values[UseSmoothColoringByDefaultKey] = use;
+    }
+
+    public string GetDefaultAntialiasingLevel()
+    {
+        if (_localSettings.Values.TryGetValue(DefaultAntialiasingLevelKey, out var value) && value is string level)
+        {
+            return level;
+        }
+        return "None"; // Default to no antialiasing
+    }
+
+    public void SetDefaultAntialiasingLevel(string level)
+    {
+        _localSettings.Values[DefaultAntialiasingLevelKey] = level;
     }
 }

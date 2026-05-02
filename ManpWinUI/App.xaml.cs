@@ -8,6 +8,7 @@ using ManpCore.Services.Color;
 using Serilog;
 using System;
 using System.IO;
+using Microsoft.UI.Xaml;
 
 namespace ManpWinUI
 {
@@ -136,6 +137,9 @@ namespace ManpWinUI
         {
             window ??= new Window();
 
+            // Apply saved theme before showing the window
+            ApplyTheme();
+
             if (window.Content is not Frame rootFrame)
             {
                 rootFrame = new Frame();
@@ -186,6 +190,50 @@ namespace ManpWinUI
         {
             Log.Error("Navigation failed to {PageType}", e.SourcePageType.FullName);
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════════════
+        // THEME SUPPORT
+        // ═══════════════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Applies the saved theme preference to the application window.
+        /// </summary>
+        public void ApplyTheme()
+        {
+            if (window == null)
+                return;
+
+            try
+            {
+                var settingsService = _serviceProvider.GetRequiredService<IAppSettingsService>();
+                var themeName = settingsService.GetTheme();
+                var elementTheme = ThemeNameToElementTheme(themeName);
+
+                if (window.Content is FrameworkElement rootElement)
+                {
+                    rootElement.RequestedTheme = elementTheme;
+                    Log.Information("Applied theme: {Theme}", themeName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to apply theme");
+            }
+        }
+
+        /// <summary>
+        /// Converts a theme name string to an ElementTheme enum value.
+        /// </summary>
+        private static ElementTheme ThemeNameToElementTheme(string themeName)
+        {
+            return themeName switch
+            {
+                "Light" => ElementTheme.Light,
+                "Dark" => ElementTheme.Dark,
+                "System" => ElementTheme.Default,
+                _ => ElementTheme.Default
+            };
         }
     }
 }

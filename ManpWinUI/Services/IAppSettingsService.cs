@@ -72,4 +72,58 @@ public interface IAppSettingsService
     /// <param name="fractalName">Name of the fractal</param>
     /// <param name="parametersJson">JSON string of parameter values</param>
     void SetFractalParameters(string fractalName, string parametersJson);
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // APPLICATION SETTINGS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Gets the application theme preference (Light, Dark, or System).
+    /// </summary>
+    string GetTheme();
+
+    /// <summary>
+    /// Saves the application theme preference.
+    /// </summary>
+    void SetTheme(string theme);
+
+    /// <summary>
+    /// Gets the default color palette for new fractals.
+    /// </summary>
+    string GetDefaultPalette();
+
+    /// <summary>
+    /// Saves the default color palette.
+    /// </summary>
+    void SetDefaultPalette(string palette);
+
+    /// <summary>
+    /// Gets whether coordinate axes should be shown by default.
+    /// </summary>
+    bool GetShowAxesByDefault();
+
+    /// <summary>
+    /// Saves whether coordinate axes should be shown by default.
+    /// </summary>
+    void SetShowAxesByDefault(bool show);
+
+    /// <summary>
+    /// Gets whether smooth coloring should be enabled by default.
+    /// </summary>
+    bool GetUseSmoothColoringByDefault();
+
+    /// <summary>
+    /// Saves whether smooth coloring should be enabled by default.
+    /// </summary>
+    void SetUseSmoothColoringByDefault(bool use);
+
+    /// <summary>
+    /// Gets the default antialiasing level.
+    /// </summary>
+    string GetDefaultAntialiasingLevel();
+
+    /// <summary>
+    /// Saves the default antialiasing level.
+    /// </summary>
+    void SetDefaultAntialiasingLevel(string level);
 }

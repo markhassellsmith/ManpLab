@@ -10,6 +10,7 @@
     xmlns:models="using:ManpWinUI.Models"
     xmlns:browser="using:ManpWinUI.Views.Browser"
     xmlns:properties="using:ManpWinUI.Views.Properties"
+    xmlns:settings="using:ManpWinUI.Views.Settings"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -156,7 +157,7 @@
             <!-- Left Panel with Browser and Bookmarks Tabs -->
             <Grid Grid.Column="0"
                   Visibility="{x:Bind ViewModel.IsBrowserPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                  Background="{ThemeResource LayerFillColorDefaultBrush}"
+                  Background="{ThemeResource SidePanelBackgroundBrush}"
                   BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
                   BorderThickness="0,0,1,0">
                 <Grid.RowDefinitions>
@@ -169,7 +170,7 @@
                 <!-- Left Panel Header -->
                 <Grid Grid.Row="0"
                       Padding="12,8"
-                      Background="{ThemeResource LayerFillColorDefaultBrush}"
+                      Background="{ThemeResource SidePanelBackgroundBrush}"
                       BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
                       BorderThickness="0,0,0,1">
                     <TextBlock Text="Explorer"
@@ -453,7 +454,7 @@
             <!-- Properties Panel with Tabs -->
             <Grid Grid.Column="4"
                           Visibility="{x:Bind ViewModel.IsPropertiesPanelVisible, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
-                          Background="{ThemeResource LayerFillColorDefaultBrush}"
+                          Background="{ThemeResource SidePanelBackgroundBrush}"
                           BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
                           BorderThickness="1,0,0,0">
                         <Grid.RowDefinitions>
@@ -466,7 +467,7 @@
                         <!-- Properties Panel Header -->
                         <Grid Grid.Row="0"
                               Padding="12,8"
-                              Background="{ThemeResource LayerFillColorDefaultBrush}"
+                              Background="{ThemeResource SidePanelBackgroundBrush}"
                               BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
                               BorderThickness="0,0,0,1">
                             <TextBlock Text="Properties"
@@ -999,6 +1000,14 @@
                                         </ListView>
                                     </StackPanel>
                                 </ScrollViewer>
+                            </TabViewItem>
+
+                            <!-- Settings Tab -->
+                            <TabViewItem Header="Settings">
+                                <TabViewItem.IconSource>
+                                    <SymbolIconSource Symbol="Setting" />
+                                </TabViewItem.IconSource>
+                                <settings:SettingsView />
                             </TabViewItem>
                         </TabView>
                     </Grid>

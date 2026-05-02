@@ -1,5 +1,5 @@
 <Solution>
-    <Folder Name="ManpWinUI">
+    <Folder Name="/ManpWinUI/">
         <Project Path="ManpWinUI.csproj">
             <Configuration Solution="Debug|x64" Project="Debug|x64">
                 <Build>true</Build>
@@ -24,6 +24,24 @@
             <Configuration Solution="Release|ARM64" Project="Release|ARM64">
                 <Build>true</Build>
                 <Deploy>true</Deploy>
+            </Configuration>
+        </Project>
+    </Folder>
+    <Folder Name="/Core/">
+        <Project Path="..\ManpCore.Services\ManpCore.Services.csproj">
+            <Configuration Solution="Debug|x64" Project="Debug|x64">
+                <Build>true</Build>
+            </Configuration>
+            <Configuration Solution="Release|x64" Project="Release|x64">
+                <Build>true</Build>
+            </Configuration>
+        </Project>
+        <Project Path="..\ManpCore.Native\ManpCore.Native.vcxproj">
+            <Configuration Solution="Debug|x64" Project="Debug|x64">
+                <Build>true</Build>
+            </Configuration>
+            <Configuration Solution="Release|x64" Project="Release|x64">
+                <Build>true</Build>
             </Configuration>
         </Project>
     </Folder>

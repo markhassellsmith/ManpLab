@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="ManpWinUI.Views.Settings.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:ManpWinUI.Views.Settings"
+    xmlns:vm="using:ManpWinUI.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}">
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="24">
+            <!-- Header -->
+            <TextBlock Text="Application Settings"
+                       FontSize="20"
+                       FontWeight="SemiBold" />
+
+            <TextBlock Text="Configure default behaviors and appearance preferences."
+                       Opacity="0.7"
+                       TextWrapping="Wrap" />
+
+            <MenuFlyoutSeparator />
+
+            <!-- Appearance Section -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Appearance"
+                           FontSize="16"
+                           FontWeight="SemiBold" />
+
+                <!-- Theme Selection -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Theme" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{x:Bind ViewModel.AvailableThemes}"
+                              SelectedItem="{x:Bind ViewModel.SelectedTheme, Mode=TwoWay}"
+                              HorizontalAlignment="Stretch"
+                              Header="Application color theme" />
+                    <TextBlock Text="Choose Light, Dark, or System (follows Windows theme)" 
+                               TextWrapping="Wrap"
+                               FontSize="12"
+                               Opacity="0.7"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+            </StackPanel>
+
+            <MenuFlyoutSeparator />
+
+            <!-- Default Visual Settings Section -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Default Visual Settings"
+                           FontSize="16"
+                           FontWeight="SemiBold" />
+
+                <TextBlock Text="These settings apply when creating new fractals or resetting defaults."
+                           Opacity="0.7"
+                           TextWrapping="Wrap"
+                           FontSize="12" />
+
+                <!-- Default Palette -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Default Color Palette" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{x:Bind ViewModel.AvailablePalettes}"
+                              SelectedItem="{x:Bind ViewModel.DefaultPalette, Mode=TwoWay}"
+                              HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <!-- Show Axes by Default -->
+                <ToggleSwitch Header="Show coordinate axes by default"
+                              IsOn="{x:Bind ViewModel.ShowAxesByDefault, Mode=TwoWay}"
+                              OffContent="Axes hidden"
+                              OnContent="Axes visible" />
+
+                <!-- Smooth Coloring by Default -->
+                <StackPanel Spacing="4">
+                    <ToggleSwitch Header="Use smooth coloring by default"
+                                  IsOn="{x:Bind ViewModel.UseSmoothColoringByDefault, Mode=TwoWay}"
+                                  OffContent="Standard coloring"
+                                  OnContent="Smooth gradients" />
+                    <TextBlock Text="Smooth coloring produces gradients without banding artifacts"
+                               TextWrapping="Wrap"
+                               FontSize="12"
+                               Opacity="0.7"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+            </StackPanel>
+
+            <MenuFlyoutSeparator />
+
+            <!-- Rendering Quality Section -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Rendering Quality"
+                           FontSize="16"
+                           FontWeight="SemiBold" />
+
+                <!-- Default Antialiasing -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Default Antialiasing Level" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{x:Bind ViewModel.AvailableAntialiasingLevels}"
+                              SelectedItem="{x:Bind ViewModel.DefaultAntialiasingLevel, Mode=TwoWay}"
+                              HorizontalAlignment="Stretch" />
+                    <TextBlock Text="Higher levels produce smoother edges but slower rendering"
+                               TextWrapping="Wrap"
+                               FontSize="12"
+                               Opacity="0.7"
+                               Margin="0,4,0,0" />
+                </StackPanel>
+            </StackPanel>
+
+            <MenuFlyoutSeparator />
+
+            <!-- Reset Button -->
+            <Button Command="{x:Bind ViewModel.ResetToDefaultsCommand}"
+                    HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE777;" FontSize="16" />
+                    <TextBlock Text="Reset All Settings to Defaults" />
+                </StackPanel>
+            </Button>
+
+            <!-- Info Message -->
+            <InfoBar IsOpen="True"
+                     Severity="Informational"
+                     IsClosable="False"
+                     Title="Settings are automatically saved"
+                     Message="All changes are saved immediately and will be remembered when you restart the application." />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
