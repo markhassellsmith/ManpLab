@@ -126,49 +126,62 @@ namespace ManpWinUI.Views
         /// </summary>
         private void OnFractalSelected(object? sender, ViewModels.Browser.FractalSelectedEventArgs e)
         {
-            if (e?.Fractal == null)
-                return;
-
-            Debug.WriteLine($"[MainPage] Loading fractal: {e.Fractal.Name}");
-
-            // Task 3: Get fractal metadata from cache (no P/Invoke!)
-            var metadata = MetadataService.GetFractalOrDefault(e.Fractal.Name);
-
-            // Update ViewModel with fractal selection and default view
-            ViewModel.SelectedFractalType = metadata.Name;
-            ViewModel.CenterX = metadata.DefaultCenterX;
-            ViewModel.CenterY = metadata.DefaultCenterY;
-            ViewModel.Zoom = metadata.DefaultZoom;
-            ViewModel.SelectedIterationMode = "Standard"; // Reset to standard mode when switching fractals
-
-            // Set the current visualization name from the browser
-            ViewModel.CurrentVisualizationName = metadata.DisplayName;
-
-            // ═════════════════════════════════════════════════════════════════════════
-            // TASK 7: Load parameter editor from flexible parameter system
-            // ═════════════════════════════════════════════════════════════════════════
-            if (ViewModel.CurrentParameters != null)
+            try
             {
-                Debug.WriteLine($"[MainPage] Loading parameter editor from flexible system ({ViewModel.CurrentParameters.Parameters.Count} parameters)");
-                ParameterEditorViewModel.LoadFromParameterSet(ViewModel.CurrentParameters);
+                if (e?.Fractal == null)
+                {
+                    Debug.WriteLine("[MainPage] OnFractalSelected: Fractal is null");
+                    return;
+                }
 
-                // Subscribe to parameter changes for MainViewModel sync
+                Debug.WriteLine($"[MainPage] Loading fractal: {e.Fractal.Name}");
+
+                // Task 3: Get fractal metadata from cache (no P/Invoke!)
+                var metadata = MetadataService.GetFractalOrDefault(e.Fractal.Name);
+                Debug.WriteLine($"[MainPage] Got metadata for '{metadata.Name}' - Center: ({metadata.DefaultCenterX}, {metadata.DefaultCenterY}), Zoom: {metadata.DefaultZoom}");
+
+                // Update ViewModel with fractal selection and default view
+                ViewModel.SelectedFractalType = metadata.Name;
+                ViewModel.CenterX = metadata.DefaultCenterX;
+                ViewModel.CenterY = metadata.DefaultCenterY;
+                ViewModel.Zoom = metadata.DefaultZoom;
+                ViewModel.SelectedIterationMode = "Standard"; // Reset to standard mode when switching fractals
+
+                // Set the current visualization name from the browser
+                ViewModel.CurrentVisualizationName = metadata.DisplayName;
+
+                // ═════════════════════════════════════════════════════════════════════════
+                // TASK 7: Load parameter editor from flexible parameter system
+                // ═════════════════════════════════════════════════════════════════════════
                 if (ViewModel.CurrentParameters != null)
                 {
-                    ViewModel.CurrentParameters.ParameterChanged -= OnFlexibleParameterChanged;
-                    ViewModel.CurrentParameters.ParameterChanged += OnFlexibleParameterChanged;
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"[MainPage] Using legacy parameter loading (CurrentParameters is null)");
-                // Fallback to old method
-                ParameterEditorViewModel.LoadParametersForFractal(e.Fractal.Name);
-            }
+                    Debug.WriteLine($"[MainPage] Loading parameter editor from flexible system ({ViewModel.CurrentParameters.Parameters.Count} parameters)");
+                    ParameterEditorViewModel.LoadFromParameterSet(ViewModel.CurrentParameters);
 
-            // Auto-render the selected fractal
-            ViewModel.StatusMessage = $"Loading {metadata.DisplayName}...";
-            _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
+                    // Subscribe to parameter changes for MainViewModel sync
+                    if (ViewModel.CurrentParameters != null)
+                    {
+                        ViewModel.CurrentParameters.ParameterChanged -= OnFlexibleParameterChanged;
+                        ViewModel.CurrentParameters.ParameterChanged += OnFlexibleParameterChanged;
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"[MainPage] Using legacy parameter loading (CurrentParameters is null)");
+                    // Fallback to old method
+                    ParameterEditorViewModel.LoadParametersForFractal(e.Fractal.Name);
+                }
+
+                // Auto-render the selected fractal
+                ViewModel.StatusMessage = $"Loading {metadata.DisplayName}...";
+                _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.WriteLine($"[MainPage] ERROR in OnFractalSelected: {ex.Message}");
+                Debug.WriteLine($"[MainPage] Stack trace: {ex.StackTrace}");
+                ViewModel.StatusMessage = $"Error loading fractal: {ex.Message}";
+            }
         }
 
         /// <summary>

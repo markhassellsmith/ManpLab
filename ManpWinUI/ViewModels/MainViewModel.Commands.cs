@@ -154,11 +154,30 @@ public partial class MainViewModel
                 return;
             }
 
-            // Convert byte[] to WriteableBitmap on UI thread
-            _dispatcherQueue.TryEnqueue(() =>
+            // Convert byte[] to WriteableBitmap on UI thread (MUST be on UI thread for WinRT)
+            var enqueued = _dispatcherQueue.TryEnqueue(() =>
             {
-                ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine("[RenderCommand] Converting pixel data to bitmap on UI thread");
+                    ConvertPixelDataToBitmap(result.PixelData, ImageWidth, ImageHeight);
+                }
+                catch (Exception bitmapEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[RenderCommand] Bitmap conversion failed: {bitmapEx.Message}");
+                    System.Diagnostics.Debug.WriteLine($"[RenderCommand] Stack trace: {bitmapEx.StackTrace}");
+                    StatusMessage = $"Error creating image: {bitmapEx.Message}";
+                }
             });
+
+            if (!enqueued)
+            {
+                System.Diagnostics.Debug.WriteLine("[RenderCommand] WARNING: Failed to enqueue bitmap conversion to UI thread!");
+                _dispatcherQueue.TryEnqueue(() =>
+                {
+                    StatusMessage = "Error: Failed to update image (dispatcher error)";
+                });
+            }
 
             var renderTime = DateTime.Now - startTime;
             var escapePercent = result.EscapePercentage;

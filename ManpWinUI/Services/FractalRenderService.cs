@@ -59,6 +59,10 @@ public class FractalRenderService : IFractalRenderService
                 colorCycleSpeed, colorOffset, useSmoothColoring);
         }
 
+        // IMPORTANT: Capture the dispatcher queue BEFORE entering Task.Run()
+        // Inside Task.Run, we're on a background thread and GetForCurrentThread() returns null
+        var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+
         return await Task.Run(() =>
         {
             try
@@ -138,38 +142,34 @@ Calculated View:
 
                     // Set up progress reporting with dispatcher marshaling
                     EventHandler<ManpCore.Native.ProgressEventArgs>? progressHandler = null;
-                    if (progress != null)
+                    if (progress != null && dispatcherQueue != null)
                     {
-                        // Capture the dispatcher queue from the calling (UI) thread
-                        var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-                        if (dispatcherQueue != null)
+                        progressHandler = (sender, args) =>
                         {
-                            progressHandler = (sender, args) =>
+                            // Marshal progress updates to UI thread
+                            var enqueued = dispatcherQueue.TryEnqueue(() =>
                             {
-                                // Marshal progress updates to UI thread
-                                var enqueued = dispatcherQueue.TryEnqueue(() =>
+                                try
                                 {
-                                    try
-                                    {
-                                        progress.Report(args.Percentage / 100.0);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        System.Diagnostics.Debug.WriteLine($"Progress report error: {ex.Message}");
-                                    }
-                                });
-
-                                if (!enqueued)
-                                {
-                                    System.Diagnostics.Debug.WriteLine("Warning: Failed to enqueue progress update to UI thread");
+                                    progress.Report(args.Percentage / 100.0);
                                 }
-                            };
-                            _engine.ProgressChanged += progressHandler;
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("Warning: No DispatcherQueue available for progress reporting");
-                        }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"Progress report error: {ex.Message}");
+                                }
+                            });
+
+                            if (!enqueued)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Warning: Failed to enqueue progress update to UI thread");
+                            }
+                        };
+                        _engine.ProgressChanged += progressHandler;
+                        System.Diagnostics.Debug.WriteLine("Progress reporting enabled with captured DispatcherQueue");
+                    }
+                    else if (progress != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Warning: No DispatcherQueue available for progress reporting");
                     }
 
                     // Render the fractal using Calculate method

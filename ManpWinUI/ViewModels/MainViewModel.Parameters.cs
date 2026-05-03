@@ -48,6 +48,9 @@ public partial class MainViewModel
                 return;
             }
 
+            // Ensure parameter service is initialized before use
+            await _fractalParameterService.InitializeAsync();
+
             Debug.WriteLine($"[MainViewModel.Parameters] Initializing parameters for '{fractalType}'");
 
             // Load parameter set for this fractal
@@ -75,6 +78,7 @@ public partial class MainViewModel
         catch (System.Exception ex)
         {
             Debug.WriteLine($"[MainViewModel.Parameters] Error initializing parameters: {ex.Message}");
+            Debug.WriteLine($"[MainViewModel.Parameters] Stack trace: {ex.StackTrace}");
         }
     }
 

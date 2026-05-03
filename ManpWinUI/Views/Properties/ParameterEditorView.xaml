@@ -74,8 +74,7 @@
                     SmallChange="1"
                     LargeChange="10"
                     IsEnabled="{Binding IsEditable}"
-                    ValidationMode="InvalidInputOverwritten"
-                    NumberFormatter="{x:Null}"/>
+                    ValidationMode="InvalidInputOverwritten"/>
             </Grid>
         </DataTemplate>
 

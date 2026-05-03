@@ -126,6 +126,7 @@ public partial class MainViewModel
     /// <summary>
     /// Converts raw pixel data to a WriteableBitmap for display.
     /// Creates or reuses the FractalImage bitmap as needed.
+    /// MUST be called on UI thread for WinRT interop.
     /// </summary>
     /// <param name="pixelData">BGRA pixel data array.</param>
     /// <param name="width">Image width in pixels.</param>
@@ -156,13 +157,47 @@ public partial class MainViewModel
             if (FractalImage == null || FractalImage.PixelWidth != width || FractalImage.PixelHeight != height)
             {
                 System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Creating new WriteableBitmap({width}, {height})");
-                FractalImage = new WriteableBitmap(width, height);
-                System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Bitmap created successfully. PixelBuffer capacity: {FractalImage.PixelBuffer.Capacity}");
+
+                try
+                {
+                    FractalImage = new WriteableBitmap(width, height);
+                }
+                catch (Exception createEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Failed to create WriteableBitmap: {createEx.Message}");
+                    throw new InvalidOperationException($"Failed to create {width}×{height} bitmap. WinRT error: {createEx.Message}", createEx);
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Bitmap created successfully");
+                System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] PixelBuffer.Length: {FractalImage.PixelBuffer.Length}");
+                System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] PixelBuffer.Capacity: {FractalImage.PixelBuffer.Capacity}");
+            }
+
+            // Validate buffer size before copying
+            if (FractalImage.PixelBuffer.Capacity < (uint)pixelData.Length)
+            {
+                throw new InvalidOperationException(
+                    $"PixelBuffer capacity ({FractalImage.PixelBuffer.Capacity}) is less than data size ({pixelData.Length})");
             }
 
             // Write pixel data to bitmap buffer using WindowsRuntimeBufferExtensions
-            System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Copying {pixelData.Length} bytes to PixelBuffer");
-            WindowsRuntimeBufferExtensions.CopyTo(pixelData, 0, FractalImage.PixelBuffer, 0, pixelData.Length);
+            System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Copying {pixelData.Length} bytes to PixelBuffer (capacity: {FractalImage.PixelBuffer.Capacity})");
+
+            try
+            {
+                // Use AsStream() for safer WinRT interop
+                using (var stream = FractalImage.PixelBuffer.AsStream())
+                {
+                    stream.Seek(0, System.IO.SeekOrigin.Begin);
+                    stream.Write(pixelData, 0, pixelData.Length);
+                    stream.Flush();
+                }
+            }
+            catch (Exception copyEx)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ConvertPixelDataToBitmap] Pixel copy failed: {copyEx.Message}");
+                throw new InvalidOperationException($"Failed to copy pixel data to bitmap buffer. WinRT error: {copyEx.Message}", copyEx);
+            }
 
             // Invalidate the bitmap to trigger redraw
             FractalImage.Invalidate();
