@@ -128,6 +128,7 @@ namespace ManpWinUI
             // ViewModels
             services.AddTransient<MainViewModel>();
             services.AddSingleton<ViewModels.Browser.FractalBrowserViewModel>(); // Task 2: Fix DI pattern
+            services.AddSingleton<ViewModels.Properties.RenderSettingsViewModel>(); // Week 9 Task 2: Deep zoom toggle
 
             return services.BuildServiceProvider();
         }

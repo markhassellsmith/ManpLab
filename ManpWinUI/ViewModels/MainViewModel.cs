@@ -36,7 +36,8 @@ public partial class MainViewModel(
     IHailstoneService hailstoneService,
     IHailstoneRenderService hailstoneRenderService,
     IAppSettingsService settingsService,
-    IFractalParameterService fractalParameterService) : ObservableObject
+    IFractalParameterService fractalParameterService,
+    ViewModels.Properties.RenderSettingsViewModel renderSettingsViewModel) : ObservableObject
 {
     // ═══════════════════════════════════════════════════════════════════════════════
     // SERVICE DEPENDENCIES
@@ -50,6 +51,7 @@ public partial class MainViewModel(
     private readonly IHailstoneRenderService _hailstoneRenderService = hailstoneRenderService;
     private readonly IAppSettingsService _settingsService = settingsService;
     private readonly IFractalParameterService _fractalParameterService = fractalParameterService;
+    private readonly ViewModels.Properties.RenderSettingsViewModel _renderSettingsViewModel = renderSettingsViewModel;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // INITIALIZATION

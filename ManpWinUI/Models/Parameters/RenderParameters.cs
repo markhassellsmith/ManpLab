@@ -106,6 +106,12 @@ public class RenderParameters
     /// </summary>
     public bool UseSmoothColoring { get; set; } = false;
 
+    /// <summary>
+    /// Enable arbitrary-precision (deep zoom) mode for extreme magnification.
+    /// Week 9 Task 2: Deep zoom toggle support.
+    /// </summary>
+    public bool UseDeepZoom { get; set; } = false;
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // EXTENDED PARAMETERS (Fractal-Specific)
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -183,6 +189,7 @@ public class RenderParameters
             ColorCycleSpeed = ColorCycleSpeed,
             ColorOffset = ColorOffset,
             UseSmoothColoring = UseSmoothColoring,
+            UseDeepZoom = UseDeepZoom,
             ExtendedParameters = new Dictionary<string, object>(ExtendedParameters)
         };
     }
