@@ -137,6 +137,55 @@ FractalInfo^ FractalRegistryWrapper::GetFractalInfo(String^ name)
     return info;
 }
 
+List<ParameterInfo^>^ FractalRegistryWrapper::GetParameters(String^ fractalName)
+{
+    auto result = gcnew List<ParameterInfo^>();
+
+    if (String::IsNullOrEmpty(fractalName))
+        return result;
+
+    std::string nativeName = ManagedToStdString(fractalName);
+    const ::Native::FractalSpec* spec = ::Native::FractalRegistry::GetSpec(nativeName);
+
+    if (spec == nullptr)
+        return result;
+
+    // Convert each ParameterSpec to ParameterInfo
+    for (const auto& param : spec->parameters)
+    {
+        auto info = gcnew ParameterInfo();
+        info->Name = StdStringToManaged(param.name);
+        info->DisplayName = StdStringToManaged(param.displayName);
+        info->Description = StdStringToManaged(param.description);
+
+        // Map native enums to managed enums
+        info->Type = static_cast<ManagedParameterType>(param.type);
+        info->Category = static_cast<ManagedParameterCategory>(param.category);
+
+        info->DefaultValue = StdStringToManaged(param.defaultValue);
+        info->MinValue = param.minValue;
+        info->MaxValue = param.maxValue;
+        info->Step = param.step;
+
+        // Convert choice values
+        info->ChoiceValues = gcnew List<String^>();
+        for (const auto& choice : param.choiceValues)
+        {
+            info->ChoiceValues->Add(StdStringToManaged(choice));
+        }
+
+        info->IsAdvanced = param.isAdvanced;
+        info->IsReadOnly = param.isReadOnly;
+        info->FormatString = StdStringToManaged(param.formatString);
+        info->Unit = StdStringToManaged(param.unit);
+        info->DisplayOrder = param.displayOrder;
+
+        result->Add(info);
+    }
+
+    return result;
+}
+
 bool FractalRegistryWrapper::IsRegistered(String^ name)
 {
     if (String::IsNullOrEmpty(name))

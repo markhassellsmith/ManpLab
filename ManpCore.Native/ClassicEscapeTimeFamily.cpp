@@ -44,12 +44,52 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 1.0;   // Lambda centered at (1.0, 0.0) - not origin!
+    spec.defaultCenterX = -0.5;   // Lambda main body view
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.375;    // viewWidth = 3.0 / 0.375 = 8.0 (xmin=-3, xmax=5)
-    spec.defaultBailout = 4.0;   // Lambda uses bailout of 4.0
+    spec.defaultZoom = 1.0;       // Standard Mandelbrot-like zoom to show full set
+    spec.defaultBailout = 4.0;    // Lambda uses bailout of 4.0
     spec.hasSymmetry = false;
-    spec.parameters = {};
+
+    // Lambda parameters (using Paul DeLeeuw's naming from ManpWIN64/fractalp.cpp line 273)
+    spec.parameters = {
+        // Calculation parameters (Paul's standard names from fractalp.cpp lines 28-29)
+        ParameterSpec(
+            "realz0",                               // Paul's name (line 273)
+            "Real Perturbation of Z(0)",            // Paul's display text (line 28)
+            "Initial value for real part of z (usually 0.0 for Lambda set)",
+            ParameterType::Float,
+            ParameterCategory::Calculation,
+            "0.0",                                  // Paul's default (line 273)
+            -10.0, 10.0, 0.01
+        ),
+        ParameterSpec(
+            "imagz0",                               // Paul's name (line 273)
+            "Imaginary Perturbation of Z(0)",       // Paul's display text (line 29)
+            "Initial value for imaginary part of z (usually 0.0 for Lambda set)",
+            ParameterType::Float,
+            ParameterCategory::Calculation,
+            "0.0",                                  // Paul's default (line 273)
+            -10.0, 10.0, 0.01
+        ),
+        ParameterSpec(
+            "maxIterations",
+            "Max Iterations",
+            "Maximum number of iterations before considering pixel inside the set",
+            ParameterType::Integer,
+            ParameterCategory::Calculation,
+            "256",                                  // Standard default
+            1.0, 100000.0, 1.0
+        ),
+        ParameterSpec(
+            "bailout",
+            "Bailout Radius",
+            "Escape radius for Lambda fractal (typically 4.0)",
+            ParameterType::Float,
+            ParameterCategory::Advanced,
+            "4.0",                                  // Lambda-specific (STDBAILOUT from line 136)
+            2.0, 1000.0, 0.1
+        )
+    };
 
     FractalRegistry::Register(spec);
 

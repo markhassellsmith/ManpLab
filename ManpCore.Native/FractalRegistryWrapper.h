@@ -39,6 +39,83 @@ namespace Native {
     };
 
     /// <summary>
+    /// Parameter type enumeration (mirrors native ParameterType)
+    /// </summary>
+    public enum class ManagedParameterType
+    {
+        Integer = 0,
+        Float = 1,
+        Boolean = 2,
+        Choice = 3,
+        Complex = 4
+    };
+
+    /// <summary>
+    /// Parameter category enumeration (mirrors native ParameterCategory)
+    /// </summary>
+    public enum class ManagedParameterCategory
+    {
+        General = 0,
+        Calculation = 1,
+        View = 2,
+        Color = 3,
+        Advanced = 4
+    };
+
+    /// <summary>
+    /// Represents metadata for a single parameter.
+    /// Exposes C++ ParameterSpec data to managed C#/WinUI code.
+    /// </summary>
+    public ref class ParameterInfo
+    {
+    public:
+        /// <summary>Internal parameter key (e.g., "realz0", "maxIterations")</summary>
+        property String^ Name;
+
+        /// <summary>Display name for UI (e.g., "Real Perturbation of Z(0)")</summary>
+        property String^ DisplayName;
+
+        /// <summary>Description text for help/tooltips</summary>
+        property String^ Description;
+
+        /// <summary>Parameter type (Integer, Float, Boolean, Choice, Complex)</summary>
+        property ManagedParameterType Type;
+
+        /// <summary>Parameter category (General, Calculation, View, Color, Advanced)</summary>
+        property ManagedParameterCategory Category;
+
+        /// <summary>Default value as string (e.g., "0.0", "256", "true")</summary>
+        property String^ DefaultValue;
+
+        /// <summary>Minimum value (for numeric types)</summary>
+        property double MinValue;
+
+        /// <summary>Maximum value (for numeric types)</summary>
+        property double MaxValue;
+
+        /// <summary>Step size for UI controls (for numeric types)</summary>
+        property double Step;
+
+        /// <summary>Choice values (for Choice type)</summary>
+        property List<String^>^ ChoiceValues;
+
+        /// <summary>Is this an advanced parameter?</summary>
+        property bool IsAdvanced;
+
+        /// <summary>Is this parameter read-only?</summary>
+        property bool IsReadOnly;
+
+        /// <summary>Format string for display (e.g., "F6")</summary>
+        property String^ FormatString;
+
+        /// <summary>Unit label (e.g., "x", "°")</summary>
+        property String^ Unit;
+
+        /// <summary>Display order hint</summary>
+        property int DisplayOrder;
+    };
+
+    /// <summary>
     /// Managed wrapper for native C++ FractalRegistry.
     /// Provides access to all registered fractals for the WinUI browser.
     /// </summary>
@@ -76,6 +153,13 @@ namespace Native {
         /// <param name="name">Fractal name (e.g., "Mandelbrot")</param>
         /// <returns>FractalInfo or nullptr if not found</returns>
         static FractalInfo^ GetFractalInfo(String^ name);
+
+        /// <summary>
+        /// Get parameter metadata for a specific fractal.
+        /// </summary>
+        /// <param name="fractalName">Fractal name (e.g., "Lambda")</param>
+        /// <returns>List of ParameterInfo objects, or empty list if fractal not found or has no parameters</returns>
+        static List<ParameterInfo^>^ GetParameters(String^ fractalName);
 
         /// <summary>
         /// Check if a fractal is registered.

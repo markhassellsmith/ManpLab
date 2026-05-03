@@ -112,6 +112,11 @@ public partial class MainViewModel
                 // Create structured parameters from parameter set
                 var renderParams = CurrentParameters.ToStructuredRenderParameters(ImageWidth, ImageHeight);
 
+                // Override view/camera settings from ViewModel (these are UI state, not fractal-specific parameters)
+                renderParams.CenterX = CenterX;
+                renderParams.CenterY = CenterY;
+                renderParams.Zoom = Zoom;
+
                 // Override color settings from ViewModel (not part of parameter set)
                 renderParams.Palette = SelectedPalette;
                 renderParams.ColorCycleSpeed = ColorCycleSpeed;

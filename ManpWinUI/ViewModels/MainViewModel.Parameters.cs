@@ -37,6 +37,7 @@ public partial class MainViewModel
     /// <summary>
     /// Initialize parameters for a specific fractal type.
     /// Called when fractal type changes.
+    /// Automatically loads saved parameter values if they exist.
     /// </summary>
     private async void InitializeParametersForFractal(string fractalType)
     {
@@ -72,8 +73,20 @@ public partial class MainViewModel
 
             Debug.WriteLine($"[MainViewModel.Parameters] Loaded {paramSet.Parameters.Count} parameters for '{fractalType}'");
 
-            // Sync existing properties → parameters (backwards compatibility)
-            SyncPropertiesToParameters();
+            // TASK 6: Try to restore saved parameter values from LocalSettings
+            var restored = CurrentParameters.LoadFromSettings();
+            if (restored)
+            {
+                Debug.WriteLine($"[MainViewModel.Parameters] Restored saved parameter values for '{fractalType}'");
+                // Sync restored parameters → properties
+                SyncParametersToProperties();
+            }
+            else
+            {
+                Debug.WriteLine($"[MainViewModel.Parameters] No saved parameters found, using defaults for '{fractalType}'");
+                // Sync existing properties → parameters (backwards compatibility)
+                SyncPropertiesToParameters();
+            }
         }
         catch (System.Exception ex)
         {
@@ -85,6 +98,7 @@ public partial class MainViewModel
     /// <summary>
     /// Handle parameter value changes from the flexible parameter system.
     /// This is called when parameters are modified via the new API.
+    /// TASK 6: Auto-saves parameters to LocalSettings on change (with debounce to avoid excessive saves).
     /// </summary>
     private void OnParameterValueChanged(object? sender, ParameterChangedEventArgs e)
     {
@@ -92,6 +106,13 @@ public partial class MainViewModel
 
         // Sync parameters → existing properties (backwards compatibility)
         SyncParametersToProperties();
+
+        // TASK 6: Auto-save parameters to LocalSettings
+        // Only save if not currently syncing (to avoid save loops during initialization)
+        if (CurrentParameters != null && UseParameterSystem)
+        {
+            CurrentParameters.SaveToSettings();
+        }
 
         // Future: Trigger auto-render on parameter change
         // For now, keep existing behavior (user clicks Render button)
@@ -247,6 +268,35 @@ public partial class MainViewModel
         }
 
         return isValid;
+    }
+
+    /// <summary>
+    /// TASK 6: Reset current parameters to their default values and clear saved settings.
+    /// Useful when user wants to start fresh with a fractal.
+    /// </summary>
+    public void ResetParametersToDefaults()
+    {
+        if (CurrentParameters == null)
+            return;
+
+        Debug.WriteLine($"[MainViewModel.Parameters] Resetting parameters to defaults for '{CurrentParameters.FractalType}'");
+
+        // Clear saved settings
+        CurrentParameters.ClearSavedSettings();
+
+        // Reset each parameter to its default value
+        foreach (var descriptor in CurrentParameters.Parameters)
+        {
+            if (descriptor.DefaultValue != null)
+            {
+                CurrentParameters.SetValue(descriptor.Key, descriptor.DefaultValue);
+            }
+        }
+
+        // Sync to properties
+        SyncParametersToProperties();
+
+        Debug.WriteLine($"[MainViewModel.Parameters] Parameters reset to defaults");
     }
 
     /// <summary>

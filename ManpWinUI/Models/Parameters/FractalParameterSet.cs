@@ -81,6 +81,8 @@ public partial class FractalParameterSet : ObservableObject
         Parameters.Add(descriptor);
         _values[descriptor.Key] = descriptor.DefaultValue;
         _validationErrors[descriptor.Key] = null;
+
+        System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Added parameter '{descriptor.Key}' ({descriptor.Name}): Type={descriptor.Type}, DefaultValue={descriptor.DefaultValue} (type: {descriptor.DefaultValue?.GetType().Name ?? "null"}), MinValue={descriptor.MinValue} (type: {descriptor.MinValue?.GetType().Name ?? "null"}), MaxValue={descriptor.MaxValue} (type: {descriptor.MaxValue?.GetType().Name ?? "null"})");
     }
 
     /// <summary>
@@ -288,16 +290,42 @@ public partial class FractalParameterSet : ObservableObject
         };
 
         // Map known parameters to strongly-typed fields
-        renderParams.CenterX = GetValue<double>("center_x");
-        renderParams.CenterY = GetValue<double>("center_y");
-        renderParams.Zoom = GetValue<double>("zoom");
-        renderParams.MaxIterations = GetValue<int>("max_iterations");
-        renderParams.EscapeRadius = GetValue<double>("escape_radius");
+        // Try both snake_case (legacy) and camelCase (native) naming conventions
+        // GetValue returns default(T) if not found, so we check for that
+
+        double centerX = GetValue<double>("center_x");
+        if (centerX == 0.0) centerX = GetValue<double>("centerX");
+        renderParams.CenterX = centerX;
+
+        double centerY = GetValue<double>("center_y");
+        if (centerY == 0.0) centerY = GetValue<double>("centerY");
+        renderParams.CenterY = centerY;
+
+        double zoom = GetValue<double>("zoom");
+        renderParams.Zoom = zoom != 0.0 ? zoom : 1.0;
+
+        int maxIter = GetValue<int>("max_iterations");
+        if (maxIter == 0) maxIter = GetValue<int>("maxIterations");
+        renderParams.MaxIterations = maxIter != 0 ? maxIter : 256;
+
+        double escapeRadius = GetValue<double>("escape_radius");
+        if (escapeRadius == 0.0) escapeRadius = GetValue<double>("bailout");
+        renderParams.EscapeRadius = escapeRadius != 0.0 ? escapeRadius : 256.0;
 
         // Julia mode
-        renderParams.IsJuliaMode = GetValue<bool>("julia_mode");
-        renderParams.JuliaCReal = GetValue<double>("julia_c_real");
-        renderParams.JuliaCImaginary = GetValue<double>("julia_c_imag");
+        bool juliaMode = GetValue<bool>("julia_mode");
+        if (!juliaMode) juliaMode = GetValue<bool>("juliaMode");
+        renderParams.IsJuliaMode = juliaMode;
+
+        double juliaCReal = GetValue<double>("julia_c_real");
+        if (juliaCReal == 0.0) juliaCReal = GetValue<double>("juliaCReal");
+        renderParams.JuliaCReal = juliaCReal;
+
+        double juliaCImag = GetValue<double>("julia_c_imag");
+        if (juliaCImag == 0.0) juliaCImag = GetValue<double>("juliaCImag");
+        renderParams.JuliaCImaginary = juliaCImag;
+
+        System.Diagnostics.Debug.WriteLine($"[ToStructuredRenderParameters] FractalType={FractalType}, MaxIterations={renderParams.MaxIterations}, EscapeRadius={renderParams.EscapeRadius}");
 
         // Note: Color parameters are typically set at ViewModel level, not per-fractal
         // They're handled separately in the render command
@@ -308,8 +336,9 @@ public partial class FractalParameterSet : ObservableObject
             // Skip parameters we've already mapped
             var knownKeys = new[] 
             { 
-                "center_x", "center_y", "zoom", "max_iterations", "escape_radius",
-                "julia_mode", "julia_c_real", "julia_c_imag"
+                "center_x", "center_y", "centerX", "centerY", "zoom", 
+                "max_iterations", "maxIterations", "escape_radius", "bailout",
+                "julia_mode", "juliaMode", "julia_c_real", "juliaCReal", "julia_c_imag", "juliaCImag"
             };
 
             if (!knownKeys.Contains(descriptor.Key))
@@ -352,7 +381,7 @@ public partial class FractalParameterSet : ObservableObject
 
     /// <summary>
     /// Exports parameter values to a simple key-value dictionary for saving.
-    /// Only exports editable parameters with non-default values.
+    /// Exports all editable parameters (including those with default values) for persistence.
     /// </summary>
     public Dictionary<string, object> ExportForSave()
     {
@@ -361,14 +390,128 @@ public partial class FractalParameterSet : ObservableObject
         foreach (var descriptor in Parameters.Where(p => p.IsEditable))
         {
             var value = GetValue(descriptor.Key);
-            // Only save if value differs from default
-            if (value != null && !Equals(value, descriptor.DefaultValue))
+            if (value != null)
             {
                 export[descriptor.Key] = value;
             }
         }
 
         return export;
+    }
+
+    /// <summary>
+    /// Saves parameter values to LocalSettings for persistence.
+    /// Uses format: "FractalParams_{FractalType}" as the settings key.
+    /// </summary>
+    public void SaveToSettings()
+    {
+        try
+        {
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var settingsKey = $"FractalParams_{FractalType}";
+
+            var export = ExportForSave();
+            if (export.Count == 0)
+            {
+                // No editable parameters to save
+                return;
+            }
+
+            // Serialize to JSON
+            var json = System.Text.Json.JsonSerializer.Serialize(export);
+            settings.Values[settingsKey] = json;
+
+            System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Saved {export.Count} parameters for '{FractalType}' to LocalSettings");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Error saving parameters: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Loads parameter values from LocalSettings if they exist.
+    /// Returns true if any values were restored, false otherwise.
+    /// </summary>
+    public bool LoadFromSettings()
+    {
+        try
+        {
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var settingsKey = $"FractalParams_{FractalType}";
+
+            if (!settings.Values.ContainsKey(settingsKey))
+            {
+                System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] No saved parameters found for '{FractalType}'");
+                return false;
+            }
+
+            var json = settings.Values[settingsKey] as string;
+            if (string.IsNullOrEmpty(json))
+                return false;
+
+            // Deserialize from JSON
+            var saved = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, System.Text.Json.JsonElement>>(json);
+            if (saved == null || saved.Count == 0)
+                return false;
+
+            var restoredCount = 0;
+            foreach (var kvp in saved)
+            {
+                var descriptor = Parameters.FirstOrDefault(p => p.Key == kvp.Key);
+                if (descriptor == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Ignoring unknown saved parameter '{kvp.Key}'");
+                    continue;
+                }
+
+                // Deserialize based on parameter type
+                object? value = descriptor.Type switch
+                {
+                    ParameterType.Integer => kvp.Value.GetInt32(),
+                    ParameterType.Double => kvp.Value.GetDouble(),
+                    ParameterType.Boolean => kvp.Value.GetBoolean(),
+                    ParameterType.String => kvp.Value.GetString(),
+                    _ => kvp.Value.ToString()
+                };
+
+                if (value != null)
+                {
+                    SetValue(kvp.Key, value);
+                    restoredCount++;
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Restored {restoredCount} parameters for '{FractalType}' from LocalSettings");
+            return restoredCount > 0;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Error loading parameters: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Clears saved parameter values from LocalSettings for this fractal.
+    /// </summary>
+    public void ClearSavedSettings()
+    {
+        try
+        {
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var settingsKey = $"FractalParams_{FractalType}";
+
+            if (settings.Values.ContainsKey(settingsKey))
+            {
+                settings.Values.Remove(settingsKey);
+                System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Cleared saved parameters for '{FractalType}'");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Error clearing parameters: {ex.Message}");
+        }
     }
 
     /// <summary>

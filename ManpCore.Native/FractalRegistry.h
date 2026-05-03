@@ -15,34 +15,110 @@ struct ComplexD;
 // Parameter Types
 //=============================================================================
 
+// Parameter type enumeration (mirrors C# ParameterType)
 enum class ParameterType
 {
     Integer,
     Float,
     Boolean,
-    Choice  // Dropdown/enum
+    Choice,      // Dropdown/enum
+    Complex      // Complex number (real + imaginary pair)
 };
 
+// Parameter category enumeration (mirrors C# ParameterCategory)
+enum class ParameterCategory
+{
+    General,        // General purpose
+    Calculation,    // Algorithm parameters (iterations, bailout)
+    View,           // View parameters (center, zoom)
+    Color,          // Color/palette parameters
+    Advanced        // Advanced/expert parameters
+};
+
+// Parameter specification with full metadata
 struct ParameterSpec
 {
-    std::string name;
-    std::string displayName;
-    ParameterType type;
-    double defaultValue;
+    std::string name;           // Internal key (e.g., "realz0", "maxIterations")
+    std::string displayName;    // UI label (e.g., "Real Perturbation of Z(0)")
+    std::string description;    // Help text
+
+    ParameterType type;         // Data type
+    ParameterCategory category; // Grouping category
+
+    // Default value (stored as string for flexibility)
+    std::string defaultValue;   // "0.0", "256", "true", etc.
+
+    // Range constraints (for numeric types)
     double minValue;
     double maxValue;
-    std::vector<std::string> choiceValues;  // For Choice type
-    std::string description;
+    double step;                // Step size for UI controls
 
+    // Choice options (for Choice type)
+    std::vector<std::string> choiceValues;
+
+    // Visibility/editability
+    bool isAdvanced;            // false = visible by default, true = advanced
+    bool isReadOnly;            // false = user can edit, true = readonly
+
+    // Display formatting
+    std::string formatString;   // e.g., "F6" for 6 decimal places
+    std::string unit;           // e.g., "x" for zoom, "°" for angles
+    int displayOrder;           // UI ordering hint
+
+    // Default constructor
     ParameterSpec() 
-        : type(ParameterType::Float), defaultValue(0.0), minValue(0.0), maxValue(1.0) {}
+        : type(ParameterType::Float), 
+          category(ParameterCategory::General),
+          minValue(0.0), 
+          maxValue(1.0), 
+          step(0.01),
+          isAdvanced(false),
+          isReadOnly(false),
+          displayOrder(0) {}
 
-    ParameterSpec(std::string n, ParameterType t, double defVal, double minVal, double maxVal, std::string desc)
-        : name(n), displayName(n), type(t), defaultValue(defVal), minValue(minVal), maxValue(maxVal), description(desc) {}
+    // Simple constructor for numeric parameters
+    ParameterSpec(
+        std::string n, 
+        std::string display,
+        std::string desc,
+        ParameterType t, 
+        ParameterCategory cat,
+        std::string defVal, 
+        double minVal, 
+        double maxVal,
+        double stepVal = 0.01)
+        : name(n), 
+          displayName(display),
+          description(desc),
+          type(t), 
+          category(cat),
+          defaultValue(defVal), 
+          minValue(minVal), 
+          maxValue(maxVal),
+          step(stepVal),
+          isAdvanced(false),
+          isReadOnly(false),
+          displayOrder(0) {}
 
-    ParameterSpec(std::string n, std::vector<std::string> choices, std::string desc)
-        : name(n), displayName(n), type(ParameterType::Choice), defaultValue(0.0), 
-          minValue(0.0), maxValue((double)(choices.size() - 1)), choiceValues(choices), description(desc) {}
+    // Choice parameter constructor
+    ParameterSpec(
+        std::string n, 
+        std::string display,
+        std::vector<std::string> choices, 
+        std::string desc)
+        : name(n), 
+          displayName(display), 
+          description(desc),
+          type(ParameterType::Choice), 
+          category(ParameterCategory::General),
+          defaultValue("0"),
+          minValue(0.0), 
+          maxValue((double)(choices.size() - 1)), 
+          step(1.0),
+          choiceValues(choices),
+          isAdvanced(false),
+          isReadOnly(false),
+          displayOrder(0) {}
 };
 
 //=============================================================================

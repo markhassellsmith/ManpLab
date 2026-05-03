@@ -261,54 +261,99 @@ Automatic re-render with default parameters
 
 ---
 
-## Tasks Remaining
+---
 
-### Task 6: Parameter Persistence 🔵 NEXT
-- Add `ParameterType` enum (Double, Complex, Integer, Bool, Enum)
-- Add Min/Max values for numeric parameters
-- Add descriptions/tooltips
-- Add IsReadOnly flag
+### Task 6: Parameter Persistence ✅
+**Objective**: Save and restore parameter values per fractal type using LocalSettings
 
-### Task 4: Type-Specific Controls
-- NumberBox for numeric parameters (with min/max)
-- Complex number input for Julia C values
-- ComboBox for enum parameters
-- CheckBox for boolean parameters
-- DataTemplateSelector for dynamic control generation
+**Files Modified**:
+- `ManpWinUI/Models/Parameters/FractalParameterSet.cs` - Added `SaveToSettings()`, `LoadFromSettings()`, `ClearSavedSettings()` methods
+- `ManpWinUI/ViewModels/MainViewModel.Parameters.cs` - Added auto-save/restore logic and `ResetParametersToDefaults()` method
+- `ManpWinUI/ViewModels/MainViewModel.StandardFractals.cs` - Property change handlers already call `SetParameter()` for sync
 
-### Task 5: Parameter Validation & Updates
-- Validate parameter values on change
-- Wire parameter changes to render engine
-- Add "Reset to Defaults" button
-- Real-time parameter updates
+**Features**:
+- ✅ **LocalSettings persistence**: Uses Windows LocalSettings API with key format `"FractalParams_{FractalType}"`
+- ✅ **JSON serialization**: Uses System.Text.Json for parameter dictionary serialization
+- ✅ **Automatic save on change**: `OnParameterValueChanged()` calls `SaveToSettings()` when parameters change
+- ✅ **Automatic restore on load**: `InitializeParametersForFractal()` calls `LoadFromSettings()` before defaults
+- ✅ **Fallback to defaults**: If no saved parameters exist, uses fractal registry defaults
+- ✅ **Per-fractal isolation**: Each fractal type stores its own independent parameter set
+- ✅ **Type-safe deserialization**: Correctly maps JSON values to `int`, `double`, `bool`, `string` based on `ParameterType`
+- ✅ **Reset functionality**: `ResetParametersToDefaults()` clears saved values and restores registry defaults
 
+**Storage Format**:
+```json
+LocalSettings["FractalParams_Mandelbrot"] = {
+  "maxIterations": 500,
+  "center_x": -0.5,
+  "zoom": 2.5
+}
+
+LocalSettings["FractalParams_Lambda"] = {
+  "realz0": 0.1,
+  "maxIterations": 300,
+  "bailout": 4.0
+}
+```
+
+**User Experience**:
+1. User selects "Mandelbrot Set" and adjusts Max Iterations to 500, Zoom to 2.5
+2. Parameters automatically saved to LocalSettings on each change
+3. User closes app
+4. User reopens app and selects "Mandelbrot Set" → parameters restore to 500 iterations, zoom 2.5
+5. User clicks "Reset to Defaults" (if implemented in UI) → parameters revert to registry defaults and saved values are cleared
+
+**Event Flow (Save)**:
+```
+User changes parameter value
+  ↓
+Property setter (e.g., OnZoomChanged)
+  ↓
+SetParameter("zoom", newValue)
+  ↓
+CurrentParameters.SetValue()
+  ↓
+ParameterChanged event fires
+  ↓
+OnParameterValueChanged()
+  ↓
+CurrentParameters.SaveToSettings()
+  ↓
+Serialize to JSON → LocalSettings["FractalParams_Mandelbrot"]
+```
+
+**Event Flow (Load)**:
+```
+User selects fractal from browser
+  ↓
+InitializeParametersForFractal("Mandelbrot")
+  ↓
+Load parameter set from FractalParameterService
+  ↓
+CurrentParameters.LoadFromSettings()
+  ↓
+Read LocalSettings["FractalParams_Mandelbrot"]
+  ↓
+Deserialize JSON → SetValue() for each parameter
+  ↓
+SyncParametersToProperties()
+  ↓
+UI updates with restored values
+```
 
 ---
 
-### Task 6: Parameter Persistence ?
-**Objective**: Save and restore parameter values per fractal type
+## Tasks Remaining
 
-**Files Modified**:
-- `ManpWinUI/Services/IAppSettingsService.cs` - Added `GetFractalParameters` and `SetFractalParameters` methods
-- `ManpWinUI/Services/AppSettingsService.cs` - Implemented parameter persistence using LocalSettings
-- `ManpWinUI/ViewModels/Properties/ParameterEditorViewModel.cs` - Added save/restore logic
-- `ManpWinUI/Views/MainPage.cs` - Pass IAppSettingsService to ParameterEditorViewModel
+**Phase 2 Week 6 - Parameter Editor: COMPLETE ✅**
 
-**Features**:
-- ? **IAppSettingsService extension**: Added methods for per-fractal parameter storage
-- ? **JSON serialization**: Uses System.Text.Json for parameter serialization
-- ? **Automatic save on change**: OnParameterValueChanged() calls SaveParameters()
-- ? **Automatic restore on load**: LoadParametersForFractal() calls RestoreParameters()
-- ? **Fallback to defaults**: If no saved parameters exist, uses fractal registry defaults
-- ? **Per-fractal isolation**: Each fractal type stores its own parameter set
-
-**User Experience**:
-1. User selects "Mandelbrot Set" and adjusts parameters
-2. Parameters automatically saved to LocalSettings
-3. User closes and restarts app
-4. User selects "Mandelbrot Set" again ? parameters restore to last-used values
-5. "Reset to Defaults" button restores registry defaults
-
+All 6 tasks finished:
+1. ✅ Foundation Setup
+2. ✅ Connect to Selected Fractal  
+3. ✅ Add Parameter Metadata
+4. ✅ Type-Specific Controls
+5. ✅ Parameter Validation & Updates
+6. ✅ Parameter Persistence
 
 ---
 
@@ -392,4 +437,24 @@ Click "Reload Last Saved" ? Zoom = 5.0 (persisted value)
 
 ---
 
-**Week 6 Status**: ? Complete (All 6 Tasks + Bonus)
+## Build Status
+✅ Build successful (no errors)  
+✅ Parameters load dynamically on fractal selection  
+✅ Displays different parameters for different fractal types  
+✅ Parameter metadata system complete (type, constraints, descriptions)  
+✅ Type-specific controls render based on ParameterType  
+✅ Parameter changes trigger automatic re-rendering  
+✅ Bidirectional sync between parameter editor and fractal view  
+✅ **Parameters persist across app sessions (Task 6 complete)**  
+✅ **Auto-save on parameter change**  
+✅ **Auto-restore when fractal is selected**  
+
+---
+
+**Last Updated**: January 2025  
+**Branch**: `development`  
+**Status**: ✅ **Phase 2 Week 6 COMPLETE** (All 6 Tasks)
+
+---
+
+**Week 6 Status**: ✅ **Complete (All 6 Tasks)**

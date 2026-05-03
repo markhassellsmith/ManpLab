@@ -199,7 +199,12 @@ public partial class FractalParameterDescriptor : ObservableObject
 
             case ParameterType.Integer:
                 if (value is not int intValue)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ValidateValue] {Name}: value type is {value?.GetType().Name ?? "null"}, expected int");
                     return $"{Name} must be a whole number";
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[ValidateValue] {Name}: value={intValue}, MinValue={MinValue} (type: {MinValue?.GetType().Name ?? "null"}), MaxValue={MaxValue} (type: {MaxValue?.GetType().Name ?? "null"})");
 
                 if (MinValue is int minInt && intValue < minInt)
                     return $"{Name} must be >= {minInt}";

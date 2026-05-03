@@ -285,10 +285,27 @@ public class FractalParameterService : IFractalParameterService
         if (string.IsNullOrWhiteSpace(fractalType))
             return null;
 
-        // Try to find registered template
+        // Priority 1: Try native parameter metadata (Task 8 integration)
+        var nativeParams = LoadParametersFromNative(fractalType);
+        if (nativeParams != null)
+        {
+            Debug.WriteLine($"[FractalParameterService] Loaded {nativeParams.Parameters.Count} parameters from native registry for '{fractalType}'");
+
+            // Apply saved overrides
+            var overrides = await LoadParameterOverridesAsync(fractalType);
+            if (overrides.Count > 0)
+            {
+                Debug.WriteLine($"[FractalParameterService] Applying {overrides.Count} saved parameter overrides for '{fractalType}'");
+                nativeParams.ImportValues(overrides);
+            }
+
+            return nativeParams;
+        }
+
+        // Priority 2: Try registered template (fallback)
         if (_parameterTemplates.TryGetValue(fractalType, out var factory))
         {
-            Debug.WriteLine($"[FractalParameterService] Using registered template for '{fractalType}'");
+            Debug.WriteLine($"[FractalParameterService] Using registered C# template for '{fractalType}'");
             var paramSet = factory();
 
             // Apply saved overrides
@@ -302,14 +319,134 @@ public class FractalParameterService : IFractalParameterService
             return paramSet;
         }
 
-        // Fallback: create generic escape-time parameter set for unknown fractals
-        Debug.WriteLine($"[FractalParameterService] No registered template for '{fractalType}', using generic fallback");
+        // Priority 3: Fallback - create generic escape-time parameter set for unknown fractals
+        Debug.WriteLine($"[FractalParameterService] No native or C# template for '{fractalType}', using generic fallback");
         var fallbackSet = StandardParameterTemplates.CreateStandardEscapeTime(fractalType);
 
-        // Check if native registry has custom parameters (future enhancement)
-        // await LoadCustomParametersFromNativeAsync(fractalType, fallbackSet);
-
         return fallbackSet;
+    }
+
+    /// <summary>
+    /// Load parameter metadata from native C++ registry (Task 8).
+    /// Returns null if fractal not found or has no parameters.
+    /// </summary>
+    private FractalParameterSet? LoadParametersFromNative(string fractalType)
+    {
+        try
+        {
+            Debug.WriteLine($"[FractalParameterService] Attempting to load native parameters for '{fractalType}'...");
+
+            // Call native registry to get parameters
+            var nativeParams = ManpCore.Native.FractalRegistryWrapper.GetParameters(fractalType);
+
+            Debug.WriteLine($"[FractalParameterService] Native returned {nativeParams?.Count ?? 0} parameters for '{fractalType}'");
+
+            if (nativeParams == null || nativeParams.Count == 0)
+            {
+                Debug.WriteLine($"[FractalParameterService] No native parameters found for '{fractalType}'");
+                return null;
+            }
+
+            var paramSet = new FractalParameterSet(fractalType);
+
+            // Convert each native ParameterInfo to FractalParameterDescriptor
+            foreach (var nativeParam in nativeParams)
+            {
+                Debug.WriteLine($"[FractalParameterService]   - {nativeParam.Name} ({nativeParam.DisplayName}): {nativeParam.DefaultValue}");
+
+                // For Integer types, convert double bounds to int bounds
+                object? minValue = nativeParam.MinValue;
+                object? maxValue = nativeParam.MaxValue;
+                if (nativeParam.Type == ManpCore.Native.ManagedParameterType.Integer)
+                {
+                    minValue = (int)nativeParam.MinValue;
+                    maxValue = (int)nativeParam.MaxValue;
+                }
+
+                var descriptor = new FractalParameterDescriptor
+                {
+                    Key = nativeParam.Name,
+                    Name = nativeParam.DisplayName,
+                    Description = nativeParam.Description,
+                    Type = MapNativeParameterType(nativeParam.Type),
+                    Category = MapNativeParameterCategory(nativeParam.Category),
+                    DefaultValue = ParseNativeDefaultValue(nativeParam.DefaultValue, nativeParam.Type),
+                    MinValue = minValue,
+                    MaxValue = maxValue,
+                    StepSize = nativeParam.Step,
+                    FormatString = nativeParam.FormatString,
+                    Unit = nativeParam.Unit,
+                    DisplayOrder = nativeParam.DisplayOrder
+                };
+
+                // Handle choice values if present
+                if (nativeParam.ChoiceValues != null && nativeParam.ChoiceValues.Count > 0)
+                {
+                    // Choice type parameters would need special handling here
+                    // For now, just add the descriptor
+                }
+
+                paramSet.AddParameter(descriptor);
+            }
+
+            Debug.WriteLine($"[FractalParameterService] Successfully created parameter set with {paramSet.Parameters.Count} parameters from native registry");
+            return paramSet;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[FractalParameterService] ERROR loading native parameters for '{fractalType}': {ex.Message}");
+            Debug.WriteLine($"[FractalParameterService] Stack trace: {ex.StackTrace}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Map native ParameterType to C# ParameterType
+    /// </summary>
+    private ParameterType MapNativeParameterType(ManpCore.Native.ManagedParameterType nativeType)
+    {
+        return nativeType switch
+        {
+            ManpCore.Native.ManagedParameterType.Integer => ParameterType.Integer,
+            ManpCore.Native.ManagedParameterType.Float => ParameterType.Double,
+            ManpCore.Native.ManagedParameterType.Boolean => ParameterType.Boolean,
+            ManpCore.Native.ManagedParameterType.Choice => ParameterType.Choice,
+            ManpCore.Native.ManagedParameterType.Complex => ParameterType.Complex,
+            _ => ParameterType.Double
+        };
+    }
+
+    /// <summary>
+    /// Map native ParameterCategory to C# ParameterCategory
+    /// </summary>
+    private ParameterCategory MapNativeParameterCategory(ManpCore.Native.ManagedParameterCategory nativeCategory)
+    {
+        return nativeCategory switch
+        {
+            ManpCore.Native.ManagedParameterCategory.General => ParameterCategory.FractalSpecific,
+            ManpCore.Native.ManagedParameterCategory.Calculation => ParameterCategory.Algorithm,
+            ManpCore.Native.ManagedParameterCategory.View => ParameterCategory.View,
+            ManpCore.Native.ManagedParameterCategory.Color => ParameterCategory.Color,
+            ManpCore.Native.ManagedParameterCategory.Advanced => ParameterCategory.Advanced,
+            _ => ParameterCategory.FractalSpecific
+        };
+    }
+
+    /// <summary>
+    /// Parse native default value string to appropriate type
+    /// </summary>
+    private object ParseNativeDefaultValue(string defaultValue, ManpCore.Native.ManagedParameterType type)
+    {
+        if (string.IsNullOrEmpty(defaultValue))
+            return 0.0;
+
+        return type switch
+        {
+            ManpCore.Native.ManagedParameterType.Integer => int.TryParse(defaultValue, out var i) ? i : 0,
+            ManpCore.Native.ManagedParameterType.Float => double.TryParse(defaultValue, out var d) ? d : 0.0,
+            ManpCore.Native.ManagedParameterType.Boolean => bool.TryParse(defaultValue, out var b) && b,
+            _ => defaultValue
+        };
     }
 
     public bool UpdateParameter(FractalParameterSet paramSet, string key, object value)
