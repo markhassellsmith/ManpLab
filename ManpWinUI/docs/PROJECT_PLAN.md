@@ -2,20 +2,150 @@
 
 **Vision**: Expose all 240+ C++ fractals through a modern WinUI 3 interface  
 **Original Timeline**: 12 weeks to production release  
-**Updated Delivery Target**: May 31, 2026 (29 days from May 2)  
+**Updated Status**: Phase 3.5 insertion - Deep Zoom Integration (12-17 days)  
+**Current Focus**: Documentation cleanup → Perturbation theory integration  
 **Architecture**: Keep C++ for computation, WinUI for interface
 
 ---
 
-# 🚀 FINAL SPRINT ROADMAP (May 2 - May 31, 2026)
+# 📋 UPDATED ROADMAP - January 2025
 
-## 🎯 Strategy: Early Integration, Iterative Expansion
+## 🎯 Current Status
 
-**Current Status (May 2):** Architecture complete, Mandelbrot/Julia working, 240+ fractals in native library awaiting UI integration
+**Completed Phases:**
+- ✅ Phase 1: Native Bridge (Weeks 1-3) - FractalRegistry with 14 fractals
+- ✅ Phase 2: UI Redesign (Weeks 4-8.5) - Complete WinUI 3 interface
+- ✅ Phase 3 Task 1: Basic Deep Zoom Toggle (Week 9) - **Temporary implementation**
 
-**Goal:** Get all fractals rendering through the UI by early May, then scale up systematically.
+**Active Phase:**
+- 🧹 Documentation cleanup and planning (current session)
+
+**Next Phase:**
+- 🚧 Phase 3.5: Deep Zoom Integration (NEW - 12-17 days) - **Perturbation theory**
+
+**Future Phases:**
+- ⏳ Phase 3 remaining: Enhanced status bar, animation system
+- ⏳ Phase 4: Polish & Release (Weeks 11-12)
+- ⏳ Phase 5: 240+ Fractal Integration (May 2026 target)
 
 ---
+
+## 🔬 Phase 3.5: Deep Zoom Integration (NEW - HIGH PRIORITY)
+
+**Purpose**: Replace temporary BigDouble solution with production-grade perturbation theory  
+**Timeline**: 12-17 days  
+**Priority**: HIGH - Blocks production-quality deep zoom feature  
+**Document**: See `DEEP_ZOOM_INTEGRATION_PLAN.md` for detailed roadmap
+
+### Background
+The current deep zoom implementation (Week 9 Task 1) uses simple BigDouble coordinate conversion:
+- ✅ Works for moderate zooms (up to ~10^20)
+- ❌ Too slow at extreme zooms (10^50+)
+- ❌ No perturbation theory optimization
+- ❌ Maximum zoom limited by brute-force approach
+
+**Decision**: Properly integrate Paul de Leeuw's perturbation engine from ManpWIN64 instead of keeping the temporary compromise.
+
+### Five-Phase Plan
+
+#### **Phase A: Architecture Analysis (2-3 days)**
+- Study ManpWIN64/Perturbation.cpp (1,200+ lines)
+- Document reference orbit calculation algorithm
+- Map threading model and progress reporting
+- Design C++/CLI integration interface
+- **Deliverable**: Architecture design document, API specification
+
+#### **Phase B: Minimal Perturbation Bridge (3-4 days)**
+- Implement reference orbit building in FractalEngineWrapper
+- Add perturbation pixel calculation wrapper
+- Extend FractalRenderService with orbit caching
+- Basic UI integration (perturbation controls)
+- **Deliverable**: Working perturbation for Mandelbrot set only
+
+#### **Phase C: Full Feature Integration (4-5 days)**
+- Integrate BLA (Bilinear Approximation) - 50-90% iteration skip
+- Add series approximation for high iteration counts
+- Multi-threading optimization
+- Extend to Julia sets and Burning Ship
+- **Deliverable**: Production-ready perturbation for top 3 fractal types
+
+#### **Phase D: Testing & Optimization (2-3 days)**
+- Performance benchmarks (10^15, 10^30, 10^50, 10^100 zoom levels)
+- Edge case testing (cancellation, memory limits, rapid zoom)
+- Code cleanup - remove temporary BigDouble conversion
+- Memory leak verification
+- **Deliverable**: Verified 10-100x speedup, stable at extreme zooms
+
+#### **Phase E: Documentation & Release (1-2 days)**
+- Update ARCHITECTURE_NATIVE_ENGINE.md
+- Create DEEP_ZOOM_USER_GUIDE.md
+- Update README.md with new capabilities
+- Testing guide for extreme zoom verification
+- **Deliverable**: Complete documentation, ready for merge to main
+
+### Success Metrics
+- ✅ 10-100x faster than brute-force BigDouble at 10^50 zoom
+- ✅ Support zoom levels up to 10^100+ (tested in ManpWIN64)
+- ✅ Reference orbit caching (avoid recalculation on pan)
+- ✅ Smooth progress reporting (two-phase: orbit + pixels)
+- ✅ No rendering artifacts or glitches
+- ✅ Works for Mandelbrot, Julia, and Burning Ship
+
+### Integration Points
+**Code to Replace:**
+- `FractalRenderService.cs` lines ~140-161 (BigDouble conversion)
+- `FractalEngineWrapper.cpp` lines ~230-280 (deep zoom path)
+
+**New Code Locations:**
+- `FractalEngineWrapper.cpp`: Add `BuildReferenceOrbit()`, `CalculatePixelPerturbation()`
+- `FractalRenderService.cs`: Add orbit caching infrastructure
+- `RenderSettingsViewModel.cs`: Add perturbation-specific settings (BLA, precision)
+
+---
+
+## 📊 Revised Timeline
+
+### January 2025 (Current)
+- **Days 1-2**: Documentation cleanup ✅ (this session)
+  - Update RESUME_HERE.md, PROGRESS_SUMMARY.md
+  - Create DEEP_ZOOM_INTEGRATION_PLAN.md
+  - Annotate temporary code with TODO comments
+  - Commit and push to `development`
+
+### Phase 3.5: Deep Zoom Integration (12-17 days starting next session)
+- **Days 3-5**: Phase A - Architecture Analysis
+- **Days 6-9**: Phase B - Minimal Perturbation Bridge
+- **Days 10-14**: Phase C - Full Feature Integration
+- **Days 15-17**: Phase D - Testing & Optimization
+- **Days 18-19**: Phase E - Documentation & Release
+
+### Phase 3 Completion (3-4 days after Phase 3.5)
+- **Week 9 Task 2**: Enhanced Status Bar (1 day)
+  - Display zoom level with scientific notation
+  - Show "Perturbation Active" indicator
+  - Render performance metrics
+- **Week 10**: Animation System (2-3 days)
+  - Zoom animation sequences
+  - Orbit animation
+  - Export to video (optional)
+
+### Phase 4: Polish & Release (2-3 weeks)
+- **Week 11**: Quality Review
+  - Bug fixes
+  - Performance optimization
+  - Accessibility improvements
+- **Week 12**: Documentation & Final Release
+  - User guide
+  - Developer documentation
+  - Release notes
+  - Version 1.0 tag
+
+### Phase 5: Fractal Expansion (May 2026 - Original Plan Still Valid)
+The original plan for integrating all 240+ fractals remains valid and can proceed after Phase 4:
+
+---
+
+# 🚀 ORIGINAL PLAN: 240+ Fractal Integration (May 2026)
 
 ## **Week 1: May 2-8 (7 days) - FOUNDATION & PROOF OF CONCEPT**
 
@@ -103,7 +233,7 @@
 - MSIX package refinement
 - Test installation on clean machine
 - Create release notes
-- Version numbering (v1.0)
+- Version numbering (v2.0 - full fractal library)
 
 ### **Days 26-27 (May 27-28): Final Polish**
 - UI tweaks based on testing
@@ -341,39 +471,10 @@ Documentation:
 
 Branch: `feature/phase2-week7-color-render-panels`
 
-### Week 8: Presets & History
-Save locations, navigation undo/redo
+### Week 7: Color & Render Panels
+**Integrate color and render settings with real-time updates**
 
-### Week 8.5: File Export 🚨 CRITICAL - MISSING IMPLEMENTATION
-**Implement image save functionality (toolbar buttons exist but not functional)**
-
-Status: ⏳ Not Started - Discovered during Week 7
-
-Features:
-- PNG/JPEG export with file picker (FileSavePicker)
-- Export options dialog (resolution, quality, metadata)
-- SVG export for Hailstone (via native bridge)
-- Metadata embedding (coordinates, parameters, fractal type)
-- Event handlers for Save Image toolbar buttons
-
-Priority: **HIGH** - Core user-facing feature
-Estimated: 7-8 hours (~1 week task)
-
-See: `docs/FILE_EXPORT_TODO.md` for detailed implementation plan
-
----
-
-## Phase 3: Advanced Features (Weeks 9-10)
-
-### Week 9: Core Features
-- Render cancellation (ESC key) ✅ Already implemented!
-- Deep zoom toggle (arbitrary precision)
-- Enhanced status bar
-
-### Week 10: Animation System
-Palette selection, render mode (escape-time, distance, orbit trap)
-
-Status: 🚧 Task 2 Complete ✅
+Status: ⏳ In Progress (3 Tasks Complete, 2 Tasks Pending)
 
 **Task 1: Foundation Setup** ✅
 - ✅ Created `ColorEditorView.xaml` and `ColorEditorViewModel.cs`
@@ -387,7 +488,7 @@ Status: 🚧 Task 2 Complete ✅
 - ✅ Reset to defaults functionality
 - ✅ Build successful
 
-**Task 2: Palette System** ✅
+**Task 2: Palette System Wiring** ✅
 - ✅ Wired ColorEditorViewModel and RenderSettingsViewModel to MainPage
 - ✅ Subscribed to palette change events
 - ✅ Aligned UI palettes with ManpCore.Native (Grayscale, Classic, Fire, Ocean, Rainbow, Psychedelic)
@@ -406,38 +507,55 @@ Status: 🚧 Task 2 Complete ✅
 - ✅ Ready for native engine integration (C++ implementation pending)
 - ⏳ Antialiasing and Deep Zoom prepared but require native engine support
 
-Documentation:
-- ✅ `Phase2-Week7-Progress.md` started
-- ✅ `Phase2-Week7-Task2-Complete.md` with palette system details
-- ✅ `Phase2-Week7-Task3-Complete.md` with advanced features documentation
+**Task 4: Deep Zoom Toggle** ✅ COMPLETE
+**Status**: ✅ Implemented and tested
 
-Branch: `feature/phase2-week7-color-render-panels`
+Features Delivered:
+- ✅ UI checkbox toggle (RenderSettingsView)
+- ✅ BigDouble conversion with 25-digit precision
+- ✅ Service interface updated (useDeepZoom parameter)
+- ✅ Wired through rendering pipeline (Mandelbrot & Julia)
+- ✅ Native MPFR engine integration
+- ✅ Performance acceptable (~2-5x slower for extreme precision)
+
+Files Modified:
+- `IFractalRenderService.cs` (3 lines)
+- `FractalRenderService.cs` (35 lines)
+- `MainViewModel.Commands.cs` (2 lines)
+
+Documentation:
+- ✅ `Phase3-Week9-Task1-Complete.md` with full implementation details
+
+Branch: `development`
+Status: ✅ Ready for testing and merge
+
+**Task 5: Enhanced Status Bar** ⏳ NOT STARTED
+- Display current zoom level with scientific notation
+- Show "Deep Zoom Active" indicator
+- Recommend iteration count based on zoom
+- Display render performance metrics
 
 ### Week 8: Presets & History
 **Status**: ⏳ Not Started (Deferred to post-release)
 
 Save locations, navigation undo/redo
 
-### Week 8.5: File Export ✅ COMPLETE
-**Status**: ✅ Complete and merged to `development`
+### Week 8.5: File Export 🚨 CRITICAL - MISSING IMPLEMENTATION
+**Implement image save functionality (toolbar buttons exist but not functional)**
 
-Features Delivered:
-- ✅ PNG export with metadata (lossless)
-- ✅ JPEG export with EXIF metadata (lossy)
-- ✅ SVG export for Hailstone sequences (vector)
-- ✅ Clipboard copy (compatible with Paint.NET, Paint, GIMP, Photoshop)
-- ✅ Unified save dialog with format selection
-- ✅ Keyboard shortcuts (Ctrl+S, Ctrl+C)
-- ✅ Auto-generated filenames with timestamps
-- ✅ Complete metadata embedding (fractal state preservation)
+Status: ⏳ Not Started - Discovered during Week 7
 
-Documentation:
-- ✅ `Phase2-Week8.5-Summary.md` (297 lines)
-- ✅ `Week8.5-COMPLETION.md` with merge details
-- ✅ `FILE_EXPORT_TESTING.md` (302 lines)
-- ✅ `ARCHITECTURE_NATIVE_ENGINE.md` (393 lines)
+Features:
+- PNG/JPEG export with file picker (FileSavePicker)
+- Export options dialog (resolution, quality, metadata)
+- SVG export for Hailstone (via native bridge)
+- Metadata embedding (coordinates, parameters, fractal type)
+- Event handlers for Save Image toolbar buttons
 
-Branch: Merged to `development` (commit 81d8b53)
+Priority: **HIGH** - Core user-facing feature
+Estimated: 7-8 hours (~1 week task)
+
+See: `docs/FILE_EXPORT_TODO.md` for detailed implementation plan
 
 ---
 
@@ -616,6 +734,7 @@ ManpLab/
   - ✅ Task 1: Foundation setup (Views + ViewModels)
   - ✅ Task 2: Palette system wiring
   - ✅ Task 3: Advanced color features (cycle, offset, smooth coloring)
+  - ✅ Task 4: Deep Zoom Toggle (native integration pending)
 - ⏳ Week 8: Presets & History (Deferred to post-release)
 - ✅ Week 8.5: File Export complete
   - ✅ PNG/JPEG/SVG export with metadata

@@ -60,7 +60,8 @@ namespace ManpWinUI.Views
             ColorEditorViewModel.ColorSettingsChanged += OnColorSettingsChanged;
 
             // Initialize RenderSettings ViewModel (Week 7 Task 2)
-            RenderSettingsViewModel = new RenderSettingsViewModel();
+            // Week 9 Task 1 Fix: Use the SAME instance injected into MainViewModel from DI
+            RenderSettingsViewModel = App.Current.Services.GetRequiredService<RenderSettingsViewModel>();
             RenderSettingsView.DataContext = RenderSettingsViewModel;
 
             // Week 7 Task 2: Subscribe to render settings changes

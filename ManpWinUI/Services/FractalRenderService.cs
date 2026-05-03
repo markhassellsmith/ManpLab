@@ -136,19 +136,46 @@ Calculated View:
                         JuliaCY = juliaCY
                     };
 
+                    System.Diagnostics.Debug.WriteLine($"[FractalRenderService] useDeepZoom parameter received: {useDeepZoom}");
+
+                    // ╔═══════════════════════════════════════════════════════════════════════════╗
+                    // ║ TODO: TEMPORARY DEEP ZOOM IMPLEMENTATION - REQUIRES REPLACEMENT           ║
+                    // ║                                                                            ║
+                    // ║ This code converts coordinates to BigDouble (25+ decimal places) which    ║
+                    // ║ works but is extremely slow at extreme zooms (10^20+). This is a          ║
+                    // ║ deliberate temporary compromise to enable basic deep zoom functionality.  ║
+                    // ║                                                                            ║
+                    // ║ REPLACEMENT PLAN (Phase 3.5 - See DEEP_ZOOM_INTEGRATION_PLAN.md):        ║
+                    // ║   Phase B: Build reference orbit caching infrastructure                   ║
+                    // ║   - Cache reference orbit across renders (reuse when panning)             ║
+                    // ║   - Invalidate orbit when zoom changes significantly                      ║
+                    // ║   - Two-phase rendering: (1) build/reuse orbit, (2) calculate pixels      ║
+                    // ║                                                                            ║
+                    // ║   Phase C: Integrate perturbation theory from ManpWIN64                   ║
+                    // ║   - Replace this code with BuildReferenceOrbit() call                     ║
+                    // ║   - Use CalculatePixelPerturbation() instead of brute force               ║
+                    // ║   - Add BLA (Bilinear Approximation) for iteration skipping               ║
+                    // ║                                                                            ║
+                    // ║ Expected outcome: 10-100x faster, zoom up to 10^100+                      ║
+                    // ╚═══════════════════════════════════════════════════════════════════════════╝
+
                     // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
                     if (useDeepZoom)
                     {
-                        // Convert double coordinates to BigDouble for arbitrary precision
-                        // Precision: 25 decimal digits is sufficient for zoom levels up to 10^20
-                        const int precision = 25;
+                        // Calculate required precision dynamically based on zoom level
+                        // Formula: log10(zoom) gives order of magnitude, add margin for safety
+                        // Example: zoom 6.8E+14 needs ~16 significant digits, add 15 for safety = 31 digits
+                        int requiredPrecision = (int)Math.Ceiling(Math.Log10(zoom)) + 15;
+                        int precision = Math.Max(25, requiredPrecision); // Minimum 25 digits
 
+                        parameters.Precision = precision;  // Pass precision to native layer
                         parameters.BigCenterX = new BigDouble(centerX, precision);
                         parameters.BigCenterY = new BigDouble(centerY, precision);
                         parameters.BigViewWidth = new BigDouble(viewWidth, precision);
                         parameters.BigViewHeight = new BigDouble(viewHeight, precision);
 
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] Enabled with {precision} digit precision");
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] Enabled with {precision} digit precision (zoom level: {zoom:E2})");
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] View width: {viewWidth:E10} requires ~{requiredPrecision} digits");
                         System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigCenterX: {parameters.BigCenterX}");
                         System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigCenterY: {parameters.BigCenterY}");
                         System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigViewWidth: {parameters.BigViewWidth}");

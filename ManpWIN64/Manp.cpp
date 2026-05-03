@@ -755,12 +755,12 @@ void	GenPositionStr (char *PositionStr)
 	    _snprintf_s(PositionStr, POSITIONSIZE, _TRUNCATE, "X=%14.14f,Y=%14.14f,Width=%14.14f", hor, vert, mandel_width);
 	else
 	    {
-	    centrex = hor + (mandel_width * ((double) width / (double) (2 * height)));
-	    centrey = vert + (mandel_width / 2.0);
-	    if (mandel_width > 0.000001)
-		_snprintf_s(PositionStr, POSITIONSIZE, _TRUNCATE, "X=%14.14f,Y=%14.14f,Width=%14.14f", centrex, centrey, mandel_width);
-	    else
-		_snprintf_s(PositionStr, POSITIONSIZE, _TRUNCATE, "X=%14.14f,Y=%14.14f,BigWidth=%14e", centrex, centrey, mandel_width);
+		centrex = hor + (mandel_width * ((double) width / (double) (2 * height)));
+		centrey = vert + (mandel_width / 2.0);
+		if (mandel_width >= 0.01)
+		_snprintf_s(PositionStr, POSITIONSIZE, _TRUNCATE, "X=%.10f,Y=%.10f,Width=%.10f", centrex, centrey, mandel_width);
+		else
+		_snprintf_s(PositionStr, POSITIONSIZE, _TRUNCATE, "X=%.10e,Y=%.10e,Width=%.10e", centrex, centrey, mandel_width);
 	    }
 	}
     }
@@ -839,19 +839,19 @@ void	DisplayStatusBarInfo (int complete, char *text)
 	{
 	sprintf(FinishedStr, ", Time %s", ShowTime (ElapsedTime));
 	if (BigNumFlag)	    // now we have double double and quad double...
-	    {
-	    if (precision <= 30 && fractalspecific[type].flags & USEDOUBLEDOUBLE)
-		sprintf(PrecisionStr, "DD Prec: %d", precision);
-	    else if (precision <= 60 && fractalspecific[type].flags & USEDOUBLEDOUBLE)
-		sprintf(PrecisionStr, "QD Prec: %d", precision);
-	    else
+		{
+		if (precision <= 30 && fractalspecific[type].flags & USEDOUBLEDOUBLE)
+		sprintf(PrecisionStr, "DD Prec: %d - Deep Zoom mode", precision);
+		else if (precision <= 60 && fractalspecific[type].flags & USEDOUBLEDOUBLE)
+		sprintf(PrecisionStr, "QD Prec: %d - Deep Zoom mode", precision);
+		else
 		{ 
 		if (fractalspecific[type].flags & FRACTINTINPIXEL || fractalspecific[type].flags & TRIGINPIXEL)    // Bignum versions not yet available
-		    sprintf(PrecisionStr, "QD Prec: %d", precision);
+			sprintf(PrecisionStr, "QD Prec: %d - Deep Zoom mode", precision);
 		else
-		    sprintf(PrecisionStr, "Arb Prec: %d", precision);
+			sprintf(PrecisionStr, "Arb Prec: %d - Deep Zoom mode", precision);
 		}
-	    }
+		}
 	if (OscAnimProc == MORPHING)
 	    _snprintf_s(szStatus, STATUSSIZE, _TRUNCATE, "%s%s", PassStr, FinishedStr);
 	else if (type == PERTURBATION)
@@ -869,10 +869,10 @@ void	DisplayStatusBarInfo (int complete, char *text)
 	else
 	    StatusColour = 0x0000FFFF;
 	}
-    else if (complete == CALCULATINGREF)
+	else if (complete == CALCULATINGREF)
 	{
 	sprintf(FinishedStr, ", Time %s", ShowTime(ElapsedTime));
-	sprintf(PrecisionStr, "Arb Prec: %d", precision);
+	sprintf(PrecisionStr, "Arb Prec: %d - Deep Zoom mode", precision);
 	_snprintf_s(szStatus, STATUSSIZE, _TRUNCATE, "%s%s, Arith=%s, %s", PertStatus, FinishedStr, ((BigNumFlag) ? PrecisionStr : "Float"), PositionStr);
 	StatusColour = 0x00FFFF80;
 	}

@@ -2454,14 +2454,14 @@ INT_PTR CALLBACK RTJuliaLocDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	if (s2) delete[] s2;
 	if (s3) delete[] s3;
 	}
-    else
+	else
 	{
 	centrex = hor + (mandel_width * (ScreenRatio / 2.0));
 	centrey = vert + (mandel_width / 2.0);
-	if (mandel_width > 0.000001)
-	    _snprintf_s(PositionString, SIZEOF_BF_VARS * 3, _TRUNCATE, "X = %14.14f\r\nY = %14.14f\r\nWidth = %14.14f", centrex, centrey, mandel_width);
+	if (mandel_width >= 0.01)
+		_snprintf_s(PositionString, SIZEOF_BF_VARS * 3, _TRUNCATE, "X = %.10f\r\nY = %.10f\r\nWidth = %.10f", centrex, centrey, mandel_width);
 	else
-	    _snprintf_s(PositionString, SIZEOF_BF_VARS * 3, _TRUNCATE, "X = %14.14f\r\nY = %14.14f\r\nWidth = %14e", centrex, centrey, mandel_width);
+		_snprintf_s(PositionString, SIZEOF_BF_VARS * 3, _TRUNCATE, "X = %.10e\r\nY = %.10e\r\nWidth = %.10e", centrex, centrey, mandel_width);
 	}
     switch (calcmode)
 	{
@@ -2480,22 +2480,22 @@ INT_PTR CALLBACK RTJuliaLocDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	    //	    sprintf(PassStr, "Pass %d of %d", curpass, totpasses); 
 	    //	    break;
 	}
-    _snprintf_s(FinishedStr, GENERALFIELDLENGTH, _TRUNCATE, "%s", (finished) ? ", Image Complete" : " ");
-    if (BigNumFlag)	    // now we have double double and quad double...
+	_snprintf_s(FinishedStr, GENERALFIELDLENGTH, _TRUNCATE, "%s", (finished) ? ", Image Complete" : " ");
+	if (BigNumFlag)	    // now we have double double and quad double...
 	{
 	if (precision <= 30 && fractalspecific[type].flags & USEDOUBLEDOUBLE)
-	    _snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "DD Prec: %d", precision);
+		_snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "DD Prec: %d - Deep Zoom mode", precision);
 	else if (precision <= 60 && fractalspecific[type].flags & USEDOUBLEDOUBLE)
-	    _snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "QD Prec: %d", precision);
+		_snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "QD Prec: %d - Deep Zoom mode", precision);
 	else
-	    {
-	    if (fractalspecific[type].flags & FRACTINTINPIXEL || fractalspecific[type].flags & TRIGINPIXEL)    // Bignum versions not yet available
-		_snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "QD Prec: %d", precision);
-	    else
-		_snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "Arb Prec: %d", precision);
-	    }
+		{
+		if (fractalspecific[type].flags & FRACTINTINPIXEL || fractalspecific[type].flags & TRIGINPIXEL)    // Bignum versions not yet available
+		_snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "QD Prec: %d - Deep Zoom mode", precision);
+		else
+		_snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "Arb Prec: %d - Deep Zoom mode", precision);
+		}
 	}
-    else
+	else
 	_snprintf_s(PrecisionStr, GENERALFIELDLENGTH, _TRUNCATE, "Floating Point: %d", precision);
 
     if (type == PERTURBATION)

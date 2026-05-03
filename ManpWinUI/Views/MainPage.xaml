@@ -1066,6 +1066,7 @@
                             <Run Text=" × " />
                             <Run Text="{x:Bind ViewModel.CurrentViewHeight, Mode=OneWay}" />
                             <Run Text=" (fractal units)" />
+                            <Run Text="{x:Bind ViewModel.DeepZoomIndicator, Mode=OneWay}" Foreground="#8B4513" FontWeight="Bold" />
             </TextBlock>
 
             <!-- Right: Render time -->

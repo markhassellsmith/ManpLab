@@ -35,14 +35,20 @@ public partial class MainViewModel
 
         var fractalName = IsJuliaMode ? $"{SelectedFractalType} Julia" : SelectedFractalType;
 
+        // Pre-calculate deep zoom status for early display
+        bool userRequestedDeepZoom = _renderSettingsViewModel.UseDeepZoom;
+        const double DEEP_ZOOM_THRESHOLD = 1e10;
+        bool willUseDeepZoom = userRequestedDeepZoom && Zoom >= DEEP_ZOOM_THRESHOLD;
+        string deepZoomPrefix = willUseDeepZoom ? "[Deep Zoom] " : "";
+
         _dispatcherQueue.TryEnqueue(() =>
         {
             IsRendering = true;
             RenderProgress = 0;
             IsBookmarksPanelOpen = false;
             StatusMessage = IsJuliaMode 
-                ? $"Rendering {fractalName} set (c = {JuliaCX:F4}, {JuliaCY:F4})..." 
-                : $"Rendering {fractalName} set...";
+                ? $"{deepZoomPrefix}Rendering {fractalName} set (c = {JuliaCX:F4}, {JuliaCY:F4})..." 
+                : $"{deepZoomPrefix}Rendering {fractalName} set...";
         });
 
         // Auto-scale iterations based on zoom if enabled
@@ -104,6 +110,7 @@ public partial class MainViewModel
             // TASK 6: Use parameter system if available (new architecture)
             // ═════════════════════════════════════════════════════════════════════════
             FractalRenderResult result;
+            bool shouldUseDeepZoom = false; // Track whether deep zoom was actually used
 
             if (CurrentParameters != null && UseParameterSystem)
             {
@@ -123,8 +130,25 @@ public partial class MainViewModel
                 renderParams.ColorOffset = ColorOffset;
                 renderParams.UseSmoothColoring = UseSmoothColoring;
 
-                // Week 9 Task 2: Deep zoom toggle
-                renderParams.UseDeepZoom = _renderSettingsViewModel.UseDeepZoom;
+                // Week 9 Task 1: Deep zoom toggle with automatic optimization
+                // Deep zoom threshold already calculated at method start
+                shouldUseDeepZoom = false; // Default to disabled
+
+                // Auto-enable deep zoom when zoom is high enough (requires arbitrary precision)
+                if (userRequestedDeepZoom && Zoom >= DEEP_ZOOM_THRESHOLD)
+                {
+                    shouldUseDeepZoom = true;
+                    System.Diagnostics.Debug.WriteLine($"[DeepZoom] ENABLED: zoom {Zoom:E2} >= threshold {DEEP_ZOOM_THRESHOLD:E2} (arbitrary precision required)");
+                }
+                else if (userRequestedDeepZoom && Zoom < DEEP_ZOOM_THRESHOLD)
+                {
+                    shouldUseDeepZoom = false;
+                    System.Diagnostics.Debug.WriteLine($"[Optimization] Deep zoom not needed: zoom {Zoom:E2} < threshold {DEEP_ZOOM_THRESHOLD:E2}");
+                    System.Diagnostics.Debug.WriteLine($"[Optimization] Using double precision (50-100x faster)");
+                }
+
+                renderParams.UseDeepZoom = shouldUseDeepZoom;
+                System.Diagnostics.Debug.WriteLine($"[RenderCommand] Deep Zoom Setting: {shouldUseDeepZoom} (User requested: {userRequestedDeepZoom}, Zoom: {Zoom:E2})");
 
                 // Call new parameter-based render method
                 result = await _renderService.RenderFractalAsync(
@@ -136,6 +160,24 @@ public partial class MainViewModel
             else
             {
                 System.Diagnostics.Debug.WriteLine("[RenderCommand] Using LEGACY property-based render (fallback)");
+
+                // Week 9 Task 1: Deep zoom toggle with automatic optimization (legacy path)
+                // Deep zoom threshold already calculated at method start
+                shouldUseDeepZoom = false; // Default to disabled
+
+                // Auto-enable deep zoom when zoom is high enough
+                if (userRequestedDeepZoom && Zoom >= DEEP_ZOOM_THRESHOLD)
+                {
+                    shouldUseDeepZoom = true;
+                    System.Diagnostics.Debug.WriteLine($"[DeepZoom] ENABLED (Legacy): zoom {Zoom:E2} >= threshold {DEEP_ZOOM_THRESHOLD:E2}");
+                }
+                else if (userRequestedDeepZoom && Zoom < DEEP_ZOOM_THRESHOLD)
+                {
+                    shouldUseDeepZoom = false;
+                    System.Diagnostics.Debug.WriteLine($"[Optimization] Deep zoom not needed (Legacy): zoom {Zoom:E2} < threshold {DEEP_ZOOM_THRESHOLD:E2}");
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[RenderCommand] Deep Zoom Setting (Legacy): {shouldUseDeepZoom} (User requested: {userRequestedDeepZoom}, Zoom: {Zoom:E2})");
 
                 // Fallback: use old individual-property method
                 result = await _renderService.RenderMandelbrotAsync(
@@ -153,7 +195,7 @@ public partial class MainViewModel
                     ColorCycleSpeed,
                     ColorOffset,
                     UseSmoothColoring,
-                    _renderSettingsViewModel.UseDeepZoom,
+                    shouldUseDeepZoom,
                     progress);
             }
 
@@ -196,17 +238,20 @@ public partial class MainViewModel
             {
                 LastRenderTime = renderTime;
 
+                // Build status message with optional Deep Zoom indicator
+                string deepZoomIndicator = shouldUseDeepZoom ? " | Deep Zoom mode" : "";
+
                 if (escapePercent < 1.0)
                 {
-                    StatusMessage = $"⚠️ Only {escapePercent:F2}% of pixels escaped - You're inside the Mandelbrot set! Zoom to the boundary for detail.";
+                    StatusMessage = $"⚠️ Only {escapePercent:F2}% of pixels escaped - You're inside the Mandelbrot set! Zoom to the boundary for detail.{deepZoomIndicator}";
                 }
                 else if (escapePercent < 10.0)
                 {
-                    StatusMessage = $"Low detail: {escapePercent:F1}% escaped - Try zooming to colorful boundaries";
+                    StatusMessage = $"Low detail: {escapePercent:F1}% escaped - Try zooming to colorful boundaries{deepZoomIndicator}";
                 }
                 else
                 {
-                    StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped)";
+                    StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped){deepZoomIndicator}";
                 }
 
                 // Record navigation state after successful render

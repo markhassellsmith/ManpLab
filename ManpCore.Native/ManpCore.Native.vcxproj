@@ -63,12 +63,12 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)ManpWIN64;$(SolutionDir)external\mpfr\include;$(SolutionDir)qdlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-                      <Link>
-                        <SubSystem>Console</SubSystem>
-                        <GenerateDebugInformation>true</GenerateDebugInformation>
-                        <AssemblyDebug>true</AssemblyDebug>
-                      </Link>
-                    </ItemDefinitionGroup>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -99,6 +99,7 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="BatchRenderer.cpp" />
+    <ClCompile Include="BigDoubleSupport.cpp" />
     <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="BarnsleyFamily.cpp" />
     <ClCompile Include="SpecialExoticFamily.cpp" />
@@ -127,7 +128,3 @@
     <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(SolutionDir)x64\$(Configuration)" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
   </Target>
 </Project>
-
-
-
-

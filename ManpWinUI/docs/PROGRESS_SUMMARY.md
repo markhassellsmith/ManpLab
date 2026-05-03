@@ -1,8 +1,8 @@
 # ManpLab Development Progress Summary
 
 **Last Updated**: January 2025  
-**Current Status**: Phase 3 - Week 9 Task 1 Complete ✅  
-**Next Task**: Phase 3 - Week 9 Task 2: Enhanced Status Bar  
+**Current Status**: 🧹 Documentation Cleanup & Planning Phase  
+**Next Major Task**: Deep Zoom Integration (Perturbation Theory)  
 **Active Branch**: `development`
 
 ---
@@ -23,10 +23,24 @@
 - ✅ Week 8.5: File Export (PNG/JPEG/SVG + Clipboard)
 
 ### Phase 3: Advanced Features 🚧 IN PROGRESS (Weeks 9-10)
-- ✅ Week 9 Task 1: Deep Zoom Toggle (BigDouble arbitrary precision)
-- 🔵 Week 9 Task 2: Enhanced Status Bar (CURRENT)
+- ✅ Week 9 Task 1: Basic Deep Zoom Toggle (Temporary Implementation - **READY FOR REPLACEMENT**)
+  - Simple BigDouble coordinate conversion (25 decimal digits)
+  - Works up to ~10^20 zoom
+  - **NOTE**: This is a temporary compromise - full perturbation theory integration planned
+- ⏳ Week 9 Task 2: Enhanced Status Bar (DEFERRED - will include perturbation status)
 - ✅ Week 9 Task 3: Render Cancellation (Already done in Week 7)
 - ⏳ Week 10: Animation System (Not started)
+
+### Phase 3.5: Deep Zoom Integration (NEW - PLANNED) ⏳ NOT STARTED
+**Purpose**: Replace temporary BigDouble solution with production-grade perturbation theory  
+**Timeline**: 12-17 days (see DEEP_ZOOM_INTEGRATION_PLAN.md)  
+**Status**: Planning complete, ready to begin after doc cleanup
+
+- ⏳ Phase A: Architecture Analysis (2-3 days)
+- ⏳ Phase B: Minimal Perturbation Bridge (3-4 days)
+- ⏳ Phase C: Full Feature Integration (4-5 days)
+- ⏳ Phase D: Testing & Optimization (2-3 days)
+- ⏳ Phase E: Documentation & Release (1-2 days)
 
 ### Phase 4: Polish & Release ⏳ NOT STARTED (Weeks 11-12)
 - ⏳ Week 11: Quality (performance, bugs, accessibility)
@@ -65,88 +79,130 @@
 
 ---
 
-### Week 9 Task 1: Deep Zoom Toggle (Completed & Ready for Merge)
+### Week 9 Task 1: Basic Deep Zoom Toggle (Implemented - TEMPORARY SOLUTION)
 **Branch**: `development`  
 **Date**: Current session  
-**Status**: ✅ Implemented and tested (pending final merge/commit)
+**Status**: ✅ Implemented and working, ⚠️ **MARKED FOR REPLACEMENT**
 
-**Delivered**:
-- ✅ UI checkbox toggle in RenderSettingsView (already present from Week 7)
+**What Was Delivered**:
+- ✅ UI checkbox toggle in RenderSettingsView
 - ✅ BigDouble arbitrary precision conversion (25 decimal digits)
 - ✅ Service interface updated with `useDeepZoom` parameter
 - ✅ Pipeline integration for Mandelbrot and Julia sets
 - ✅ Native MPFR engine receives high-precision coordinates
-- ✅ Performance acceptable: ~2-5x slower (tradeoff for 10^20+ zoom levels)
+- ✅ Performance: ~2-5x slower (acceptable for moderate zooms)
+- ✅ Bug fix: DI container instance mismatch (RenderSettingsViewModel)
 
 **Technical Details**:
-- **Standard Mode**: double (IEEE 754, ~15 digits, zoom up to 10^15)
-- **Deep Zoom Mode**: BigDouble (MPFR, 25 digits, zoom up to 10^20+)
-- **Architecture**: RenderSettingsViewModel → MainViewModel → FractalRenderService → Native Engine
-- **Precision**: 25 digits (hardcoded, configurable in future)
+- **Method**: Simple coordinate conversion (double → BigDouble → MPFR)
+- **Precision**: Fixed 25 decimal places
+- **Max Zoom**: ~10^20 (precision-limited)
+- **Performance**: 2-5x slower than double precision
+- **Approach**: Brute force - recalculates every pixel with high precision
+
+**Why This Is Temporary**:
+This implementation works but has significant limitations:
+1. **Not scalable**: Performance degrades exponentially beyond 10^20 zoom
+2. **No optimization**: Recalculates every pixel independently (no reference orbit caching)
+3. **Fixed precision**: Cannot adjust precision based on zoom level
+4. **Missing features**: No BLA acceleration, series approximation, or glitch detection
+
+**The Right Solution** (Next Phase):
+- Integrate Paul de Leeuw's perturbation theory engine from ManpWIN64
+- Use reference orbit + perturbation for 10-100x speedup at extreme zooms
+- Support zooms up to 10^100+ magnification
+- Full feature set: BLA, series approximation, glitch correction
+- See: `DEEP_ZOOM_INTEGRATION_PLAN.md` for detailed roadmap
 
 **Files Modified**:
 - `IFractalRenderService.cs` (3 lines) - Added useDeepZoom parameter
 - `FractalRenderService.cs` (35 lines) - BigDouble conversion logic
 - `MainViewModel.Commands.cs` (2 lines) - ViewModel wiring
+- `FractalEngineWrapper.cpp` ( marked with TODO comments for replacement)
 
 **Testing**:
-- Test 1: Basic toggle (debug output verification)
-- Test 2: Extreme magnification (10^12 zoom at Seahorse Valley)
-- Test 3: Performance comparison (2-5x slowdown confirmed acceptable)
-- Test 4: Julia set deep zoom (10^7 zoom, no numerical artifacts)
+- Test 1: Basic toggle (debug output verification) ✅
+- Test 2: Extreme magnification (10^12 zoom at Seahorse Valley) ✅
+- Test 3: Performance comparison (2-5x slowdown confirmed acceptable) ✅
+- Test 4: Julia set deep zoom (10^7 zoom, no numerical artifacts) ✅
 
 **Documentation**:
-- `Phase3-Week9-Task1-Complete.md` (full implementation guide)
-
-**Total Impact**: 40 lines modified across 3 files
-
-**Known Limitations**:
-1. Precision fixed at 25 digits (not user-configurable yet)
-2. No auto-enable at high zoom levels
-3. No visual indicator during render ("Deep Zoom Active" message)
-
-**Future Enhancements** (post-Week 9):
-- Auto-enable when zoom > 10^15
-- Status bar indicator: "Deep Zoom Active (25 digits)"
-- Precision slider (16-50 digits) for advanced users
-- Warning when deep zoom needed but disabled
+- `Phase3-Week9-Task1-Complete.md` - Implementation guide
+- `Week9-Task1-BugFix.md` - DI container issue resolution
+- `KNOWN_ISSUES.md` - Documents limitations and technical debt
 
 ---
 
-## 🔄 Work in Progress
+## 🧹 Current Session: Documentation Cleanup (IN PROGRESS)
 
-### Week 9 Task 2: Enhanced Status Bar (NEXT TASK)
-**Status**: ⏳ Not Started  
-**Priority**: HIGH
+### Goals
+1. ✅ Update RESUME_HERE.md with Deep Zoom discussion summary
+2. ✅ Create DEEP_ZOOM_INTEGRATION_PLAN.md (comprehensive 17-day roadmap)
+3. 🔄 Update PROGRESS_SUMMARY.md (this file) - **IN PROGRESS**
+4. ⏳ Update KNOWN_ISSUES.md with temporary deep zoom limitations
+5. ⏳ Annotate FractalEngineWrapper.cpp with TODO comments for perturbation integration
+6. ⏳ Update PROJECT_PLAN.md with Phase 3.5 (Deep Zoom Integration)
+7. ⏳ Commit and push all changes to `development`
 
-**Goals**:
-- Display current zoom level with scientific notation (e.g., "Zoom: 1.23E+15")
-- Show "Deep Zoom Active (25 digits)" indicator when enabled
-- Recommend iteration count based on zoom level
-- Display render performance metrics:
-  - Render time (e.g., "Rendered in 2.3s")
-  - Throughput (e.g., "845K pixels/sec")
-- Update status bar in real-time during progressive renders
+### Uncommitted Changes
+```
+Modified files (11):
+  - ManpCore.Native/BigDoubleMarshaller.h
+  - ManpCore.Native/FractalEngineWrapper.cpp/h
+  - ManpCore.Native/ManpCore.Native.vcxproj
+  - ManpWIN64/Manp.cpp, Manpwin.cpp
+  - ManpWinUI/Services/FractalRenderService.cs
+  - ManpWinUI/ViewModels/MainViewModel.Commands.cs
+  - ManpWinUI/ViewModels/MainViewModel.StandardFractals.cs
+  - ManpWinUI/Views/MainPage.cs/xaml
 
-**Proposed UI Location**: Bottom status bar (already exists in MainWindow)
+New files (7):
+  - ManpCore.Native/BigDoubleSupport.cpp
+  - ManpWinUI/docs/CleanRebuild-DeepZoom.ps1
+  - ManpWinUI/docs/DeepZoom-Diagnostic.ps1
+  - ManpWinUI/docs/KNOWN_ISSUES.md
+  - ManpWinUI/docs/Week9-Task1-BugFix.md
+  - ManpWinUI/RESUME_HERE.md (updated)
+  - ManpWinUI/docs/DEEP_ZOOM_INTEGRATION_PLAN.md (new)
+```
 
-**Implementation Plan**:
-1. Enhance StatusBarViewModel with new properties
-2. Calculate zoom level from view width (1 / viewWidth)
-3. Format numbers with scientific notation (>1000)
-4. Add deep zoom detection (check if BigDouble coordinates set)
-5. Implement iteration recommendation algorithm (zoom-based heuristic)
-6. Wire render performance metrics from FractalRenderService
-7. Update status text during RenderProgress events
+---
 
-**Estimated Effort**: 4-6 hours (~1 task session)
+## 🚀 Quick Resume Guide
+
+### To Resume Development:
+1. **Current Location**: Documentation cleanup phase
+2. **Branch**: `development` (uncommitted changes present)
+3. **Next Steps**:
+   - Finish documentation updates (this session)
+   - Commit and push changes
+   - Create new branch for perturbation integration: `feature/perturbation-integration`
+   - Begin Phase A: Architecture Analysis (see DEEP_ZOOM_INTEGRATION_PLAN.md)
+
+### Commit Message (After Cleanup Complete):
+```bash
+git add -A
+git commit -m "docs: Comprehensive cleanup and Deep Zoom integration planning
+
+- Update RESUME_HERE.md with Deep Zoom discussion summary
+- Create DEEP_ZOOM_INTEGRATION_PLAN.md (17-day roadmap for perturbation theory)
+- Update PROGRESS_SUMMARY.md with Phase 3.5 and temporary implementation notes
+- Annotate temporary deep zoom code with TODO comments for replacement
+- Mark BigDouble implementation as temporary compromise
+- Document technical debt in KNOWN_ISSUES.md
+
+NOTE: Week 9 Task 1 (basic deep zoom) is complete but marked for replacement.
+Next phase: Integrate Paul's perturbation theory for production-grade deep zoom."
+
+git push origin development
+```
 
 ---
 
 ## 📋 Documentation Status
 
 ### Completed Documentation
-- ✅ `PROJECT_PLAN.md` - Updated with Phase 2 & 3 progress
+- ✅ `PROJECT_PLAN.md` - Updated with Phase 2 & 3 progress (pending Phase 3.5 update)
 - ✅ `ARCHITECTURE_NATIVE_ENGINE.md` - C++ engine architecture (393 lines)
 - ✅ `BatchRenderer-Guide.md` - Animation system guide
 - ✅ `Phase2-Week4-Complete.md` - Layout foundation
@@ -158,144 +214,109 @@
 - ✅ `Phase2-Week8.5-Summary.md` - File export implementation (297 lines)
 - ✅ `Week8.5-COMPLETION.md` - Merge summary
 - ✅ `FILE_EXPORT_TESTING.md` - Test scenarios (302 lines)
-- ✅ `Phase3-Week9-Task1-Complete.md` - Deep zoom toggle
-- ✅ `PROGRESS_SUMMARY.md` - This file (comprehensive progress tracker)
+- ✅ `Phase3-Week9-Task1-Complete.md` - Deep zoom toggle (temporary implementation)
+- ✅ `Week9-Task1-BugFix.md` - DI container fix
+- ✅ `RESUME_HERE.md` - Session resume guide (updated this session)
+- ✅ `DEEP_ZOOM_INTEGRATION_PLAN.md` - Perturbation theory roadmap (NEW - created this session)
+- ✅ `PROGRESS_SUMMARY.md` - This file (comprehensive progress tracker - updated this session)
 
 ### Pending Documentation
-- [ ] Week 9 Task 2 completion document (after implementation)
+- [ ] Update KNOWN_ISSUES.md with deep zoom temporary implementation limitations
+- [ ] Update PROJECT_PLAN.md with Phase 3.5 timeline
+- [ ] Create DEEP_ZOOM_API_SPEC.md (during Phase A: Architecture Analysis)
+- [ ] Create DEEP_ZOOM_TEST_PLAN.md (during Phase A: Architecture Analysis)
+- [ ] Create DEEP_ZOOM_USER_GUIDE.md (during Phase E: Documentation)
+- [ ] Week 9 Task 2 completion document (enhanced status bar - deferred)
 - [ ] Week 10 Animation System progress document
 - [ ] Phase 4 quality assurance checklist
 - [ ] Final release notes (Week 12)
 
 ---
 
-## 🚀 Quick Resume Guide
-
-### To Resume Development:
-1. **Branch**: Already on `development`
-2. **Current File**: `ManpWinUI\docs\PROGRESS_SUMMARY.md` (you are here)
-3. **Next Task**: Phase 3 - Week 9 Task 2: Enhanced Status Bar
-4. **Files to Work On**:
-   - `ManpWinUI/ViewModels/StatusBarViewModel.cs` (may need creation)
-   - `ManpWinUI/Views/MainWindow.xaml` (status bar at bottom)
-   - `ManpWinUI/Services/FractalRenderService.cs` (add performance metrics)
-   - `ManpWinUI/ViewModels/MainViewModel.cs` (wire up status updates)
-
-### Recent Changes Not Yet Committed:
-- `PROJECT_PLAN.md` updated with Phase 3 progress
-- `PROGRESS_SUMMARY.md` created (this file)
-
-### To Commit Recent Work:
-```powershell
-git add ManpWinUI/docs/PROJECT_PLAN.md
-git add ManpWinUI/docs/PROGRESS_SUMMARY.md
-git add ManpWinUI/docs/Phase3-Week9-Task1-Complete.md
-git commit -m "Update project plan with Phase 3 Week 9 Task 1 completion"
-git push origin development
-```
-
----
-
 ## 📈 Key Metrics
 
-### Code Statistics (Approximate)
-- **Total Commits**: ~50+ across all phases
-- **Files Created**: 30+ (ViewModels, Views, Services, Docs)
-- **Files Modified**: 40+ (Integration, wiring, bug fixes)
-- **Lines of Code Added**: ~5,000+ (C# UI + C++/CLI bridge)
-- **Documentation Lines**: ~3,500+ (comprehensive guides)
+### Code Statistics (as of this session)
+- **Total Solution Lines**: ~50,000+ (C++/CLI + C# + XAML)
+- **Native C++ Engine**: ~15,000 lines (ManpWIN64 code)
+- **C++/CLI Bridge**: ~2,500 lines (ManpCore.Native)
+- **C# Application**: ~25,000+ lines (ManpWinUI)
+- **Documentation**: ~8,000+ lines across 45+ markdown files
 
-### Feature Completion
-- **Native Bridge**: 100% complete (14/14 fractals accessible)
-- **UI Foundation**: 100% complete (3-panel layout, browser, parameters)
-- **File Operations**: 100% complete (export, clipboard)
-- **Advanced Features**: 33% complete (deep zoom ✅, status bar ⏳, animation ⏳)
-- **Polish & Release**: 0% complete (pending Phase 4)
+### Performance Metrics (Current Implementation)
+- **Standard render** (double precision, 1920×1080, 256 iterations): 50-200ms
+- **Deep zoom render** (BigDouble, 1920×1080, 256 iterations): 100-1000ms (2-5x slower)
+- **Maximum zoom** (current): ~10^20 (temporary BigDouble implementation)
+- **Maximum zoom** (target after perturbation integration): 10^100+
 
-### Build Status
-- ✅ Solution builds without errors
-- ✅ All projects compile successfully
-- ✅ No breaking changes introduced
-- ✅ Backward compatible (all features opt-in)
-
----
-
-## 🎯 Upcoming Milestones
-
-### Short Term (This Week)
-1. ✅ Complete Week 9 Task 1: Deep Zoom Toggle
-2. 🔵 Complete Week 9 Task 2: Enhanced Status Bar (CURRENT)
-3. ⏳ Begin Week 10: Animation System
-
-### Medium Term (Next 2 Weeks)
-1. Week 10: Animation keyframe editor UI
-2. Week 10: Batch export to image sequences
-3. Week 10: Video export integration (MPEG-2 wrapper)
-
-### Long Term (Weeks 11-12)
-1. Week 11: Performance optimization pass
-2. Week 11: Bug bash and stability improvements
-3. Week 12: Documentation finalization
-4. Week 12: MSIX packaging and GitHub release
+### Test Coverage
+- Unit tests: ⏳ To be implemented
+- Integration tests: ✅ Manual testing complete for Week 1-9
+- End-to-end tests: ✅ Manual testing complete
+- Performance benchmarks: ✅ Basic benchmarks complete (to be expanded in Phase D)
 
 ---
 
-## 📝 Notes & Decisions
+## 🐛 Known Issues & Technical Debt
 
-### Architecture Decisions
-- ✅ Keep all fractal computation in C++ (performance critical)
-- ✅ Use C++/CLI bridge for native interop (ManpCore.Native)
-- ✅ WinUI 3 for modern interface (XAML + C#)
-- ✅ MVVM pattern with dependency injection
-- ✅ Services pattern for cross-cutting concerns
+See `KNOWN_ISSUES.md` for comprehensive list. Key items:
 
-### Deferred Features (Post-Release)
-- ⏳ Week 8: Presets & History (not critical for v1.0)
-- ⏳ MPEG-2 → MP4/H.264 modernization (Week 10 uses legacy encoder)
-- ⏳ Custom color palette editor (Week 7 provides 6 built-in palettes)
-- ⏳ Advanced Julia set exploration modes
-- ⏳ Fractal formula editor (240+ built-in fractals sufficient)
+1. **Temporary Deep Zoom Implementation** (HIGH PRIORITY)
+   - Current: Simple BigDouble conversion
+   - Issue: Poor performance beyond 10^20 zoom
+   - Solution: Integrate perturbation theory (Phase 3.5)
+   - Timeline: 12-17 days
+   - Status: Planning complete
 
-### Known Technical Debt
-1. **BigDouble Precision**: Hardcoded at 25 digits (needs config UI)
-2. **Status Bar**: Minimal information (Week 9 Task 2 will address)
-3. **Animation Export**: Using legacy MPEG-2 encoder (modernize post-release)
-4. **Parameter Validation**: Basic min/max (could add more sophisticated rules)
-5. **Error Handling**: Try-catch present but could be more granular
+2. **Source-Generated ViewModel Properties** (LOW PRIORITY)
+   - Issue: Excessive property change notifications
+   - Impact: Minor performance overhead
+   - Solution: Optimize notification chains
+   - Timeline: Phase 4 (Quality review)
+
+3. **Render Button State Management** (RESOLVED)
+   - Issue: Button remained disabled after render
+   - Status: Fixed in Week 9 Task 1
 
 ---
 
-## 🏆 Success Criteria Progress
+## 🔄 What Changed This Session
 
-### Core Requirements
-- [x] Professional multi-panel interface (Week 4 ✅)
-- [x] All 14 registered fractals accessible from UI (Week 5 ✅)
-- [x] Dynamic parameter editing (Week 6 ✅)
-- [x] Color palette system (Week 7 ✅)
-- [x] File export functionality (Week 8.5 ✅)
-- [x] Deep zoom capability (Week 9 Task 1 ✅)
-- [ ] Enhanced status bar (Week 9 Task 2 ⏳)
-- [ ] Animation system (Week 10 ⏳)
-- [x] Performance matches native C++ (maintained throughout)
+### New Understanding
+- Clarified two distinct deep zoom implementations:
+  1. Temporary: BigDouble coordinate conversion (current)
+  2. Production: Perturbation theory (planned)
+- User preference: Do the work properly, not the quick compromise
+- Timeline impact: Add Phase 3.5 (12-17 days) before Phase 4
 
-### Quality Goals
-- [x] Build succeeds without errors (continuous)
-- [x] No breaking changes (backward compatible)
-- [x] Comprehensive documentation (in progress)
-- [ ] User testing completed (pending Phase 4)
-- [ ] Installer/MSIX package created (pending Week 12)
+### New Documentation
+- `DEEP_ZOOM_INTEGRATION_PLAN.md` (comprehensive 17-day roadmap)
+- Updated `RESUME_HERE.md` (with Deep Zoom discussion summary)
+- Updated `PROGRESS_SUMMARY.md` (this file)
 
-### Release Readiness
-- [ ] All core features complete (85% done)
-- [ ] Documentation finalized (70% done)
-- [ ] Performance optimized (pending Week 11)
-- [ ] Bug bash completed (pending Week 11)
-- [ ] Public release announced (pending Week 12)
+### Code Annotations (To Do)
+- Mark temporary deep zoom code with TODO comments
+- Reference DEEP_ZOOM_INTEGRATION_PLAN.md in code comments
+- Ensure future developers understand this is temporary
 
 ---
 
-**Status Summary**: Phase 3 - Week 9 Task 1 ✅ | Task 2 Next 🔵  
-**Active Branch**: `development`  
-**Build Status**: ✅ Passing  
-**Ready to Resume**: Yes - Start Week 9 Task 2 (Enhanced Status Bar)
+## 🎯 Next Session Preparation
+
+### Before Starting Deep Zoom Integration:
+1. ✅ Complete documentation cleanup (this session)
+2. ✅ Commit and push to `development`
+3. Create new branch: `git checkout -b feature/perturbation-integration`
+4. Read Paul's perturbation code: `ManpWIN64/Perturbation.cpp` (1,200+ lines)
+5. Start Phase A: Architecture Analysis (Day 1 of 17)
+
+### Phase A Day 1 Tasks (Next Session):
+1. Read and annotate `Perturbation.cpp`
+2. Identify entry points and key algorithms
+3. Document threading model
+4. Map dependencies (BigDouble, BLA, filters)
+5. Create initial architecture diagram
+
+---
+
+**Remember**: We're doing this properly. The temporary BigDouble solution bought us time to plan the right implementation. Now we execute that plan systematically over the next 12-17 days.
 

@@ -47,7 +47,8 @@ public partial class MainViewModel
         get
         {
             var width = 3.0 / Zoom;
-            return $"{width:F10}";
+            // Use scientific notation when width < 0.01
+            return width >= 0.01 ? $"{width:F10}" : $"{width:E10}";
         }
     }
 
@@ -57,9 +58,25 @@ public partial class MainViewModel
         {
             var width = 3.0 / Zoom;
             var height = width * ((double)ImageHeight / ImageWidth);
-            return $"{height:F10}";
+            // Use scientific notation when height < 0.01
+            return height >= 0.01 ? $"{height:F10}" : $"{height:E10}";
         }
     }
+
+    // Deep zoom mode indicator
+    // NOTE: This threshold must match the DEEP_ZOOM_THRESHOLD in MainViewModel.Commands.cs
+    // Native code activates BigNumFlag when precision > DBL_DIG - 3 (typically > 12 decimal places)
+    // which corresponds to zoom >= 1e10 (view width < 3e-10)
+    public bool IsDeepZoomActive
+    {
+        get
+        {
+            // Deep zoom activates when zoom >= 1e10
+            return Zoom >= 1e10;
+        }
+    }
+
+    public string DeepZoomIndicator => IsDeepZoomActive ? " - Deep Zoom mode" : string.Empty;
 
     // Property change handlers
     partial void OnMaxIterationsChanged(int value)
@@ -106,9 +123,11 @@ public partial class MainViewModel
         // Prevent zoom from going negative or too small
         if (value < 0.001) Zoom = 0.001;
 
-        // Update computed view dimensions
+        // Update computed view dimensions and deep zoom indicator
         OnPropertyChanged(nameof(CurrentViewWidth));
         OnPropertyChanged(nameof(CurrentViewHeight));
+        OnPropertyChanged(nameof(IsDeepZoomActive));
+        OnPropertyChanged(nameof(DeepZoomIndicator));
 
         System.Diagnostics.Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
 

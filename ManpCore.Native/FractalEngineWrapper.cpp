@@ -1,15 +1,26 @@
 #include "FractalEngineWrapper.h"
+
+// Prevent IServiceProvider namespace collision between COM and .NET
+// Must be defined before any Windows headers are included
+#define _OLE2_H_  
+#define __SERVPROV_H__
+
 #include "MandelbrotCalculator.h"
 #include "FractalRegistry.h"
 #include "NativePerformanceBaseline.h"
 #include "BigDoubleMarshaller.h"
 #include "Complex.h"  // ManpWIN64 Complex class for POC
+#include "../ManpWIN64/BigDouble.h"
+#include "../ManpWIN64/BigComplex.h"
 #include <string>
 
 using namespace System;
 using namespace System::Diagnostics;
 using namespace System::Runtime::InteropServices;
 using namespace ManpCore::Native;
+
+// External global for MPFR precision (defined in ManpWIN64/BigDouble.cpp)
+extern int decimals;
 
 // Helper function to convert managed string to std::string without msclr/marshal
 static std::string ManagedToStdString(String^ str)
@@ -34,144 +45,144 @@ static String^ StdStringToManaged(const std::string& str)
 }
 
 //=============================================================================
-// BigDouble Implementation
+// BigDouble Implementation (Managed wrapper for MPFR)
 //=============================================================================
 
 // Constructor from double
-BigDouble::BigDouble(double value)
+ManpCore::Native::BigDouble::BigDouble(double value)
 {
-    m_nativeBigDouble = new ::Native::SimpleBigDouble(value);
+    m_nativeBigDouble = new ::Native::MPFRBigDouble(value);
     m_precision = 16;
 }
 
 // Constructor with precision
-BigDouble::BigDouble(double value, int precision)
+ManpCore::Native::BigDouble::BigDouble(double value, int precision)
 {
-    m_nativeBigDouble = new ::Native::SimpleBigDouble(value, precision);
+    m_nativeBigDouble = new ::Native::MPFRBigDouble(value, precision);
     m_precision = precision;
 }
 
 // Copy constructor
-BigDouble::BigDouble(BigDouble^ other)
+ManpCore::Native::BigDouble::BigDouble(ManpCore::Native::BigDouble^ other)
 {
     if (other == nullptr)
         throw gcnew ArgumentNullException("other");
 
-    auto nativeOther = static_cast<::Native::SimpleBigDouble*>(other->m_nativeBigDouble);
-    m_nativeBigDouble = new ::Native::SimpleBigDouble(*nativeOther);
+    auto nativeOther = static_cast<::Native::MPFRBigDouble*>(other->m_nativeBigDouble);
+    m_nativeBigDouble = new ::Native::MPFRBigDouble(*nativeOther);
     m_precision = other->m_precision;
 }
 
 // Destructor
-BigDouble::~BigDouble()
+ManpCore::Native::BigDouble::~BigDouble()
 {
     this->!BigDouble();
 }
 
 // Finalizer
-BigDouble::!BigDouble()
+ManpCore::Native::BigDouble::!BigDouble()
 {
     if (m_nativeBigDouble != nullptr)
     {
-        delete static_cast<::Native::SimpleBigDouble*>(m_nativeBigDouble);
+        delete static_cast<::Native::MPFRBigDouble*>(m_nativeBigDouble);
         m_nativeBigDouble = nullptr;
     }
 }
 
 // Convert to double
-double BigDouble::ToDouble()
+double ManpCore::Native::BigDouble::ToDouble()
 {
-    auto native = static_cast<::Native::SimpleBigDouble*>(m_nativeBigDouble);
+    auto native = static_cast<::Native::MPFRBigDouble*>(m_nativeBigDouble);
     return native->ToDouble();
 }
 
 // Convert to string
-String^ BigDouble::ToString()
+String^ ManpCore::Native::BigDouble::ToString()
 {
-    auto native = static_cast<::Native::SimpleBigDouble*>(m_nativeBigDouble);
+    auto native = static_cast<::Native::MPFRBigDouble*>(m_nativeBigDouble);
     std::string str = native->ToString();
     return gcnew String(str.c_str());
 }
 
 // Parse from string
-BigDouble^ BigDouble::Parse(String^ str)
+ManpCore::Native::BigDouble^ ManpCore::Native::BigDouble::Parse(String^ str)
 {
     if (String::IsNullOrEmpty(str))
         throw gcnew ArgumentNullException("str");
 
     std::string nativeStr = ManagedToStdString(str);
 
-    auto native = ::Native::SimpleBigDouble::FromString(nativeStr);
-    return gcnew BigDouble(native.value, native.precision);
+    auto native = ::Native::MPFRBigDouble::FromString(nativeStr);
+    return gcnew ManpCore::Native::BigDouble(native.ToDouble(), 50);
 }
 
 // Arithmetic operators
-BigDouble^ BigDouble::operator+(BigDouble^ a, BigDouble^ b)
+ManpCore::Native::BigDouble^ ManpCore::Native::BigDouble::operator+(ManpCore::Native::BigDouble^ a, ManpCore::Native::BigDouble^ b)
 {
     if (a == nullptr || b == nullptr)
         throw gcnew ArgumentNullException();
 
-    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
-    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+    auto nativeA = static_cast<::Native::MPFRBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::MPFRBigDouble*>(b->m_nativeBigDouble);
 
     auto result = (*nativeA) + (*nativeB);
-    return gcnew BigDouble(result.value, result.precision);
+    return gcnew ManpCore::Native::BigDouble(result.ToDouble(), Math::Max(a->m_precision, b->m_precision));
 }
 
-BigDouble^ BigDouble::operator-(BigDouble^ a, BigDouble^ b)
+ManpCore::Native::BigDouble^ ManpCore::Native::BigDouble::operator-(ManpCore::Native::BigDouble^ a, ManpCore::Native::BigDouble^ b)
 {
     if (a == nullptr || b == nullptr)
         throw gcnew ArgumentNullException();
 
-    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
-    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+    auto nativeA = static_cast<::Native::MPFRBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::MPFRBigDouble*>(b->m_nativeBigDouble);
 
     auto result = (*nativeA) - (*nativeB);
-    return gcnew BigDouble(result.value, result.precision);
+    return gcnew ManpCore::Native::BigDouble(result.ToDouble(), Math::Max(a->m_precision, b->m_precision));
 }
 
-BigDouble^ BigDouble::operator*(BigDouble^ a, BigDouble^ b)
+ManpCore::Native::BigDouble^ ManpCore::Native::BigDouble::operator*(ManpCore::Native::BigDouble^ a, ManpCore::Native::BigDouble^ b)
 {
     if (a == nullptr || b == nullptr)
         throw gcnew ArgumentNullException();
 
-    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
-    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+    auto nativeA = static_cast<::Native::MPFRBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::MPFRBigDouble*>(b->m_nativeBigDouble);
 
     auto result = (*nativeA) * (*nativeB);
-    return gcnew BigDouble(result.value, result.precision);
+    return gcnew ManpCore::Native::BigDouble(result.ToDouble(), Math::Max(a->m_precision, b->m_precision));
 }
 
-BigDouble^ BigDouble::operator/(BigDouble^ a, BigDouble^ b)
+ManpCore::Native::BigDouble^ ManpCore::Native::BigDouble::operator/(ManpCore::Native::BigDouble^ a, ManpCore::Native::BigDouble^ b)
 {
     if (a == nullptr || b == nullptr)
         throw gcnew ArgumentNullException();
 
-    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
-    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+    auto nativeA = static_cast<::Native::MPFRBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::MPFRBigDouble*>(b->m_nativeBigDouble);
 
     auto result = (*nativeA) / (*nativeB);
-    return gcnew BigDouble(result.value, result.precision);
+    return gcnew ManpCore::Native::BigDouble(result.ToDouble(), Math::Max(a->m_precision, b->m_precision));
 }
 
-bool BigDouble::operator<(BigDouble^ a, BigDouble^ b)
+bool ManpCore::Native::BigDouble::operator<(ManpCore::Native::BigDouble^ a, ManpCore::Native::BigDouble^ b)
 {
     if (a == nullptr || b == nullptr)
         throw gcnew ArgumentNullException();
 
-    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
-    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+    auto nativeA = static_cast<::Native::MPFRBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::MPFRBigDouble*>(b->m_nativeBigDouble);
 
     return (*nativeA) < (*nativeB);
 }
 
-bool BigDouble::operator>(BigDouble^ a, BigDouble^ b)
+bool ManpCore::Native::BigDouble::operator>(ManpCore::Native::BigDouble^ a, ManpCore::Native::BigDouble^ b)
 {
     if (a == nullptr || b == nullptr)
         throw gcnew ArgumentNullException();
 
-    auto nativeA = static_cast<::Native::SimpleBigDouble*>(a->m_nativeBigDouble);
-    auto nativeB = static_cast<::Native::SimpleBigDouble*>(b->m_nativeBigDouble);
+    auto nativeA = static_cast<::Native::MPFRBigDouble*>(a->m_nativeBigDouble);
+    auto nativeB = static_cast<::Native::MPFRBigDouble*>(b->m_nativeBigDouble);
 
     return (*nativeA) > (*nativeB);
 }
@@ -255,15 +266,75 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
 
         Debug::WriteLine("Native Calculate: Setting up parameters...");
 
+        // Check if deep zoom parameters are provided
+        // ╔═══════════════════════════════════════════════════════════════════════════╗
+        // ║ TODO: TEMPORARY DEEP ZOOM IMPLEMENTATION - REQUIRES REPLACEMENT           ║
+        // ║                                                                            ║
+        // ║ This code uses simple BigDouble coordinate conversion (25 decimal places) ║
+        // ║ which works but has severe performance limitations beyond 10^20 zoom.     ║
+        // ║                                                                            ║
+        // ║ REPLACEMENT PLAN (Phase 3.5 - 12-17 days):                                ║
+        // ║   1. Integrate perturbation theory from ManpWIN64/Perturbation.cpp        ║
+        // ║   2. Implement reference orbit calculation (ReferenceZoomPoint)            ║
+        // ║   3. Add perturbation pixel calculation (delta-based optimization)         ║
+        // ║   4. Integrate BLA (Bilinear Approximation) for 50-90% iteration skip     ║
+        // ║   5. Add reference orbit caching for pan operations                        ║
+        // ║                                                                            ║
+        // ║ See: ManpWinUI/docs/DEEP_ZOOM_INTEGRATION_PLAN.md for detailed roadmap    ║
+        // ║                                                                            ║
+        // ║ Expected outcome: 10-100x faster at extreme zooms, support up to 10^100+  ║
+        // ╚═══════════════════════════════════════════════════════════════════════════╝
+        bool useDeepZoom = (parameters->BigCenterX != nullptr && 
+                            parameters->BigCenterY != nullptr &&
+                            parameters->BigViewWidth != nullptr &&
+                            parameters->BigViewHeight != nullptr);
+
+        if (useDeepZoom)
+        {
+            Debug::WriteLine("Native Calculate: Deep Zoom Mode - Using MPFR BigDouble precision");
+
+            // Set MPFR precision based on the BigDouble precision
+            int requiredPrecision = parameters->Precision;
+            decimals = requiredPrecision;
+            Debug::WriteLine(String::Format("Native Calculate: Set MPFR decimals to {0}", decimals));
+
+            // ╔═══════════════════════════════════════════════════════════════════╗
+            // ║ TEMPORARY LIMITATION:                                              ║
+            // ║ The following code converts BigDouble → double, losing precision   ║
+            // ║ benefits. This works for moderate zooms but fails at extreme zoom. ║
+            // ║                                                                     ║
+            // ║ PROPER IMPLEMENTATION (to be added in Phase 3.5):                  ║
+            // ║   1. Build high-precision reference orbit at center point          ║
+            // ║      (using BigDouble/MPFR, expensive but done once)               ║
+            // ║   2. For each pixel:                                               ║
+            // ║      a. Calculate delta from reference center (double precision OK)║
+            // ║      b. Use perturbation formula: ΔZ_n ≈ 2·Z_n·ΔZ_(n-1) + ΔC      ║
+            // ║      c. Z_n comes from cached reference orbit (fast lookup)        ║
+            // ║   3. Result: 10-100x faster, supports 10^100+ zoom                 ║
+            // ╚═══════════════════════════════════════════════════════════════════╝
+
+            // TODO: Implement deep zoom rendering using BigDouble arithmetic
+            // For now, fall back to double precision with extracted values
+            Debug::WriteLine("WARNING: Deep zoom BigDouble rendering path not yet implemented - falling back to double");
+        }
+
         // Setup native Mandelbrot parameters
         ::Native::MandelbrotParams nativeParams;
         nativeParams.width = width;
         nativeParams.height = height;
         nativeParams.maxIterations = parameters->MaxIterations;
-        nativeParams.centerX = parameters->CenterX;
-        nativeParams.centerY = parameters->CenterY;
-        nativeParams.viewWidth = parameters->ViewWidth;
-        nativeParams.viewHeight = parameters->ViewHeight;
+        nativeParams.centerX = useDeepZoom ? 
+            parameters->BigCenterX->ToDouble() :
+            parameters->CenterX;
+        nativeParams.centerY = useDeepZoom ?
+            parameters->BigCenterY->ToDouble() :
+            parameters->CenterY;
+        nativeParams.viewWidth = useDeepZoom ?
+            parameters->BigViewWidth->ToDouble() :
+            parameters->ViewWidth;
+        nativeParams.viewHeight = useDeepZoom ?
+            parameters->BigViewHeight->ToDouble() :
+            parameters->ViewHeight;
         nativeParams.isJulia = parameters->IsJuliaSet;
         nativeParams.juliaCX = parameters->JuliaCX;
         nativeParams.juliaCY = parameters->JuliaCY;

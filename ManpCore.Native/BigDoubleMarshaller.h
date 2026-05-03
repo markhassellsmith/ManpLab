@@ -3,81 +3,114 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include "../ManpWIN64/BigDouble.h"
+
+// Forward declare to avoid ambiguity
+class BigDouble;
 
 namespace Native {
 
     /// <summary>
-    /// Lightweight high-precision double for deep zoom support (Phase 2)
-    /// This is a simplified implementation for demonstration purposes.
-    /// Full MPFR integration will be done when connecting to ManpWIN64 engine.
+    /// MPFR-backed high-precision double for deep zoom support
+    /// This wraps the real BigDouble class from ManpWIN64 with actual arbitrary precision.
     /// </summary>
-    class SimpleBigDouble
+    class MPFRBigDouble
     {
     public:
-        SimpleBigDouble() : value(0.0), precision(16) {}
-        SimpleBigDouble(double val) : value(val), precision(16) {}
-        SimpleBigDouble(double val, int prec) : value(val), precision(prec) {}
+        MPFRBigDouble() {
+            // BigDouble constructor handles initialization
+        }
 
-        // For Phase 2, we use double internally
-        // In later phases, this will be replaced with actual MPFR mpfr_t
-        double value;
-        int precision;  // Number of significant digits
+        MPFRBigDouble(double val) : value(val) {}
+
+        MPFRBigDouble(double val, int prec) : value(val) {
+            value.ChangePrecision(prec);
+        }
+
+        // The actual MPFR-backed BigDouble from ManpWIN64
+        ::BigDouble value;
 
         /// <summary>
         /// Convert to string representation with full precision
         /// </summary>
         std::string ToString() const
         {
-            std::ostringstream oss;
-            oss << std::setprecision(precision) << std::scientific << value;
-            return oss.str();
+            char buf[512];
+            // BigDouble::ToString is not const, need to use workaround
+            ::BigDouble temp = value;
+            temp.ToString(buf, sizeof(buf), true); // scientific notation
+            return std::string(buf);
         }
 
         /// <summary>
         /// Parse from string representation
         /// </summary>
-        static SimpleBigDouble FromString(const std::string& str)
+        static MPFRBigDouble FromString(const std::string& str)
         {
-            SimpleBigDouble result;
-            result.value = std::stod(str);
+            MPFRBigDouble result;
+            result.value = std::stod(str); // BigDouble has operator= from double
             return result;
         }
 
-        // Arithmetic operations (Phase 2 uses double, later will use MPFR)
-        SimpleBigDouble operator+(const SimpleBigDouble& other) const
+        // Arithmetic operations using MPFR
+        MPFRBigDouble operator+(const MPFRBigDouble& other) const
         {
-            return SimpleBigDouble(value + other.value, precision);
+            MPFRBigDouble result;
+            ::BigDouble temp1 = value;  // Copy to mutable
+            ::BigDouble temp2 = other.value;
+            result.value = temp1 + temp2;
+            return result;
         }
 
-        SimpleBigDouble operator-(const SimpleBigDouble& other) const
+        MPFRBigDouble operator-(const MPFRBigDouble& other) const
         {
-            return SimpleBigDouble(value - other.value, precision);
+            MPFRBigDouble result;
+            ::BigDouble temp1 = value;
+            ::BigDouble temp2 = other.value;
+            result.value = temp1 - temp2;
+            return result;
         }
 
-        SimpleBigDouble operator*(const SimpleBigDouble& other) const
+        MPFRBigDouble operator*(const MPFRBigDouble& other) const
         {
-            return SimpleBigDouble(value * other.value, precision);
+            MPFRBigDouble result;
+            ::BigDouble temp1 = value;
+            ::BigDouble temp2 = other.value;
+            result.value = temp1 * temp2;
+            return result;
         }
 
-        SimpleBigDouble operator/(const SimpleBigDouble& other) const
+        MPFRBigDouble operator/(const MPFRBigDouble& other) const
         {
-            return SimpleBigDouble(value / other.value, precision);
+            MPFRBigDouble result;
+            ::BigDouble temp1 = value;
+            ::BigDouble temp2 = other.value;
+            result.value = temp1 / temp2;
+            return result;
         }
 
-        bool operator<(const SimpleBigDouble& other) const
+        bool operator<(const MPFRBigDouble& other) const
         {
-            return value < other.value;
+            ::BigDouble temp1 = value;
+            ::BigDouble temp2 = other.value;
+            return temp1 < temp2;
         }
 
-        bool operator>(const SimpleBigDouble& other) const
+        bool operator>(const MPFRBigDouble& other) const
         {
-            return value > other.value;
+            ::BigDouble temp1 = value;
+            ::BigDouble temp2 = other.value;
+            return temp1 > temp2;
         }
 
         double ToDouble() const
         {
-            return value;
+            ::BigDouble temp = value;
+            return temp.BigDoubleToDouble();
         }
     };
+
+    // Keep SimpleBigDouble for backward compatibility if needed
+    using SimpleBigDouble = MPFRBigDouble;
 
 } // namespace Native

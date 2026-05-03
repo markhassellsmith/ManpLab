@@ -338,6 +338,16 @@ namespace Native {
         /// <value>BigDouble with 20-30 decimal digits, or null for standard double precision</value>
         property BigDouble^ BigViewHeight;
 
+        /// <summary>
+        /// Number of decimal digits of precision to use for BigDouble calculations.
+        /// </summary>
+        /// <value>Integer, typically 20-30 for deep zoom</value>
+        /// <remarks>
+        /// Only used when BigDouble coordinates are provided.
+        /// Higher precision increases accuracy but decreases performance.
+        /// </remarks>
+        property int Precision;
+
         // Julia set parameters (if applicable)
 
         /// <summary>
@@ -411,6 +421,7 @@ namespace Native {
             JuliaCY = 0.0;
             Palette = ColorPalette::Classic;  // Default to classic fractal colors
             ColorOffset = 0;  // No offset by default
+            Precision = 50;  // Default MPFR precision for deep zoom
         }
     };
 
