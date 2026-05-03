@@ -27,6 +27,7 @@ public interface IFractalRenderService
     /// <param name="colorCycleSpeed">Color animation speed (0-100)</param>
     /// <param name="colorOffset">Color rotation offset (0-360 degrees)</param>
     /// <param name="useSmoothColoring">Enable continuous gradient coloring</param>
+    /// <param name="useDeepZoom">Enable arbitrary-precision math for extreme zoom levels</param>
     /// <param name="progress">Progress callback (0.0 to 1.0)</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Rendered fractal with diagnostic information</returns>
@@ -45,6 +46,7 @@ public interface IFractalRenderService
         int colorCycleSpeed = 50,
         int colorOffset = 0,
         bool useSmoothColoring = false,
+        bool useDeepZoom = false,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default);
 
@@ -64,6 +66,7 @@ public interface IFractalRenderService
         int colorCycleSpeed = 50,
         int colorOffset = 0,
         bool useSmoothColoring = false,
+        bool useDeepZoom = false,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default);
 

@@ -38,6 +38,7 @@ public class FractalRenderService : IFractalRenderService
         int colorCycleSpeed = 50,
         int colorOffset = 0,
         bool useSmoothColoring = false,
+        bool useDeepZoom = false,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default)
     {
@@ -134,6 +135,24 @@ Calculated View:
                         JuliaCX = juliaCX,
                         JuliaCY = juliaCY
                     };
+
+                    // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
+                    if (useDeepZoom)
+                    {
+                        // Convert double coordinates to BigDouble for arbitrary precision
+                        // Precision: 25 decimal digits is sufficient for zoom levels up to 10^20
+                        const int precision = 25;
+
+                        parameters.BigCenterX = new BigDouble(centerX, precision);
+                        parameters.BigCenterY = new BigDouble(centerY, precision);
+                        parameters.BigViewWidth = new BigDouble(viewWidth, precision);
+                        parameters.BigViewHeight = new BigDouble(viewHeight, precision);
+
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] Enabled with {precision} digit precision");
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigCenterX: {parameters.BigCenterX}");
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigCenterY: {parameters.BigCenterY}");
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigViewWidth: {parameters.BigViewWidth}");
+                    }
 
                     System.Diagnostics.Debug.WriteLine($"FractalParameters created successfully");
                     System.Diagnostics.Debug.WriteLine($"  FractalType: {parameters.FractalType}");
@@ -232,6 +251,7 @@ Calculated View:
         int colorCycleSpeed = 50,
         int colorOffset = 0,
         bool useSmoothColoring = false,
+        bool useDeepZoom = false,
         IProgress<double>? progress = null,
         CancellationToken cancellationToken = default)
     {
@@ -271,6 +291,20 @@ Calculated View:
                     Palette = paletteEnum,
                     ColorOffset = colorOffset  // Apply color offset for palette rotation
                 };
+
+                // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
+                if (useDeepZoom)
+                {
+                    // Convert double coordinates to BigDouble for arbitrary precision
+                    const int precision = 25;
+
+                    parameters.BigCenterX = new BigDouble(centerX, precision);
+                    parameters.BigCenterY = new BigDouble(centerY, precision);
+                    parameters.BigViewWidth = new BigDouble(viewWidth, precision);
+                    parameters.BigViewHeight = new BigDouble(viewHeight, precision);
+
+                    System.Diagnostics.Debug.WriteLine($"[DeepZoom] Julia set enabled with {precision} digit precision");
+                }
 
                 EventHandler<ManpCore.Native.ProgressEventArgs>? progressHandler = null;
                 if (progress != null)
@@ -360,6 +394,7 @@ Calculated View:
             parameters.ColorCycleSpeed,
             parameters.ColorOffset,
             parameters.UseSmoothColoring,
+            parameters.UseDeepZoom,
             progress,
             cancellationToken);
     }

@@ -123,6 +123,9 @@ public partial class MainViewModel
                 renderParams.ColorOffset = ColorOffset;
                 renderParams.UseSmoothColoring = UseSmoothColoring;
 
+                // Week 9 Task 2: Deep zoom toggle
+                renderParams.UseDeepZoom = _renderSettingsViewModel.UseDeepZoom;
+
                 // Call new parameter-based render method
                 result = await _renderService.RenderFractalAsync(
                     renderParams,
@@ -150,6 +153,7 @@ public partial class MainViewModel
                     ColorCycleSpeed,
                     ColorOffset,
                     UseSmoothColoring,
+                    _renderSettingsViewModel.UseDeepZoom,
                     progress);
             }
 
