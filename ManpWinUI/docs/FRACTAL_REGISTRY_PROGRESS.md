@@ -1,6 +1,6 @@
 # Fractal Registry Progress
 
-## Current Status: 105 / 276 Fractals (38.0%)
+## Current Status: 115 / 276 Fractals (41.7%)
 
 ### ✅ Completed Families
 
@@ -17,6 +17,7 @@
 | **MagnetFamily** | 2 | Magnet1M, Magnet2M |
 | **MagnetExtendedFamily** | 4 | Magnet1J, Magnet2J, Magnet1Power3, Magnet2Power3 |
 | **LambdaExtendedFamily** | 8 | LambdaPower3/4, LambdaTanh/Tan, LambdaSquared, LambdaFlip, LambdaModified, LambdaPhoenix |
+| **HybridFamily** | 10 | MandelBurningHybrid, MandelLambdaMix, TricornPhoenixHybrid, NewtonMandelBlend, SineMandelHybrid, ExpMandelBlend, MultiPowerCycle, MagnetMandelHybrid, CollatzHybrid, CelticBurningHybrid |
 | **ClassicEscapeTimeFamily** | 9 | Lambda, Manowar, Sierpinski, Unity, Spider, Tetrate, Celtic, Buffalo, etc. |
 | **BarnsleyFamily** | 6 | BarnsleyM1/J1, BarnsleyM2/J2, BarnsleyM3/J3 |
 | **SpecialExoticFamily** | 8 | Hailstone, Buddhabrot, Lyapunov, Popcorn, etc. |
@@ -25,11 +26,11 @@
 | **ExponentialFamily** | 6 | Exponential, MandelExp, LMandelExp, LLambdaExp, ZToTheZ, Logarithm |
 | **ExtendedJuliaFamily** | 8 | JuliaDendrite, JuliaSiegelDisk, JuliaDragon, JuliaSpiral, JuliaCustom, LambdaJulia, Multibrot3Julia, Multibrot4Julia |
 | **PowerVariantsFamily** | 9 | Multibrot6/7/8, Julia5/6, BurningShip3/4, Tricorn3/4 |
-| **Total** | **105** | |
+| **Total** | **115** | |
 
 ---
 
-## 📋 Remaining Categories (171 fractals)
+## 📋 Remaining Categories (161 fractals)
 
 ### High Priority - Common Fractals (Next 3-30)
 

@@ -160,6 +160,7 @@ extern void RegisterPhoenixExtendedFamily();    // Phoenix variations with diffe
 extern void RegisterNewtonExtendedFamily();     // Newton method for various polynomials and functions
 extern void RegisterMagnetExtendedFamily();     // Magnet Julia modes and power variants
 extern void RegisterLambdaExtendedFamily();     // Lambda power variants and function combinations
+extern void RegisterHybridFamily();             // Hybrid fractals combining multiple formulas
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -186,7 +187,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterNewtonExtendedFamily();     // Newton method for various polynomials and functions = 6
     RegisterMagnetExtendedFamily();     // Magnet Julia modes and power variants = 4
     RegisterLambdaExtendedFamily();     // Lambda power variants and function combinations = 8
-    // Total: 105 fractals
+    RegisterHybridFamily();             // Hybrid fractals combining multiple formulas = 10
+    // Total: 115 fractals
 
     s_initialized = true;
 }
