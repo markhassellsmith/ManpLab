@@ -751,15 +751,189 @@ FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters
 
     Debug::WriteLine("CalculateWithPerturbation: Starting perturbation-based render");
 
-    // TODO: Implement actual perturbation-based pixel calculation
-    // For now, this is a placeholder that will be filled in Phase 1, Step 1.3
+    m_cancelled = false;
+    auto stopwatch = Stopwatch::StartNew();
 
-    auto result = gcnew FractalResult();
-    result->UsedPerturbation = true;
-    result->ArithType = m_cachedArithType;
-    result->MaxRefIteration = ::MaxRefIteration;
-    result->BLAEnabled = (m_cachedArithType == DOUBLE || m_cachedArithType == FLOATEXP);
-    result->ReferenceOrbitBuildTime = 0.0; // Will be tracked in Phase 1, Step 1.3
+    try
+    {
+        int width = parameters->Width;
+        int height = parameters->Height;
+        int maxIterations = parameters->MaxIterations;
+        int pixelCount = width * height * 4; // BGRA
 
-    throw gcnew NotImplementedException("CalculateWithPerturbation pixel loop not yet implemented. Phase 1, Step 1.3 in progress.");
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: {0}x{1}, maxIter={2}", width, height, maxIterations));
+
+        // Create result
+        auto result = gcnew FractalResult();
+        result->PixelData = gcnew array<Byte>(pixelCount);
+        result->Width = width;
+        result->Height = height;
+
+        // Get reference orbit data
+        auto refData = static_cast<StoreReferenceData*>(m_refData);
+
+        // Extract reference center coordinates (convert BigDouble to double)
+        double centerX = mpfr_get_d(refData->ReferenceCoordinate.x.x, MPFR_RNDN);
+        double centerY = mpfr_get_d(refData->ReferenceCoordinate.y.x, MPFR_RNDN);
+        double viewWidth = mpfr_get_d(refData->BigWidth.x, MPFR_RNDN);
+        double bailout = refData->rqlim;
+
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: Center=({0}, {1}), ViewWidth={2}, Bailout={3}", 
+            centerX, centerY, viewWidth, bailout));
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: ArithType={0}, Orbit size={1}", 
+            m_cachedArithType, 
+            (m_cachedArithType == DOUBLE || m_cachedArithType == DBL_UNSUPPORTED) ? XSubN.size() : ExpXSubN.size()));
+
+        // Get palette info
+        ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
+        int colorOffset = parameters->ColorOffset;
+
+        long long totalIterations = 0;
+        int escapedPixels = 0;
+
+        // Pixel loop - calculate fractal using perturbation theory
+        for (int y = 0; y < height; y++)
+        {
+            // Report progress every 10 lines
+            if (y % 10 == 0)
+            {
+                if (m_progressChangedDelegate != nullptr)
+                {
+                    auto progressArgs = gcnew ProgressEventArgs();
+                    progressArgs->Percentage = (y * 100.0) / height;
+                    progressArgs->CurrentLine = y;
+                    progressArgs->TotalLines = height;
+                    progressArgs->StatusMessage = String::Format("Perturbation: line {0} of {1}", y, height);
+                    ProgressChanged(this, progressArgs);
+                }
+            }
+
+            if (m_cancelled)
+                throw gcnew OperationCanceledException("Calculation cancelled by user");
+
+            for (int x = 0; x < width; x++)
+            {
+                // Map pixel to complex plane offset from reference center
+                // ΔC = (pixel_coordinate - reference_center)
+                Complex deltaC;
+                deltaC.x = ((x - width / 2.0) / width) * viewWidth;
+                deltaC.y = ((y - height / 2.0) / height) * viewWidth;
+
+                // Perturbation iteration: ΔZₙ₊₁ ≈ 2·Zₙ·ΔZₙ + ΔC
+                Complex deltaZ = deltaC;  // ΔZ₀ = ΔC
+                int iteration = 0;
+
+                // Choose reference orbit based on ArithType
+                if (m_cachedArithType == DOUBLE || m_cachedArithType == DBL_UNSUPPORTED)
+                {
+                    // Use double-precision reference orbit (XSubN)
+                    int orbitSize = (int)XSubN.size();
+
+                    for (iteration = 0; iteration < maxIterations && iteration < orbitSize; iteration++)
+                    {
+                        Complex Zn = XSubN[iteration];  // Reference orbit value
+
+                        // Perturbation formula: ΔZ_{n+1} ≈ 2·Z_n·ΔZ_n + ΔC
+                        // Complex multiplication: (a+bi)*(c+di) = (ac-bd) + (ad+bc)i
+                        Complex temp;
+                        temp.x = 2.0 * (Zn.x * deltaZ.x - Zn.y * deltaZ.y);
+                        temp.y = 2.0 * (Zn.x * deltaZ.y + Zn.y * deltaZ.x);
+                        deltaZ.x = temp.x + deltaC.x;
+                        deltaZ.y = temp.y + deltaC.y;
+
+                        // Test for escape: |Z_n + ΔZ_n|² > bailout
+                        double zx = Zn.x + deltaZ.x;
+                        double zy = Zn.y + deltaZ.y;
+                        double magnitudeSq = zx * zx + zy * zy;
+
+                        if (magnitudeSq > bailout)
+                            break;
+                    }
+                }
+                else
+                {
+                    // Use extended-precision reference orbit (ExpXSubN)
+                    int orbitSize = (int)ExpXSubN.size();
+
+                    for (iteration = 0; iteration < maxIterations && iteration < orbitSize; iteration++)
+                    {
+                        ExpComplex Zn = ExpXSubN[iteration];
+
+                        // Convert ExpComplex to double for this calculation
+                        // (deltaZ is still double precision - that's the whole point!)
+                        double ZnX = Zn.x.val * pow(2.0, Zn.x.exp);
+                        double ZnY = Zn.y.val * pow(2.0, Zn.y.exp);
+
+                        // Perturbation formula
+                        Complex temp;
+                        temp.x = 2.0 * (ZnX * deltaZ.x - ZnY * deltaZ.y);
+                        temp.y = 2.0 * (ZnX * deltaZ.y + ZnY * deltaZ.x);
+                        deltaZ.x = temp.x + deltaC.x;
+                        deltaZ.y = temp.y + deltaC.y;
+
+                        // Test for escape
+                        double zx = ZnX + deltaZ.x;
+                        double zy = ZnY + deltaZ.y;
+                        double magnitudeSq = zx * zx + zy * zy;
+
+                        if (magnitudeSq > bailout)
+                            break;
+                    }
+                }
+
+                totalIterations += iteration;
+                if (iteration < maxIterations)
+                    escapedPixels++;
+
+                // Convert iteration to color
+                ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
+                    (double)iteration,
+                    maxIterations,
+                    nativePalette,
+                    colorOffset
+                );
+
+                // Write BGRA pixel
+                int index = (y * width + x) * 4;
+                result->PixelData[index + 0] = color.b;  // Blue
+                result->PixelData[index + 1] = color.g;  // Green
+                result->PixelData[index + 2] = color.r;  // Red
+                result->PixelData[index + 3] = 255;      // Alpha
+            }
+        }
+
+        stopwatch->Stop();
+
+        // Fill result metadata
+        result->UsedPerturbation = true;
+        result->ArithType = m_cachedArithType;
+        result->MaxRefIteration = ::MaxRefIteration;
+        result->BLAEnabled = false;  // BLA not implemented in this phase
+        result->ReferenceOrbitBuildTime = 0.0;  // TODO: Track this in BuildReferenceOrbit
+        result->RenderTime = stopwatch->Elapsed;
+        result->IterationCount = totalIterations;
+        result->EscapedPixelCount = escapedPixels;
+
+        // Final progress update
+        if (m_progressChangedDelegate != nullptr)
+        {
+            auto finalProgress = gcnew ProgressEventArgs();
+            finalProgress->Percentage = 100.0;
+            finalProgress->CurrentLine = height;
+            finalProgress->TotalLines = height;
+            finalProgress->StatusMessage = "Complete";
+            ProgressChanged(this, finalProgress);
+        }
+
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: Complete! Time={0}ms, AvgIter={1}", 
+            result->RenderTime.TotalMilliseconds, 
+            totalIterations / (width * height)));
+
+        return result;
+    }
+    catch (Exception^)
+    {
+        stopwatch->Stop();
+        throw;
+    }
 }

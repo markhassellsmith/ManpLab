@@ -78,29 +78,29 @@ public class FractalRenderService : IFractalRenderService
                 double top = centerY + viewHeight / 2.0;
                 double bottom = centerY - viewHeight / 2.0;
 
-                System.Diagnostics.Debug.WriteLine($@"
-═══════════════════════════════════════════════════════════════
-FRACTAL RENDER SERVICE - STARTING RENDER
-═══════════════════════════════════════════════════════════════
-Input Parameters:
-  Center: ({centerX:F10}, {centerY:F10})
-  Zoom: {zoom:F4}x
-  Size: {width}×{height}
-  Max Iterations: {maxIterations}
-  Palette: {palette}
+                                    System.Diagnostics.Debug.WriteLine($@"
+                ═══════════════════════════════════════════════════════════════
+                FRACTAL RENDER SERVICE - STARTING RENDER
+                ═══════════════════════════════════════════════════════════════
+                Input Parameters:
+                  Center: ({centerX:F10}, {centerY:F10})
+                  Zoom: {zoom:F4}x
+                  Size: {width}×{height}
+                  Max Iterations: {maxIterations}
+                  Palette: {palette}
 
-Calculated View:
-  ViewWidth: {viewWidth:F10}
-  ViewHeight: {viewHeight:F10}
-  Boundaries:
-    Left   = {left:F10}
-    Right  = {right:F10}
-    Top    = {top:F10}
-    Bottom = {bottom:F10}
-═══════════════════════════════════════════════════════════════
-");
+                Calculated View:
+                  ViewWidth: {viewWidth:F10}
+                  ViewHeight: {viewHeight:F10}
+                  Boundaries:
+                    Left   = {left:F10}
+                    Right  = {right:F10}
+                    Top    = {top:F10}
+                    Bottom = {bottom:F10}
+                ═══════════════════════════════════════════════════════════════
+                ");
 
-                // Parse palette string to enum
+                                // Parse palette string to enum
                 var paletteEnum = ParsePalette(palette);
 
                 System.Diagnostics.Debug.WriteLine($"Palette string '{palette}' mapped to enum value: {paletteEnum} (int: {(int)paletteEnum})");
@@ -138,28 +138,8 @@ Calculated View:
 
                     System.Diagnostics.Debug.WriteLine($"[FractalRenderService] useDeepZoom parameter received: {useDeepZoom}");
 
-                    // ╔═══════════════════════════════════════════════════════════════════════════╗
-                    // ║ TODO: TEMPORARY DEEP ZOOM IMPLEMENTATION - REQUIRES REPLACEMENT           ║
-                    // ║                                                                            ║
-                    // ║ This code converts coordinates to BigDouble (25+ decimal places) which    ║
-                    // ║ works but is extremely slow at extreme zooms (10^20+). This is a          ║
-                    // ║ deliberate temporary compromise to enable basic deep zoom functionality.  ║
-                    // ║                                                                            ║
-                    // ║ REPLACEMENT PLAN (Phase 3.5 - See DEEP_ZOOM_INTEGRATION_PLAN.md):        ║
-                    // ║   Phase B: Build reference orbit caching infrastructure                   ║
-                    // ║   - Cache reference orbit across renders (reuse when panning)             ║
-                    // ║   - Invalidate orbit when zoom changes significantly                      ║
-                    // ║   - Two-phase rendering: (1) build/reuse orbit, (2) calculate pixels      ║
-                    // ║                                                                            ║
-                    // ║   Phase C: Integrate perturbation theory from ManpWIN64                   ║
-                    // ║   - Replace this code with BuildReferenceOrbit() call                     ║
-                    // ║   - Use CalculatePixelPerturbation() instead of brute force               ║
-                    // ║   - Add BLA (Bilinear Approximation) for iteration skipping               ║
-                    // ║                                                                            ║
-                    // ║ Expected outcome: 10-100x faster, zoom up to 10^100+                      ║
-                    // ╚═══════════════════════════════════════════════════════════════════════════╝
-
                     // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
+                    // Phase 1 Complete: Now using perturbation theory for true deep zoom support
                     if (useDeepZoom)
                     {
                         // Calculate required precision dynamically based on zoom level
@@ -218,8 +198,60 @@ Calculated View:
                         System.Diagnostics.Debug.WriteLine("Warning: No DispatcherQueue available for progress reporting");
                     }
 
-                    // Render the fractal using Calculate method
-                    var result = _engine.Calculate(parameters);
+                    FractalResult result;
+
+                    // Choose rendering path based on deep zoom requirement
+                    if (useDeepZoom && parameters.BigCenterX != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[DeepZoom] Using perturbation theory rendering path");
+
+                        // Check if reference orbit is valid for current parameters
+                        bool needsRebuild = !_engine.IsReferenceOrbitValid(
+                            parameters.BigCenterX.ToString(),
+                            parameters.BigCenterY.ToString(),
+                            parameters.BigViewWidth.ToString(),
+                            parameters.MaxIterations,
+                            256.0,  // bailout (TODO: make configurable)
+                            2       // power (Mandelbrot is z^2 + c)
+                        );
+
+                        if (needsRebuild)
+                        {
+                            System.Diagnostics.Debug.WriteLine("[DeepZoom] Building reference orbit...");
+                            var orbitResult = _engine.BuildReferenceOrbit(
+                                parameters.BigCenterX.ToString(),
+                                parameters.BigCenterY.ToString(),
+                                parameters.BigViewWidth.ToString(),
+                                parameters.MaxIterations,
+                                256.0,  // bailout
+                                2,      // power
+                                0,      // subtype (0 = auto-detect)
+                                parameters.Precision,
+                                true    // enable BLA
+                            );
+
+                            if (orbitResult < 0)
+                            {
+                                throw new InvalidOperationException("Failed to build reference orbit");
+                            }
+
+                            System.Diagnostics.Debug.WriteLine("[DeepZoom] Reference orbit built successfully");
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("[DeepZoom] Reusing cached reference orbit");
+                        }
+
+                        // Render using perturbation theory
+                        result = _engine.CalculateWithPerturbation(parameters);
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] Perturbation render complete: used {result.ArithType} precision");
+                    }
+                    else
+                    {
+                        // Standard rendering path for shallow zooms
+                        System.Diagnostics.Debug.WriteLine("Using standard rendering path");
+                        result = _engine.Calculate(parameters);
+                    }
 
                     System.Diagnostics.Debug.WriteLine($"Calculate() completed successfully");
 
