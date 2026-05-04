@@ -161,6 +161,7 @@ extern void RegisterNewtonExtendedFamily();     // Newton method for various pol
 extern void RegisterMagnetExtendedFamily();     // Magnet Julia modes and power variants
 extern void RegisterLambdaExtendedFamily();     // Lambda power variants and function combinations
 extern void RegisterHybridFamily();             // Hybrid fractals combining multiple formulas
+extern void RegisterMandelVariantsFamily();     // Mandelbrot variants: Mandel4, MandelLambda, Thorn, Spider, etc.
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -188,7 +189,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterMagnetExtendedFamily();     // Magnet Julia modes and power variants = 4
     RegisterLambdaExtendedFamily();     // Lambda power variants and function combinations = 8
     RegisterHybridFamily();             // Hybrid fractals combining multiple formulas = 10
-    // Total: 115 fractals
+    RegisterMandelVariantsFamily();     // Mandelbrot variants: Mandel4, MandelLambda, Thorn, Spider, etc. = 8
+    // Total: 123 fractals
 
     s_initialized = true;
 }
