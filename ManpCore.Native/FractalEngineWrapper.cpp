@@ -12,6 +12,7 @@
 #include "Complex.h"  // ManpWIN64 Complex class for POC
 #include "../ManpWIN64/BigDouble.h"
 #include "../ManpWIN64/BigComplex.h"
+#include "../ManpWIN64/PertEngine.h"  // Perturbation theory engine
 #include <string>
 
 using namespace System;
@@ -21,6 +22,17 @@ using namespace ManpCore::Native;
 
 // External global for MPFR precision (defined in ManpWIN64/BigDouble.cpp)
 extern int decimals;
+
+// External perturbation theory functions and globals (defined in ManpWIN64/PertSetup.cpp)
+extern int ReferenceZoomPoint(BigComplex& centre, int maxIteration, int user_data(HWND hwnd), char* StatusBarInfo, int *pPertProgress, double bailout, int ArithType, int power, ::BigDouble BigWidth, int &SlopeDegree);
+extern void PertSetupArithType(int &ArithType, int subtype, long MaxIteration, int precision, BYTE BigNumFlag);
+extern bool CheckValidRef(BigComplex ReferenceCoordinate, ::BigDouble BigWidth, int maxIteration, double bailout, StoreReferenceData &RefData, int power, int ArithType);
+extern std::vector<ExpComplex> ExpXSubN;
+extern std::vector<Complex> XSubN;
+extern int ArithType;
+extern int MaxRefIteration;
+extern BLAS Bla;
+extern int SlopeDegree;
 
 // Helper function to convert managed string to std::string without msclr/marshal
 static std::string ManagedToStdString(String^ str)
@@ -198,6 +210,11 @@ FractalEngineWrapper::FractalEngineWrapper()
     m_cancelled = false;
     m_progressChangedDelegate = nullptr;
 
+    // Initialize perturbation state
+    m_refData = new StoreReferenceData();
+    m_referenceOrbitValid = false;
+    m_cachedArithType = DOUBLE;
+
     // TODO Phase 2: Initialize native C++ fractal engine
     // m_nativeEngine = CreateNativeFractalEngine();
 }
@@ -216,6 +233,13 @@ FractalEngineWrapper::!FractalEngineWrapper()
         // TODO Phase 2: Destroy native C++ engine
         // DestroyNativeFractalEngine(m_nativeEngine);
         m_nativeEngine = nullptr;
+    }
+
+    // Clean up perturbation state
+    if (m_refData != nullptr)
+    {
+        delete static_cast<StoreReferenceData*>(m_refData);
+        m_refData = nullptr;
     }
 }
 
@@ -564,4 +588,178 @@ double FractalEngineWrapper::TestManpWIN64Integration(double real, double imagin
     ::Complex c(real, imaginary);
     return c.CFabs();
     */
+}
+
+//=============================================================================
+// Perturbation Theory Implementation
+//=============================================================================
+
+// Dummy user_data callback for reference orbit building (no GUI interaction in this context)
+static int DummyUserData(HWND hwnd)
+{
+    return 0; // Continue processing
+}
+
+int FractalEngineWrapper::BuildReferenceOrbit(
+    String^ centerX,
+    String^ centerY,
+    String^ viewWidth,
+    int maxIteration,
+    double bailout,
+    int power,
+    int subtype,
+    int precision,
+    bool enableBLA)
+{
+    if (centerX == nullptr || centerY == nullptr || viewWidth == nullptr)
+        throw gcnew ArgumentNullException("Center coordinates and view width are required");
+
+    Debug::WriteLine(String::Format("BuildReferenceOrbit: Starting with precision={0}, maxIter={1}", precision, maxIteration));
+
+    try
+    {
+        // Convert managed strings to BigDouble
+        std::string centerXStr = ManagedToStdString(centerX);
+        std::string centerYStr = ManagedToStdString(centerY);
+        std::string viewWidthStr = ManagedToStdString(viewWidth);
+
+        // Set global decimals for MPFR precision
+        decimals = precision;
+
+        // Create BigComplex for center coordinate (using native ::BigDouble with MPFR string parsing)
+        BigComplex centre;
+        centre.x = ::BigDouble(0.0);  // Initialize with default constructor
+        centre.y = ::BigDouble(0.0);
+
+        // Parse strings directly into MPFR values
+        mpfr_set_str(centre.x.x, centerXStr.c_str(), 10, MPFR_RNDN);
+        mpfr_set_str(centre.y.x, centerYStr.c_str(), 10, MPFR_RNDN);
+
+        // Create BigDouble for view width (using native ::BigDouble)
+        ::BigDouble bigWidth(0.0);
+        mpfr_set_str(bigWidth.x, viewWidthStr.c_str(), 10, MPFR_RNDN);
+
+        // Determine arithmetic type (DOUBLE, FLOATEXP, etc.)
+        BYTE bigNumFlag = 1; // We're using BigDouble, so this is true
+        PertSetupArithType(::ArithType, subtype, maxIteration, precision, bigNumFlag);
+        m_cachedArithType = ::ArithType;
+
+        Debug::WriteLine(String::Format("BuildReferenceOrbit: ArithType={0}, SlopeDegree={1}", ::ArithType, ::SlopeDegree));
+
+        // Build reference orbit
+        char statusBarInfo[256] = "";
+        int pertProgress = 0;
+
+        int result = ReferenceZoomPoint(
+            centre,
+            maxIteration,
+            DummyUserData,
+            statusBarInfo,
+            &pertProgress,
+            bailout,
+            ::ArithType,
+            power,
+            bigWidth,
+            ::SlopeDegree
+        );
+
+        if (result < 0)
+        {
+            Debug::WriteLine("BuildReferenceOrbit: Cancelled or failed");
+            m_referenceOrbitValid = false;
+            return result;
+        }
+
+        // Cache reference orbit metadata
+        auto refData = static_cast<StoreReferenceData*>(m_refData);
+        refData->valid = true;
+        refData->BigWidth = bigWidth;
+        refData->ReferenceCoordinate = centre;
+        refData->rqlim = bailout;
+        refData->degree = (WORD)power;
+        m_referenceOrbitValid = true;
+
+        Debug::WriteLine(String::Format("BuildReferenceOrbit: Success! MaxRefIteration={0}, orbit size={1}", 
+            ::MaxRefIteration,
+            (::ArithType == DOUBLE || ::ArithType == DBL_UNSUPPORTED) ? XSubN.size() : ExpXSubN.size()));
+
+        return 0;
+    }
+    catch (const std::exception& ex)
+    {
+        Debug::WriteLine(String::Format("BuildReferenceOrbit: Exception: {0}", gcnew String(ex.what())));
+        m_referenceOrbitValid = false;
+        throw gcnew InvalidOperationException("Failed to build reference orbit: " + gcnew String(ex.what()));
+    }
+}
+
+bool FractalEngineWrapper::IsReferenceOrbitValid(
+    String^ centerX,
+    String^ centerY,
+    String^ viewWidth,
+    int maxIteration,
+    double bailout,
+    int power)
+{
+    if (!m_referenceOrbitValid || m_refData == nullptr)
+        return false;
+
+    try
+    {
+        // Convert managed strings to native types
+        std::string centerXStr = ManagedToStdString(centerX);
+        std::string centerYStr = ManagedToStdString(centerY);
+        std::string viewWidthStr = ManagedToStdString(viewWidth);
+
+        // Get precision from cached ArithType (estimate from reference data)
+        auto refData = static_cast<StoreReferenceData*>(m_refData);
+        int precision = (m_cachedArithType == FLOATEXP || m_cachedArithType == EXP_UNSUPPORTED) ? 300 : 53;
+
+        // Set global decimals
+        decimals = precision;
+
+        // Create BigComplex and BigDouble for comparison (using native types with MPFR parsing)
+        BigComplex centre;
+        centre.x = ::BigDouble(0.0);
+        centre.y = ::BigDouble(0.0);
+        mpfr_set_str(centre.x.x, centerXStr.c_str(), 10, MPFR_RNDN);
+        mpfr_set_str(centre.y.x, centerYStr.c_str(), 10, MPFR_RNDN);
+
+        ::BigDouble bigWidth(0.0);
+        mpfr_set_str(bigWidth.x, viewWidthStr.c_str(), 10, MPFR_RNDN);
+
+        // Check validity using native function
+        bool valid = CheckValidRef(centre, bigWidth, maxIteration, bailout, *refData, power, m_cachedArithType);
+
+        Debug::WriteLine(String::Format("IsReferenceOrbitValid: {0}", valid ? "true" : "false"));
+        return valid;
+    }
+    catch (const std::exception& ex)
+    {
+        Debug::WriteLine(String::Format("IsReferenceOrbitValid: Exception: {0}", gcnew String(ex.what())));
+        return false;
+    }
+}
+
+FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters^ parameters)
+{
+    if (parameters == nullptr)
+        throw gcnew ArgumentNullException("parameters");
+
+    if (!m_referenceOrbitValid)
+        throw gcnew InvalidOperationException("Reference orbit not built. Call BuildReferenceOrbit() first.");
+
+    Debug::WriteLine("CalculateWithPerturbation: Starting perturbation-based render");
+
+    // TODO: Implement actual perturbation-based pixel calculation
+    // For now, this is a placeholder that will be filled in Phase 1, Step 1.3
+
+    auto result = gcnew FractalResult();
+    result->UsedPerturbation = true;
+    result->ArithType = m_cachedArithType;
+    result->MaxRefIteration = ::MaxRefIteration;
+    result->BLAEnabled = (m_cachedArithType == DOUBLE || m_cachedArithType == FLOATEXP);
+    result->ReferenceOrbitBuildTime = 0.0; // Will be tracked in Phase 1, Step 1.3
+
+    throw gcnew NotImplementedException("CalculateWithPerturbation pixel loop not yet implemented. Phase 1, Step 1.3 in progress.");
 }
