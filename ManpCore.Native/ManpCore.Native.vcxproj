@@ -59,7 +59,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NO_WARN_MBCS_MFC_DEPRECATION;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;NO_WARN_MBCS_MFC_DEPRECATION;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)ManpWIN64;$(SolutionDir)external\mpfr\include;$(SolutionDir)qdlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -75,7 +75,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)ManpWIN64;$(SolutionDir)external\mpfr\include;$(SolutionDir)qdlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -102,6 +102,7 @@
     <ClCompile Include="BigDoubleSupport.cpp" />
     <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="BarnsleyFamily.cpp" />
+    <ClCompile Include="PerturbationStubs.cpp" />
     <ClCompile Include="SpecialExoticFamily.cpp" />
     <ClCompile Include="Attractors3DFamily.cpp" />
     <ClCompile Include="ClassicEscapeTimeFamily.cpp" />
@@ -117,6 +118,15 @@
     <ClCompile Include="MultibrotFamily.cpp" />
     <ClCompile Include="NewtonFamily.cpp" />
     <ClCompile Include="MagnetFamily.cpp" />
+    <!-- Perturbation Theory: Link against ManpWIN64.lib instead of individual source files -->
+    <ClCompile Include="..\ManpWIN64\PertSetup.cpp">
+      <CompileAsManaged>false</CompileAsManaged>
+    </ClCompile>
+    <!-- Perturbation.cpp excluded - contains GUI code -->
+    <ClCompile Include="..\ManpWIN64\Approximation.cpp">
+      <CompileAsManaged>false</CompileAsManaged>
+    </ClCompile>
+    <!-- PertEngine.cpp excluded - contains GUI code -->
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
