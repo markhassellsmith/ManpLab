@@ -23,6 +23,7 @@ public class AppSettingsService : IAppSettingsService
     private const string ShowAxesByDefaultKey = "ShowAxesByDefault";
     private const string UseSmoothColoringByDefaultKey = "UseSmoothColoringByDefault";
     private const string DefaultAntialiasingLevelKey = "DefaultAntialiasingLevel";
+    private const string UseDeepZoomKey = "UseDeepZoom"; // Week 9: Perturbation-theory deep zoom
 
     // Default values
     private const double DefaultBrowserWidth = 250.0;
@@ -213,5 +214,19 @@ public class AppSettingsService : IAppSettingsService
     public void SetPropertiesTabIndex(int index)
     {
         _localSettings.Values[PropertiesTabIndexKey] = index;
+    }
+
+    public bool GetUseDeepZoom()
+    {
+        if (_localSettings.Values.TryGetValue(UseDeepZoomKey, out var value) && value is bool use)
+        {
+            return use;
+        }
+        return false; // Default to disabled for safety
+    }
+
+    public void SetUseDeepZoom(bool use)
+    {
+        _localSettings.Values[UseDeepZoomKey] = use;
     }
 }

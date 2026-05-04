@@ -771,6 +771,8 @@ namespace Native {
         /// <param name="subtype">Fractal variant (0=Mandelbrot, 1=Power, 2=BurningShip, etc.)</param>
         /// <param name="precision">MPFR precision in bits (e.g., 166 for ~50 decimal digits)</param>
         /// <param name="enableBLA">Enable BLA (Bilinear Approximation) acceleration</param>
+        /// <param name="imageWidth">Image width in pixels (for BLA size calculation)</param>
+        /// <param name="imageHeight">Image height in pixels (for BLA size calculation)</param>
         /// <returns>0 on success, negative on error or user cancellation</returns>
         /// <remarks>
         /// <para>This method builds the reference orbit once for a given zoom level/location.</para>
@@ -788,7 +790,9 @@ namespace Native {
             int power,
             int subtype,
             int precision,
-            bool enableBLA
+            bool enableBLA,
+            int imageWidth,
+            int imageHeight
         );
 
         /// <summary>

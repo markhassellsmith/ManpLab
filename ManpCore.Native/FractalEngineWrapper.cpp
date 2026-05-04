@@ -610,15 +610,24 @@ int FractalEngineWrapper::BuildReferenceOrbit(
     int power,
     int subtype,
     int precision,
-    bool enableBLA)
+    bool enableBLA,
+    int imageWidth,
+    int imageHeight)
 {
     if (centerX == nullptr || centerY == nullptr || viewWidth == nullptr)
         throw gcnew ArgumentNullException("Center coordinates and view width are required");
 
-    Debug::WriteLine(String::Format("BuildReferenceOrbit: Starting with precision={0}, maxIter={1}", precision, maxIteration));
+    Debug::WriteLine(String::Format("BuildReferenceOrbit: Starting with precision={0}, maxIter={1}, image={2}x{3}", 
+        precision, maxIteration, imageWidth, imageHeight));
 
     try
     {
+        // Set image dimensions for BLA size calculation
+        extern int xdots, ydots;
+        xdots = imageWidth;
+        ydots = imageHeight;
+        Debug::WriteLine(String::Format("BuildReferenceOrbit: Set xdots={0}, ydots={1}", xdots, ydots));
+
         // Convert managed strings to BigDouble
         std::string centerXStr = ManagedToStdString(centerX);
         std::string centerYStr = ManagedToStdString(centerY);

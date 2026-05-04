@@ -126,7 +126,13 @@
     <ClCompile Include="..\ManpWIN64\Approximation.cpp">
       <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
-        <ClCompile Include="..\ManpWIN64\ApproximationExp.cpp">`r`n      <CompileAsManaged>false</CompileAsManaged>`r`n    </ClCompile>`r`n<!-- PertEngine.cpp excluded - contains GUI code -->
+    <ClCompile Include="..\ManpWIN64\ApproximationExp.cpp">
+      <CompileAsManaged>false</CompileAsManaged>
+    </ClCompile>
+    <ClCompile Include="..\ManpWIN64\ExpComplex.cpp">
+      <CompileAsManaged>false</CompileAsManaged>
+    </ClCompile>
+    <!-- PertEngine.cpp excluded - contains GUI code -->
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

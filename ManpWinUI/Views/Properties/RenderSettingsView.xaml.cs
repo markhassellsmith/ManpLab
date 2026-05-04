@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using ManpWinUI.ViewModels.Properties;
+using ManpWinUI.Services;
 
 namespace ManpWinUI.Views.Properties
 {
@@ -10,22 +11,13 @@ namespace ManpWinUI.Views.Properties
     /// </summary>
     public sealed partial class RenderSettingsView : UserControl
     {
-        public RenderSettingsViewModel ViewModel { get; }
+        // Use DataContext set by MainPage instead of creating our own instance
+        public RenderSettingsViewModel ViewModel => (RenderSettingsViewModel)DataContext;
 
         public RenderSettingsView()
         {
             this.InitializeComponent();
-            ViewModel = new RenderSettingsViewModel();
-        }
-
-        /// <summary>
-        /// Constructor accepting a ViewModel (for MainPage injection).
-        /// Week 7 Task 2: Enable event subscription from MainPage.
-        /// </summary>
-        public RenderSettingsView(RenderSettingsViewModel viewModel)
-        {
-            this.InitializeComponent();
-            ViewModel = viewModel;
+            // DataContext will be set by MainPage to use the DI singleton
         }
 
         /// <summary>

@@ -16,7 +16,19 @@ double param[100] = {0};
 char PertStatus[256] = "";
 bool EnableApproximation = true;
 std::atomic<bool> gStopRequested(false);
-std::vector<CPerturbation> PertCalculator;
+
+// Dummy wpixels vector for CPerturbation initialization
+static std::vector<float> dummyWPixels;
+
+// Helper function to initialize PertCalculator
+static std::vector<CPerturbation> InitializePertCalculator() {
+    std::vector<CPerturbation> vec;
+    vec.emplace_back();  // Add one CPerturbation using default constructor
+    return vec;
+}
+
+// Initialize PertCalculator with one default-constructed CPerturbation
+std::vector<CPerturbation> PertCalculator = InitializePertCalculator();
 
 // Stub implementation of CheckValidRef
 bool CheckValidRef(BigComplex ReferenceCoordinate, BigDouble BigWidth, int maxIteration, double bailout, StoreReferenceData &RefData, int power, int ArithType)
@@ -41,6 +53,11 @@ bool CheckValidRef(BigComplex ReferenceCoordinate, BigDouble BigWidth, int maxIt
 }
 
 // Stub CPerturbation methods
+CPerturbation::CPerturbation() : wpixels(dummyWPixels)
+{
+    // Default constructor stub - binds wpixels reference to dummy vector
+}
+
 int CPerturbation::BigComplex2ExpComplex(ExpComplex *a, BigComplex b)
 {
     // Convert BigComplex to ExpComplex
@@ -69,16 +86,5 @@ void CPerturbation::RefFunctions(BigComplex *centre, BigComplex *Z, int &SlopeDe
     SlopeDegree = 2;  // Mandelbrot is degree 2
 }
 
-// Stub BLAS::initExp (needed by PertSetup.cpp for extended precision)
-void BLAS::initExp(int M, std::vector<ExpComplex> &XSubN, floatexp blaSize, int power, int subtype, long maxIteration, double * const param)
-{
-    // Stub: BLA initialization for extended precision
-    // Full implementation is in Approximation.cpp
-    this->clear();
-}
-
-// Stub ExpComplex destructor
-ExpComplex::~ExpComplex()
-{
-    // Empty destructor stub
-}
+// NOTE: BLAS::initExp and ExpComplex::~ExpComplex are now in ApproximationExp.cpp and ExpComplex.cpp
+// DO NOT stub them here or we get duplicate symbol errors

@@ -229,7 +229,9 @@ public class FractalRenderService : IFractalRenderService
                                 2,      // power
                                 0,      // subtype (0 = auto-detect)
                                 parameters.Precision,
-                                true    // enable BLA
+                                true,   // enable BLA
+                                parameters.Width,   // image width for BLA size calculation
+                                parameters.Height   // image height for BLA size calculation
                             );
 
                             if (orbitResult < 0)
