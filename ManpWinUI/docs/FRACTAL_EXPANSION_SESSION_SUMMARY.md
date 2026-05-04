@@ -1,15 +1,60 @@
 # Fractal Registry Expansion - Session Summary
 
-## 📊 Achievement: 79 Fractals Registered (28% of Target)
+## 📊 Latest Achievement: 93 Fractals Registered (33.7% of Target)
 
-### Starting Point
-- **Before**: 45 fractals across 11 families
-- **After**: 79 fractals across 15 families
-- **Added**: 34 new fractals in 4 new families
+### Current Status (2026-05-05)
+- **Current**: 93 fractals across 17 families
+- **Previous**: 79 fractals across 15 families
+- **Today's Progress**: Added PhoenixExtendedFamily (+8) and NewtonExtendedFamily (+6)
+
+### Historical Progress
+- **Session 1 (2026-05-04)**: 45 → 79 fractals (+34 in 4 families)
+- **Session 2 (2026-05-05)**: 79 → 93 fractals (+14 in 2 families)
 
 ---
 
-## ✅ New Families Added (Session)
+## ✅ New Families Added (Session 2 - Today)
+
+### 5. **PhoenixExtendedFamily.cpp** - 8 Fractals ⭐
+Phoenix fractals with memory of previous iteration:
+- **PhoenixM** - Phoenix Mandelbrot mode (z² + c + p*z_prev)
+- **PhoenixJ** - Phoenix Julia mode with classic parameter (0.56667 - 0.5i)
+- **PhoenixPower3** - Cubic variant (z³ + c + p*z_prev)
+- **PhoenixPower4** - Quartic variant (z⁴ + c + p*z_prev)
+- **PhoenixCosh** - With hyperbolic cosine (cosh(z) + c + p*z_prev)
+- **PhoenixSin** - With sine function (sin(z) + c + p*z_prev)
+- **PhoenixComplex** - Complex feedback parameter (0.5 + 0.2i)
+- **PhoenixLambda** - Hybrid Phoenix-Lambda formula
+
+**Coverage**: Complete Phoenix family with power variants, trig functions, and hybrid combinations
+
+**Implementation Highlights**:
+- All fractals track previous iteration value (z_prev)
+- Feedback parameter p typically 0.5, or complex for variants
+- Julia modes use carefully selected parameter values for visual appeal
+- Smooth coloring with proper bailout detection
+
+### 6. **NewtonExtendedFamily.cpp** - 6 Fractals ⭐ NEW!
+Newton-Raphson method for various polynomials and transcendental functions:
+- **NewtonQuartic** - z⁴ - 1 = 0 (4 convergence basins: 1, -1, i, -i)
+- **NewtonQuintic** - z⁵ - 1 = 0 (5 roots of unity)
+- **NewtonSextic** - z⁶ - 1 = 0 (6 roots of unity)
+- **NewtonSin** - sin(z) = 0 (converges to integer multiples of π)
+- **NewtonCosh** - cosh(z) - 1 = 0 (converges to 0 and ±2πi, etc.)
+- **NewtonBasin** - Basin coloring for z³ - 1 (colors by root reached)
+
+**Coverage**: Complete Newton family with polynomial roots, transcendental functions, and basin visualization
+
+**Implementation Highlights**:
+- Uses Newton-Raphson formula: z = z - f(z)/f'(z)
+- Multiple roots checked for convergence
+- Smooth iteration count based on distance to root
+- NewtonBasin encodes root index for specialized coloring
+- Proper handling of complex trigonometric and hyperbolic functions
+
+---
+
+## ✅ Previously Added Families (Session 1)
 
 ### 1. **TrigonometricFamily.cpp** - 12 Fractals
 Fractals using sine, cosine, and hyperbolic trig functions:

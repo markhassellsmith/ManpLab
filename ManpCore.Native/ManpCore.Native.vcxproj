@@ -122,6 +122,8 @@
     <ClCompile Include="ExponentialFamily.cpp" />
     <ClCompile Include="ExtendedJuliaFamily.cpp" />
     <ClCompile Include="PowerVariantsFamily.cpp" />
+    <ClCompile Include="PhoenixExtendedFamily.cpp" />
+    <ClCompile Include="NewtonExtendedFamily.cpp" />
     <!-- Perturbation Theory: Link against ManpWIN64.lib instead of individual source files -->
     <ClCompile Include="..\ManpWIN64\PertSetup.cpp">
       <CompileAsManaged>false</CompileAsManaged>

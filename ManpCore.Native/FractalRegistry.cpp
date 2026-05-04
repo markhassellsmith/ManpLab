@@ -156,6 +156,8 @@ extern void RegisterTrigonometricFamily();      // Sine, Cosine, Sinh, Cosh vari
 extern void RegisterExponentialFamily();        // Exponential, Logarithm, Power variants
 extern void RegisterExtendedJuliaFamily();      // Additional Julia set variations
 extern void RegisterPowerVariantsFamily();      // Higher-power Mandelbrot/Julia/BurningShip/Tricorn
+extern void RegisterPhoenixExtendedFamily();    // Phoenix variations with different powers and functions
+extern void RegisterNewtonExtendedFamily();     // Newton method for various polynomials and functions
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -178,7 +180,9 @@ void FractalRegistry::InitializeBuiltins()
     RegisterExponentialFamily();        // Exponential, Logarithm, Power variants = 6
     RegisterExtendedJuliaFamily();      // Additional Julia set variations = 8
     RegisterPowerVariantsFamily();      // Higher-power Mandelbrot/Julia/BurningShip/Tricorn = 9
-    // Total: 79 fractals
+    RegisterPhoenixExtendedFamily();    // Phoenix variations with different powers and functions = 8
+    RegisterNewtonExtendedFamily();     // Newton method for various polynomials and functions = 6
+    // Total: 93 fractals
 
     s_initialized = true;
 }
