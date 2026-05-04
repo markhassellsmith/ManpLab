@@ -158,6 +158,7 @@ extern void RegisterExtendedJuliaFamily();      // Additional Julia set variatio
 extern void RegisterPowerVariantsFamily();      // Higher-power Mandelbrot/Julia/BurningShip/Tricorn
 extern void RegisterPhoenixExtendedFamily();    // Phoenix variations with different powers and functions
 extern void RegisterNewtonExtendedFamily();     // Newton method for various polynomials and functions
+extern void RegisterMagnetExtendedFamily();     // Magnet Julia modes and power variants
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -182,7 +183,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterPowerVariantsFamily();      // Higher-power Mandelbrot/Julia/BurningShip/Tricorn = 9
     RegisterPhoenixExtendedFamily();    // Phoenix variations with different powers and functions = 8
     RegisterNewtonExtendedFamily();     // Newton method for various polynomials and functions = 6
-    // Total: 93 fractals
+    RegisterMagnetExtendedFamily();     // Magnet Julia modes and power variants = 4
+    // Total: 97 fractals
 
     s_initialized = true;
 }

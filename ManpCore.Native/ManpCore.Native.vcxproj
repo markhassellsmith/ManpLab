@@ -124,6 +124,7 @@
     <ClCompile Include="PowerVariantsFamily.cpp" />
     <ClCompile Include="PhoenixExtendedFamily.cpp" />
     <ClCompile Include="NewtonExtendedFamily.cpp" />
+    <ClCompile Include="MagnetExtendedFamily.cpp" />
     <!-- Perturbation Theory: Link against ManpWIN64.lib instead of individual source files -->
     <ClCompile Include="..\ManpWIN64\PertSetup.cpp">
       <CompileAsManaged>false</CompileAsManaged>
