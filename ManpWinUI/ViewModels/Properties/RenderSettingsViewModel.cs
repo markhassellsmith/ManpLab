@@ -35,6 +35,7 @@ namespace ManpWinUI.ViewModels.Properties
     /// </summary>
     public class RenderSettingsViewModel : INotifyPropertyChanged
     {
+        private readonly ManpWinUI.Services.IAppSettingsService? _settingsService;
         private RenderMode _selectedRenderMode = RenderMode.EscapeTime;
         private AntialiasingLevel _antialiasingLevel = AntialiasingLevel.None;
         private bool _useDeepZoom = false;
@@ -81,6 +82,7 @@ namespace ManpWinUI.ViewModels.Properties
         /// <summary>
         /// Enable arbitrary precision for deep zoom.
         /// Week 7 Task 4: For extreme magnification levels.
+        /// Week 9: Persisted setting restored at startup.
         /// </summary>
         public bool UseDeepZoom
         {
@@ -90,6 +92,7 @@ namespace ManpWinUI.ViewModels.Properties
                 if (_useDeepZoom != value)
                 {
                     _useDeepZoom = value;
+                    _settingsService?.SetUseDeepZoom(value); // Persist immediately
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseDeepZoom)));
                     RenderSettingsChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -188,9 +191,20 @@ namespace ManpWinUI.ViewModels.Properties
         /// </summary>
         public event EventHandler? RenderSettingsChanged;
 
-        public RenderSettingsViewModel()
+        public RenderSettingsViewModel(ManpWinUI.Services.IAppSettingsService? settingsService = null)
         {
-            System.Diagnostics.Debug.WriteLine("[RenderSettingsViewModel] Initialized with default settings");
+            _settingsService = settingsService;
+
+            // Restore persisted deep zoom setting
+            if (_settingsService != null)
+            {
+                _useDeepZoom = _settingsService.GetUseDeepZoom();
+                System.Diagnostics.Debug.WriteLine($"[RenderSettingsViewModel] Restored UseDeepZoom: {_useDeepZoom}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("[RenderSettingsViewModel] No settings service - using defaults");
+            }
         }
 
         /// <summary>

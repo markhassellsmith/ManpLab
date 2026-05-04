@@ -484,6 +484,66 @@ namespace Native {
         /// Percentage escaped = (EscapedPixelCount / TotalPixels) * 100
         /// </remarks>
         property int EscapedPixelCount;
+
+        // ========== Deep Zoom / Perturbation-specific properties ==========
+
+        /// <summary>
+        /// Whether perturbation theory was used for this render.
+        /// </summary>
+        /// <value>true if reference orbit + perturbation was used; false for direct iteration</value>
+        /// <remarks>
+        /// Perturbation theory is automatically enabled for deep zooms (zoom > 10^15).
+        /// Provides 10-100x speedup vs. brute-force high-precision arithmetic.
+        /// </remarks>
+        property bool UsedPerturbation;
+
+        /// <summary>
+        /// Arithmetic precision mode used for this render.
+        /// </summary>
+        /// <value>
+        /// 0 = DOUBLE (normal double precision)
+        /// 1 = FLOATEXP (extended precision with exponent)
+        /// 2 = DBL_UNSUPPORTED (double precision, no BLA optimization)
+        /// 3 = EXP_UNSUPPORTED (extended precision, no BLA optimization)
+        /// </value>
+        /// <remarks>
+        /// FLOATEXP mode automatically activates when precision > 300 bits (~90 decimal digits).
+        /// Only Mandelbrot and Power fractals support full BLA optimization (modes 0 and 1).
+        /// </remarks>
+        property int ArithType;
+
+        /// <summary>
+        /// Maximum iteration count where reference orbit escaped.
+        /// </summary>
+        /// <value>Iteration count where reference orbit magnitude exceeded bailout; 0 if didn't escape</value>
+        /// <remarks>
+        /// Critical for BLA (Bilinear Approximation) optimization.
+        /// BLA table is built up to this iteration count.
+        /// If reference orbit never escapes, MaxRefIteration = MaxIterations.
+        /// </remarks>
+        property int MaxRefIteration;
+
+        /// <summary>
+        /// Whether BLA (Bilinear Approximation) acceleration was enabled.
+        /// </summary>
+        /// <value>true if BLA was used to skip iterations; false otherwise</value>
+        /// <remarks>
+        /// BLA provides 10-100x speedup by approximating multiple iterations at once.
+        /// Only available for Mandelbrot and Power fractals in DOUBLE or FLOATEXP modes.
+        /// Automatically disabled for unsupported fractal types.
+        /// </remarks>
+        property bool BLAEnabled;
+
+        /// <summary>
+        /// Time spent building the reference orbit (milliseconds).
+        /// </summary>
+        /// <value>Elapsed time for reference orbit calculation; 0 if perturbation not used</value>
+        /// <remarks>
+        /// Reference orbit is built once per zoom level, then reused for all pixels.
+        /// Typically 10-30% of total render time for first render at a zoom level.
+        /// Subsequent renders at same zoom (e.g., panning) reuse cached orbit (time = 0).
+        /// </remarks>
+        property double ReferenceOrbitBuildTime;
     };
 
     /// <summary>
@@ -570,6 +630,11 @@ namespace Native {
 
         // Event backing delegate
         EventHandler<ProgressEventArgs^>^ m_progressChangedDelegate;
+
+        // Perturbation theory state
+        void* m_refData;  // Pointer to StoreReferenceData struct
+        bool m_referenceOrbitValid;
+        int m_cachedArithType;
 
     public:
         /// <summary>
@@ -691,6 +756,85 @@ namespace Native {
         /// <para>Full fractal type integration will be completed in Phase 3 with UI testing framework.</para>
         /// </remarks>
         double TestManpWIN64Integration(double real, double imaginary);
+
+        // ========== Deep Zoom / Perturbation Theory Methods ==========
+
+        /// <summary>
+        /// Build high-precision reference orbit for perturbation theory rendering.
+        /// </summary>
+        /// <param name="centerX">Complex plane center X coordinate (BigDouble as string)</param>
+        /// <param name="centerY">Complex plane center Y coordinate (BigDouble as string)</param>
+        /// <param name="viewWidth">View width in complex plane (BigDouble as string)</param>
+        /// <param name="maxIteration">Maximum iteration count</param>
+        /// <param name="bailout">Escape radius (typically 4.0 for Mandelbrot)</param>
+        /// <param name="power">Polynomial power (2 for Mandelbrot, 3 for cubic, etc.)</param>
+        /// <param name="subtype">Fractal variant (0=Mandelbrot, 1=Power, 2=BurningShip, etc.)</param>
+        /// <param name="precision">MPFR precision in bits (e.g., 166 for ~50 decimal digits)</param>
+        /// <param name="enableBLA">Enable BLA (Bilinear Approximation) acceleration</param>
+        /// <param name="imageWidth">Image width in pixels (for BLA size calculation)</param>
+        /// <param name="imageHeight">Image height in pixels (for BLA size calculation)</param>
+        /// <returns>0 on success, negative on error or user cancellation</returns>
+        /// <remarks>
+        /// <para>This method builds the reference orbit once for a given zoom level/location.</para>
+        /// <para>The orbit is cached internally and reused by CalculateWithPerturbation().</para>
+        /// <para>Building the reference orbit is single-threaded and can take 10-30% of total render time.</para>
+        /// <para>Progress is reported via custom status updates (not ProgressChanged event).</para>
+        /// <para>Call this before CalculateWithPerturbation() when deep zoom is needed.</para>
+        /// </remarks>
+        int BuildReferenceOrbit(
+            String^ centerX,
+            String^ centerY,
+            String^ viewWidth,
+            int maxIteration,
+            double bailout,
+            int power,
+            int subtype,
+            int precision,
+            bool enableBLA,
+            int imageWidth,
+            int imageHeight
+        );
+
+        /// <summary>
+        /// Check if the cached reference orbit is still valid for these parameters.
+        /// </summary>
+        /// <param name="centerX">Complex plane center X coordinate (BigDouble as string)</param>
+        /// <param name="centerY">Complex plane center Y coordinate (BigDouble as string)</param>
+        /// <param name="viewWidth">View width in complex plane (BigDouble as string)</param>
+        /// <param name="maxIteration">Maximum iteration count</param>
+        /// <param name="bailout">Escape radius</param>
+        /// <param name="power">Polynomial power</param>
+        /// <returns>true if cached orbit is valid and can be reused; false if BuildReferenceOrbit() needed</returns>
+        /// <remarks>
+        /// <para>Checks if center coordinates, zoom, bailout, and power match cached values.</para>
+        /// <para>Use this to avoid unnecessarily rebuilding the reference orbit.</para>
+        /// <para>Example: panning at the same zoom level can reuse the orbit; changing zoom cannot.</para>
+        /// </remarks>
+        bool IsReferenceOrbitValid(
+            String^ centerX,
+            String^ centerY,
+            String^ viewWidth,
+            int maxIteration,
+            double bailout,
+            int power
+        );
+
+        /// <summary>
+        /// Calculate fractal using perturbation theory with existing reference orbit.
+        /// </summary>
+        /// <param name="parameters">Fractal parameters (must have BigDouble coordinates)</param>
+        /// <returns>FractalResult with UsedPerturbation = true and perturbation-specific stats</returns>
+        /// <exception cref="InvalidOperationException">Thrown if BuildReferenceOrbit() not called first</exception>
+        /// <exception cref="ArgumentNullException">Thrown if parameters is null</exception>
+        /// <exception cref="OperationCanceledException">Thrown if Cancel() is called during calculation</exception>
+        /// <remarks>
+        /// <para>This method uses the reference orbit built by BuildReferenceOrbit().</para>
+        /// <para>Multi-threaded: Each thread calculates pixels using reference orbit + delta.</para>
+        /// <para>10-100x faster than brute-force BigDouble iteration at deep zoom levels.</para>
+        /// <para>Automatically selects DOUBLE or FLOATEXP arithmetic based on precision.</para>
+        /// <para>ProgressChanged events fire normally during pixel calculation.</para>
+        /// </remarks>
+        FractalResult^ CalculateWithPerturbation(FractalParameters^ parameters);
 
     protected:
         /// <summary>

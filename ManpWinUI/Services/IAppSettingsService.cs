@@ -137,4 +137,16 @@ public interface IAppSettingsService
     /// Saves the properties panel tab index.
     /// </summary>
     void SetPropertiesTabIndex(int index);
+
+    /// <summary>
+    /// Gets whether deep zoom (arbitrary precision) is enabled by default.
+    /// Week 9: Perturbation-theory deep zoom support.
+    /// </summary>
+    bool GetUseDeepZoom();
+
+    /// <summary>
+    /// Saves whether deep zoom should be enabled.
+    /// Week 9: Perturbation-theory deep zoom support.
+    /// </summary>
+    void SetUseDeepZoom(bool use);
 }

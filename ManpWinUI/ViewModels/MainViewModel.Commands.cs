@@ -35,11 +35,25 @@ public partial class MainViewModel
 
         var fractalName = IsJuliaMode ? $"{SelectedFractalType} Julia" : SelectedFractalType;
 
+        // Calculate viewport width to determine if arbitrary precision is needed
+        double viewWidth = 3.0 / Zoom;
+
         // Pre-calculate deep zoom status for early display
         bool userRequestedDeepZoom = _renderSettingsViewModel.UseDeepZoom;
-        const double DEEP_ZOOM_THRESHOLD = 1e10;
-        bool willUseDeepZoom = userRequestedDeepZoom && Zoom >= DEEP_ZOOM_THRESHOLD;
+
+        // Deep zoom threshold: When viewport width drops below 1e-12, double precision
+        // loses significant digits and arbitrary precision (BigDouble/perturbation) is required
+        const double VIEWPORT_PRECISION_LIMIT = 1e-12;
+        bool needsArbitraryPrecision = (viewWidth < VIEWPORT_PRECISION_LIMIT);
+        bool willUseDeepZoom = userRequestedDeepZoom && needsArbitraryPrecision;
+
         string deepZoomPrefix = willUseDeepZoom ? "[Deep Zoom] " : "";
+
+        // Log precision status for diagnostics
+        if (needsArbitraryPrecision && !userRequestedDeepZoom)
+        {
+            System.Diagnostics.Debug.WriteLine($"[WARNING] Viewport width {viewWidth:E2} requires arbitrary precision, but deep zoom is disabled!");
+        }
 
         _dispatcherQueue.TryEnqueue(() =>
         {
@@ -131,20 +145,26 @@ public partial class MainViewModel
                 renderParams.UseSmoothColoring = UseSmoothColoring;
 
                 // Week 9 Task 1: Deep zoom toggle with automatic optimization
-                // Deep zoom threshold already calculated at method start
+                // Deep zoom activates when viewport width requires arbitrary precision
                 shouldUseDeepZoom = false; // Default to disabled
 
-                // Auto-enable deep zoom when zoom is high enough (requires arbitrary precision)
-                if (userRequestedDeepZoom && Zoom >= DEEP_ZOOM_THRESHOLD)
+                // Auto-enable deep zoom when viewport width requires arbitrary precision
+                if (userRequestedDeepZoom && needsArbitraryPrecision)
                 {
                     shouldUseDeepZoom = true;
-                    System.Diagnostics.Debug.WriteLine($"[DeepZoom] ENABLED: zoom {Zoom:E2} >= threshold {DEEP_ZOOM_THRESHOLD:E2} (arbitrary precision required)");
+                    System.Diagnostics.Debug.WriteLine($"[DeepZoom] ENABLED: viewport width {viewWidth:E2} < {VIEWPORT_PRECISION_LIMIT:E2} (arbitrary precision required)");
                 }
-                else if (userRequestedDeepZoom && Zoom < DEEP_ZOOM_THRESHOLD)
+                else if (userRequestedDeepZoom && !needsArbitraryPrecision)
                 {
                     shouldUseDeepZoom = false;
-                    System.Diagnostics.Debug.WriteLine($"[Optimization] Deep zoom not needed: zoom {Zoom:E2} < threshold {DEEP_ZOOM_THRESHOLD:E2}");
+                    System.Diagnostics.Debug.WriteLine($"[Optimization] Deep zoom not needed: viewport width {viewWidth:E2} >= {VIEWPORT_PRECISION_LIMIT:E2}");
                     System.Diagnostics.Debug.WriteLine($"[Optimization] Using double precision (50-100x faster)");
+                }
+                else if (!userRequestedDeepZoom && needsArbitraryPrecision)
+                {
+                    shouldUseDeepZoom = false;
+                    System.Diagnostics.Debug.WriteLine($"[WARNING] Viewport width {viewWidth:E2} needs arbitrary precision, but deep zoom is DISABLED!");
+                    System.Diagnostics.Debug.WriteLine($"[WARNING] Image may show precision artifacts or solid colors");
                 }
 
                 renderParams.UseDeepZoom = shouldUseDeepZoom;
@@ -162,22 +182,26 @@ public partial class MainViewModel
                 System.Diagnostics.Debug.WriteLine("[RenderCommand] Using LEGACY property-based render (fallback)");
 
                 // Week 9 Task 1: Deep zoom toggle with automatic optimization (legacy path)
-                // Deep zoom threshold already calculated at method start
+                // Deep zoom activates when viewport width requires arbitrary precision
                 shouldUseDeepZoom = false; // Default to disabled
 
-                // Auto-enable deep zoom when zoom is high enough
-                if (userRequestedDeepZoom && Zoom >= DEEP_ZOOM_THRESHOLD)
+                // Auto-enable deep zoom when viewport width requires arbitrary precision
+                if (userRequestedDeepZoom && needsArbitraryPrecision)
                 {
                     shouldUseDeepZoom = true;
-                    System.Diagnostics.Debug.WriteLine($"[DeepZoom] ENABLED (Legacy): zoom {Zoom:E2} >= threshold {DEEP_ZOOM_THRESHOLD:E2}");
+                    System.Diagnostics.Debug.WriteLine($"[DeepZoom] ENABLED (Legacy): viewport width {viewWidth:E2} < {VIEWPORT_PRECISION_LIMIT:E2}");
                 }
-                else if (userRequestedDeepZoom && Zoom < DEEP_ZOOM_THRESHOLD)
+                else if (userRequestedDeepZoom && !needsArbitraryPrecision)
                 {
                     shouldUseDeepZoom = false;
-                    System.Diagnostics.Debug.WriteLine($"[Optimization] Deep zoom not needed (Legacy): zoom {Zoom:E2} < threshold {DEEP_ZOOM_THRESHOLD:E2}");
+                    System.Diagnostics.Debug.WriteLine($"[Optimization] Deep zoom not needed (Legacy): viewport width {viewWidth:E2} >= {VIEWPORT_PRECISION_LIMIT:E2}");
+                }
+                else if (!userRequestedDeepZoom && needsArbitraryPrecision)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[WARNING] Viewport width {viewWidth:E2} needs arbitrary precision, but deep zoom is DISABLED!");
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[RenderCommand] Deep Zoom Setting (Legacy): {shouldUseDeepZoom} (User requested: {userRequestedDeepZoom}, Zoom: {Zoom:E2})");
+                System.Diagnostics.Debug.WriteLine($"[RenderCommand] Deep Zoom Setting (Legacy): {shouldUseDeepZoom} (User requested: {userRequestedDeepZoom}, ViewWidth: {viewWidth:E2})");
 
                 // Fallback: use old individual-property method
                 result = await _renderService.RenderMandelbrotAsync(

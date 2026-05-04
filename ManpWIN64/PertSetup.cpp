@@ -152,29 +152,48 @@ int	ReferenceZoomPoint(BigComplex& centre, int maxIteration, int user_data(HWND 
     double refSeconds = tRef.stop_ms();
     auto s = FormatElapsed(refSeconds);
     sprintf(buf, "Reference build: %s, MaxIter = %d, MaxRefIter = %d\n", s.c_str(), maxIteration, MaxRefIteration);
-    OutputDebugStringA(buf);
+	OutputDebugStringA(buf);
 
-    SimpleTimer  tBla;
-    tBla.start();
+	SimpleTimer  tBla;
+	tBla.start();
 
-    if (EnableApproximation)
+	// Debug logging for adaptive BLA
+	double zoom_magnitude_preview = log10(3.0 / ZoomRadius);
+	double adaptive_scale_preview = max(0.1, pow(0.8, zoom_magnitude_preview / 10.0));
+	sprintf(buf, "BLA adaptive scaling: zoom depth E-%.1f, scale factor %.3f\n", 
+			zoom_magnitude_preview, adaptive_scale_preview);
+	OutputDebugStringA(buf);
+
+	if (EnableApproximation)
 	{
 	Bla.clear();
 	int M = MaxRefIteration; // the period
 	int image_size = min(xdots, ydots);
+
+	// Adaptive BLA tile sizing based on zoom depth
+	// Deeper zooms need finer tiles to avoid visible square artifacts
+	// zoom_magnitude: E-6 = 6, E-14 = 14, E-20 = 20, etc.
+	double zoom_magnitude = log10(3.0 / ZoomRadius);  // Full Mandelbrot set width = 3.0
+	// Scale factor: 0.8^(depth/10) means 20% reduction per 10 orders of magnitude
+	// E-6 → 0.93 (minimal change), E-14 → 0.44 (half size), E-20 → 0.26 (quarter size)
+	double adaptive_scale = pow(0.8, zoom_magnitude / 10.0);
+	adaptive_scale = max(0.1, adaptive_scale);  // Floor at 10% to prevent excessive subdivision
+
 	if (ArithType == FLOATEXP)
-	    {
-	    // set up parameters for BLA table
-	    ExpComplex temp_size_image_size = ExpComplex(ZoomRadius / (double)image_size, ZoomRadius / (double)image_size);
-	    floatexp blaSize = blaSize.hypotExp(temp_size_image_size.x * xdots * 0.5, temp_size_image_size.y * ydots * 0.5);
-	    Bla.initExp(M, ExpXSubN, blaSize, power, subtype, maxIteration, param);
-	    }
+		{
+		// set up parameters for BLA table with adaptive sizing
+		ExpComplex temp_size_image_size = ExpComplex(ZoomRadius / (double)image_size, ZoomRadius / (double)image_size);
+		floatexp baseBlaSize = baseBlaSize.hypotExp(temp_size_image_size.x * xdots * 0.5, temp_size_image_size.y * ydots * 0.5);
+		floatexp blaSize = baseBlaSize * adaptive_scale;
+		Bla.initExp(M, ExpXSubN, blaSize, power, subtype, maxIteration, param);
+		}
 	else if (ArithType == DOUBLE)
-	    {
-	    Complex temp_size_image_size = Complex(ZoomRadius / (double)image_size, ZoomRadius / (double)image_size);
-	    double blaSize = hypot(temp_size_image_size.x * xdots * 0.5, temp_size_image_size.y * ydots * 0.5);
-	    Bla.init(M, XSubN, blaSize, power, subtype, maxIteration, param);
-	    }
+		{
+		Complex temp_size_image_size = Complex(ZoomRadius / (double)image_size, ZoomRadius / (double)image_size);
+		double baseBlaSize = hypot(temp_size_image_size.x * xdots * 0.5, temp_size_image_size.y * ydots * 0.5);
+		double blaSize = baseBlaSize * adaptive_scale;
+		Bla.init(M, XSubN, blaSize, power, subtype, maxIteration, param);
+		}
 	}
 
     double blaSeconds = tBla.stop_ms();

@@ -39,8 +39,8 @@ class CPlot
 
 	int	flags = 0;
 
-    private:
-	bool CPlot::DebugValidate(const char* where) const;
+	private:
+	bool DebugValidate(const char* where) const;
 	long	threshold;			// maximun iterations
 	CTrueCol    *TrueCol;			// palette info
 	std::vector<float> &wpixels;		// floating point iterations for each pixels

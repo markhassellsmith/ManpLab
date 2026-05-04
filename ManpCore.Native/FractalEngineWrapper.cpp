@@ -12,6 +12,7 @@
 #include "Complex.h"  // ManpWIN64 Complex class for POC
 #include "../ManpWIN64/BigDouble.h"
 #include "../ManpWIN64/BigComplex.h"
+#include "../ManpWIN64/PertEngine.h"  // Perturbation theory engine
 #include <string>
 
 using namespace System;
@@ -21,6 +22,18 @@ using namespace ManpCore::Native;
 
 // External global for MPFR precision (defined in ManpWIN64/BigDouble.cpp)
 extern int decimals;
+
+// External perturbation theory functions and globals (defined in ManpWIN64/PertSetup.cpp)
+extern int ReferenceZoomPoint(BigComplex& centre, int maxIteration, int user_data(HWND hwnd), char* StatusBarInfo, int *pPertProgress, double bailout, int ArithType, int power, ::BigDouble BigWidth, int &SlopeDegree);
+extern void PertSetupArithType(int &ArithType, int subtype, long MaxIteration, int precision, BYTE BigNumFlag);
+extern bool CheckValidRef(BigComplex ReferenceCoordinate, ::BigDouble BigWidth, int maxIteration, double bailout, StoreReferenceData &RefData, int power, int ArithType);
+extern std::vector<ExpComplex> ExpXSubN;
+extern std::vector<Complex> XSubN;
+extern int ArithType;
+extern int MaxRefIteration;
+extern BLAS Bla;
+extern int SlopeDegree;
+extern bool EnableApproximation;
 
 // Helper function to convert managed string to std::string without msclr/marshal
 static std::string ManagedToStdString(String^ str)
@@ -198,6 +211,11 @@ FractalEngineWrapper::FractalEngineWrapper()
     m_cancelled = false;
     m_progressChangedDelegate = nullptr;
 
+    // Initialize perturbation state
+    m_refData = new StoreReferenceData();
+    m_referenceOrbitValid = false;
+    m_cachedArithType = DOUBLE;
+
     // TODO Phase 2: Initialize native C++ fractal engine
     // m_nativeEngine = CreateNativeFractalEngine();
 }
@@ -216,6 +234,13 @@ FractalEngineWrapper::!FractalEngineWrapper()
         // TODO Phase 2: Destroy native C++ engine
         // DestroyNativeFractalEngine(m_nativeEngine);
         m_nativeEngine = nullptr;
+    }
+
+    // Clean up perturbation state
+    if (m_refData != nullptr)
+    {
+        delete static_cast<StoreReferenceData*>(m_refData);
+        m_refData = nullptr;
     }
 }
 
@@ -564,4 +589,458 @@ double FractalEngineWrapper::TestManpWIN64Integration(double real, double imagin
     ::Complex c(real, imaginary);
     return c.CFabs();
     */
+}
+
+//=============================================================================
+// Perturbation Theory Implementation
+//=============================================================================
+
+// Dummy user_data callback for reference orbit building (no GUI interaction in this context)
+static int DummyUserData(HWND hwnd)
+{
+    return 0; // Continue processing
+}
+
+int FractalEngineWrapper::BuildReferenceOrbit(
+    String^ centerX,
+    String^ centerY,
+    String^ viewWidth,
+    int maxIteration,
+    double bailout,
+    int power,
+    int subtype,
+    int precision,
+    bool enableBLA,
+    int imageWidth,
+    int imageHeight)
+{
+    if (centerX == nullptr || centerY == nullptr || viewWidth == nullptr)
+        throw gcnew ArgumentNullException("Center coordinates and view width are required");
+
+    Debug::WriteLine(String::Format("BuildReferenceOrbit: Starting with precision={0}, maxIter={1}, image={2}x{3}", 
+        precision, maxIteration, imageWidth, imageHeight));
+
+    try
+    {
+        // Set image dimensions for BLA size calculation
+        extern int xdots, ydots;
+        xdots = imageWidth;
+        ydots = imageHeight;
+        Debug::WriteLine(String::Format("BuildReferenceOrbit: Set xdots={0}, ydots={1}", xdots, ydots));
+
+        // Convert managed strings to BigDouble
+        std::string centerXStr = ManagedToStdString(centerX);
+        std::string centerYStr = ManagedToStdString(centerY);
+        std::string viewWidthStr = ManagedToStdString(viewWidth);
+
+        // Set global decimals for MPFR precision
+        decimals = precision;
+
+        // Create BigComplex for center coordinate (using native ::BigDouble with MPFR string parsing)
+        BigComplex centre;
+        centre.x = ::BigDouble(0.0);  // Initialize with default constructor
+        centre.y = ::BigDouble(0.0);
+
+        // Parse strings directly into MPFR values
+        mpfr_set_str(centre.x.x, centerXStr.c_str(), 10, MPFR_RNDN);
+        mpfr_set_str(centre.y.x, centerYStr.c_str(), 10, MPFR_RNDN);
+
+        // Create BigDouble for view width (using native ::BigDouble)
+        ::BigDouble bigWidth(0.0);
+        mpfr_set_str(bigWidth.x, viewWidthStr.c_str(), 10, MPFR_RNDN);
+
+        // Determine arithmetic type (DOUBLE, FLOATEXP, etc.)
+        BYTE bigNumFlag = 1; // We're using BigDouble, so this is true
+        PertSetupArithType(::ArithType, subtype, maxIteration, precision, bigNumFlag);
+        m_cachedArithType = ::ArithType;
+
+        Debug::WriteLine(String::Format("BuildReferenceOrbit: ArithType={0}, SlopeDegree={1}", ::ArithType, ::SlopeDegree));
+
+        // Build reference orbit
+        char statusBarInfo[256] = "";
+        int pertProgress = 0;
+
+        int result = ReferenceZoomPoint(
+            centre,
+            maxIteration,
+            DummyUserData,
+            statusBarInfo,
+            &pertProgress,
+            bailout,
+            ::ArithType,
+            power,
+            bigWidth,
+            ::SlopeDegree
+        );
+
+        if (result < 0)
+        {
+            Debug::WriteLine("BuildReferenceOrbit: Cancelled or failed");
+            m_referenceOrbitValid = false;
+            return result;
+        }
+
+        // Cache reference orbit metadata
+        auto refData = static_cast<StoreReferenceData*>(m_refData);
+        refData->valid = true;
+        refData->BigWidth = bigWidth;
+        refData->ReferenceCoordinate = centre;
+        refData->rqlim = bailout;
+        refData->degree = (WORD)power;
+        m_referenceOrbitValid = true;
+
+        Debug::WriteLine(String::Format("BuildReferenceOrbit: Success! MaxRefIteration={0}, orbit size={1}", 
+            ::MaxRefIteration,
+            (::ArithType == DOUBLE || ::ArithType == DBL_UNSUPPORTED) ? XSubN.size() : ExpXSubN.size()));
+
+        return 0;
+    }
+    catch (const std::exception& ex)
+    {
+        Debug::WriteLine(String::Format("BuildReferenceOrbit: Exception: {0}", gcnew String(ex.what())));
+        m_referenceOrbitValid = false;
+        throw gcnew InvalidOperationException("Failed to build reference orbit: " + gcnew String(ex.what()));
+    }
+}
+
+bool FractalEngineWrapper::IsReferenceOrbitValid(
+    String^ centerX,
+    String^ centerY,
+    String^ viewWidth,
+    int maxIteration,
+    double bailout,
+    int power)
+{
+    if (!m_referenceOrbitValid || m_refData == nullptr)
+        return false;
+
+    try
+    {
+        // Convert managed strings to native types
+        std::string centerXStr = ManagedToStdString(centerX);
+        std::string centerYStr = ManagedToStdString(centerY);
+        std::string viewWidthStr = ManagedToStdString(viewWidth);
+
+        // Get precision from cached ArithType (estimate from reference data)
+        auto refData = static_cast<StoreReferenceData*>(m_refData);
+        int precision = (m_cachedArithType == FLOATEXP || m_cachedArithType == EXP_UNSUPPORTED) ? 300 : 53;
+
+        // Set global decimals
+        decimals = precision;
+
+        // Create BigComplex and BigDouble for comparison (using native types with MPFR parsing)
+        BigComplex centre;
+        centre.x = ::BigDouble(0.0);
+        centre.y = ::BigDouble(0.0);
+        mpfr_set_str(centre.x.x, centerXStr.c_str(), 10, MPFR_RNDN);
+        mpfr_set_str(centre.y.x, centerYStr.c_str(), 10, MPFR_RNDN);
+
+        ::BigDouble bigWidth(0.0);
+        mpfr_set_str(bigWidth.x, viewWidthStr.c_str(), 10, MPFR_RNDN);
+
+        // Check validity using native function
+        bool valid = CheckValidRef(centre, bigWidth, maxIteration, bailout, *refData, power, m_cachedArithType);
+
+        Debug::WriteLine(String::Format("IsReferenceOrbitValid: {0}", valid ? "true" : "false"));
+        return valid;
+    }
+    catch (const std::exception& ex)
+    {
+        Debug::WriteLine(String::Format("IsReferenceOrbitValid: Exception: {0}", gcnew String(ex.what())));
+        return false;
+    }
+}
+
+FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters^ parameters)
+{
+    if (parameters == nullptr)
+        throw gcnew ArgumentNullException("parameters");
+
+    if (!m_referenceOrbitValid)
+        throw gcnew InvalidOperationException("Reference orbit not built. Call BuildReferenceOrbit() first.");
+
+    Debug::WriteLine("CalculateWithPerturbation: Starting perturbation-based render");
+
+    m_cancelled = false;
+    auto stopwatch = Stopwatch::StartNew();
+
+    try
+    {
+        int width = parameters->Width;
+        int height = parameters->Height;
+        int maxIterations = parameters->MaxIterations;
+        int pixelCount = width * height * 4; // BGRA
+
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: {0}x{1}, maxIter={2}", width, height, maxIterations));
+
+        // Create result
+        auto result = gcnew FractalResult();
+        result->PixelData = gcnew array<Byte>(pixelCount);
+        result->Width = width;
+        result->Height = height;
+
+        // Get reference orbit data
+        auto refData = static_cast<StoreReferenceData*>(m_refData);
+
+        // Extract reference center coordinates (convert BigDouble to double)
+        double centerX = mpfr_get_d(refData->ReferenceCoordinate.x.x, MPFR_RNDN);
+        double centerY = mpfr_get_d(refData->ReferenceCoordinate.y.x, MPFR_RNDN);
+        double viewWidth = mpfr_get_d(refData->BigWidth.x, MPFR_RNDN);
+        double bailout = refData->rqlim;
+
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: Center=({0}, {1}), ViewWidth={2}, Bailout={3}", 
+            centerX, centerY, viewWidth, bailout));
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: ArithType={0}, Orbit size={1}", 
+            m_cachedArithType, 
+            (m_cachedArithType == DOUBLE || m_cachedArithType == DBL_UNSUPPORTED) ? XSubN.size() : ExpXSubN.size()));
+
+        // Get palette info
+        ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
+        int colorOffset = parameters->ColorOffset;
+
+        long long totalIterations = 0;
+        int escapedPixels = 0;
+        int blaSkipsUsed = 0;
+
+        // Check if BLA is available (from PertSetup.cpp: Bla global)
+        // Bla is a global BLAS instance, so we take its address
+        bool blaEnabled = (::Bla.isValid && ::EnableApproximation);
+
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: BLA enabled={0}", blaEnabled));
+
+        // Pixel loop - calculate fractal using perturbation theory
+        for (int y = 0; y < height; y++)
+        {
+            // Report progress every 10 lines
+            if (y % 10 == 0)
+            {
+                if (m_progressChangedDelegate != nullptr)
+                {
+                    auto progressArgs = gcnew ProgressEventArgs();
+                    progressArgs->Percentage = (y * 100.0) / height;
+                    progressArgs->CurrentLine = y;
+                    progressArgs->TotalLines = height;
+                    progressArgs->StatusMessage = String::Format("Perturbation: line {0} of {1}", y, height);
+                    ProgressChanged(this, progressArgs);
+                }
+            }
+
+            if (m_cancelled)
+                throw gcnew OperationCanceledException("Calculation cancelled by user");
+
+            for (int x = 0; x < width; x++)
+            {
+                // Map pixel to complex plane offset from reference center
+                // ΔC = (pixel_coordinate - reference_center)
+                Complex deltaC;
+                deltaC.x = ((x - width / 2.0) / width) * viewWidth;
+                deltaC.y = ((y - height / 2.0) / height) * viewWidth;
+
+                // Perturbation iteration: ΔZₙ₊₁ ≈ 2·Zₙ·ΔZₙ + ΔC
+                Complex deltaZ = deltaC;  // ΔZ₀ = ΔC
+                int iteration = 0;
+                int refIteration = 0;  // Track position in reference orbit
+
+                // Choose reference orbit based on ArithType
+                if (m_cachedArithType == DOUBLE || m_cachedArithType == DBL_UNSUPPORTED)
+                {
+                    // Use double-precision reference orbit (XSubN)
+                    int orbitSize = (int)XSubN.size();
+
+                    while (iteration < maxIterations && refIteration < orbitSize)
+                    {
+                        // Try BLA acceleration first
+                        if (blaEnabled && ::EnableApproximation)
+                        {
+                            double deltaNormSq = deltaZ.x * deltaZ.x + deltaZ.y * deltaZ.y;
+                            const BLA* blaPtr = ::Bla.lookup(refIteration, deltaNormSq, iteration, maxIterations);
+
+                            if (blaPtr != nullptr && blaPtr->l > 0)
+                            {
+                                // BLA skip: apply linear transform ΔZ = A·ΔZ + B·ΔC
+                                double newDzX = blaPtr->Ax * deltaZ.x - blaPtr->Ay * deltaZ.y 
+                                              + blaPtr->Bx * deltaC.x - blaPtr->By * deltaC.y;
+                                double newDzY = blaPtr->Ax * deltaZ.y + blaPtr->Ay * deltaZ.x 
+                                              + blaPtr->Bx * deltaC.y + blaPtr->By * deltaC.x;
+                                deltaZ.x = newDzX;
+                                deltaZ.y = newDzY;
+
+                                iteration += blaPtr->l;
+                                refIteration += blaPtr->l;
+                                blaSkipsUsed++;
+
+                                // Check bounds and escape after skip
+                                if (refIteration >= orbitSize)
+                                    break;
+
+                                Complex Zn = XSubN[refIteration];
+                                double zx = Zn.x + deltaZ.x;
+                                double zy = Zn.y + deltaZ.y;
+                                double magnitudeSq = zx * zx + zy * zy;
+
+                                if (magnitudeSq > bailout)
+                                    break;
+
+                                continue;  // Try another BLA skip
+                            }
+                        }
+
+                        // Fall back to single-step perturbation
+                        Complex Zn = XSubN[refIteration];
+
+                        // Perturbation formula: ΔZ_{n+1} ≈ 2·Z_n·ΔZ_n + ΔC
+                        Complex temp;
+                        temp.x = 2.0 * (Zn.x * deltaZ.x - Zn.y * deltaZ.y);
+                        temp.y = 2.0 * (Zn.x * deltaZ.y + Zn.y * deltaZ.x);
+                        deltaZ.x = temp.x + deltaC.x;
+                        deltaZ.y = temp.y + deltaC.y;
+
+                        iteration++;
+                        refIteration++;
+
+                        // Test for escape: |Z_n + ΔZ_n|² > bailout
+                        double zx = Zn.x + deltaZ.x;
+                        double zy = Zn.y + deltaZ.y;
+                        double magnitudeSq = zx * zx + zy * zy;
+
+                        if (magnitudeSq > bailout)
+                            break;
+                    }
+                }
+                else
+                {
+                    // Use extended-precision reference orbit (ExpXSubN)
+                    int orbitSize = (int)ExpXSubN.size();
+
+                    while (iteration < maxIterations && refIteration < orbitSize)
+                    {
+                        // Try BLA acceleration first (ExpComplex version)
+                        if (blaEnabled && ::EnableApproximation)
+                        {
+                            floatexp deltaNormSq;
+                            deltaNormSq.val = deltaZ.x * deltaZ.x + deltaZ.y * deltaZ.y;
+                            deltaNormSq.exp = 0;
+
+                            const BLAExp* blaPtr = ::Bla.lookupExp(refIteration, deltaNormSq, iteration, maxIterations);
+
+                            if (blaPtr != nullptr && blaPtr->l > 0)
+                            {
+                                // Convert floatexp to double for deltaZ application
+                                double Ax = blaPtr->Ax.val * pow(2.0, blaPtr->Ax.exp);
+                                double Ay = blaPtr->Ay.val * pow(2.0, blaPtr->Ay.exp);
+                                double Bx = blaPtr->Bx.val * pow(2.0, blaPtr->Bx.exp);
+                                double By = blaPtr->By.val * pow(2.0, blaPtr->By.exp);
+
+                                double newDzX = Ax * deltaZ.x - Ay * deltaZ.y 
+                                              + Bx * deltaC.x - By * deltaC.y;
+                                double newDzY = Ax * deltaZ.y + Ay * deltaZ.x 
+                                              + Bx * deltaC.y + By * deltaC.x;
+                                deltaZ.x = newDzX;
+                                deltaZ.y = newDzY;
+
+                                iteration += blaPtr->l;
+                                refIteration += blaPtr->l;
+                                blaSkipsUsed++;
+
+                                // Check bounds and escape after skip
+                                if (refIteration >= orbitSize)
+                                    break;
+
+                                ExpComplex Zn = ExpXSubN[refIteration];
+                                double ZnX = Zn.x.val * pow(2.0, Zn.x.exp);
+                                double ZnY = Zn.y.val * pow(2.0, Zn.y.exp);
+                                double zx = ZnX + deltaZ.x;
+                                double zy = ZnY + deltaZ.y;
+                                double magnitudeSq = zx * zx + zy * zy;
+
+                                if (magnitudeSq > bailout)
+                                    break;
+
+                                continue;  // Try another BLA skip
+                            }
+                        }
+
+                        // Fall back to single-step perturbation
+                        ExpComplex Zn = ExpXSubN[refIteration];
+
+                        // Convert ExpComplex to double for this calculation
+                        double ZnX = Zn.x.val * pow(2.0, Zn.x.exp);
+                        double ZnY = Zn.y.val * pow(2.0, Zn.y.exp);
+
+                        // Perturbation formula
+                        Complex temp;
+                        temp.x = 2.0 * (ZnX * deltaZ.x - ZnY * deltaZ.y);
+                        temp.y = 2.0 * (ZnX * deltaZ.y + ZnY * deltaZ.x);
+                        deltaZ.x = temp.x + deltaC.x;
+                        deltaZ.y = temp.y + deltaC.y;
+
+                        iteration++;
+                        refIteration++;
+
+                        // Test for escape
+                        double zx = ZnX + deltaZ.x;
+                        double zy = ZnY + deltaZ.y;
+                        double magnitudeSq = zx * zx + zy * zy;
+
+                        if (magnitudeSq > bailout)
+                            break;
+                    }
+                }
+
+                totalIterations += iteration;
+                if (iteration < maxIterations)
+                    escapedPixels++;
+
+                // Convert iteration to color
+                ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
+                    (double)iteration,
+                    maxIterations,
+                    nativePalette,
+                    colorOffset
+                );
+
+                // Write BGRA pixel
+                int index = (y * width + x) * 4;
+                result->PixelData[index + 0] = color.b;  // Blue
+                result->PixelData[index + 1] = color.g;  // Green
+                result->PixelData[index + 2] = color.r;  // Red
+                result->PixelData[index + 3] = 255;      // Alpha
+            }
+        }
+
+        stopwatch->Stop();
+
+        // Fill result metadata
+        result->UsedPerturbation = true;
+        result->ArithType = m_cachedArithType;
+        result->MaxRefIteration = ::MaxRefIteration;
+        result->BLAEnabled = blaEnabled;
+        result->ReferenceOrbitBuildTime = 0.0;  // TODO: Track this in BuildReferenceOrbit
+        result->RenderTime = stopwatch->Elapsed;
+        result->IterationCount = totalIterations;
+        result->EscapedPixelCount = escapedPixels;
+
+        // Final progress update
+        if (m_progressChangedDelegate != nullptr)
+        {
+            auto finalProgress = gcnew ProgressEventArgs();
+            finalProgress->Percentage = 100.0;
+            finalProgress->CurrentLine = height;
+            finalProgress->TotalLines = height;
+            finalProgress->StatusMessage = "Complete";
+            ProgressChanged(this, finalProgress);
+        }
+
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: Complete! Time={0}ms, AvgIter={1}, BLA skips={2}", 
+            result->RenderTime.TotalMilliseconds, 
+            totalIterations / (width * height),
+            blaSkipsUsed));
+
+        return result;
+    }
+    catch (Exception^)
+    {
+        stopwatch->Stop();
+        throw;
+    }
 }
