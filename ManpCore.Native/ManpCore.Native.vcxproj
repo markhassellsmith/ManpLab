@@ -99,6 +99,7 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="BatchRenderer.cpp" />
+    <ClCompile Include="BifurcationFamily.cpp" />
     <ClCompile Include="BigDoubleSupport.cpp" />
     <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="BarnsleyFamily.cpp" />
