@@ -33,6 +33,7 @@ extern int ArithType;
 extern int MaxRefIteration;
 extern BLAS Bla;
 extern int SlopeDegree;
+extern bool EnableApproximation;
 
 // Helper function to convert managed string to std::string without msclr/marshal
 static std::string ManagedToStdString(String^ str)
@@ -790,6 +791,13 @@ FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters
 
         long long totalIterations = 0;
         int escapedPixels = 0;
+        int blaSkipsUsed = 0;
+
+        // Check if BLA is available (from PertSetup.cpp: Bla global)
+        // Bla is a global BLAS instance, so we take its address
+        bool blaEnabled = (::Bla.isValid && ::EnableApproximation);
+
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: BLA enabled={0}", blaEnabled));
 
         // Pixel loop - calculate fractal using perturbation theory
         for (int y = 0; y < height; y++)
@@ -822,6 +830,7 @@ FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters
                 // Perturbation iteration: ΔZₙ₊₁ ≈ 2·Zₙ·ΔZₙ + ΔC
                 Complex deltaZ = deltaC;  // ΔZ₀ = ΔC
                 int iteration = 0;
+                int refIteration = 0;  // Track position in reference orbit
 
                 // Choose reference orbit based on ArithType
                 if (m_cachedArithType == DOUBLE || m_cachedArithType == DBL_UNSUPPORTED)
@@ -829,17 +838,56 @@ FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters
                     // Use double-precision reference orbit (XSubN)
                     int orbitSize = (int)XSubN.size();
 
-                    for (iteration = 0; iteration < maxIterations && iteration < orbitSize; iteration++)
+                    while (iteration < maxIterations && refIteration < orbitSize)
                     {
-                        Complex Zn = XSubN[iteration];  // Reference orbit value
+                        // Try BLA acceleration first
+                        if (blaEnabled && ::EnableApproximation)
+                        {
+                            double deltaNormSq = deltaZ.x * deltaZ.x + deltaZ.y * deltaZ.y;
+                            const BLA* blaPtr = ::Bla.lookup(refIteration, deltaNormSq, iteration, maxIterations);
+
+                            if (blaPtr != nullptr && blaPtr->l > 0)
+                            {
+                                // BLA skip: apply linear transform ΔZ = A·ΔZ + B·ΔC
+                                double newDzX = blaPtr->Ax * deltaZ.x - blaPtr->Ay * deltaZ.y 
+                                              + blaPtr->Bx * deltaC.x - blaPtr->By * deltaC.y;
+                                double newDzY = blaPtr->Ax * deltaZ.y + blaPtr->Ay * deltaZ.x 
+                                              + blaPtr->Bx * deltaC.y + blaPtr->By * deltaC.x;
+                                deltaZ.x = newDzX;
+                                deltaZ.y = newDzY;
+
+                                iteration += blaPtr->l;
+                                refIteration += blaPtr->l;
+                                blaSkipsUsed++;
+
+                                // Check bounds and escape after skip
+                                if (refIteration >= orbitSize)
+                                    break;
+
+                                Complex Zn = XSubN[refIteration];
+                                double zx = Zn.x + deltaZ.x;
+                                double zy = Zn.y + deltaZ.y;
+                                double magnitudeSq = zx * zx + zy * zy;
+
+                                if (magnitudeSq > bailout)
+                                    break;
+
+                                continue;  // Try another BLA skip
+                            }
+                        }
+
+                        // Fall back to single-step perturbation
+                        Complex Zn = XSubN[refIteration];
 
                         // Perturbation formula: ΔZ_{n+1} ≈ 2·Z_n·ΔZ_n + ΔC
-                        // Complex multiplication: (a+bi)*(c+di) = (ac-bd) + (ad+bc)i
                         Complex temp;
                         temp.x = 2.0 * (Zn.x * deltaZ.x - Zn.y * deltaZ.y);
                         temp.y = 2.0 * (Zn.x * deltaZ.y + Zn.y * deltaZ.x);
                         deltaZ.x = temp.x + deltaC.x;
                         deltaZ.y = temp.y + deltaC.y;
+
+                        iteration++;
+                        refIteration++;
 
                         // Test for escape: |Z_n + ΔZ_n|² > bailout
                         double zx = Zn.x + deltaZ.x;
@@ -855,12 +903,58 @@ FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters
                     // Use extended-precision reference orbit (ExpXSubN)
                     int orbitSize = (int)ExpXSubN.size();
 
-                    for (iteration = 0; iteration < maxIterations && iteration < orbitSize; iteration++)
+                    while (iteration < maxIterations && refIteration < orbitSize)
                     {
-                        ExpComplex Zn = ExpXSubN[iteration];
+                        // Try BLA acceleration first (ExpComplex version)
+                        if (blaEnabled && ::EnableApproximation)
+                        {
+                            floatexp deltaNormSq;
+                            deltaNormSq.val = deltaZ.x * deltaZ.x + deltaZ.y * deltaZ.y;
+                            deltaNormSq.exp = 0;
+
+                            const BLAExp* blaPtr = ::Bla.lookupExp(refIteration, deltaNormSq, iteration, maxIterations);
+
+                            if (blaPtr != nullptr && blaPtr->l > 0)
+                            {
+                                // Convert floatexp to double for deltaZ application
+                                double Ax = blaPtr->Ax.val * pow(2.0, blaPtr->Ax.exp);
+                                double Ay = blaPtr->Ay.val * pow(2.0, blaPtr->Ay.exp);
+                                double Bx = blaPtr->Bx.val * pow(2.0, blaPtr->Bx.exp);
+                                double By = blaPtr->By.val * pow(2.0, blaPtr->By.exp);
+
+                                double newDzX = Ax * deltaZ.x - Ay * deltaZ.y 
+                                              + Bx * deltaC.x - By * deltaC.y;
+                                double newDzY = Ax * deltaZ.y + Ay * deltaZ.x 
+                                              + Bx * deltaC.y + By * deltaC.x;
+                                deltaZ.x = newDzX;
+                                deltaZ.y = newDzY;
+
+                                iteration += blaPtr->l;
+                                refIteration += blaPtr->l;
+                                blaSkipsUsed++;
+
+                                // Check bounds and escape after skip
+                                if (refIteration >= orbitSize)
+                                    break;
+
+                                ExpComplex Zn = ExpXSubN[refIteration];
+                                double ZnX = Zn.x.val * pow(2.0, Zn.x.exp);
+                                double ZnY = Zn.y.val * pow(2.0, Zn.y.exp);
+                                double zx = ZnX + deltaZ.x;
+                                double zy = ZnY + deltaZ.y;
+                                double magnitudeSq = zx * zx + zy * zy;
+
+                                if (magnitudeSq > bailout)
+                                    break;
+
+                                continue;  // Try another BLA skip
+                            }
+                        }
+
+                        // Fall back to single-step perturbation
+                        ExpComplex Zn = ExpXSubN[refIteration];
 
                         // Convert ExpComplex to double for this calculation
-                        // (deltaZ is still double precision - that's the whole point!)
                         double ZnX = Zn.x.val * pow(2.0, Zn.x.exp);
                         double ZnY = Zn.y.val * pow(2.0, Zn.y.exp);
 
@@ -870,6 +964,9 @@ FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters
                         temp.y = 2.0 * (ZnX * deltaZ.y + ZnY * deltaZ.x);
                         deltaZ.x = temp.x + deltaC.x;
                         deltaZ.y = temp.y + deltaC.y;
+
+                        iteration++;
+                        refIteration++;
 
                         // Test for escape
                         double zx = ZnX + deltaZ.x;
@@ -908,7 +1005,7 @@ FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters
         result->UsedPerturbation = true;
         result->ArithType = m_cachedArithType;
         result->MaxRefIteration = ::MaxRefIteration;
-        result->BLAEnabled = false;  // BLA not implemented in this phase
+        result->BLAEnabled = blaEnabled;
         result->ReferenceOrbitBuildTime = 0.0;  // TODO: Track this in BuildReferenceOrbit
         result->RenderTime = stopwatch->Elapsed;
         result->IterationCount = totalIterations;
@@ -925,9 +1022,10 @@ FractalResult^ FractalEngineWrapper::CalculateWithPerturbation(FractalParameters
             ProgressChanged(this, finalProgress);
         }
 
-        Debug::WriteLine(String::Format("CalculateWithPerturbation: Complete! Time={0}ms, AvgIter={1}", 
+        Debug::WriteLine(String::Format("CalculateWithPerturbation: Complete! Time={0}ms, AvgIter={1}, BLA skips={2}", 
             result->RenderTime.TotalMilliseconds, 
-            totalIterations / (width * height)));
+            totalIterations / (width * height),
+            blaSkipsUsed));
 
         return result;
     }
