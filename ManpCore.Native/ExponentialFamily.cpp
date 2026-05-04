@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "MandelbrotCalculator.h"
 #include <cmath>
 
 namespace Native {

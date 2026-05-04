@@ -1,6 +1,11 @@
 #include "FractalRegistry.h"
+#include "MandelbrotCalculator.h"
 #include <cmath>
 #include <complex>
+
+#ifndef M_PI
+#define M_PI 3.141592653589793238462643383279
+#endif
 
 namespace Native {
 
