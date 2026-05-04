@@ -720,10 +720,10 @@ namespace Native {
         /// <summary>
         /// Get list of available fractal formula types supported by the engine.
         /// </summary>
-        /// <returns>Array of fractal type names (e.g., "Mandelbrot", "Julia", "BurningShip")</returns>
+        /// <returns>Array of fractal type names from the native FractalRegistry (44+ types)</returns>
         /// <remarks>
-        /// <para>Phase 2: Returns ["Mandelbrot", "Julia", "Burning Ship", "Newton", "Lyapunov"] (placeholder).</para>
-        /// <para>Future: Will query ManpWIN64 engine for full list of 240+ fractal types.</para>
+        /// <para>Queries the native FractalRegistry for all registered fractal types.</para>
+        /// <para>Returns fractal type identifiers (e.g., "Mandelbrot", "BurningShip", "Phoenix").</para>
         /// <para>Use returned names for FractalParameters.FractalType property.</para>
         /// </remarks>
         array<String^>^ GetAvailableFractalTypes();

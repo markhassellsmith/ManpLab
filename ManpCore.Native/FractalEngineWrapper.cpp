@@ -555,15 +555,16 @@ void FractalEngineWrapper::Cancel()
 // Get available fractal types
 array<String^>^ FractalEngineWrapper::GetAvailableFractalTypes()
 {
-    // TODO Phase 2: Query native engine for available types
-    // For now, return test list
-    
-    array<String^>^ types = gcnew array<String^>(5);
-    types[0] = "Mandelbrot";
-    types[1] = "Julia";
-    types[2] = "Burning Ship";
-    types[3] = "Newton";
-    types[4] = "Lyapunov";
+    // Query native FractalRegistry for all registered types
+    ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
+    std::vector<std::string> nativeTypes = ::Native::FractalRegistry::GetRegisteredNames();
+
+    // Convert to managed array
+    array<String^>^ types = gcnew array<String^>(static_cast<int>(nativeTypes.size()));
+    for (size_t i = 0; i < nativeTypes.size(); i++)
+    {
+        types[static_cast<int>(i)] = StdStringToManaged(nativeTypes[i]);
+    }
 
     return types;
 }
