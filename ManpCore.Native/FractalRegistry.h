@@ -172,7 +172,19 @@ struct FractalSpec
     double defaultBailout;          // Escape radius (usually 256.0)
     bool hasSymmetry;               // Can use symmetry optimization?
 
-    std::string description;        // Help text
+    std::string description;        // Short help text (tooltip)
+
+    // Extended metadata for educational/documentation purposes
+    std::string formula;            // Mathematical formula (e.g., "z_{n+1} = z_n^2 + c")
+    std::string formulaLatex;       // LaTeX version for rendering (optional)
+    std::string derivation;         // Mathematical background/explanation
+    std::string visualCharacteristics; // What the fractal looks like
+    std::string discoveredBy;       // Historical attribution
+    int discoveryYear;              // Year discovered/published (0 = unknown)
+    std::string computationalNotes; // Performance/precision considerations
+    std::vector<std::string> suggestedViewpoints; // Interesting coordinates to explore
+    std::vector<std::string> relatedFractals;     // Related/similar fractals
+    std::vector<std::string> references;          // Papers, Wikipedia links, etc.
 
     // Constructor with defaults
     FractalSpec() 
@@ -182,7 +194,8 @@ struct FractalSpec
           defaultCenterY(0.0),
           defaultZoom(1.0),
           defaultBailout(256.0),
-          hasSymmetry(false) {}
+          hasSymmetry(false),
+          discoveryYear(0) {}
 };
 
 //=============================================================================

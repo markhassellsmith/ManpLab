@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fractal Knowledge Base",
+  "description": "Rich metadata for all fractals in ManpLab",
+  "type": "object",
+  "properties": {
+    "fractals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "displayName", "category", "description"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique identifier (must match FractalRegistry name)"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "UI-friendly name"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category/family name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Short tooltip description (1-2 sentences)"
+          },
+          "formula": {
+            "type": "string",
+            "description": "Mathematical formula in plain text"
+          },
+          "formulaLatex": {
+            "type": "string",
+            "description": "LaTeX formula for rendering"
+          },
+          "derivation": {
+            "type": "string",
+            "description": "Mathematical background and explanation"
+          },
+          "visualCharacteristics": {
+            "type": "string",
+            "description": "What the fractal looks like"
+          },
+          "discoveredBy": {
+            "type": "string",
+            "description": "Who discovered/invented it"
+          },
+          "discoveryYear": {
+            "type": "integer",
+            "description": "Year discovered/published (0 = unknown)"
+          },
+          "computationalNotes": {
+            "type": "string",
+            "description": "Performance and precision considerations"
+          },
+          "suggestedViewpoints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Interesting coordinates to explore (format: 'Name: x, y, zoom')"
+          },
+          "relatedFractals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Related or similar fractal names"
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Papers, Wikipedia links, etc."
+          }
+        }
+      }
+    }
+  }
+}

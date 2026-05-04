@@ -1,0 +1,158 @@
+// Template for adding new fractal families to ManpLab
+// 
+// Instructions:
+// 1. Copy this file and rename it to your family name (e.g., "MyFractalFamily.cpp")
+// 2. Search and replace {{FAMILY_NAME}} with your family name (e.g., "Sierpinski")
+// 3. Search and replace {{CATEGORY}} with the category (e.g., "IFS Fractals")
+// 4. Fill in the TODO sections with your fractal implementations
+// 5. Add the .cpp file to ManpCore.Native.vcxproj
+// 6. Add the registration call to FractalRegistry.cpp in InitializeBuiltins()
+// 7. Update the JSON knowledge base with metadata
+//
+// Example families to reference:
+// - MandelbrotFamily.cpp - Classic escape-time fractals
+// - BurningShipFamily.cpp - Variants with absolute values
+// - NewtonFamily.cpp - Root-finding fractals
+// - PhoenixFamily.cpp - Fractals with multiple z terms
+//
+//=============================================================================
+
+#include "FractalRegistry.h"
+#include "MandelbrotCalculator.h"
+
+namespace Native {
+
+//=============================================================================
+// {{FAMILY_NAME}} Family
+// TODO: Add brief description of this family
+//=============================================================================
+
+void Register{{FAMILY_NAME}}Family()
+{
+    FractalSpec spec;
+
+    //=========================================================================
+    // {{FAMILY_NAME}} - Variant 1
+    //=========================================================================
+    spec.name = "{{FAMILY_NAME}}V1";  // Unique ID (no spaces)
+    spec.displayName = "{{FAMILY_NAME}} - Variant 1";  // UI display name
+    spec.category = "{{CATEGORY}}";  // Category for browser grouping
+    spec.type = FractalCategory::EscapeTime2D;  // Or Sequence2D, AttractorBased3D, Special
+
+    // Short description for tooltips
+    spec.description = "TODO: Add 1-2 sentence description";
+
+    // Extended metadata (for educational panel)
+    spec.formula = "TODO: Add plain text formula (e.g., 'z_{n+1} = z_n^2 + c')";
+    spec.formulaLatex = "TODO: Add LaTeX formula (optional)";
+    spec.derivation = "TODO: Add mathematical background and explanation";
+    spec.visualCharacteristics = "TODO: Describe what it looks like";
+    spec.discoveredBy = "TODO: Who discovered it";
+    spec.discoveryYear = 0;  // TODO: Year discovered (0 = unknown)
+    spec.computationalNotes = "TODO: Performance/precision considerations";
+
+    // TODO: Add interesting viewpoints
+    spec.suggestedViewpoints = {
+        "Full View: 0.0, 0.0, 1.0",
+        // Add more coordinates: "Name: centerX, centerY, zoom"
+    };
+
+    // TODO: Add related fractals
+    spec.relatedFractals = {
+        // "Mandelbrot", "BurningShip", etc.
+    };
+
+    // TODO: Add references
+    spec.references = {
+        // "https://en.wikipedia.org/wiki/...",
+        // "Paper: Author (Year)"
+    };
+
+    // Calculation function - THIS IS WHERE THE MATH HAPPENS
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        // TODO: Implement your iteration formula
+        // 
+        // Parameters:
+        //   c - The point being calculated
+        //   maxIter - Maximum iterations before giving up
+        //   isJulia - True if rendering Julia set mode
+        //   juliaC - Julia constant (only if isJulia == true)
+        //   params - Custom parameters from ParamMap
+        //
+        // Returns:
+        //   Smooth iteration count (0.0 to maxIter)
+        //   Return maxIter if point is in the set (doesn't escape)
+        //
+        // Example escape-time algorithm:
+        ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        double bailoutSquared = 256.0 * 256.0;  // Standard bailout radius
+
+        for (int iter = 0; iter < maxIter; iter++) {
+            // TODO: Your iteration formula here
+            // Example (Mandelbrot): z = z * z + constant;
+
+            // Check if escaped
+            double magnitudeSquared = z.real * z.real + z.imag * z.imag;
+            if (magnitudeSquared > bailoutSquared) {
+                // Smooth coloring formula
+                double log_zn = log(magnitudeSquared) / 2.0;
+                double nu = log(log_zn / log(2.0)) / log(2.0);
+                return iter + 1 - nu;
+            }
+        }
+
+        return maxIter;  // Point is in the set
+    };
+
+    // Julia mode support
+    spec.supportsJulia = true;  // TODO: Set to false if Julia mode doesn't make sense
+
+    // Default view settings
+    spec.defaultCenterX = 0.0;    // TODO: Center of interesting region
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.0;       // TODO: Good starting zoom
+    spec.defaultBailout = 256.0;  // Standard escape radius
+    spec.hasSymmetry = false;     // TODO: Set true if has x-axis or y-axis symmetry
+
+    // Custom parameters (optional)
+    // Uncomment and modify if your fractal needs custom parameters
+    /*
+    spec.parameters = {
+        ParameterSpec(
+            "exponent",           // Internal name
+            "Exponent",           // Display name
+            "Power of the iteration formula",  // Description
+            ParameterType::Float,
+            ParameterCategory::Calculation,
+            "2.0",               // Default value
+            2.0, 10.0,          // Min, max
+            0.1                 // Step size
+        )
+    };
+    */
+
+    // Register this fractal
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // {{FAMILY_NAME}} - Variant 2
+    // TODO: Add more variants as needed
+    //=========================================================================
+    // Copy the above block and modify for additional fractals in this family
+}
+
+//=============================================================================
+// Helper Functions (Optional)
+//=============================================================================
+
+// Add any helper functions your calculators need here
+// Example:
+/*
+static ComplexD MyCustomOperation(const ComplexD& z) {
+    return ComplexD(z.real * z.real - z.imag * z.imag, 2.0 * z.real * z.imag);
+}
+*/
+
+} // namespace Native

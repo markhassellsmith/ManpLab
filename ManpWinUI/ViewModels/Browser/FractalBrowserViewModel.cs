@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ManpWinUI.Services;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ManpWinUI.ViewModels.Browser;
 
@@ -113,7 +114,12 @@ public partial class FractalBrowserViewModel : ObservableObject
                     IsExpanded = categoryName == "Classic Fractals" // Expand Classic by default
                 };
 
-                foreach (var fractalInfo in fractals)
+                // Add fractals sorted alphabetically by DisplayName
+                var sortedFractals = fractals
+                    .OrderBy(f => f.DisplayName, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                foreach (var fractalInfo in sortedFractals)
                 {
                     categoryNode.Fractals.Add(new FractalNode
                     {
