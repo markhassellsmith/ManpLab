@@ -102,6 +102,7 @@
     <ClCompile Include="BigDoubleSupport.cpp" />
     <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="BarnsleyFamily.cpp" />
+    <ClCompile Include="ComplexFunctionsFamily.cpp" />
     <ClCompile Include="HybridFamily.cpp" />
     <ClCompile Include="LambdaExtendedFamily.cpp" />
     <ClCompile Include="MandelVariantsFamily.cpp" />

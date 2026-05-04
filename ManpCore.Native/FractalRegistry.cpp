@@ -162,6 +162,7 @@ extern void RegisterMagnetExtendedFamily();     // Magnet Julia modes and power 
 extern void RegisterLambdaExtendedFamily();     // Lambda power variants and function combinations
 extern void RegisterHybridFamily();             // Hybrid fractals combining multiple formulas
 extern void RegisterMandelVariantsFamily();     // Mandelbrot variants: Mandel4, MandelLambda, Thorn, Spider, etc.
+extern void RegisterComplexFunctionsFamily();   // Complex function combinations: SqrTrig, TrigSqr, TrigPlusTrig, etc.
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -190,7 +191,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterLambdaExtendedFamily();     // Lambda power variants and function combinations = 8
     RegisterHybridFamily();             // Hybrid fractals combining multiple formulas = 10
     RegisterMandelVariantsFamily();     // Mandelbrot variants: Mandel4, MandelLambda, Thorn, Spider, etc. = 8
-    // Total: 123 fractals
+    RegisterComplexFunctionsFamily();   // Complex function combinations: SqrTrig, TrigSqr, etc. = 8
+    // Total: 131 fractals
 
     s_initialized = true;
 }
