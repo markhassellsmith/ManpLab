@@ -142,11 +142,13 @@ public class FractalRenderService : IFractalRenderService
                     // Phase 1 Complete: Now using perturbation theory for true deep zoom support
                     if (useDeepZoom)
                     {
-                        // Calculate required precision dynamically based on zoom level
-                        // Formula: log10(zoom) gives order of magnitude, add margin for safety
-                        // Example: zoom 6.8E+14 needs ~16 significant digits, add 15 for safety = 31 digits
-                        int requiredPrecision = (int)Math.Ceiling(Math.Log10(zoom)) + 15;
-                        int precision = Math.Max(25, requiredPrecision); // Minimum 25 digits
+                        // Calculate required precision based on viewport width (actual coordinate scale)
+                        // Formula: -log10(viewWidth) gives scale order of magnitude, add 20 for safety
+                        // Example: viewWidth 1E-14 needs 14 digits for scale + 20 margin = 34 digits
+                        // This ensures sufficient precision for the actual coordinate values being computed
+                        int scaleDigits = (int)Math.Ceiling(-Math.Log10(viewWidth));
+                        int requiredPrecision = scaleDigits + 20;  // 20-digit safety margin for computation
+                        int precision = Math.Max(30, requiredPrecision); // Minimum 30 digits for safety
 
                         parameters.Precision = precision;  // Pass precision to native layer
                         parameters.BigCenterX = new BigDouble(centerX, precision);
@@ -154,8 +156,8 @@ public class FractalRenderService : IFractalRenderService
                         parameters.BigViewWidth = new BigDouble(viewWidth, precision);
                         parameters.BigViewHeight = new BigDouble(viewHeight, precision);
 
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] Enabled with {precision} digit precision (zoom level: {zoom:E2})");
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] View width: {viewWidth:E10} requires ~{requiredPrecision} digits");
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] Enabled with {precision} digit precision");
+                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] View width: {viewWidth:E10} requires {scaleDigits} digits for scale, +20 margin = {requiredPrecision} total");
                         System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigCenterX: {parameters.BigCenterX}");
                         System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigCenterY: {parameters.BigCenterY}");
                         System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigViewWidth: {parameters.BigViewWidth}");
