@@ -118,6 +118,10 @@
     <ClCompile Include="MultibrotFamily.cpp" />
     <ClCompile Include="NewtonFamily.cpp" />
     <ClCompile Include="MagnetFamily.cpp" />
+    <ClCompile Include="TrigonometricFamily.cpp" />
+    <ClCompile Include="ExponentialFamily.cpp" />
+    <ClCompile Include="ExtendedJuliaFamily.cpp" />
+    <ClCompile Include="PowerVariantsFamily.cpp" />
     <!-- Perturbation Theory: Link against ManpWIN64.lib instead of individual source files -->
     <ClCompile Include="..\ManpWIN64\PertSetup.cpp">
       <CompileAsManaged>false</CompileAsManaged>

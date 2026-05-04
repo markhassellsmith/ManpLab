@@ -63,6 +63,7 @@ This index provides quick access to all fractal development documentation. Choos
 |------|---------|------|
 | **[schema.json](../Assets/FractalKnowledge/schema.json)** | JSON Schema definition | Schema |
 | **[fractals_sample.json](../Assets/FractalKnowledge/fractals_sample.json)** | Example metadata (3 fractals) | JSON |
+| **[fractals_tier1.json](../Assets/FractalKnowledge/fractals_tier1.json)** | **✅ 20 gold-tier fractals** | JSON |
 | **[fractals_template.json](../Assets/FractalKnowledge/fractals_template.json)** | All 276 fractals extracted | JSON |
 
 ### Planning and History
@@ -70,6 +71,7 @@ This index provides quick access to all fractal development documentation. Choos
 | File | Purpose | Type |
 |------|---------|------|
 | **[FRACTAL_KNOWLEDGE_BASE_PLAN.md](FRACTAL_KNOWLEDGE_BASE_PLAN.md)** | Metadata implementation plan | Planning |
+| **[METADATA_POPULATION_MAINTENANCE.md](METADATA_POPULATION_MAINTENANCE.md)** | **✅ Population & maintenance guide** | Guide |
 | **[FRACTAL_METADATA_SUMMARY.md](FRACTAL_METADATA_SUMMARY.md)** | Metadata session summary | Summary |
 | **[FRACTAL_TYPE_EXPANSION_TASK.md](FRACTAL_TYPE_EXPANSION_TASK.md)** | Original task definition | Planning |
 | **[FRACTAL_TYPE_EXPANSION_SUCCESS.md](FRACTAL_TYPE_EXPANSION_SUCCESS.md)** | Success summary | Summary |

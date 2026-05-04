@@ -39,6 +39,7 @@
     </PropertyGroup>
     <ItemGroup>
       <Content Remove="Assets\FractalKnowledge\fractals_sample.json" />
+      <Content Remove="Assets\FractalKnowledge\fractals_tier1.json" />
       <Content Remove="Assets\FractalKnowledge\schema.json" />
     </ItemGroup>
 

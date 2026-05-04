@@ -152,6 +152,10 @@ extern void RegisterClassicEscapeTimeFamily();  // Lambda, Manowar, Sierpinski, 
 extern void RegisterBarnsleyFamily();           // Barnsley M1/J1/M2/J2/M3/J3
 extern void RegisterSpecialExoticFamily();      // Hailstone, Buddhabrot, Lyapunov, etc.
 extern void RegisterAttractors3DFamily();       // Lorenz, Rossler, Henon, Chua, etc.
+extern void RegisterTrigonometricFamily();      // Sine, Cosine, Sinh, Cosh variants
+extern void RegisterExponentialFamily();        // Exponential, Logarithm, Power variants
+extern void RegisterExtendedJuliaFamily();      // Additional Julia set variations
+extern void RegisterPowerVariantsFamily();      // Higher-power Mandelbrot/Julia/BurningShip/Tricorn
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -170,7 +174,11 @@ void FractalRegistry::InitializeBuiltins()
     RegisterBarnsleyFamily();           // Barnsley M1/J1/M2/J2/M3/J3 = 6
     RegisterSpecialExoticFamily();      // Hailstone, NumFractal, Buddhabrot, Lyapunov, Popcorn, Mandelbar, Thorn, Tetration = 8
     RegisterAttractors3DFamily();       // Lorenz, Rossler, Henon, Pickover, Gingerbread, Chua, Ikeda, Hopalong = 8
-    // Total: 44 fractals
+    RegisterTrigonometricFamily();      // Sine, Cosine, Sinh, Cosh variants = 12
+    RegisterExponentialFamily();        // Exponential, Logarithm, Power variants = 6
+    RegisterExtendedJuliaFamily();      // Additional Julia set variations = 8
+    RegisterPowerVariantsFamily();      // Higher-power Mandelbrot/Julia/BurningShip/Tricorn = 9
+    // Total: 79 fractals
 
     s_initialized = true;
 }
