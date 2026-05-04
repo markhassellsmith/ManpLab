@@ -1,6 +1,6 @@
 # Fractal Registry Progress
 
-## Current Status: 97 / 276 Fractals (35.1%)
+## Current Status: 105 / 276 Fractals (38.0%)
 
 ### ✅ Completed Families
 
@@ -16,6 +16,7 @@
 | **MultibrotFamily** | 3 | Multibrot3, Multibrot4, Multibrot5 |
 | **MagnetFamily** | 2 | Magnet1M, Magnet2M |
 | **MagnetExtendedFamily** | 4 | Magnet1J, Magnet2J, Magnet1Power3, Magnet2Power3 |
+| **LambdaExtendedFamily** | 8 | LambdaPower3/4, LambdaTanh/Tan, LambdaSquared, LambdaFlip, LambdaModified, LambdaPhoenix |
 | **ClassicEscapeTimeFamily** | 9 | Lambda, Manowar, Sierpinski, Unity, Spider, Tetrate, Celtic, Buffalo, etc. |
 | **BarnsleyFamily** | 6 | BarnsleyM1/J1, BarnsleyM2/J2, BarnsleyM3/J3 |
 | **SpecialExoticFamily** | 8 | Hailstone, Buddhabrot, Lyapunov, Popcorn, etc. |
@@ -24,17 +25,22 @@
 | **ExponentialFamily** | 6 | Exponential, MandelExp, LMandelExp, LLambdaExp, ZToTheZ, Logarithm |
 | **ExtendedJuliaFamily** | 8 | JuliaDendrite, JuliaSiegelDisk, JuliaDragon, JuliaSpiral, JuliaCustom, LambdaJulia, Multibrot3Julia, Multibrot4Julia |
 | **PowerVariantsFamily** | 9 | Multibrot6/7/8, Julia5/6, BurningShip3/4, Tricorn3/4 |
-| **Total** | **97** | |
+| **Total** | **105** | |
 
 ---
 
-## 📋 Remaining Categories (179 fractals)
+## 📋 Remaining Categories (171 fractals)
 
 ### High Priority - Common Fractals (Next 3-30)
 
-#### Lambda Variations (~7 remaining from template)
-- LambdaSinh, LambdaCosh, LambdaTanh
-- More Lambda-Mandel hybrids
+#### ✅ Lambda Variations (COMPLETE!)
+- ✅ LambdaPower3, LambdaPower4 (higher powers)
+- ✅ LambdaTanh, LambdaTan (trig functions)
+- ✅ LambdaSquared (squared variation)
+- ✅ LambdaFlip, LambdaModified (formula variants)
+- ✅ LambdaPhoenix (hybrid with Phoenix)
+- Note: LambdaSine/Cos/Sinh/Cosh already in TrigonometricFamily as LMandelSine/LLambdaSine etc.
+- Note: LambdaExp already in ExponentialFamily as LLambdaExp
 
 #### Mandel Variations (~15 from Classic Fractals category)
 - MandelSine, MandelCos, MandelSinh, MandelCosh (done in Trig family)
