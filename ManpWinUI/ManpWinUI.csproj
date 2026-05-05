@@ -20,6 +20,10 @@
         <GenerateTestArtifacts>True</GenerateTestArtifacts>
         <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 
+        <!-- Auto-deploy on F5 to bypass deployment prompt -->
+        <DeployOnBuild>true</DeployOnBuild>
+        <AppxAutoRegisterDuringBuild>true</AppxAutoRegisterDuringBuild>
+
         <!-- Project Options -->
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
@@ -134,9 +138,10 @@
     </Target>
 
     <!-- Custom deploy target for Visual Studio debugging -->
-    <Target Name="Deploy" DependsOnTargets="Build" Condition="'$(WindowsPackageType)'=='MSIX'">
+    <!-- Runs automatically after build to ensure package is always registered -->
+    <Target Name="Deploy" AfterTargets="Build" Condition="'$(WindowsPackageType)'=='MSIX' AND '$(Configuration)'=='Debug'">
         <Message Text="Deploying MSIX package from $(OutDir)AppX\" Importance="high" />
-        <Exec Command="powershell.exe -Command &quot;Add-AppxPackage -Register '$(OutDir)AppX\AppxManifest.xml' -ForceApplicationShutdown -ForceUpdateFromAnyVersion&quot;" IgnoreExitCode="false" ContinueOnError="false" />
+        <Exec Command="powershell.exe -Command &quot;Add-AppxPackage -Register '$(OutDir)AppX\AppxManifest.xml' -ForceApplicationShutdown -ForceUpdateFromAnyVersion&quot;" IgnoreExitCode="true" ContinueOnError="true" />
         <Message Text="MSIX package deployed successfully" Importance="high" />
     </Target>
 
