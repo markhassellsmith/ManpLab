@@ -53,43 +53,15 @@
                             <ItemsRepeater ItemsSource="{x:Bind Fractals}">
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:FractalNode">
-                                        <Button Command="{Binding SelectFractalCommand}"
+                                        <Button Content="{x:Bind DisplayName}"
+                                                Command="{Binding SelectFractalCommand}"
                                                 CommandParameter="{x:Bind}"
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Left"
                                                 Padding="24,8,8,8"
                                                 Background="Transparent"
                                                 BorderThickness="0"
-                                                Margin="0,1">
-                                            <TextBlock Text="{x:Bind DisplayName}">
-                                                <ToolTipService.ToolTip>
-                                                    <ToolTip MaxWidth="400">
-                                                        <StackPanel Spacing="8">
-                                                            <TextBlock Text="{x:Bind DisplayName}" 
-                                                                       FontWeight="SemiBold"
-                                                                       TextWrapping="Wrap" />
-                                                            <TextBlock Text="{x:Bind Description}" 
-                                                                       TextWrapping="Wrap"
-                                                                       Visibility="{x:Bind Description, Converter={StaticResource NullToVisibilityConverter}}" />
-                                                            <Border BorderThickness="0,1,0,0"
-                                                                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                                                    Padding="0,8,0,0"
-                                                                    Visibility="{x:Bind Formula, Converter={StaticResource NullToVisibilityConverter}}">
-                                                                <StackPanel Spacing="4">
-                                                                    <TextBlock Text="Formula:" 
-                                                                               FontWeight="SemiBold"
-                                                                               FontSize="11"
-                                                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                                                    <TextBlock Text="{x:Bind Formula}" 
-                                                                               FontFamily="Consolas"
-                                                                               TextWrapping="Wrap" />
-                                                                </StackPanel>
-                                                            </Border>
-                                                        </StackPanel>
-                                                    </ToolTip>
-                                                </ToolTipService.ToolTip>
-                                            </TextBlock>
-                                        </Button>
+                                                Margin="0,1" />
                                     </DataTemplate>
                                 </ItemsRepeater.ItemTemplate>
                             </ItemsRepeater>
