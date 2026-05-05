@@ -105,6 +105,7 @@
     <ClCompile Include="BarnsleyFamily.cpp" />
     <ClCompile Include="ComplexFunctionsFamily.cpp" />
     <ClCompile Include="DistanceEstimatorFamily.cpp" />
+    <ClCompile Include="EnhancedJuliaPresetsFamily.cpp" />
     <ClCompile Include="ExoticFormulasFamily.cpp" />
     <ClCompile Include="ExponentialLogarithmicFamily.cpp" />
     <ClCompile Include="HybridFamily.cpp" />

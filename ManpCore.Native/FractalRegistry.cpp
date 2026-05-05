@@ -180,6 +180,7 @@ extern void RegisterSpecialFunctionFamily();    // Gamma, Error, Bessel-like, Co
 extern void RegisterChaoticMapsFamily();        // Clifford, De Jong, Tinkerbell, Bedhead, Svensson, SymmetricIcon, Gingerbreadman, Sprott = 8
 extern void RegisterFractalHybridsFamily();     // Burning-Mandel, Exp-Mandel, Mutant, Trig-Blend, Sierpinski-Mandel, Perturbed Newton, Bifurcation-Mandel, Celtic = 8
 extern void RegisterOrbitalModificationsFamily(); // Circular trap, Cross trap, Stalks, Smoothed, Angle, Triangle trap, Stripe, Curvature, Delta, Point-Line = 10
+extern void RegisterEnhancedJuliaPresetsFamily(); // Golden, Dendrite, Spiral, Dragon, Cauliflower, Seahorse, Airplane, Lightning, Snowflake, Flower, Feigenbaum, TwistedCross, Backbone, SpiralGalaxy, Medusa, Crystal, Paisley, FuzzyBlob, Eye, TripleSpiral, Heart, Neurons, FractalTree = 23
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -226,7 +227,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterChaoticMapsFamily();        // Chaotic maps = 8
     RegisterFractalHybridsFamily();     // Fractal hybrids = 8
     RegisterOrbitalModificationsFamily(); // Orbital modifications = 10
-    // Total: 255 fractals
+    RegisterEnhancedJuliaPresetsFamily(); // Julia presets = 23
+    // Total: 278 fractals
 
     s_initialized = true;
 }
