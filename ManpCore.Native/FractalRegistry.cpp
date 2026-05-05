@@ -168,6 +168,7 @@ extern void RegisterIFSFamily();                // Iterated Function Systems: Ba
 extern void RegisterDistanceEstimatorFamily();  // Distance estimator variants for smooth boundaries
 extern void RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, Zubieta, etc.
 extern void RegisterOrbitalFractalsFamily();    // Orbit trap and modification techniques
+extern void RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc.
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -202,7 +203,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterDistanceEstimatorFamily();  // Distance estimator variants = 4
     RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, etc. = 8
     RegisterOrbitalFractalsFamily();    // Orbit trap and modification = 8
-    // Total: 162 fractals
+    RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc. = 8
+    // Total: 170 fractals
 
     s_initialized = true;
 }
