@@ -108,6 +108,7 @@
     <ClCompile Include="ExoticFormulasFamily.cpp" />
     <ClCompile Include="HybridFamily.cpp" />
     <ClCompile Include="IFSFamily.cpp" />
+    <ClCompile Include="JuliaVariantsFamily.cpp" />
     <ClCompile Include="LambdaExtendedFamily.cpp" />
     <ClCompile Include="MandelVariantsFamily.cpp" />
     <ClCompile Include="OrbitalFractalsFamily.cpp" />

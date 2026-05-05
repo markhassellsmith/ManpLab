@@ -170,6 +170,7 @@ extern void RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buff
 extern void RegisterOrbitalFractalsFamily();    // Orbit trap and modification techniques
 extern void RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc.
 extern void RegisterTrigonometricExtendedFamily(); // Extended trig functions: tan, cot, sec, csc, arcsin, arccos, arctan, tanh
+extern void RegisterJuliaVariantsFamily();      // Julia set variations with different formulas
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -206,7 +207,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterOrbitalFractalsFamily();    // Orbit trap and modification = 8
     RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc. = 8
     RegisterTrigonometricExtendedFamily(); // Extended trig functions = 8
-    // Total: 178 fractals
+    RegisterJuliaVariantsFamily();      // Julia set variations = 8
+    // Total: 186 fractals
 
     s_initialized = true;
 }
