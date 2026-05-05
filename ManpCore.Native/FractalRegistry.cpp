@@ -174,6 +174,7 @@ extern void RegisterJuliaVariantsFamily();      // Julia set variations with dif
 extern void RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors: Clifford, De Jong, Tinkerbell, etc.
 extern void RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
 extern void RegisterExponentialLogarithmicFamily(); // Exponential, Logarithmic, ExpSquare, PowerTower, ComplexPower, ExponentialJulia = 6
+extern void RegisterRationalFunctionFamily();   // Newton z³-1, z⁴-1, z⁵-1, Halley, Möbius, Rational maps = 8
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -214,7 +215,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors = 6
     RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
     RegisterExponentialLogarithmicFamily(); // Exponential/logarithmic variants = 6
-    // Total: 206 fractals
+    RegisterRationalFunctionFamily();   // Newton, Halley, Rational maps = 8
+    // Total: 214 fractals
 
     s_initialized = true;
 }

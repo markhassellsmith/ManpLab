@@ -116,6 +116,7 @@
     <ClCompile Include="PerturbationStubs.cpp" />
     <ClCompile Include="PolynomialFamily.cpp" />
     <ClCompile Include="PolynomialVariantsFamily.cpp" />
+    <ClCompile Include="RationalFunctionFamily.cpp" />
     <ClCompile Include="SpecialExoticFamily.cpp" />
     <ClCompile Include="Attractors3DFamily.cpp" />
     <ClCompile Include="ClassicEscapeTimeFamily.cpp" />
