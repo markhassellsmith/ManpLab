@@ -141,10 +141,11 @@ namespace ManpWinUI.Views
                 // Special handling for 2-D Hailstone trajectory visualization
                 if (e.Fractal.Name == "Hailstone2D")
                 {
-                    Debug.WriteLine("[MainPage] Detected Hailstone2D - switching to Hailstone mode");
+                    Debug.WriteLine("[MainPage] Detected Hailstone2D - enabling trajectory mode");
 
-                    // Switch to Hailstone mode (IsHailstoneMode is computed from SelectedFractalType)
-                    ViewModel.SelectedFractalType = "Hailstone";
+                    // Enable trajectory mode (triggers HailstoneRenderService)
+                    ViewModel.UseHailstoneTrajectoryMode = true;
+                    ViewModel.SelectedFractalType = "Hailstone2D";
 
                     // Set default Hailstone parameters
                     ViewModel.HailstoneStartX = 27;
@@ -166,12 +167,22 @@ namespace ManpWinUI.Views
                     return;
                 }
 
+                // Disable trajectory mode for all other fractals (including original "Hailstone")
+                ViewModel.UseHailstoneTrajectoryMode = false;
+
                 // Task 3: Get fractal metadata from cache (no P/Invoke!)
                 var metadata = MetadataService.GetFractalOrDefault(e.Fractal.Name);
                 Debug.WriteLine($"[MainPage] Got metadata for '{metadata.Name}' - Center: ({metadata.DefaultCenterX}, {metadata.DefaultCenterY}), Zoom: {metadata.DefaultZoom}");
 
                 // Update ViewModel with fractal selection and default view
                 ViewModel.SelectedFractalType = metadata.Name;
+
+                // Original "Hailstone" fractal will render as standard escape-time fractal
+                if (metadata.Name == "Hailstone")
+                {
+                    Debug.WriteLine("[MainPage] Original Hailstone fractal - using standard rendering");
+                }
+
                 ViewModel.CenterX = metadata.DefaultCenterX;
                 ViewModel.CenterY = metadata.DefaultCenterY;
                 ViewModel.Zoom = metadata.DefaultZoom;
