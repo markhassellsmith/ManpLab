@@ -24,6 +24,15 @@
         <DeployOnBuild>true</DeployOnBuild>
         <AppxAutoRegisterDuringBuild>true</AppxAutoRegisterDuringBuild>
 
+        <!-- Skip Visual Studio's deployment check - we handle it in the Deploy target -->
+        <SkipDeployOnDebug>false</SkipDeployOnDebug>
+        <AutoIncrementPackageRevision>false</AutoIncrementPackageRevision>
+        <AppxSkipValidation>true</AppxSkipValidation>
+
+        <!-- Force VS to recognize deployment is automatic -->
+        <AppxPackageAllowDebugFrameworkReferencesInManifest>true</AppxPackageAllowDebugFrameworkReferencesInManifest>
+        <RemoveAdditionalPerUserFilesOnCleanup>false</RemoveAdditionalPerUserFilesOnCleanup>
+
         <!-- Project Options -->
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
@@ -138,8 +147,8 @@
     </Target>
 
     <!-- Custom deploy target for Visual Studio debugging -->
-    <!-- Runs automatically after build to ensure package is always registered -->
-    <Target Name="Deploy" AfterTargets="Build" Condition="'$(WindowsPackageType)'=='MSIX' AND '$(Configuration)'=='Debug'">
+    <!-- Override the default Deploy target to register the package -->
+    <Target Name="Deploy" DependsOnTargets="Build">
         <Message Text="Deploying MSIX package from $(OutDir)AppX\" Importance="high" />
         <Exec Command="powershell.exe -Command &quot;Add-AppxPackage -Register '$(OutDir)AppX\AppxManifest.xml' -ForceApplicationShutdown -ForceUpdateFromAnyVersion&quot;" IgnoreExitCode="true" ContinueOnError="true" />
         <Message Text="MSIX package deployed successfully" Importance="high" />
