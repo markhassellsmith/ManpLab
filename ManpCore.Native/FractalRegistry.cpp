@@ -178,6 +178,7 @@ extern void RegisterRationalFunctionFamily();   // Newton z³-1, z⁴-1, z⁵-1,
 extern void RegisterHistoricalFractalsFamily(); // Biomorphs, Pickover Stalks, Martin, Chip, Quaternion2D, Collatz, Duffing, Sinusoidal = 8
 extern void RegisterSpecialFunctionFamily();    // Gamma, Error, Bessel-like, Continued Fraction, Tetration, Lambert W, Hyperbolic = 7
 extern void RegisterChaoticMapsFamily();        // Clifford, De Jong, Tinkerbell, Bedhead, Svensson, SymmetricIcon, Gingerbreadman, Sprott = 8
+extern void RegisterFractalHybridsFamily();     // Burning-Mandel, Exp-Mandel, Mutant, Trig-Blend, Sierpinski-Mandel, Perturbed Newton, Bifurcation-Mandel, Celtic = 8
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -222,7 +223,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterHistoricalFractalsFamily(); // Historical fractals = 8
     RegisterSpecialFunctionFamily();    // Special functions = 7
     RegisterChaoticMapsFamily();        // Chaotic maps = 8
-    // Total: 237 fractals
+    RegisterFractalHybridsFamily();     // Fractal hybrids = 8
+    // Total: 245 fractals
 
     s_initialized = true;
 }
