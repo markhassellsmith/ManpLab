@@ -25,6 +25,36 @@ namespace Native {
         /// <summary>Description text for help/tooltips</summary>
         property String^ Description;
 
+        /// <summary>Mathematical formula (e.g., "z_{n+1} = z_n^2 + c")</summary>
+        property String^ Formula;
+
+        /// <summary>LaTeX formula for rendering (optional)</summary>
+        property String^ FormulaLatex;
+
+        /// <summary>Mathematical background and explanation</summary>
+        property String^ Derivation;
+
+        /// <summary>Visual characteristics description</summary>
+        property String^ VisualCharacteristics;
+
+        /// <summary>Who discovered/invented this fractal</summary>
+        property String^ DiscoveredBy;
+
+        /// <summary>Year discovered/published (0 = unknown)</summary>
+        property int DiscoveryYear;
+
+        /// <summary>Performance and precision notes</summary>
+        property String^ ComputationalNotes;
+
+        /// <summary>Interesting viewpoints to explore</summary>
+        property List<String^>^ SuggestedViewpoints;
+
+        /// <summary>Related or similar fractals</summary>
+        property List<String^>^ RelatedFractals;
+
+        /// <summary>References (papers, links, etc.)</summary>
+        property List<String^>^ References;
+
         /// <summary>Supports Julia mode rendering</summary>
         property bool SupportsJulia;
 

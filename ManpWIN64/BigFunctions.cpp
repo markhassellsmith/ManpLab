@@ -192,13 +192,81 @@ int	CPixel::BigInitFunctions(WORD type, BigComplex *zBig, BigComplex *qBig)
 		}
 	    break;
 
+	case MULTIBROT3:				// z^3 + c
+	case MULTIBROT4:				// z^4 + c
+	case MULTIBROT5:				// z^5 + c
+	case MULTIBROT6:				// z^6 + c
+	case MULTIBROT3JULIA:				// Julia sets for higher powers
+	case MULTIBROT4JULIA:
+	case MULTIBROT5JULIA:
+		if (!juliaflag && type < MULTIBROT3JULIA)
+		{
+		zBig->x = qBig->x + param[0];
+		zBig->y = qBig->y + param[1];
+		}
+		switch (type)
+		{
+		case MULTIBROT3:
+		case MULTIBROT3JULIA:
+			*degree = 3;
+			break;
+		case MULTIBROT4:
+		case MULTIBROT4JULIA:
+			*degree = 4;
+			break;
+		case MULTIBROT5:
+		case MULTIBROT5JULIA:
+			*degree = 5;
+			break;
+		case MULTIBROT6:
+			*degree = 6;
+			break;
+		}
+		break;
+
+	case EXPFRACTAL2:				// exp(z) + c
+	case LOGFRACTAL:				// log(z) + c
+	case EXPLOGFRACTAL:				// exp(log(z)) + c
+	case SINFRACTAL2:				// sin(z) + c
+	case COSFRACTAL:				// cos(z) + c
+	case TANFRACTAL:				// tan(z) + c
+	case SINHFRACTAL:				// sinh(z) + c
+	case COSHFRACTAL:				// cosh(z) + c
+	case TANHFRACTAL:				// tanh(z) + c
+		if (!juliaflag)
+		{
+		zBig->x = qBig->x + param[0];
+		zBig->y = qBig->y + param[1];
+		}
+		break;
+
+	case RATIONALFRACTAL1:				// (z^2 + c) / (z^2 - c)
+	case RATIONALFRACTAL2:				// (z^3 + c) / (z + c)
+		if (!juliaflag)
+		{
+		zBig->x = qBig->x + param[0];
+		zBig->y = qBig->y + param[1];
+		}
+		break;
+
+	case CELTIC:					// Celtic Mandelbrot
+	case MANDELBARCELTIC:				// Mandelbar Celtic
+	case PERPCELTIC:				// Perpendicular Celtic
+	case CUBICFLYINGSQUIRREL:			// Cubic Flying Squirrel
+		if (!juliaflag)
+		{
+		zBig->x = qBig->x + param[0];
+		zBig->y = qBig->y + param[1];
+		}
+		break;
+
 	case MANDELDERIVATIVES:				// a group of Mandelbrot Derivatives
-	    BigInitManDerFunctions(subtype, zBig, qBig);
-	    break;
+		BigInitManDerFunctions(subtype, zBig, qBig);
+		break;
 
 	case TIERAZON:					// a group of Mandelbrot Derivatives
-	    BigInitTierazonFunctions(subtype, zBig, qBig);
-	    break;
+		BigInitTierazonFunctions(subtype, zBig, qBig);
+		break;
 	case NEWTONAPPLE:				// a specific Tierazon fractal
 	    BigInitTierazonFunctions(55, zBig, qBig);
 	    break;
@@ -534,10 +602,129 @@ int	CPixel::BigRunFunctions(WORD type, BigComplex *zBig, BigComplex *qBig, BYTE 
 	    return (BigRunTierazonFunctions(5, zBig, qBig, SpecialFlag, iteration));
 
 	case TEDDY:					// a specific Tierazon fractal
-	    return (BigRunTierazonFunctions(104, zBig, qBig, SpecialFlag, iteration));
+		return (BigRunTierazonFunctions(104, zBig, qBig, SpecialFlag, iteration));
+
+	case MULTIBROT3:				// z^3 + c
+	case MULTIBROT3JULIA:
+		*zBig = zBig->CPolynomial(3) + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case MULTIBROT4:				// z^4 + c
+	case MULTIBROT4JULIA:
+		*zBig = zBig->CPolynomial(4) + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case MULTIBROT5:				// z^5 + c
+	case MULTIBROT5JULIA:
+		*zBig = zBig->CPolynomial(5) + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case MULTIBROT6:				// z^6 + c
+		*zBig = zBig->CPolynomial(6) + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case EXPFRACTAL2:				// exp(z) + c
+		*zBig = zBig->CExp() + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case LOGFRACTAL:				// log(z) + c
+		{
+		BigComplex logZ = zBig->CLog();
+		*zBig = logZ + *qBig;
+		return BigFractintBailoutTest(zBig);
+		}
+
+	case EXPLOGFRACTAL:				// exp(log(z)) + c (essentially z + c but interesting)
+		{
+		BigComplex logZ = zBig->CLog();
+		BigComplex expLogZ = logZ.CExp();
+		*zBig = expLogZ + *qBig;
+		return BigFractintBailoutTest(zBig);
+		}
+
+	case SINFRACTAL2:				// sin(z) + c
+		*zBig = zBig->CSin() + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case COSFRACTAL:				// cos(z) + c
+		*zBig = zBig->CCos() + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case TANFRACTAL:				// tan(z) + c
+		*zBig = zBig->CTan() + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case SINHFRACTAL:				// sinh(z) + c
+		*zBig = zBig->CSinh() + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case COSHFRACTAL:				// cosh(z) + c
+		*zBig = zBig->CCosh() + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case TANHFRACTAL:				// tanh(z) + c
+		*zBig = zBig->CTanh() + *qBig;
+		return BigFractintBailoutTest(zBig);
+
+	case RATIONALFRACTAL1:				// (z^2 + c) / (z^2 - c)
+		{
+		BigComplex z2 = zBig->CSqr();
+		BigComplex numerator = z2 + *qBig;
+		BigComplex denominator = z2 - *qBig;
+		if (denominator.CSumSqr() < 1e-10)  	// avoid division by zero
+		*zBig = numerator * 1e10;
+		else
+		*zBig = numerator / denominator;
+		return BigFractintBailoutTest(zBig);
+		}
+
+	case RATIONALFRACTAL2:				// (z^3 + c) / (z + c)
+		{
+		BigComplex z3 = zBig->CCube();
+		BigComplex numerator = z3 + *qBig;
+		BigComplex denominator = *zBig + *qBig;
+		if (denominator.CSumSqr() < 1e-10)  	// avoid division by zero
+		*zBig = numerator * 1e10;
+		else
+		*zBig = numerator / denominator;
+		return BigFractintBailoutTest(zBig);
+		}
+
+	case CELTIC:					// Celtic Mandelbrot: z = (abs(real(z^2)) + i*imag(z^2)) + c
+		{
+		BigComplex z2 = zBig->CSqr();
+		z2.x = z2.x.BigAbs();
+		*zBig = z2 + *qBig;
+		return BigFractintBailoutTest(zBig);
+		}
+
+	case MANDELBARCELTIC:				// Mandelbar Celtic: z = (abs(real(z^2)) - i*imag(z^2)) + c
+		{
+		BigComplex z2 = zBig->CSqr();
+		z2.x = z2.x.BigAbs();
+		z2.y = -z2.y;
+		*zBig = z2 + *qBig;
+		return BigFractintBailoutTest(zBig);
+		}
+
+	case PERPCELTIC:				// Perpendicular Celtic: z = (real(z^2) + i*abs(imag(z^2))) + c
+		{
+		BigComplex z2 = zBig->CSqr();
+		z2.y = z2.y.BigAbs();
+		*zBig = z2 + *qBig;
+		return BigFractintBailoutTest(zBig);
+		}
+
+	case CUBICFLYINGSQUIRREL:			// Cubic Flying Squirrel: z = z^3 + (c-1)*z - c
+		{
+		BigComplex z3 = zBig->CCube();
+		BigComplex cMinus1 = *qBig - BigComplex(1.0, 0.0);
+		*zBig = z3 + cMinus1 * *zBig - *qBig;
+		return BigFractintBailoutTest(zBig);
+		}
 
 	case TIERAZON:					// a group of Tierazon Fractals
-	    return (BigRunTierazonFunctions(subtype, zBig, qBig, SpecialFlag, iteration));
+		return (BigRunTierazonFunctions(subtype, zBig, qBig, SpecialFlag, iteration));
 	}
     return 0;
     }

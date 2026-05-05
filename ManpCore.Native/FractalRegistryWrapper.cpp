@@ -29,6 +29,41 @@ static String^ StdStringToManaged(const std::string& str)
     return System::Text::Encoding::UTF8->GetString(bytes);
 }
 
+// Helper to convert std::vector<std::string> to List<String^>
+static List<String^>^ StdVectorToManagedList(const std::vector<std::string>& vec)
+{
+    auto result = gcnew List<String^>();
+    for (const auto& str : vec)
+    {
+        result->Add(StdStringToManaged(str));
+    }
+    return result;
+}
+
+// Helper to populate FractalInfo from FractalSpec
+static void PopulateFractalInfo(FractalInfo^ info, const ::Native::FractalSpec* spec)
+{
+    info->Name = StdStringToManaged(spec->name);
+    info->DisplayName = StdStringToManaged(spec->displayName);
+    info->Category = StdStringToManaged(spec->category);
+    info->Description = StdStringToManaged(spec->description);
+    info->Formula = StdStringToManaged(spec->formula);
+    info->FormulaLatex = StdStringToManaged(spec->formulaLatex);
+    info->Derivation = StdStringToManaged(spec->derivation);
+    info->VisualCharacteristics = StdStringToManaged(spec->visualCharacteristics);
+    info->DiscoveredBy = StdStringToManaged(spec->discoveredBy);
+    info->DiscoveryYear = spec->discoveryYear;
+    info->ComputationalNotes = StdStringToManaged(spec->computationalNotes);
+    info->SuggestedViewpoints = StdVectorToManagedList(spec->suggestedViewpoints);
+    info->RelatedFractals = StdVectorToManagedList(spec->relatedFractals);
+    info->References = StdVectorToManagedList(spec->references);
+    info->SupportsJulia = spec->supportsJulia;
+    info->DefaultCenterX = spec->defaultCenterX;
+    info->DefaultCenterY = spec->defaultCenterY;
+    info->DefaultZoom = spec->defaultZoom;
+}
+
+
 //=============================================================================
 // FractalRegistryWrapper Implementation
 //=============================================================================
@@ -97,15 +132,7 @@ List<FractalInfo^>^ FractalRegistryWrapper::GetFractalsByCategory(String^ catego
         if (spec != nullptr)
         {
             auto info = gcnew FractalInfo();
-            info->Name = StdStringToManaged(spec->name);
-            info->DisplayName = StdStringToManaged(spec->displayName);
-            info->Category = StdStringToManaged(spec->category);
-            info->Description = StdStringToManaged(spec->description);
-            info->SupportsJulia = spec->supportsJulia;
-            info->DefaultCenterX = spec->defaultCenterX;
-            info->DefaultCenterY = spec->defaultCenterY;
-            info->DefaultZoom = spec->defaultZoom;
-
+            PopulateFractalInfo(info, spec);
             result->Add(info);
         }
     }
@@ -125,15 +152,7 @@ FractalInfo^ FractalRegistryWrapper::GetFractalInfo(String^ name)
         return nullptr;
 
     auto info = gcnew FractalInfo();
-    info->Name = StdStringToManaged(spec->name);
-    info->DisplayName = StdStringToManaged(spec->displayName);
-    info->Category = StdStringToManaged(spec->category);
-    info->Description = StdStringToManaged(spec->description);
-    info->SupportsJulia = spec->supportsJulia;
-    info->DefaultCenterX = spec->defaultCenterX;
-    info->DefaultCenterY = spec->defaultCenterY;
-    info->DefaultZoom = spec->defaultZoom;
-
+    PopulateFractalInfo(info, spec);
     return info;
 }
 

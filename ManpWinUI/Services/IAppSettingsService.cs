@@ -149,4 +149,23 @@ public interface IAppSettingsService
     /// Week 9: Perturbation-theory deep zoom support.
     /// </summary>
     void SetUseDeepZoom(bool use);
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // USER NOTES
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Gets user notes for a specific fractal, or null if none saved.
+    /// User notes are personal annotations separate from the native metadata.
+    /// </summary>
+    /// <param name="fractalName">Name of the fractal</param>
+    /// <returns>User notes text, or null</returns>
+    string? GetFractalNotes(string fractalName);
+
+    /// <summary>
+    /// Saves user notes for a specific fractal.
+    /// </summary>
+    /// <param name="fractalName">Name of the fractal</param>
+    /// <param name="notes">User notes text</param>
+    void SetFractalNotes(string fractalName, string? notes);
 }

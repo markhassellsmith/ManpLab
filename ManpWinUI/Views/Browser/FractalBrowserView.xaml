@@ -15,7 +15,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -61,8 +60,7 @@
                                                 Padding="24,8,8,8"
                                                 Background="Transparent"
                                                 BorderThickness="0"
-                                                Margin="0,1"
-                                                ToolTipService.ToolTip="{x:Bind Description}" />
+                                                Margin="0,1" />
                                     </DataTemplate>
                                 </ItemsRepeater.ItemTemplate>
                             </ItemsRepeater>
@@ -71,19 +69,5 @@
                 </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
         </ScrollViewer>
-
-        <!-- Status Footer -->
-        <Border
-            Grid.Row="3"
-            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-            Padding="12,8"
-            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-            BorderThickness="0,1,0,0">
-            <TextBlock
-                Text="Click a fractal to load and render it"
-                FontSize="11"
-                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                TextWrapping="Wrap" />
-        </Border>
     </Grid>
 </UserControl>

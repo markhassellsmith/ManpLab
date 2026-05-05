@@ -1,0 +1,90 @@
+{
+  "fractals": [
+    {
+      "name": "Mandelbrot",
+      "displayName": "Mandelbrot Set",
+      "category": "Classic Fractals",
+      "description": "The iconic fractal discovered by Benoit Mandelbrot. The set of complex numbers c for which the iteration z = z² + c remains bounded.",
+      "formula": "z_{n+1} = z_n² + c, where z_0 = 0",
+      "formulaLatex": "z_{n+1} = z_n^2 + c, \\quad z_0 = 0",
+      "derivation": "The Mandelbrot set is defined as the set of complex numbers c for which the iterative sequence z_{n+1} = z_n² + c (starting with z_0 = 0) does not diverge to infinity. Points are colored based on how quickly they escape to infinity, or left black if they remain bounded after a maximum number of iterations. The boundary of the set exhibits infinite complexity and self-similarity at all scales.",
+      "visualCharacteristics": "The main cardioid body with circular bulbs attached. Shows intricate self-similar detail along the boundary with miniature copies at all zoom levels. Features spirals, filaments, and decorative structures throughout.",
+      "discoveredBy": "Benoit Mandelbrot",
+      "discoveryYear": 1980,
+      "computationalNotes": "Requires arbitrary precision arithmetic for deep zooms (beyond 10^15). Supports perturbation theory for extreme magnifications. Benefits from symmetry optimization (x-axis) and cardioid/bulb detection for early rejection.",
+      "suggestedViewpoints": [
+        "Full View: -0.5, 0, 1.0",
+        "Seahorse Valley: -0.75, 0.1, 100",
+        "Elephant Valley: 0.25, 0, 50",
+        "Misiurewicz Point: -0.1011, 0.9563, 1000"
+      ],
+      "relatedFractals": [
+        "JuliaSanMarco",
+        "JuliaDouadyRabbit",
+        "Multibrot3",
+        "BurningShip"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Mandelbrot_set",
+        "Mandelbrot, B. (1980). 'Fractal aspects of the iteration of z → λz(1-z) for complex λ and z'",
+        "https://mathworld.wolfram.com/MandelbrotSet.html"
+      ]
+    },
+    {
+      "name": "BurningShip",
+      "displayName": "Burning Ship",
+      "category": "Mandelbrot Variants",
+      "description": "A fractal similar to the Mandelbrot set but using absolute values of real and imaginary components, creating ship-like structures.",
+      "formula": "z_{n+1} = (|Re(z_n)| + i|Im(z_n)|)² + c, where z_0 = 0",
+      "formulaLatex": "z_{n+1} = (|\\Re(z_n)| + i|\\Im(z_n)|)^2 + c, \\quad z_0 = 0",
+      "derivation": "The Burning Ship fractal modifies the Mandelbrot iteration by taking the absolute value of both the real and imaginary parts before squaring. This breaks the symmetry present in the Mandelbrot set and creates entirely new structures that resemble ships with smoke stacks, hence the name.",
+      "visualCharacteristics": "Prominent ship-like structures with detailed 'smoke' patterns. The main body resembles a clipper ship. Lacks the symmetry of the Mandelbrot set, with most detail in the negative y region.",
+      "discoveredBy": "Michelitsch and Rossler",
+      "discoveryYear": 1992,
+      "computationalNotes": "Similar computational complexity to Mandelbrot. No x-axis or y-axis symmetry due to absolute value operations. Deep zoom requires arbitrary precision arithmetic.",
+      "suggestedViewpoints": [
+        "Full View: -0.5, -0.5, 0.4",
+        "Main Ship: -1.75, -0.035, 100",
+        "Antenna: -1.625, 0.0, 500"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "BurningShipJulia",
+        "BirdOfPrey"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Burning_Ship_fractal",
+        "Michelitsch, M. & Rossler, O. E. (1992). 'The Burning Ship'",
+        "https://mathworld.wolfram.com/BurningShipFractal.html"
+      ]
+    },
+    {
+      "name": "JuliaSanMarco",
+      "displayName": "Julia - San Marco",
+      "category": "Julia Sets",
+      "description": "Classic Julia set with c = -0.75 + 0i, creating the famous San Marco dragon shape.",
+      "formula": "z_{n+1} = z_n² + c, where c = -0.75 + 0i",
+      "formulaLatex": "z_{n+1} = z_n^2 + c, \\quad c = -0.75 + 0i",
+      "derivation": "Julia sets are closely related to the Mandelbrot set. While the Mandelbrot set varies c and starts with z_0 = 0, Julia sets fix c and vary z_0 across the complex plane. Each point in the Mandelbrot set has a corresponding Julia set. The San Marco constant produces a connected, dragon-like Julia set.",
+      "visualCharacteristics": "Dragon or seahorse-like connected structure with a central body and elaborate tendrils. Shows intricate self-similar spirals and decorative patterns throughout.",
+      "discoveredBy": "Gaston Julia",
+      "discoveryYear": 1918,
+      "computationalNotes": "Computationally similar to Mandelbrot but varies starting point instead of parameter. Benefits from symmetry about the origin (both x and y axes).",
+      "suggestedViewpoints": [
+        "Full View: 0, 0, 0.5",
+        "Spiral Detail: 0.5, 0.3, 20",
+        "Tendril: -0.6, 0.2, 50"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "JuliaDouadyRabbit",
+        "JuliaDendriteTest"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Julia_set",
+        "Julia, G. (1918). 'Mémoire sur l'itération des fonctions rationnelles'",
+        "https://mathworld.wolfram.com/JuliaSet.html"
+      ]
+    }
+  ]
+}

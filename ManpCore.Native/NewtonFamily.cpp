@@ -142,7 +142,7 @@ void RegisterNewtonFamily()
     //=========================================================================
     spec.name = "Newton";
     spec.displayName = "Newton (z³-1)";
-    spec.category = "Newton Method";
+    spec.category = "Newton's Method";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Newton's method for finding roots of z³ - 1 = 0. Colors show convergence basins.";
 
@@ -165,7 +165,7 @@ void RegisterNewtonFamily()
     //=========================================================================
     spec.name = "Nova";
     spec.displayName = "Nova";
-    spec.category = "Newton Method";
+    spec.category = "Newton's Method";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Hybrid of Newton's method and Mandelbrot: z = z - (z³-1)/(3z²) + c";
 

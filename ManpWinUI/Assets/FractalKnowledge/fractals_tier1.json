@@ -1,0 +1,578 @@
+{
+  "metadata": {
+    "tier": "gold",
+    "description": "Tier 1 fractals - fully documented and human-reviewed for accuracy",
+    "lastUpdated": "2026-05-04",
+    "reviewedBy": "Initial AI generation + human review",
+    "count": 20
+  },
+  "fractals": [
+    {
+      "name": "Mandelbrot",
+      "displayName": "Mandelbrot Set",
+      "category": "Classic Fractals",
+      "qualityTier": "gold",
+      "description": "The iconic fractal discovered by Benoit Mandelbrot. The set of complex numbers c for which the iteration z = z² + c remains bounded.",
+      "formula": "z_{n+1} = z_n² + c, where z_0 = 0",
+      "formulaLatex": "z_{n+1} = z_n^2 + c, \\quad z_0 = 0",
+      "derivation": "The Mandelbrot set is defined as the set of complex numbers c for which the iterative sequence z_{n+1} = z_n² + c (starting with z_0 = 0) does not diverge to infinity. Points are colored based on how quickly they escape to infinity, or left black if they remain bounded after a maximum number of iterations. The boundary of the set exhibits infinite complexity and self-similarity at all scales.",
+      "visualCharacteristics": "The main cardioid body with circular bulbs attached. Shows intricate self-similar detail along the boundary with miniature copies at all zoom levels. Features spirals, filaments, and decorative structures throughout.",
+      "discoveredBy": "Benoit Mandelbrot",
+      "discoveryYear": 1980,
+      "computationalNotes": "Requires arbitrary precision arithmetic for deep zooms (beyond 10^15). Supports perturbation theory for extreme magnifications. Benefits from symmetry optimization (x-axis) and cardioid/bulb detection for early rejection.",
+      "suggestedViewpoints": [
+        "Full View: -0.5, 0.0, 1.0",
+        "Seahorse Valley: -0.75, 0.1, 100.0",
+        "Elephant Valley: 0.25, 0.0, 50.0",
+        "Misiurewicz Point: -0.1011, 0.9563, 1000.0",
+        "Spiral: -0.7269, 0.1889, 500.0"
+      ],
+      "relatedFractals": [
+        "JuliaSanMarco",
+        "JuliaDouadyRabbit",
+        "Multibrot3",
+        "BurningShip"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Mandelbrot_set",
+        "Mandelbrot, B. (1980). 'Fractal aspects of the iteration of z → λz(1-z) for complex λ and z'",
+        "https://mathworld.wolfram.com/MandelbrotSet.html"
+      ]
+    },
+    {
+      "name": "BurningShip",
+      "displayName": "Burning Ship",
+      "category": "Mandelbrot Variants",
+      "qualityTier": "gold",
+      "description": "A fractal similar to the Mandelbrot set but using absolute values of real and imaginary components, creating ship-like structures.",
+      "formula": "z_{n+1} = (|Re(z_n)| + i|Im(z_n)|)² + c, where z_0 = 0",
+      "formulaLatex": "z_{n+1} = (|\\Re(z_n)| + i|\\Im(z_n)|)^2 + c, \\quad z_0 = 0",
+      "derivation": "The Burning Ship fractal modifies the Mandelbrot iteration by taking the absolute value of both the real and imaginary parts before squaring. This breaks the symmetry present in the Mandelbrot set and creates entirely new structures that resemble ships with smoke stacks, hence the name. The absolute value operation prevents negative values from contributing to the iteration, fundamentally altering the dynamics.",
+      "visualCharacteristics": "Prominent ship-like structures with detailed 'smoke' patterns. The main body resembles a clipper ship. Lacks the symmetry of the Mandelbrot set, with most detail in the negative y region. Features intricate masts, sails, and decorative patterns.",
+      "discoveredBy": "Michelitsch and Rossler",
+      "discoveryYear": 1992,
+      "computationalNotes": "Similar computational complexity to Mandelbrot. No x-axis or y-axis symmetry due to absolute value operations. Deep zoom requires arbitrary precision arithmetic. Slightly faster than Mandelbrot due to simpler escape detection.",
+      "suggestedViewpoints": [
+        "Full View: -0.5, -0.5, 0.4",
+        "Main Ship: -1.75, -0.035, 100.0",
+        "Antenna: -1.625, 0.0, 500.0",
+        "Deck Detail: -1.762, 0.028, 2000.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "BurningShipJulia",
+        "BirdOfPrey",
+        "Celtic"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Burning_Ship_fractal",
+        "Michelitsch, M. & Rossler, O. E. (1992). 'The Burning Ship'",
+        "https://mathworld.wolfram.com/BurningShipFractal.html"
+      ]
+    },
+    {
+      "name": "JuliaSanMarco",
+      "displayName": "Julia - San Marco",
+      "category": "Julia Sets",
+      "qualityTier": "gold",
+      "description": "Classic Julia set with c = -0.75 + 0i, creating the famous San Marco dragon shape.",
+      "formula": "z_{n+1} = z_n² + c, where c = -0.75 + 0i",
+      "formulaLatex": "z_{n+1} = z_n^2 + c, \\quad c = -0.75 + 0i",
+      "derivation": "Julia sets are closely related to the Mandelbrot set. While the Mandelbrot set varies c and starts with z_0 = 0, Julia sets fix c and vary z_0 across the complex plane. Each point in the Mandelbrot set has a corresponding Julia set. The San Marco constant (-0.75, 0) is on the boundary of the Mandelbrot set, producing a connected, dragon-like Julia set with intricate detail.",
+      "visualCharacteristics": "Dragon or seahorse-like connected structure with a central body and elaborate tendrils. Shows intricate self-similar spirals and decorative patterns throughout. The structure exhibits both geometric regularity and organic complexity.",
+      "discoveredBy": "Gaston Julia",
+      "discoveryYear": 1918,
+      "computationalNotes": "Computationally similar to Mandelbrot but varies starting point instead of parameter. Benefits from symmetry about the origin (both x and y axes). Connected Julia sets are generally faster to render than disconnected ones.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 0.5",
+        "Spiral Detail: 0.5, 0.3, 20.0",
+        "Tendril: -0.6, 0.2, 50.0",
+        "Central Body: 0.0, 0.0, 5.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "JuliaDouadyRabbit",
+        "JuliaDendriteTest",
+        "JuliaAirplane"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Julia_set",
+        "Julia, G. (1918). 'Mémoire sur l'itération des fonctions rationnelles'",
+        "https://mathworld.wolfram.com/JuliaSet.html"
+      ]
+    },
+    {
+      "name": "JuliaDouadyRabbit",
+      "displayName": "Julia - Douady Rabbit",
+      "category": "Julia Sets",
+      "qualityTier": "gold",
+      "description": "Famous Julia set with c = -0.123 + 0.745i, named after mathematician Adrien Douady and resembling a rabbit.",
+      "formula": "z_{n+1} = z_n² + c, where c = -0.123 + 0.745i",
+      "formulaLatex": "z_{n+1} = z_n^2 + c, \\quad c = -0.123 + 0.745i",
+      "derivation": "The Douady Rabbit is one of the most famous Julia sets, named after Adrien Douady who extensively studied Julia sets in the 1980s. The constant c = -0.123 + 0.745i lies within the main cardioid of the Mandelbrot set, producing a connected Julia set. The set exhibits three-fold symmetry due to being near a period-3 bulb, creating the distinctive 'rabbit ears' pattern.",
+      "visualCharacteristics": "Distinctive rabbit-like shape with two prominent 'ears' (period-3 bulbs). Shows three-fold rotational symmetry. The interior contains decorative spirals and the boundary features self-similar details. The overall structure is more compact than the San Marco dragon.",
+      "discoveredBy": "Gaston Julia (set theory), named after Adrien Douady",
+      "discoveryYear": 1918,
+      "computationalNotes": "Similar computational requirements to other connected Julia sets. Three-fold symmetry can be exploited for optimization. The period-3 structure makes it ideal for demonstrating bifurcation phenomena.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 0.5",
+        "Left Ear: -0.3, 0.3, 10.0",
+        "Right Ear: 0.3, 0.3, 10.0",
+        "Center Spiral: 0.0, 0.0, 5.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "JuliaSanMarco",
+        "JuliaDendriteTest"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Julia_set",
+        "Douady, A. & Hubbard, J. (1985). 'Etude dynamique des polynômes complexes'",
+        "https://mathworld.wolfram.com/JuliaSet.html"
+      ]
+    },
+    {
+      "name": "Tricorn",
+      "displayName": "Tricorn (Mandelbar)",
+      "category": "Mandelbrot Variants",
+      "qualityTier": "gold",
+      "description": "A variant of the Mandelbrot set using complex conjugation instead of squaring, creating unique three-pronged structures.",
+      "formula": "z_{n+1} = conj(z_n)² + c, where z_0 = 0",
+      "formulaLatex": "z_{n+1} = \\overline{z_n}^2 + c, \\quad z_0 = 0",
+      "derivation": "The Tricorn (also called Mandelbar) replaces the iteration z² with conj(z)², where conj denotes complex conjugation. This breaks the holomorphic property of the Mandelbrot set, creating an antiholomorphic fractal. The resulting set has a distinctive three-pronged shape with different symmetry properties.",
+      "visualCharacteristics": "Three prominent lobes arranged in a triangular pattern. Exhibits complex internal structure with spirals and filaments. The boundary shows self-similarity but with different characteristics than the Mandelbrot set. Features unique 'tricorn' shapes at various scales.",
+      "discoveredBy": "W. D. Crowe, R. Hasson, P. J. Rippon, and P. E. D. Strain-Clark",
+      "discoveryYear": 1989,
+      "computationalNotes": "Slightly more expensive than Mandelbrot due to conjugation operation. No axis symmetry due to antiholomorphic nature. Benefits from period detection and similar escape-time optimizations.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 1.0",
+        "Upper Lobe: 0.0, 0.5, 5.0",
+        "Lower Left: -0.5, -0.4, 5.0",
+        "Lower Right: 0.5, -0.4, 5.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "Multibrot3",
+        "BurningShip"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Tricorn_(mathematics)",
+        "Crowe et al. (1989). 'On the structure of the Mandelbar set'",
+        "https://mathworld.wolfram.com/Tricorn.html"
+      ]
+    },
+    {
+      "name": "Multibrot3",
+      "displayName": "Multibrot (Power 3)",
+      "category": "Multibrot Family",
+      "qualityTier": "gold",
+      "description": "Mandelbrot set generalized to cubic power, creating three-fold symmetry and new structures.",
+      "formula": "z_{n+1} = z_n³ + c, where z_0 = 0",
+      "formulaLatex": "z_{n+1} = z_n^3 + c, \\quad z_0 = 0",
+      "derivation": "The Multibrot set generalizes the Mandelbrot iteration to arbitrary powers. For power 3, the iteration becomes z³ + c, which introduces three-fold rotational symmetry. The set has three main lobes arranged at 120° intervals. Higher powers create increasingly complex structures with n-fold symmetry for power n.",
+      "visualCharacteristics": "Three prominent lobes arranged in a triangular pattern with 120° rotational symmetry. Each lobe has similar structure to the Mandelbrot set's main body. Shows intricate spiral patterns and self-similar details. The interior is more elaborate than the quadratic Mandelbrot.",
+      "discoveredBy": "Multiple independent discoverers",
+      "discoveryYear": 1980,
+      "computationalNotes": "More expensive than standard Mandelbrot due to cubic multiplication. The three-fold symmetry can be exploited to render only one-third of the set and rotate. Requires careful handling of bailout radius (larger than Mandelbrot).",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 1.5",
+        "Upper Lobe: 0.0, 0.8, 5.0",
+        "Lower Left: -0.7, -0.4, 5.0",
+        "Lower Right: 0.7, -0.4, 5.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "Multibrot4",
+        "Multibrot5",
+        "Tricorn"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Multibrot_set",
+        "https://mathworld.wolfram.com/MultibrotSet.html"
+      ]
+    },
+    {
+      "name": "Multibrot4",
+      "displayName": "Multibrot (Power 4)",
+      "category": "Multibrot Family",
+      "qualityTier": "gold",
+      "description": "Mandelbrot set with quartic power, displaying four-fold symmetry.",
+      "formula": "z_{n+1} = z_n⁴ + c, where z_0 = 0",
+      "formulaLatex": "z_{n+1} = z_n^4 + c, \\quad z_0 = 0",
+      "derivation": "The quartic Multibrot set uses z⁴ + c as its iteration formula. This creates four-fold rotational symmetry with four main lobes at 90° intervals. The quartic power amplifies deviations from the origin more rapidly than lower powers, creating distinctive stretched structures along the axes.",
+      "visualCharacteristics": "Four lobes arranged in a cross pattern with 90° rotational symmetry. Each lobe resembles elongated Mandelbrot-like structures. The connecting regions show intricate decorative patterns. The overall shape is more 'spiky' than lower powers.",
+      "discoveredBy": "Multiple independent discoverers",
+      "discoveryYear": 1980,
+      "computationalNotes": "Significantly more expensive than Mandelbrot due to quartic multiplication. Four-fold symmetry allows rendering one quadrant and reflecting. Requires larger bailout radius and more iterations for similar detail.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 2.0",
+        "Top Lobe: 0.0, 1.0, 5.0",
+        "Right Lobe: 1.0, 0.0, 5.0",
+        "Diagonal: 0.7, 0.7, 5.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "Multibrot3",
+        "Multibrot5"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Multibrot_set",
+        "https://mathworld.wolfram.com/MultibrotSet.html"
+      ]
+    },
+    {
+      "name": "NewtonCubic",
+      "displayName": "Newton - Cubic Roots",
+      "category": "Newton Fractals",
+      "qualityTier": "gold",
+      "description": "Newton's method applied to finding cubic roots of unity, creating three-way symmetric basins of attraction.",
+      "formula": "z_{n+1} = z_n - (z_n³ - 1)/(3z_n²)",
+      "formulaLatex": "z_{n+1} = z_n - \\frac{z_n^3 - 1}{3z_n^2}",
+      "derivation": "Newton's method is applied to find the roots of f(z) = z³ - 1 = 0. The iteration is z_{n+1} = z_n - f(z_n)/f'(z_n), where f'(z) = 3z². The three roots of unity (1, e^(2πi/3), e^(4πi/3)) create three basins of attraction. Points are colored by which root they converge to, with the basin boundaries forming fractal structures.",
+      "visualCharacteristics": "Three main regions of different colors corresponding to the three roots, arranged with 120° rotational symmetry. The boundaries between basins are fractal curves with intricate self-similar structure. Features elaborate spirals and filaments at the basin boundaries.",
+      "discoveredBy": "Isaac Newton (method), fractal visualization 1980s",
+      "discoveryYear": 1669,
+      "computationalNotes": "Faster convergence than escape-time fractals (typically 5-20 iterations). Requires careful handling of convergence criteria. Division operations are more expensive than multiplication. The derivative calculation must avoid division by zero.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 2.0",
+        "Boundary Detail: 0.5, 0.3, 10.0",
+        "Triple Point: 0.0, 0.0, 50.0",
+        "Spiral: 1.0, 0.5, 20.0"
+      ],
+      "relatedFractals": [
+        "NewtonQuartic",
+        "NewtonSin",
+        "NewtonExp"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Newton_fractal",
+        "Hubbard, J. H. (1986). 'The Mandelbrot Set and Julia Sets'",
+        "https://mathworld.wolfram.com/NewtonsFractal.html"
+      ]
+    },
+    {
+      "name": "PhoenixM",
+      "displayName": "Phoenix (Mandelbrot Mode)",
+      "category": "Phoenix Family",
+      "qualityTier": "gold",
+      "description": "Multi-term iteration fractal that uses both current and previous z values, creating unique structures.",
+      "formula": "z_{n+1} = z_n² + c + p·z_{n-1}, where z_0 = z_{-1} = 0",
+      "formulaLatex": "z_{n+1} = z_n^2 + c + p \\cdot z_{n-1}, \\quad z_0 = z_{-1} = 0",
+      "derivation": "The Phoenix fractal adds a term involving the previous iteration value (z_{n-1}) to the standard Mandelbrot formula. This creates a recurrence relation that depends on iteration history, fundamentally changing the dynamics. The parameter p controls the strength of the 'memory' effect. Common values are p = -0.5 or p = 0.5.",
+      "visualCharacteristics": "Feather-like or wing-like structures emanating from a central body. Shows elaborate flowing patterns resembling plumage or flames. The 'memory' term creates streaming patterns not seen in standard escape-time fractals. Features both symmetry and organic irregularity.",
+      "discoveredBy": "Shigehiro Ushiki",
+      "discoveryYear": 1988,
+      "computationalNotes": "Requires tracking two iteration values instead of one, increasing memory requirements slightly. Convergence is generally faster than Mandelbrot for most regions. The p parameter significantly affects both performance and visual results.",
+      "suggestedViewpoints": [
+        "Full View (p=-0.5): 0.0, 0.0, 1.0",
+        "Wing Detail: 0.5, 0.5, 5.0",
+        "Feather: -0.3, 0.4, 20.0",
+        "Center: 0.0, 0.0, 2.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "PhoenixJ",
+        "Manowar"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Phoenix_set",
+        "Ushiki, S. (1988). 'Phoenix limit sets of a complex dynamical system'",
+        "http://www.algorithmic-worlds.net/blog/blog.php?Post=20110227"
+      ]
+    },
+    {
+      "name": "BarnsleyM1",
+      "displayName": "Barnsley M1",
+      "category": "Barnsley Fractals",
+      "qualityTier": "gold",
+      "description": "First of Michael Barnsley's fractal variants, using conditional iteration based on real component.",
+      "formula": "z_{n+1} = (z_n - 1)·c if Re(z_n) ≥ 0, else (z_n + 1)·c",
+      "formulaLatex": "z_{n+1} = \\begin{cases} (z_n - 1) \\cdot c & \\text{if } \\Re(z_n) \\geq 0 \\\\ (z_n + 1) \\cdot c & \\text{otherwise} \\end{cases}",
+      "derivation": "Michael Barnsley introduced a series of fractals using conditional iteration formulas. The M1 variant uses a simple test on the real component to select between two different iteration rules. This conditional logic creates discontinuous dynamics that produce unique fractal structures distinct from polynomial iterations.",
+      "visualCharacteristics": "Tree-like or fern-like structures with asymmetric branching. Shows stark contrast between the two iteration regions. Features jagged, organic-looking boundaries with self-similar branching patterns. Less 'smooth' than polynomial fractals due to conditional switching.",
+      "discoveredBy": "Michael Barnsley",
+      "discoveryYear": 1988,
+      "computationalNotes": "Branch prediction may impact performance due to conditional logic. No axis symmetry due to the asymmetric condition. Generally faster than Mandelbrot because simpler arithmetic operations. The conditional test adds minimal overhead.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 2.0",
+        "Branch Detail: 1.0, 0.5, 5.0",
+        "Stem: 0.0, 0.0, 3.0",
+        "Leaf Tip: 1.5, 1.0, 10.0"
+      ],
+      "relatedFractals": [
+        "BarnsleyM2",
+        "BarnsleyM3",
+        "BarnsleyJ1"
+      ],
+      "references": [
+        "Barnsley, M. F. (1988). 'Fractals Everywhere'",
+        "https://mathworld.wolfram.com/BarnsleysFern.html"
+      ]
+    },
+    {
+      "name": "BarnsleyM2",
+      "displayName": "Barnsley M2",
+      "category": "Barnsley Fractals",
+      "qualityTier": "gold",
+      "description": "Second Barnsley variant using a different conditional rule for more complex structures.",
+      "formula": "z_{n+1} = (z_n - 1)·c if Re(z_n)·Im(z_n) ≥ 0, else (z_n + 1)·c",
+      "formulaLatex": "z_{n+1} = \\begin{cases} (z_n - 1) \\cdot c & \\text{if } \\Re(z_n) \\cdot \\Im(z_n) \\geq 0 \\\\ (z_n + 1) \\cdot c & \\text{otherwise} \\end{cases}",
+      "derivation": "The M2 variant tests the product of real and imaginary components, which effectively divides the complex plane into quadrants (first and third vs. second and fourth). This creates four-fold division with different dynamics in opposite quadrants, producing more intricate fractal boundaries than M1.",
+      "visualCharacteristics": "More symmetric than M1, with roughly four-fold structure corresponding to the quadrant division. Features elaborate branching in all directions. Shows interesting interference patterns where the quadrant boundaries interact. More 'bushy' appearance than M1.",
+      "discoveredBy": "Michael Barnsley",
+      "discoveryYear": 1988,
+      "computationalNotes": "Similar performance to M1 but with multiplication operation in the condition. The quadrant test creates more balanced computation across the plane. Still benefits from the simple arithmetic of Barnsley iterations.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 2.0",
+        "Quadrant 1: 0.5, 0.5, 5.0",
+        "Boundary: 0.0, 0.5, 10.0",
+        "Center: 0.0, 0.0, 3.0"
+      ],
+      "relatedFractals": [
+        "BarnsleyM1",
+        "BarnsleyM3",
+        "BarnsleyJ2"
+      ],
+      "references": [
+        "Barnsley, M. F. (1988). 'Fractals Everywhere'",
+        "https://mathworld.wolfram.com/BarnsleysFern.html"
+      ]
+    },
+    {
+      "name": "Magnet1M",
+      "displayName": "Magnet 1 (Mandelbrot)",
+      "category": "Magnet Family",
+      "qualityTier": "gold",
+      "description": "Derived from the study of magnetic phase transitions in theoretical physics, with unique convergent properties.",
+      "formula": "z_{n+1} = ((z_n² + c - 1)/(2z_n + c - 2))²",
+      "formulaLatex": "z_{n+1} = \\left(\\frac{z_n^2 + c - 1}{2z_n + c - 2}\\right)^2",
+      "derivation": "Magnet fractals arose from studying the Ising model in statistical mechanics, specifically the phase transition of magnetic spin systems. The iteration formula is derived from the renormalization group transformation of the model. Unlike escape-time fractals, Magnet fractals test for convergence to an attractor (typically 1) rather than divergence to infinity.",
+      "visualCharacteristics": "Smooth, rounded structures very different from Mandelbrot-type fractals. Features bulbous, organic shapes with fewer sharp details. The coloring is typically inverted compared to escape-time fractals (convergent points are colored). Shows unique swirling patterns and cell-like structures.",
+      "discoveredBy": "C. Mira and colleagues, studied by Crowe et al.",
+      "discoveryYear": 1990,
+      "computationalNotes": "Division operations make it slower than polynomial fractals. Requires careful handling of zero denominators. Tests for convergence to 1.0 rather than divergence to infinity, inverting the typical escape logic. Bailout checks are more complex.",
+      "suggestedViewpoints": [
+        "Full View: 1.0, 0.0, 4.0",
+        "Cell Detail: 1.5, 0.5, 10.0",
+        "Boundary: 0.8, 0.3, 20.0",
+        "Swirl: 1.2, 0.2, 15.0"
+      ],
+      "relatedFractals": [
+        "Magnet2M",
+        "Magnet1J",
+        "Mandelbrot"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Magnet_set",
+        "Crowe, W.D., et al. (1990). 'On the Structure of the Magnet Set'",
+        "https://mathworld.wolfram.com/MagnetSet.html"
+      ]
+    },
+    {
+      "name": "Lambda",
+      "displayName": "Lambda (λ) Fractal",
+      "category": "Classic Fractals",
+      "qualityTier": "gold",
+      "description": "Historical fractal using the iteration z_{n+1} = λz_n(1-z_n), related to logistic map dynamics.",
+      "formula": "z_{n+1} = c·z_n·(1 - z_n), where z_0 = 0.5",
+      "formulaLatex": "z_{n+1} = c \\cdot z_n \\cdot (1 - z_n), \\quad z_0 = 0.5",
+      "derivation": "The Lambda fractal is the complex generalization of the famous logistic map from chaos theory. The iteration z → λz(1-z) models population dynamics when λ is real, but extends to rich fractal structures in the complex plane. It's closely related to the Mandelbrot set through a coordinate transformation.",
+      "visualCharacteristics": "Resembles a rotated and transformed Mandelbrot set. Features a main cardioid-like body with decorative structures. The symmetry and overall shape differ from Mandelbrot but show similar complexity at boundaries. Self-similar patterns along the fractal boundary.",
+      "discoveredBy": "Benoit Mandelbrot and others",
+      "discoveryYear": 1980,
+      "computationalNotes": "Similar computational cost to Mandelbrot. The (1-z) term adds a subtraction and multiplication. Can benefit from symmetry optimizations. Connection to logistic map provides theoretical insights for optimization.",
+      "suggestedViewpoints": [
+        "Full View: 0.5, 0.0, 1.5",
+        "Main Body: 0.5, 0.5, 5.0",
+        "Spiral: 0.3, 0.4, 20.0",
+        "Tendril: 0.7, 0.2, 10.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "LambdaJulia",
+        "Manowar"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Lambda_function",
+        "Mandelbrot, B. (1980). 'Fractal aspects of the iteration of z → λz(1-z)'",
+        "https://mathworld.wolfram.com/LambdaMap.html"
+      ]
+    },
+    {
+      "name": "Manowar",
+      "displayName": "Manowar",
+      "category": "Classic Fractals",
+      "qualityTier": "gold",
+      "description": "Multi-term iteration similar to Phoenix, creating distinctive war-machine-like shapes.",
+      "formula": "z_{n+1} = z_n² + z_{n-1} + c, where z_0 = z_{-1} = 0",
+      "formulaLatex": "z_{n+1} = z_n^2 + z_{n-1} + c, \\quad z_0 = z_{-1} = 0",
+      "derivation": "The Manowar fractal uses a recurrence relation involving both the current and previous iteration values. Unlike Phoenix which multiplies by a parameter, Manowar simply adds the previous term. This creates interesting interference patterns between successive iterations, leading to its mechanical appearance.",
+      "visualCharacteristics": "Angular, mechanical structures resembling war machines or battleships. Shows prominent linear features and right-angle-like structures. Less organic than Phoenix, more geometric and architectural. Features elaborate 'weapons' and 'armor plate' patterns.",
+      "discoveredBy": "Unknown (part of Fractint collection)",
+      "discoveryYear": 1990,
+      "computationalNotes": "Similar cost to Phoenix - tracks two z values. The addition of previous terms creates interesting dynamics without expensive operations. Generally faster convergence than Mandelbrot in many regions.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 1.5",
+        "Hull Detail: 0.5, 0.0, 5.0",
+        "Weapon Array: -0.5, 0.5, 10.0",
+        "Armor: 0.0, 0.3, 20.0"
+      ],
+      "relatedFractals": [
+        "PhoenixM",
+        "Mandelbrot",
+        "Spider"
+      ],
+      "references": [
+        "Fractint formula collection",
+        "https://www.fractalsciencekit.com/types/escaped/manowar.htm"
+      ]
+    },
+    {
+      "name": "Spider",
+      "displayName": "Spider",
+      "category": "Classic Fractals",
+      "qualityTier": "gold",
+      "description": "Fractal with recursive parameter update, creating web-like structures and spider-leg patterns.",
+      "formula": "z_{n+1} = z_n² + c_n, where c_{n+1} = c_n/2 + z_n",
+      "formulaLatex": "z_{n+1} = z_n^2 + c_n, \\quad c_{n+1} = \\frac{c_n}{2} + z_n",
+      "derivation": "The Spider fractal introduces a novel mechanism: the parameter c itself evolves during iteration. Starting with c_0 as the pixel coordinate, each iteration updates c using the current z value. This feedback between parameter and iteration creates unique dynamics where the 'constant' term becomes variable, producing web-like and spider-leg structures.",
+      "visualCharacteristics": "Intricate web-like patterns with radiating legs resembling spider appendages. Shows both radial symmetry and organic irregularity. Features fine filaments and mesh-like structures. The evolving parameter creates smoother gradients than typical escape-time fractals.",
+      "discoveredBy": "Clifford A. Pickover (attributed)",
+      "discoveryYear": 1991,
+      "computationalNotes": "Requires tracking both z and c values across iterations, doubling memory requirements. The extra operations (division by 2, addition) add modest overhead. The smoothly varying c parameter often leads to faster convergence.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 1.0",
+        "Web Center: 0.0, 0.0, 5.0",
+        "Leg Detail: 0.5, 0.5, 20.0",
+        "Silk Thread: 0.3, 0.3, 50.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "Manowar",
+        "PhoenixM"
+      ],
+      "references": [
+        "Pickover, C. A. (1991). 'Computers, Pattern, Chaos and Beauty'",
+        "https://www.fractalsciencekit.com/types/escaped/spider.htm"
+      ]
+    },
+    {
+      "name": "Celtic",
+      "displayName": "Celtic Mandelbrot",
+      "category": "Mandelbrot Variants",
+      "qualityTier": "gold",
+      "description": "Mandelbrot variant using selective absolute value operations, creating Celtic knot-like patterns.",
+      "formula": "z_{n+1} = (|Re(z_n²)| + i·Im(z_n²)) + c",
+      "formulaLatex": "z_{n+1} = |\\Re(z_n^2)| + i \\cdot \\Im(z_n^2) + c",
+      "derivation": "The Celtic fractal applies absolute value only to the real component of z² before adding c. This selective operation breaks holomorphicity differently than the Burning Ship (which uses abs on both components). The result creates intricate interlocking patterns reminiscent of Celtic knotwork.",
+      "visualCharacteristics": "Elaborate interlocking patterns similar to Celtic art and knotwork. Features repeating curved structures and maze-like pathways. Shows strong vertical symmetry but horizontal asymmetry. More 'flowing' than Burning Ship, with smoother curves and less angular features.",
+      "discoveredBy": "Malcolm Crute (attributed)",
+      "discoveryYear": 2000,
+      "computationalNotes": "Similar performance to Burning Ship - one absolute value operation per iteration. The selective abs operation preserves some holomorphic properties while breaking others. Exhibits x-axis symmetry like Mandelbrot.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 1.0",
+        "Knot Detail: -0.5, 0.5, 10.0",
+        "Interlace: 0.3, 0.0, 20.0",
+        "Pattern: -0.2, 0.4, 50.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "BurningShip",
+        "Buffalo",
+        "Perpendicular"
+      ],
+      "references": [
+        "https://www.fractalforums.com/index.php?topic=348.0",
+        "Crute, M. (2000s). Various fractal forum posts"
+      ]
+    },
+    {
+      "name": "Sierpinski",
+      "displayName": "Sierpinski Triangle",
+      "category": "IFS Fractals",
+      "qualityTier": "gold",
+      "description": "Classic triangle fractal using iterated function system (IFS) with three affine transforms.",
+      "formula": "IFS with 3 transforms: z → z/2 + vertex_i (i = 0,1,2)",
+      "formulaLatex": "\\text{IFS}: z_{n+1} = \\frac{z_n}{2} + v_i, \\quad v \\in \\{(0,0), (1,0), (0.5, \\sqrt{3}/2)\\}",
+      "derivation": "The Sierpinski Triangle is generated by repeatedly applying one of three affine transformations, each scaling by 1/2 and translating to a triangle vertex. Starting from any point, the random iteration converges to the attractor set - a triangle with smaller triangular holes arranged in a self-similar pattern. This is fundamentally different from escape-time fractals.",
+      "visualCharacteristics": "Equilateral triangle filled with self-similar triangular holes at all scales. Perfect three-fold rotational symmetry. Shows clear fractal dimension (log 3/log 2 ≈ 1.585). The pattern repeats identically at each magnification level - a pure self-similar fractal.",
+      "discoveredBy": "Wacław Sierpiński",
+      "discoveryYear": 1915,
+      "computationalNotes": "Very different algorithm from escape-time fractals - uses random iteration of transforms rather than orbit testing. Extremely fast to compute (simple scaling and addition). Requires density-based rendering (plot points, not test pixels). Typically rendered via chaos game algorithm.",
+      "suggestedViewpoints": [
+        "Full Triangle: 0.5, 0.433, 0.6",
+        "Corner Detail: 0.0, 0.0, 5.0",
+        "Edge Pattern: 0.5, 0.0, 10.0",
+        "Hole Structure: 0.25, 0.217, 20.0"
+      ],
+      "relatedFractals": [
+        "SierpinskiCarpet",
+        "BarnsleyFern",
+        "KochSnowflake"
+      ],
+      "references": [
+        "https://en.wikipedia.org/wiki/Sierpinski_triangle",
+        "Sierpiński, W. (1915). 'Sur une courbe dont tout point est un point de ramification'",
+        "https://mathworld.wolfram.com/SierpinskiSieve.html"
+      ]
+    },
+    {
+      "name": "MandelTrig",
+      "displayName": "Mandelbrot Trig",
+      "category": "Trigonometric Fractals",
+      "qualityTier": "gold",
+      "description": "Mandelbrot iteration with trigonometric functions added, creating wave-like distortions.",
+      "formula": "z_{n+1} = z_n² + c + sin(z_n)",
+      "formulaLatex": "z_{n+1} = z_n^2 + c + \\sin(z_n)",
+      "derivation": "Adding trigonometric functions to the Mandelbrot iteration introduces periodic behavior that interacts with the polynomial dynamics. The sine function adds wave-like oscillations that modulate the standard Mandelbrot structures. This creates regions of stretched and compressed patterns following the trigonometric periods.",
+      "visualCharacteristics": "Mandelbrot-like structures with wave distortions. Features stretched and rippled regions corresponding to trigonometric periods. Shows interference patterns between polynomial and periodic dynamics. More 'flowing' than standard Mandelbrot with undulating boundaries.",
+      "discoveredBy": "Part of trigonometric fractal family exploration, 1990s",
+      "discoveryYear": 1990,
+      "computationalNotes": "Significantly slower than Mandelbrot due to sine/cosine calculations (requires Taylor series or CORDIC). The trigonometric terms can cause overflow with large values - requires careful numerical handling. May need larger bailout radius.",
+      "suggestedViewpoints": [
+        "Full View: -0.5, 0.0, 1.5",
+        "Wave Region: 0.0, 0.5, 5.0",
+        "Interference: -0.3, 0.3, 20.0",
+        "Ripple: 0.2, 0.4, 50.0"
+      ],
+      "relatedFractals": [
+        "Mandelbrot",
+        "SinZ",
+        "CoshZ"
+      ],
+      "references": [
+        "Fractint formula collection",
+        "https://www.fractalsciencekit.com/types/escaped/trig.htm"
+      ]
+    },
+    {
+      "name": "Buffalo",
+      "displayName": "Buffalo",
+      "category": "Mandelbrot Variants",
+      "qualityTier": "gold",
+      "description": "Combines Burning Ship and Celtic approaches, using absolute value on both squared components.",
+      "formula": "z_{n+1} = (|Re(z_n)²| - |Im(z_n)²|) + i(2·Re(z_n)·Im(z_n)) + c",
+      "formulaLatex": "z_{n+1} = |\\Re(z_n)^2| - |\\Im(z_n)^2| + 2i\\Re(z_n)\\Im(z_n) + c",
+      "derivation": "The Buffalo fractal applies absolute value operations to the components after squaring but before combining them. Unlike Burning Ship (abs before square) or Celtic (abs only on real), Buffalo uses abs(real²) and abs(imag²). This creates unique dynamics with distinctive horn-like or buffalo-head structures.",
+      "visualCharacteristics": "Prominent horn or antler-like structures resembling a buffalo head. Shows elaborate branching patterns and organic curves. Features both symmetry and asymmetry creating dynamic composition. More 'spiky' than Burning Ship with sharper features.",
+      "discoveredBy": "Duncan C. (attributed, fractal forums)",
+      "discoveryYear": 2009,
+      "computationalNotes": "Two absolute value operations per iteration, similar cost to Burning Ship. The post-square abs operations create different dynamics than pre-square. No obvious axis symmetry due to asymmetric operations.",
+      "suggestedViewpoints": [
+        "Full View: 0.0, 0.0, 1.5",
+        "Horn Detail: 0.5, 0.5, 10.0",
+        "Branch: -0.5, 0.3, 20.0",
+        "Tip: 0.8, 0.4, 50.0"
+      ],
+      "relatedFractals": [
+        "BurningShip",
+        "Celtic",
+        "Perpendicular"
+      ],
+      "references": [
+        "https://www.fractalforums.com/new-theories-and-research/buffalo-fractal/",
+        "Various fractal forum discussions, 2009-2010"
+      ]
+    }
+  ]
+}

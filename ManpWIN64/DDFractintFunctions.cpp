@@ -523,24 +523,96 @@ int	CPixel::DDInitFractintFunctions(WORD type, DDComplex *z, DDComplex *q)
 	break;
 
 	case FROTH:
-	    {
-	    if (param[0] != 3 && param[0] != 6)		// if no match then
+		{
+		if (param[0] != 3 && param[0] != 6)		// if no match then
 		param[0] = 3;				// make it 3
-	    frothsix = param[0] == 6;
-	    froth_altcolor = param[1] != 0;
-	    froth_shades = (colors - 1) / (frothsix ? 6 : 3);
-	
-	    if (rqlim < 6.0)
+		frothsix = param[0] == 6;
+		froth_altcolor = param[1] != 0;
+		froth_shades = (colors - 1) / (frothsix ? 6 : 3);
+
+		if (rqlim < 6.0)
 		rqlim = 6.0;				// rqlim needs to be at least 6 or so 
-	    set_Froth_palette(hwnd);			// make the best of the .map situation 
+		set_Froth_palette(hwnd);			// make the best of the .map situation 
 //	orbit_color = !frothsix && colors >= 16 ? (froth_shades<<1)+1 : colors-1;
-	    }
+		}
 	break;
 #endif
 
+	case MULTIBROT3:				// z^3 + c
+	case MULTIBROT4:				// z^4 + c
+	case MULTIBROT5:				// z^5 + c
+	case MULTIBROT6:				// z^6 + c
+	case MULTIBROT3JULIA:				// Julia sets for higher powers
+	case MULTIBROT4JULIA:
+	case MULTIBROT5JULIA:
+		tDD = (invert) ? DDInvertz2(cDD) : cDD;
+		if (!juliaflag && type < MULTIBROT3JULIA)
+		{
+		z->x = tDD.x + param[0];
+		z->y = tDD.y + param[1];
+		}
+		switch (type)
+		{
+		case MULTIBROT3:
+		case MULTIBROT3JULIA:
+			*degree = 3;
+			break;
+		case MULTIBROT4:
+		case MULTIBROT4JULIA:
+			*degree = 4;
+			break;
+		case MULTIBROT5:
+		case MULTIBROT5JULIA:
+			*degree = 5;
+			break;
+		case MULTIBROT6:
+			*degree = 6;
+			break;
+		}
+		break;
+
+	case EXPFRACTAL2:				// exp(z) + c
+	case LOGFRACTAL:				// log(z) + c
+	case EXPLOGFRACTAL:				// exp(log(z)) + c
+	case SINFRACTAL2:				// sin(z) + c
+	case COSFRACTAL:				// cos(z) + c
+	case TANFRACTAL:				// tan(z) + c
+	case SINHFRACTAL:				// sinh(z) + c
+	case COSHFRACTAL:				// cosh(z) + c
+	case TANHFRACTAL:				// tanh(z) + c
+		tDD = (invert) ? DDInvertz2(cDD) : cDD;
+		if (!juliaflag)
+		{
+		z->x = tDD.x + param[0];
+		z->y = tDD.y + param[1];
+		}
+		break;
+
+	case RATIONALFRACTAL1:				// (z^2 + c) / (z^2 - c)
+	case RATIONALFRACTAL2:				// (z^3 + c) / (z + c)
+		tDD = (invert) ? DDInvertz2(cDD) : cDD;
+		if (!juliaflag)
+		{
+		z->x = tDD.x + param[0];
+		z->y = tDD.y + param[1];
+		}
+		break;
+
+	case CELTIC:					// Celtic Mandelbrot
+	case MANDELBARCELTIC:				// Mandelbar Celtic
+	case PERPCELTIC:				// Perpendicular Celtic
+	case CUBICFLYINGSQUIRREL:			// Cubic Flying Squirrel
+		tDD = (invert) ? DDInvertz2(cDD) : cDD;
+		if (!juliaflag)
+		{
+		z->x = tDD.x + param[0];
+		z->y = tDD.y + param[1];
+		}
+		break;
+
 	}
-    return 0;
-    }
+	return 0;
+	}
 
 /**************************************************************************
 	Run functions for each iteration
@@ -1162,14 +1234,131 @@ int	CPixel::DDRunFractintFunctions(WORD type, DDComplex *z, DDComplex *q, BYTE *
 #undef X3MAX2
 //#undef FROTH_BITSHIFT
 #undef D_TO_L
-	    }
+		}
 #endif
 
+	case MULTIBROT3:				// z^3 + c
+	case MULTIBROT3JULIA:
+		*z = z->CPolynomial(3) + *q;
+		return DDFractintBailoutTest(z);
 
+	case MULTIBROT4:				// z^4 + c
+	case MULTIBROT4JULIA:
+		*z = z->CPolynomial(4) + *q;
+		return DDFractintBailoutTest(z);
+
+	case MULTIBROT5:				// z^5 + c
+	case MULTIBROT5JULIA:
+		*z = z->CPolynomial(5) + *q;
+		return DDFractintBailoutTest(z);
+
+	case MULTIBROT6:				// z^6 + c
+		*z = z->CPolynomial(6) + *q;
+		return DDFractintBailoutTest(z);
+
+	case EXPFRACTAL2:				// exp(z) + c
+		*z = z->CExp() + *q;
+		return DDFractintBailoutTest(z);
+
+	case LOGFRACTAL:				// log(z) + c
+		{
+		DDComplex logZ = z->CLog();
+		*z = logZ + *q;
+		return DDFractintBailoutTest(z);
+		}
+
+	case EXPLOGFRACTAL:				// exp(log(z)) + c
+		{
+		DDComplex logZ = z->CLog();
+		DDComplex expLogZ = logZ.CExp();
+		*z = expLogZ + *q;
+		return DDFractintBailoutTest(z);
+		}
+
+	case SINFRACTAL2:				// sin(z) + c
+		*z = z->CSin() + *q;
+		return DDFractintBailoutTest(z);
+
+	case COSFRACTAL:				// cos(z) + c
+		*z = z->CCos() + *q;
+		return DDFractintBailoutTest(z);
+
+	case TANFRACTAL:				// tan(z) + c
+		*z = z->CTan() + *q;
+		return DDFractintBailoutTest(z);
+
+	case SINHFRACTAL:				// sinh(z) + c
+		*z = z->CSinh() + *q;
+		return DDFractintBailoutTest(z);
+
+	case COSHFRACTAL:				// cosh(z) + c
+		*z = z->CCosh() + *q;
+		return DDFractintBailoutTest(z);
+
+	case TANHFRACTAL:				// tanh(z) + c
+		*z = z->CTanh() + *q;
+		return DDFractintBailoutTest(z);
+
+	case RATIONALFRACTAL1:				// (z^2 + c) / (z^2 - c)
+		{
+		DDComplex z2 = z->CSqr();
+		DDComplex numerator = z2 + *q;
+		DDComplex denominator = z2 - *q;
+		if (denominator.CSumSqr() < 1e-10)		// avoid division by zero
+		*z = numerator * 1e10;
+		else
+		*z = numerator / denominator;
+		return DDFractintBailoutTest(z);
+		}
+
+	case RATIONALFRACTAL2:				// (z^3 + c) / (z + c)
+		{
+		DDComplex z3 = z->CCube();
+		DDComplex numerator = z3 + *q;
+		DDComplex denominator = *z + *q;
+		if (denominator.CSumSqr() < 1e-10)		// avoid division by zero
+		*z = numerator * 1e10;
+		else
+		*z = numerator / denominator;
+		return DDFractintBailoutTest(z);
+		}
+
+	case CELTIC:					// Celtic Mandelbrot: z = (abs(real(z^2)) + i*imag(z^2)) + c
+		{
+		DDComplex z2 = z->CSqr();
+		z2.x = fabs(z2.x);
+		*z = z2 + *q;
+		return DDFractintBailoutTest(z);
+		}
+
+	case MANDELBARCELTIC:				// Mandelbar Celtic: z = (abs(real(z^2)) - i*imag(z^2)) + c
+		{
+		DDComplex z2 = z->CSqr();
+		z2.x = fabs(z2.x);
+		z2.y = -z2.y;
+		*z = z2 + *q;
+		return DDFractintBailoutTest(z);
+		}
+
+	case PERPCELTIC:				// Perpendicular Celtic: z = (real(z^2) + i*abs(imag(z^2))) + c
+		{
+		DDComplex z2 = z->CSqr();
+		z2.y = fabs(z2.y);
+		*z = z2 + *q;
+		return DDFractintBailoutTest(z);
+		}
+
+	case CUBICFLYINGSQUIRREL:			// Cubic Flying Squirrel: z = z^3 + (c-1)*z - c
+		{
+		DDComplex z3 = z->CCube();
+		DDComplex cMinus1 = *q - DDComplex(1.0, 0.0);
+		*z = z3 + cMinus1 * *z - *q;
+		return DDFractintBailoutTest(z);
+		}
 
 	}
-    return 0;
-    }
+	return 0;
+	}
 
 #ifdef ALLOWALLFRACTINTFUNCTIONS
 /**************************************************************************

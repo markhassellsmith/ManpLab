@@ -16,6 +16,7 @@ public class AppSettingsService : IAppSettingsService
     private const string PropertiesTabIndexKey = "PropertiesTabIndex";
     private const string SelectedFractalKey = "SelectedFractal";
     private const string FractalParametersKeyPrefix = "FractalParams_"; // Week 6 Task 6
+    private const string FractalNotesKeyPrefix = "FractalNotes_"; // User notes per fractal
 
     // Application Settings Keys
     private const string ThemeKey = "AppTheme";
@@ -228,5 +229,33 @@ public class AppSettingsService : IAppSettingsService
     public void SetUseDeepZoom(bool use)
     {
         _localSettings.Values[UseDeepZoomKey] = use;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // USER NOTES
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    public string? GetFractalNotes(string fractalName)
+    {
+        var key = FractalNotesKeyPrefix + fractalName;
+        if (_localSettings.Values.TryGetValue(key, out var value) && value is string notes)
+        {
+            return notes;
+        }
+        return null;
+    }
+
+    public void SetFractalNotes(string fractalName, string? notes)
+    {
+        var key = FractalNotesKeyPrefix + fractalName;
+        if (string.IsNullOrWhiteSpace(notes))
+        {
+            // Remove the key if notes are empty
+            _localSettings.Values.Remove(key);
+        }
+        else
+        {
+            _localSettings.Values[key] = notes;
+        }
     }
 }

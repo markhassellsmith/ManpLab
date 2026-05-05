@@ -124,6 +124,7 @@ namespace ManpWinUI.Views
         /// Week 6 Task 2: Load parameters in ParameterEditorViewModel.
         /// Task 3: Use cached metadata service instead of direct P/Invoke.
         /// Task 7: Use flexible parameter system when available.
+        /// Week 10: Update Info tab with fractal metadata.
         /// </summary>
         private void OnFractalSelected(object? sender, ViewModels.Browser.FractalSelectedEventArgs e)
         {
@@ -137,12 +138,51 @@ namespace ManpWinUI.Views
 
                 Debug.WriteLine($"[MainPage] Loading fractal: {e.Fractal.Name}");
 
+                // Special handling for 2-D Hailstone trajectory visualization
+                if (e.Fractal.Name == "Hailstone2D")
+                {
+                    Debug.WriteLine("[MainPage] Detected Hailstone2D - enabling trajectory mode");
+
+                    // Enable trajectory mode (triggers HailstoneRenderService)
+                    ViewModel.UseHailstoneTrajectoryMode = true;
+                    ViewModel.SelectedFractalType = "Hailstone2D";
+
+                    // Set default Hailstone parameters
+                    ViewModel.HailstoneStartX = 27;
+                    ViewModel.HailstoneStartY = 0;
+                    ViewModel.HailstoneMaxIterations = 1000;
+                    ViewModel.ShowHailstoneAxes = true;
+                    ViewModel.ShowHailstonePoints = true;
+                    ViewModel.ShowHailstoneLabels = true;
+                    ViewModel.UseFixedHailstoneViewport = false;
+
+                    ViewModel.CurrentVisualizationName = "2-D Hailstone Trajectory";
+                    ViewModel.StatusMessage = "Loading 2-D Hailstone Trajectory...";
+
+                    // Update Info tab
+                    ViewModel.UpdateSelectedFractalInfo(e.Fractal.Name);
+
+                    // Render the Hailstone sequence
+                    _ = ViewModel.RenderCommand.ExecuteAsync(null);
+                    return;
+                }
+
+                // Disable trajectory mode for all other fractals (including original "Hailstone")
+                ViewModel.UseHailstoneTrajectoryMode = false;
+
                 // Task 3: Get fractal metadata from cache (no P/Invoke!)
                 var metadata = MetadataService.GetFractalOrDefault(e.Fractal.Name);
                 Debug.WriteLine($"[MainPage] Got metadata for '{metadata.Name}' - Center: ({metadata.DefaultCenterX}, {metadata.DefaultCenterY}), Zoom: {metadata.DefaultZoom}");
 
                 // Update ViewModel with fractal selection and default view
                 ViewModel.SelectedFractalType = metadata.Name;
+
+                // Original "Hailstone" fractal will render as standard escape-time fractal
+                if (metadata.Name == "Hailstone")
+                {
+                    Debug.WriteLine("[MainPage] Original Hailstone fractal - using standard rendering");
+                }
+
                 ViewModel.CenterX = metadata.DefaultCenterX;
                 ViewModel.CenterY = metadata.DefaultCenterY;
                 ViewModel.Zoom = metadata.DefaultZoom;
@@ -150,6 +190,9 @@ namespace ManpWinUI.Views
 
                 // Set the current visualization name from the browser
                 ViewModel.CurrentVisualizationName = metadata.DisplayName;
+
+                // Week 10: Update Info tab with selected fractal metadata
+                ViewModel.UpdateSelectedFractalInfo(e.Fractal.Name);
 
                 // ═════════════════════════════════════════════════════════════════════════
                 // TASK 7: Load parameter editor from flexible parameter system

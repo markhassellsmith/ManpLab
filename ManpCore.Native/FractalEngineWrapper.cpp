@@ -555,17 +555,60 @@ void FractalEngineWrapper::Cancel()
 // Get available fractal types
 array<String^>^ FractalEngineWrapper::GetAvailableFractalTypes()
 {
-    // TODO Phase 2: Query native engine for available types
-    // For now, return test list
-    
-    array<String^>^ types = gcnew array<String^>(5);
-    types[0] = "Mandelbrot";
-    types[1] = "Julia";
-    types[2] = "Burning Ship";
-    types[3] = "Newton";
-    types[4] = "Lyapunov";
+    // Query native FractalRegistry for all registered types
+    ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
+    std::vector<std::string> nativeTypes = ::Native::FractalRegistry::GetRegisteredNames();
+
+    // Convert to managed array
+    array<String^>^ types = gcnew array<String^>(static_cast<int>(nativeTypes.size()));
+    for (size_t i = 0; i < nativeTypes.size(); i++)
+    {
+        types[static_cast<int>(i)] = StdStringToManaged(nativeTypes[i]);
+    }
 
     return types;
+}
+
+// Get fractal categories
+array<String^>^ FractalEngineWrapper::GetFractalCategories()
+{
+    // Query native FractalRegistry for all unique categories
+    ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
+    std::vector<std::string> nativeCategories = ::Native::FractalRegistry::GetCategories();
+
+    // Convert to managed array
+    array<String^>^ categories = gcnew array<String^>(static_cast<int>(nativeCategories.size()));
+    for (size_t i = 0; i < nativeCategories.size(); i++)
+    {
+        categories[static_cast<int>(i)] = StdStringToManaged(nativeCategories[i]);
+    }
+
+    return categories;
+}
+
+// Get fractal types by category
+array<String^>^ FractalEngineWrapper::GetFractalTypesByCategory(String^ category)
+{
+    // Query native FractalRegistry for fractals in the specified category
+    ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
+    std::string nativeCategory = ManagedToStdString(category);
+    std::vector<std::string> nativeTypes = ::Native::FractalRegistry::GetFractalsByCategory(nativeCategory);
+
+    // Convert to managed array
+    array<String^>^ types = gcnew array<String^>(static_cast<int>(nativeTypes.size()));
+    for (size_t i = 0; i < nativeTypes.size(); i++)
+    {
+        types[static_cast<int>(i)] = StdStringToManaged(nativeTypes[i]);
+    }
+
+    return types;
+}
+
+// Get total fractal type count
+int FractalEngineWrapper::GetFractalTypeCount()
+{
+    ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
+    return static_cast<int>(::Native::FractalRegistry::GetCount());
 }
 
 // Run native baseline benchmark

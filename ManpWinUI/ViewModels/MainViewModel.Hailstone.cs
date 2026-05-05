@@ -123,9 +123,18 @@ public partial class MainViewModel
         HailstoneViewportMaxY = maxY;
     }
 
-    // Computed property: Hailstone mode is active when fractal type is "Hailstone"
-    public bool IsHailstoneMode => SelectedFractalType == "Hailstone";
+    /// <summary>
+    /// Flag to indicate if we should use 2-D trajectory rendering (HailstoneRenderService)
+    /// instead of standard fractal rendering.
+    /// Set by MainPage when "Hailstone2D" is selected from browser.
+    /// </summary>
+    [ObservableProperty]
+    private bool _useHailstoneTrajectoryMode;
 
-    // Computed property: Show coordinate axes only for Mandelbrot/Julia, not for Hailstone
+    // Computed property: Hailstone mode is active when trajectory mode is explicitly enabled
+    // (for "Hailstone2D" selections, not the original "Hailstone" fractal)
+    public bool IsHailstoneMode => UseHailstoneTrajectoryMode;
+
+    // Computed property: Show coordinate axes only for Mandelbrot/Julia, not for Hailstone trajectory
     public bool ShowMandelbrotAxes => ShowCoordinateAxes && !IsHailstoneMode;
 }

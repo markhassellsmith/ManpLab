@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -99,14 +99,34 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="BatchRenderer.cpp" />
+    <ClCompile Include="BifurcationFamily.cpp" />
     <ClCompile Include="BigDoubleSupport.cpp" />
     <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="BarnsleyFamily.cpp" />
+    <ClCompile Include="ComplexFunctionsFamily.cpp" />
+    <ClCompile Include="DistanceEstimatorFamily.cpp" />
+    <ClCompile Include="EnhancedJuliaPresetsFamily.cpp" />
+    <ClCompile Include="ExoticFormulasFamily.cpp" />
+    <ClCompile Include="ExponentialLogarithmicFamily.cpp" />
+    <ClCompile Include="HybridFamily.cpp" />
+    <ClCompile Include="HistoricalFractalsFamily.cpp" />
+    <ClCompile Include="IFSFamily.cpp" />
+    <ClCompile Include="JuliaVariantsFamily.cpp" />
+    <ClCompile Include="LambdaExtendedFamily.cpp" />
+    <ClCompile Include="MandelVariantsFamily.cpp" />
+    <ClCompile Include="OrbitalFractalsFamily.cpp" />
+    <ClCompile Include="OrbitalModificationsFamily.cpp" />
     <ClCompile Include="PerturbationStubs.cpp" />
+    <ClCompile Include="PolynomialFamily.cpp" />
+    <ClCompile Include="PolynomialVariantsFamily.cpp" />
+    <ClCompile Include="RationalFunctionFamily.cpp" />
     <ClCompile Include="SpecialExoticFamily.cpp" />
+    <ClCompile Include="SpecialFunctionFamily.cpp" />
     <ClCompile Include="Attractors3DFamily.cpp" />
     <ClCompile Include="ClassicEscapeTimeFamily.cpp" />
+    <ClCompile Include="ChaoticMapsFamily.cpp" />
     <ClCompile Include="FractalEngineWrapper.cpp" />
+    <ClCompile Include="FractalHybridsFamily.cpp" />
     <ClCompile Include="..\ManpWIN64\Complex.cpp">
       <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
@@ -114,10 +134,19 @@
     <ClCompile Include="FractalRegistryWrapper.cpp" />
     <ClCompile Include="MandelbrotFamily.cpp" />
     <ClCompile Include="PhoenixFamily.cpp" />
+    <ClCompile Include="StrangeAttractorsExtendedFamily.cpp" />
     <ClCompile Include="TricornFamily.cpp" />
     <ClCompile Include="MultibrotFamily.cpp" />
     <ClCompile Include="NewtonFamily.cpp" />
     <ClCompile Include="MagnetFamily.cpp" />
+    <ClCompile Include="TrigonometricExtendedFamily.cpp" />
+    <ClCompile Include="TrigonometricFamily.cpp" />
+    <ClCompile Include="ExponentialFamily.cpp" />
+    <ClCompile Include="ExtendedJuliaFamily.cpp" />
+    <ClCompile Include="PowerVariantsFamily.cpp" />
+    <ClCompile Include="PhoenixExtendedFamily.cpp" />
+    <ClCompile Include="NewtonExtendedFamily.cpp" />
+    <ClCompile Include="MagnetExtendedFamily.cpp" />
     <!-- Perturbation Theory: Link against ManpWIN64.lib instead of individual source files -->
     <ClCompile Include="..\ManpWIN64\PertSetup.cpp">
       <CompileAsManaged>false</CompileAsManaged>
@@ -139,8 +168,26 @@
   </ImportGroup>
   <!-- Copy DLL to solution output directory after build for C# project references -->
   <Target Name="CopyToSolutionOutput" AfterTargets="Build">
-    <MakeDir Directories="$(SolutionDir)x64\$(Configuration)" Condition="!Exists('$(SolutionDir)x64\$(Configuration)')" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)x64\$(Configuration)" />
-    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(SolutionDir)x64\$(Configuration)" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    <!-- Build to ManpCore.Native\x64\Debug, then copy to solution root x64\Debug -->
+    <PropertyGroup>
+      <SolutionOutputDir>$(MSBuildThisFileDirectory)..\x64\$(Configuration)</SolutionOutputDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(SolutionOutputDir)" Condition="!Exists('$(SolutionOutputDir)')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionOutputDir)" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(SolutionOutputDir)" SkipUnchangedFiles="false" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    <Message Text="[CopyToSolutionOutput] Copied $(TargetPath) to $(SolutionOutputDir)" Importance="high" />
+  </Target>
+
+  <!-- Also copy all dependency DLLs (mpfr-6.dll, gmp-10.dll, etc.) -->
+  <Target Name="CopyDependencies" AfterTargets="CopyToSolutionOutput">
+    <PropertyGroup>
+      <SolutionOutputDir>$(MSBuildThisFileDirectory)..\x64\$(Configuration)</SolutionOutputDir>
+      <MpfrBinDir>$(MSBuildThisFileDirectory)..\external\mpfr\bin\x64</MpfrBinDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <DependencyDlls Include="$(MpfrBinDir)\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(SolutionOutputDir)" SkipUnchangedFiles="false" Condition="Exists('$(MpfrBinDir)')" />
+    <Message Text="[CopyDependencies] Copied MPFR/GMP DLLs to $(SolutionOutputDir)" Importance="high" />
   </Target>
 </Project>

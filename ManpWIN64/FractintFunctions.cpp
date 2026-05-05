@@ -527,14 +527,86 @@ int	CPixel::InitFractintFunctions(WORD type, Complex *z, Complex *q)
 	case LPOPCORNJUL:
 	case FPPOPCORNJUL:
 	case POPCORN:
-	    break;
+		break;
+
+	case MULTIBROT3:				// z^3 + c
+	case MULTIBROT4:				// z^4 + c
+	case MULTIBROT5:				// z^5 + c
+	case MULTIBROT6:				// z^6 + c
+	case MULTIBROT3JULIA:				// Julia sets for higher powers
+	case MULTIBROT4JULIA:
+	case MULTIBROT5JULIA:
+		t = (invert) ? invertz2(c) : c;
+		if (!juliaflag && type < MULTIBROT3JULIA)
+		{
+		z->x = t.x + param[0];
+		z->y = t.y + param[1];
+		}
+		switch (type)
+		{
+		case MULTIBROT3:
+		case MULTIBROT3JULIA:
+			*degree = 3;
+			break;
+		case MULTIBROT4:
+		case MULTIBROT4JULIA:
+			*degree = 4;
+			break;
+		case MULTIBROT5:
+		case MULTIBROT5JULIA:
+			*degree = 5;
+			break;
+		case MULTIBROT6:
+			*degree = 6;
+			break;
+		}
+		break;
+
+	case EXPFRACTAL2:				// exp(z) + c
+	case LOGFRACTAL:				// log(z) + c
+	case EXPLOGFRACTAL:				// exp(log(z)) + c
+	case SINFRACTAL2:				// sin(z) + c
+	case COSFRACTAL:				// cos(z) + c
+	case TANFRACTAL:				// tan(z) + c
+	case SINHFRACTAL:				// sinh(z) + c
+	case COSHFRACTAL:				// cosh(z) + c
+	case TANHFRACTAL:				// tanh(z) + c
+		t = (invert) ? invertz2(c) : c;
+		if (!juliaflag)
+		{
+		z->x = t.x + param[0];
+		z->y = t.y + param[1];
+		}
+		break;
+
+	case RATIONALFRACTAL1:				// (z^2 + c) / (z^2 - c)
+	case RATIONALFRACTAL2:				// (z^3 + c) / (z + c)
+		t = (invert) ? invertz2(c) : c;
+		if (!juliaflag)
+		{
+		z->x = t.x + param[0];
+		z->y = t.y + param[1];
+		}
+		break;
+
+	case CELTIC:					// Celtic Mandelbrot
+	case MANDELBARCELTIC:				// Mandelbar Celtic
+	case PERPCELTIC:				// Perpendicular Celtic
+	case CUBICFLYINGSQUIRREL:			// Cubic Flying Squirrel
+		t = (invert) ? invertz2(c) : c;
+		if (!juliaflag)
+		{
+		z->x = t.x + param[0];
+		z->y = t.y + param[1];
+		}
+		break;
 
 
 
 
 	}
-    return 0;
-    }
+	return 0;
+	}
 
 /**************************************************************************
 	Run functions for each iteration
@@ -1177,14 +1249,130 @@ int	CPixel::RunFractintFunctions(WORD type, Complex *z, Complex *q, BYTE *Specia
 #undef X3MAX2
 //#undef FROTH_BITSHIFT
 #undef D_TO_L
-	    }
+		}
 
+	case MULTIBROT3:				// z^3 + c
+	case MULTIBROT3JULIA:
+		*z = z->CPolynomial(3) + *q;
+		return FractintBailoutTest(z);
 
+	case MULTIBROT4:				// z^4 + c
+	case MULTIBROT4JULIA:
+		*z = z->CPolynomial(4) + *q;
+		return FractintBailoutTest(z);
 
+	case MULTIBROT5:				// z^5 + c
+	case MULTIBROT5JULIA:
+		*z = z->CPolynomial(5) + *q;
+		return FractintBailoutTest(z);
+
+	case MULTIBROT6:				// z^6 + c
+		*z = z->CPolynomial(6) + *q;
+		return FractintBailoutTest(z);
+
+	case EXPFRACTAL2:				// exp(z) + c
+		*z = z->CExp() + *q;
+		return FractintBailoutTest(z);
+
+	case LOGFRACTAL:				// log(z) + c
+		{
+		Complex logZ = z->CLog();
+		*z = logZ + *q;
+		return FractintBailoutTest(z);
+		}
+
+	case EXPLOGFRACTAL:				// exp(log(z)) + c
+		{
+		Complex logZ = z->CLog();
+		Complex expLogZ = logZ.CExp();
+		*z = expLogZ + *q;
+		return FractintBailoutTest(z);
+		}
+
+	case SINFRACTAL2:				// sin(z) + c
+		*z = z->CSin() + *q;
+		return FractintBailoutTest(z);
+
+	case COSFRACTAL:				// cos(z) + c
+		*z = z->CCos() + *q;
+		return FractintBailoutTest(z);
+
+	case TANFRACTAL:				// tan(z) + c
+		*z = z->CTan() + *q;
+		return FractintBailoutTest(z);
+
+	case SINHFRACTAL:				// sinh(z) + c
+		*z = z->CSinh() + *q;
+		return FractintBailoutTest(z);
+
+	case COSHFRACTAL:				// cosh(z) + c
+		*z = z->CCosh() + *q;
+		return FractintBailoutTest(z);
+
+	case TANHFRACTAL:				// tanh(z) + c
+		*z = z->CTanh() + *q;
+		return FractintBailoutTest(z);
+
+	case RATIONALFRACTAL1:				// (z^2 + c) / (z^2 - c)
+		{
+		Complex z2 = z->CSqr();
+		Complex numerator = z2 + *q;
+		Complex denominator = z2 - *q;
+		if (denominator.CSumSqr() < 1e-10)		// avoid division by zero
+		*z = numerator * 1e10;
+		else
+		*z = numerator / denominator;
+		return FractintBailoutTest(z);
+		}
+
+	case RATIONALFRACTAL2:				// (z^3 + c) / (z + c)
+		{
+		Complex z3 = z->CCube();
+		Complex numerator = z3 + *q;
+		Complex denominator = *z + *q;
+		if (denominator.CSumSqr() < 1e-10)		// avoid division by zero
+		*z = numerator * 1e10;
+		else
+		*z = numerator / denominator;
+		return FractintBailoutTest(z);
+		}
+
+	case CELTIC:					// Celtic Mandelbrot: z = (abs(real(z^2)) + i*imag(z^2)) + c
+		{
+		Complex z2 = z->CSqr();
+		z2.x = fabs(z2.x);
+		*z = z2 + *q;
+		return FractintBailoutTest(z);
+		}
+
+	case MANDELBARCELTIC:				// Mandelbar Celtic: z = (abs(real(z^2)) - i*imag(z^2)) + c
+		{
+		Complex z2 = z->CSqr();
+		z2.x = fabs(z2.x);
+		z2.y = -z2.y;
+		*z = z2 + *q;
+		return FractintBailoutTest(z);
+		}
+
+	case PERPCELTIC:				// Perpendicular Celtic: z = (real(z^2) + i*abs(imag(z^2))) + c
+		{
+		Complex z2 = z->CSqr();
+		z2.y = fabs(z2.y);
+		*z = z2 + *q;
+		return FractintBailoutTest(z);
+		}
+
+	case CUBICFLYINGSQUIRREL:			// Cubic Flying Squirrel: z = z^3 + (c-1)*z - c
+		{
+		Complex z3 = z->CCube();
+		Complex cMinus1 = *q - Complex(1.0, 0.0);
+		*z = z3 + cMinus1 * *z - *q;
+		return FractintBailoutTest(z);
+		}
 
 	}
-    return 0;
-    }
+	return 0;
+	}
 
 /**************************************************************************
     These functions are called by Phoenic and MandelPheonix fractals

@@ -54,6 +54,32 @@ void RegisterSpecialExoticFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
+    // HAILSTONE2D - 2D Trajectory Visualization with Axes and Labels
+    //=========================================================================
+    spec.name = "Hailstone2D";
+    spec.displayName = "2-D Hailstone Trajectory";
+    spec.category = "Special";
+    spec.type = FractalCategory::Sequence2D;
+    spec.description = "Interactive 2D visualization of Collatz sequence trajectory with coordinate axes, grid, point labels, and path rendering on black background";
+
+    // This is a marker entry - actual rendering uses HailstoneRenderService
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        // This calculator won't be used - HailstoneRenderService handles the rendering
+        // But we need a valid calculator for registry compliance
+        return 0.0;
+    };
+
+    spec.supportsJulia = false;
+    spec.defaultCenterX = 27.0;   // Classic starting point
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.0;
+    spec.defaultBailout = 1000.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
     // NUMFRACTAL (244) - Fractal dedicated to an 11-year-old discoverer
     //=========================================================================
     spec.name = "NumFractal";

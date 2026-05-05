@@ -720,13 +720,46 @@ namespace Native {
         /// <summary>
         /// Get list of available fractal formula types supported by the engine.
         /// </summary>
-        /// <returns>Array of fractal type names (e.g., "Mandelbrot", "Julia", "BurningShip")</returns>
+        /// <returns>Array of fractal type names from the native FractalRegistry (44+ types)</returns>
         /// <remarks>
-        /// <para>Phase 2: Returns ["Mandelbrot", "Julia", "Burning Ship", "Newton", "Lyapunov"] (placeholder).</para>
-        /// <para>Future: Will query ManpWIN64 engine for full list of 240+ fractal types.</para>
+        /// <para>Queries the native FractalRegistry for all registered fractal types.</para>
+        /// <para>Returns fractal type identifiers (e.g., "Mandelbrot", "BurningShip", "Phoenix").</para>
         /// <para>Use returned names for FractalParameters.FractalType property.</para>
         /// </remarks>
         array<String^>^ GetAvailableFractalTypes();
+
+        /// <summary>
+        /// Get list of all fractal category names for organizing fractals in the UI.
+        /// </summary>
+        /// <returns>Array of unique category names (e.g., "Classic Fractals", "Julia Sets", "Newton Fractals")</returns>
+        /// <remarks>
+        /// <para>Categories organize fractals into logical groups for UI presentation.</para>
+        /// <para>Use with GetFractalTypesByCategory() to build hierarchical UI navigation.</para>
+        /// <para>Examples: "Classic Fractals", "Julia Sets", "Burning Ship Variants", "Newton Fractals", "3D Attractors"</para>
+        /// </remarks>
+        array<String^>^ GetFractalCategories();
+
+        /// <summary>
+        /// Get list of fractal type names within a specific category.
+        /// </summary>
+        /// <param name="category">Category name (from GetFractalCategories())</param>
+        /// <returns>Array of fractal type names in the specified category</returns>
+        /// <remarks>
+        /// <para>Returns all fractals that belong to the specified category.</para>
+        /// <para>If category is not found or empty, returns empty array.</para>
+        /// <para>Example: GetFractalTypesByCategory("Julia Sets") returns all Julia set variants.</para>
+        /// </remarks>
+        array<String^>^ GetFractalTypesByCategory(String^ category);
+
+        /// <summary>
+        /// Get total count of registered fractal types.
+        /// </summary>
+        /// <returns>Number of registered fractal types (44+)</returns>
+        /// <remarks>
+        /// <para>Useful for UI initialization and diagnostics.</para>
+        /// <para>Count reflects the total after InitializeBuiltins() is called.</para>
+        /// </remarks>
+        int GetFractalTypeCount();
 
         /// <summary>
         /// Run pure native C++ benchmark without C++/CLI wrapper overhead (for performance analysis).

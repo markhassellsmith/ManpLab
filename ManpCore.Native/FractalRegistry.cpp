@@ -1,4 +1,4 @@
-#include "FractalRegistry.h"
+﻿#include "FractalRegistry.h"
 #include "MandelbrotCalculator.h"
 #include <set>
 #include <stdexcept>
@@ -152,6 +152,35 @@ extern void RegisterClassicEscapeTimeFamily();  // Lambda, Manowar, Sierpinski, 
 extern void RegisterBarnsleyFamily();           // Barnsley M1/J1/M2/J2/M3/J3
 extern void RegisterSpecialExoticFamily();      // Hailstone, Buddhabrot, Lyapunov, etc.
 extern void RegisterAttractors3DFamily();       // Lorenz, Rossler, Henon, Chua, etc.
+extern void RegisterTrigonometricFamily();      // Sine, Cosine, Sinh, Cosh variants
+extern void RegisterExponentialFamily();        // Exponential, Logarithm, Power variants
+extern void RegisterExtendedJuliaFamily();      // Additional Julia set variations
+extern void RegisterPowerVariantsFamily();      // Higher-power Mandelbrot/Julia/BurningShip/Tricorn
+extern void RegisterPhoenixExtendedFamily();    // Phoenix variations with different powers and functions
+extern void RegisterNewtonExtendedFamily();     // Newton method for various polynomials and functions
+extern void RegisterMagnetExtendedFamily();     // Magnet Julia modes and power variants
+extern void RegisterLambdaExtendedFamily();     // Lambda power variants and function combinations
+extern void RegisterHybridFamily();             // Hybrid fractals combining multiple formulas
+extern void RegisterMandelVariantsFamily();     // Mandelbrot variants: Mandel4, MandelLambda, Thorn, Spider, etc.
+extern void RegisterComplexFunctionsFamily();   // Complex function combinations: SqrTrig, TrigSqr, TrigPlusTrig, etc.
+extern void RegisterBifurcationFamily();        // Bifurcation diagrams and parameter space
+extern void RegisterIFSFamily();                // Iterated Function Systems: Barnsley fern, Sierpinski, Dragon curve, etc.
+extern void RegisterDistanceEstimatorFamily();  // Distance estimator variants for smooth boundaries
+extern void RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, Zubieta, etc.
+extern void RegisterOrbitalFractalsFamily();    // Orbit trap and modification techniques
+extern void RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc.
+extern void RegisterTrigonometricExtendedFamily(); // Extended trig functions: tan, cot, sec, csc, arcsin, arccos, arctan, tanh
+extern void RegisterJuliaVariantsFamily();      // Julia set variations with different formulas
+extern void RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors: Clifford, De Jong, Tinkerbell, etc.
+extern void RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
+extern void RegisterExponentialLogarithmicFamily(); // Exponential, Logarithmic, ExpSquare, PowerTower, ComplexPower, ExponentialJulia = 6
+extern void RegisterRationalFunctionFamily();   // Newton z³-1, z⁴-1, z⁵-1, Halley, Möbius, Rational maps = 8
+extern void RegisterHistoricalFractalsFamily(); // Biomorphs, Pickover Stalks, Martin, Chip, Quaternion2D, Collatz, Duffing, Sinusoidal = 8
+extern void RegisterSpecialFunctionFamily();    // Gamma, Error, Bessel-like, Continued Fraction, Tetration, Lambert W, Hyperbolic = 7
+extern void RegisterChaoticMapsFamily();        // Clifford, De Jong, Tinkerbell, Bedhead, Svensson, SymmetricIcon, Gingerbreadman, Sprott = 8
+extern void RegisterFractalHybridsFamily();     // Burning-Mandel, Exp-Mandel, Mutant, Trig-Blend, Sierpinski-Mandel, Perturbed Newton, Bifurcation-Mandel, Celtic = 8
+extern void RegisterOrbitalModificationsFamily(); // Circular trap, Cross trap, Stalks, Smoothed, Angle, Triangle trap, Stripe, Curvature, Delta, Point-Line = 10
+extern void RegisterEnhancedJuliaPresetsFamily(); // Golden, Dendrite, Spiral, Dragon, Cauliflower, Seahorse, Airplane, Lightning, Snowflake, Flower, Feigenbaum, TwistedCross, Backbone, SpiralGalaxy, Medusa, Crystal, Paisley, FuzzyBlob, Eye, TripleSpiral, Heart, Neurons, FractalTree = 23
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -170,7 +199,36 @@ void FractalRegistry::InitializeBuiltins()
     RegisterBarnsleyFamily();           // Barnsley M1/J1/M2/J2/M3/J3 = 6
     RegisterSpecialExoticFamily();      // Hailstone, NumFractal, Buddhabrot, Lyapunov, Popcorn, Mandelbar, Thorn, Tetration = 8
     RegisterAttractors3DFamily();       // Lorenz, Rossler, Henon, Pickover, Gingerbread, Chua, Ikeda, Hopalong = 8
-    // Total: 44 fractals
+    RegisterTrigonometricFamily();      // Sine, Cosine, Sinh, Cosh variants = 12
+    RegisterExponentialFamily();        // Exponential, Logarithm, Power variants = 6
+    RegisterExtendedJuliaFamily();      // Additional Julia set variations = 8
+    RegisterPowerVariantsFamily();      // Higher-power Mandelbrot/Julia/BurningShip/Tricorn = 9
+    RegisterPhoenixExtendedFamily();    // Phoenix variations with different powers and functions = 8
+    RegisterNewtonExtendedFamily();     // Newton method for various polynomials and functions = 6
+    RegisterMagnetExtendedFamily();     // Magnet Julia modes and power variants = 4
+    RegisterLambdaExtendedFamily();     // Lambda power variants and function combinations = 8
+    RegisterHybridFamily();             // Hybrid fractals combining multiple formulas = 10
+    RegisterMandelVariantsFamily();     // Mandelbrot variants: Mandel4, MandelLambda, Thorn, Spider, etc. = 8
+    RegisterComplexFunctionsFamily();   // Complex function combinations: SqrTrig, TrigSqr, etc. = 8
+    RegisterBifurcationFamily();        // Bifurcation diagrams and parameter space = 6
+    RegisterIFSFamily();                // Iterated Function Systems = 5
+    RegisterDistanceEstimatorFamily();  // Distance estimator variants = 4
+    RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, etc. = 8
+    RegisterOrbitalFractalsFamily();    // Orbit trap and modification = 8
+    RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc. = 8
+    RegisterTrigonometricExtendedFamily(); // Extended trig functions = 8
+    RegisterJuliaVariantsFamily();      // Julia set variations = 8
+    RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors = 6
+    RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
+    RegisterExponentialLogarithmicFamily(); // Exponential/logarithmic variants = 6
+    RegisterRationalFunctionFamily();   // Newton, Halley, Rational maps = 8
+    RegisterHistoricalFractalsFamily(); // Historical fractals = 8
+    RegisterSpecialFunctionFamily();    // Special functions = 7
+    RegisterChaoticMapsFamily();        // Chaotic maps = 8
+    RegisterFractalHybridsFamily();     // Fractal hybrids = 8
+    RegisterOrbitalModificationsFamily(); // Orbital modifications = 10
+    RegisterEnhancedJuliaPresetsFamily(); // Julia presets = 23
+    // Total: 278 fractals
 
     s_initialized = true;
 }
