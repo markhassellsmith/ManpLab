@@ -125,7 +125,7 @@
     <ClCompile Include="FractalRegistryWrapper.cpp" />
     <ClCompile Include="MandelbrotFamily.cpp" />
     <ClCompile Include="PhoenixFamily.cpp" />
-    <ClCompile Include="StrangeAttractorsExtendedFamily.cpp" />`n    <ClCompile Include="PolynomialFamily.cpp" />
+    <ClCompile Include="StrangeAttractorsExtendedFamily.cpp" />`n    <ClCompile Include="PolynomialFamily.cpp" />`n    <ClCompile Include="ExponentialLogarithmicFamily.cpp" />
     <ClCompile Include="TricornFamily.cpp" />
     <ClCompile Include="MultibrotFamily.cpp" />
     <ClCompile Include="NewtonFamily.cpp" />

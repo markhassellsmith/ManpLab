@@ -173,6 +173,7 @@ extern void RegisterTrigonometricExtendedFamily(); // Extended trig functions: t
 extern void RegisterJuliaVariantsFamily();      // Julia set variations with different formulas
 extern void RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors: Clifford, De Jong, Tinkerbell, etc.
 extern void RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
+extern void RegisterExponentialLogarithmicFamily(); // Exponential, Logarithmic, ExpSquare, PowerTower, ComplexPower, ExponentialJulia = 6
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -212,7 +213,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterJuliaVariantsFamily();      // Julia set variations = 8
     RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors = 6
     RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
-    // Total: 200 fractals
+    RegisterExponentialLogarithmicFamily(); // Exponential/logarithmic variants = 6
+    // Total: 206 fractals
 
     s_initialized = true;
 }
