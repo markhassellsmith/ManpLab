@@ -122,6 +122,7 @@
     <ClCompile Include="SpecialFunctionFamily.cpp" />
     <ClCompile Include="Attractors3DFamily.cpp" />
     <ClCompile Include="ClassicEscapeTimeFamily.cpp" />
+    <ClCompile Include="ChaoticMapsFamily.cpp" />
     <ClCompile Include="FractalEngineWrapper.cpp" />
     <ClCompile Include="..\ManpWIN64\Complex.cpp">
       <CompileAsManaged>false</CompileAsManaged>
