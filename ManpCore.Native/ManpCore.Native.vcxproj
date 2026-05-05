@@ -114,6 +114,8 @@
     <ClCompile Include="LambdaExtendedFamily.cpp" />
     <ClCompile Include="MandelVariantsFamily.cpp" />
     <ClCompile Include="OrbitalFractalsFamily.cpp" />
+    <ClCompile Include="OrbitalModificationsFamily.cpp" />
+    <ClCompile Include="OrbitalModificationsFamily.cpp" />
     <ClCompile Include="PerturbationStubs.cpp" />
     <ClCompile Include="PolynomialFamily.cpp" />
     <ClCompile Include="PolynomialVariantsFamily.cpp" />
