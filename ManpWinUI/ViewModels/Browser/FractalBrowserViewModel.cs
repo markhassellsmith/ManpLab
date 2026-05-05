@@ -126,7 +126,9 @@ public partial class FractalBrowserViewModel : ObservableObject
                         Name = fractalInfo.Name,
                         DisplayName = fractalInfo.DisplayName,
                         Category = fractalInfo.Category,
-                        Description = fractalInfo.Description
+                        Description = fractalInfo.Description,
+                        Formula = fractalInfo.Formula,
+                        FormulaLatex = fractalInfo.FormulaLatex
                     });
                 }
 
@@ -192,8 +194,10 @@ public partial class FractalBrowserViewModel : ObservableObject
                 var displayNameMatches = fractal.DisplayName.ToLower().Contains(searchLower);
                 var descriptionMatches = !string.IsNullOrEmpty(fractal.Description) &&
                                         fractal.Description.ToLower().Contains(searchLower);
+                var formulaMatches = !string.IsNullOrEmpty(fractal.Formula) &&
+                                    fractal.Formula.ToLower().Contains(searchLower);
 
-                if (categoryMatches || nameMatches || displayNameMatches || descriptionMatches)
+                if (categoryMatches || nameMatches || displayNameMatches || descriptionMatches || formulaMatches)
                 {
                     filteredCategory.Fractals.Add(fractal);
                 }
@@ -324,5 +328,7 @@ public class FractalNode
     public string DisplayName { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public string? Description { get; set; }
+    public string? Formula { get; set; }
+    public string? FormulaLatex { get; set; }
     public string? ThumbnailPath { get; set; }
 }
