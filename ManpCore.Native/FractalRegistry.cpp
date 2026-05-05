@@ -172,6 +172,7 @@ extern void RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Q
 extern void RegisterTrigonometricExtendedFamily(); // Extended trig functions: tan, cot, sec, csc, arcsin, arccos, arctan, tanh
 extern void RegisterJuliaVariantsFamily();      // Julia set variations with different formulas
 extern void RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors: Clifford, De Jong, Tinkerbell, etc.
+extern void RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -210,7 +211,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterTrigonometricExtendedFamily(); // Extended trig functions = 8
     RegisterJuliaVariantsFamily();      // Julia set variations = 8
     RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors = 6
-    // Total: 192 fractals
+    RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
+    // Total: 200 fractals
 
     s_initialized = true;
 }
