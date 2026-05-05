@@ -110,6 +110,7 @@
     <ClCompile Include="IFSFamily.cpp" />
     <ClCompile Include="LambdaExtendedFamily.cpp" />
     <ClCompile Include="MandelVariantsFamily.cpp" />
+    <ClCompile Include="OrbitalFractalsFamily.cpp" />
     <ClCompile Include="PerturbationStubs.cpp" />
     <ClCompile Include="SpecialExoticFamily.cpp" />
     <ClCompile Include="Attractors3DFamily.cpp" />

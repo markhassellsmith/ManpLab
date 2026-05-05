@@ -167,6 +167,7 @@ extern void RegisterBifurcationFamily();        // Bifurcation diagrams and para
 extern void RegisterIFSFamily();                // Iterated Function Systems: Barnsley fern, Sierpinski, Dragon curve, etc.
 extern void RegisterDistanceEstimatorFamily();  // Distance estimator variants for smooth boundaries
 extern void RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, Zubieta, etc.
+extern void RegisterOrbitalFractalsFamily();    // Orbit trap and modification techniques
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -200,7 +201,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterIFSFamily();                // Iterated Function Systems = 5
     RegisterDistanceEstimatorFamily();  // Distance estimator variants = 4
     RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, etc. = 8
-    // Total: 154 fractals
+    RegisterOrbitalFractalsFamily();    // Orbit trap and modification = 8
+    // Total: 162 fractals
 
     s_initialized = true;
 }
