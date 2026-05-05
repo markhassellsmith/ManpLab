@@ -11,6 +11,7 @@
     xmlns:browser="using:ManpWinUI.Views.Browser"
     xmlns:properties="using:ManpWinUI.Views.Properties"
     xmlns:settings="using:ManpWinUI.Views.Settings"
+    xmlns:animation="using:ManpWinUI.Views.Animation"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -1081,6 +1082,14 @@
                                         </ListView>
                                     </StackPanel>
                                 </ScrollViewer>
+                            </TabViewItem>
+
+                            <!-- Animation Tab (Week 12) -->
+                            <TabViewItem Header="Animation">
+                                <TabViewItem.IconSource>
+                                    <SymbolIconSource Symbol="Video" />
+                                </TabViewItem.IconSource>
+                                <animation:AnimationControlPanel x:Name="AnimationPanel" />
                             </TabViewItem>
 
                             <!-- Settings Tab -->
