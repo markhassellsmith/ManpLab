@@ -42,7 +42,7 @@ void RegisterNewtonExtendedFamily()
     //=========================================================================
     spec.name = "NewtonQuartic";
     spec.displayName = "Newton Quartic (z⁴-1)";
-    spec.category = "Newton Method";
+    spec.category = "Newton's Method";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Newton's method for z⁴ - 1 = 0, showing 4 convergence basins";
     spec.formula = "z = z - (z⁴ - 1)/(4z³)";
@@ -117,7 +117,7 @@ void RegisterNewtonExtendedFamily()
     //=========================================================================
     spec.name = "NewtonQuintic";
     spec.displayName = "Newton Quintic (z⁵-1)";
-    spec.category = "Newton Method";
+    spec.category = "Newton's Method";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Newton's method for z⁵ - 1 = 0, showing 5 convergence basins";
     spec.formula = "z = z - (z⁵ - 1)/(5z⁴)";
@@ -182,7 +182,7 @@ void RegisterNewtonExtendedFamily()
     //=========================================================================
     spec.name = "NewtonSextic";
     spec.displayName = "Newton Sextic (z⁶-1)";
-    spec.category = "Newton Method";
+    spec.category = "Newton's Method";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Newton's method for z⁶ - 1 = 0, showing 6 convergence basins";
     spec.formula = "z = z - (z⁶ - 1)/(6z⁵)";
@@ -247,7 +247,7 @@ void RegisterNewtonExtendedFamily()
     //=========================================================================
     spec.name = "NewtonSin";
     spec.displayName = "Newton Sine";
-    spec.category = "Newton Method";
+    spec.category = "Newton's Method";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Newton's method for sin(z) = 0, converging to integer multiples of π";
     spec.formula = "z = z - sin(z)/cos(z)";
@@ -306,7 +306,7 @@ void RegisterNewtonExtendedFamily()
     //=========================================================================
     spec.name = "NewtonCosh";
     spec.displayName = "Newton Cosh";
-    spec.category = "Newton Method";
+    spec.category = "Newton's Method";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Newton's method for cosh(z) - 1 = 0";
     spec.formula = "z = z - (cosh(z) - 1)/sinh(z)";
@@ -365,7 +365,7 @@ void RegisterNewtonExtendedFamily()
     //=========================================================================
     spec.name = "NewtonBasin";
     spec.displayName = "Newton Basin (z³-1)";
-    spec.category = "Newton Method";
+    spec.category = "Newton's Method";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Classic Newton basins for z³ - 1 = 0, colored by which root is reached";
     spec.formula = "z = z - (z³ - 1)/(3z²)";
