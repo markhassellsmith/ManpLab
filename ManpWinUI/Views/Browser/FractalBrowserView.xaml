@@ -53,8 +53,7 @@
                             <ItemsRepeater ItemsSource="{x:Bind Fractals}">
                                 <ItemsRepeater.ItemTemplate>
                                     <DataTemplate x:DataType="vm:FractalNode">
-                                        <Button Content="{x:Bind DisplayName}"
-                                                Command="{Binding SelectFractalCommand}"
+                                        <Button Command="{Binding SelectFractalCommand}"
                                                 CommandParameter="{x:Bind}"
                                                 HorizontalAlignment="Stretch"
                                                 HorizontalContentAlignment="Left"
@@ -62,32 +61,34 @@
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Margin="0,1">
-                                            <ToolTipService.ToolTip>
-                                                <ToolTip MaxWidth="400">
-                                                    <StackPanel Spacing="8">
-                                                        <TextBlock Text="{x:Bind DisplayName}" 
-                                                                   FontWeight="SemiBold"
-                                                                   TextWrapping="Wrap" />
-                                                        <TextBlock Text="{x:Bind Description}" 
-                                                                   TextWrapping="Wrap"
-                                                                   Visibility="{x:Bind Description, Converter={StaticResource NullToVisibilityConverter}}" />
-                                                        <Border BorderThickness="0,1,0,0"
-                                                                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                                                Padding="0,8,0,0"
-                                                                Visibility="{x:Bind Formula, Converter={StaticResource NullToVisibilityConverter}}">
-                                                            <StackPanel Spacing="4">
-                                                                <TextBlock Text="Formula:" 
-                                                                           FontWeight="SemiBold"
-                                                                           FontSize="11"
-                                                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                                                <TextBlock Text="{x:Bind Formula}" 
-                                                                           FontFamily="Consolas"
-                                                                           TextWrapping="Wrap" />
-                                                            </StackPanel>
-                                                        </Border>
-                                                    </StackPanel>
-                                                </ToolTip>
-                                            </ToolTipService.ToolTip>
+                                            <TextBlock Text="{x:Bind DisplayName}">
+                                                <ToolTipService.ToolTip>
+                                                    <ToolTip MaxWidth="400">
+                                                        <StackPanel Spacing="8">
+                                                            <TextBlock Text="{x:Bind DisplayName}" 
+                                                                       FontWeight="SemiBold"
+                                                                       TextWrapping="Wrap" />
+                                                            <TextBlock Text="{x:Bind Description}" 
+                                                                       TextWrapping="Wrap"
+                                                                       Visibility="{x:Bind Description, Converter={StaticResource NullToVisibilityConverter}}" />
+                                                            <Border BorderThickness="0,1,0,0"
+                                                                    BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                                                    Padding="0,8,0,0"
+                                                                    Visibility="{x:Bind Formula, Converter={StaticResource NullToVisibilityConverter}}">
+                                                                <StackPanel Spacing="4">
+                                                                    <TextBlock Text="Formula:" 
+                                                                               FontWeight="SemiBold"
+                                                                               FontSize="11"
+                                                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                                                    <TextBlock Text="{x:Bind Formula}" 
+                                                                               FontFamily="Consolas"
+                                                                               TextWrapping="Wrap" />
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </ToolTip>
+                                                </ToolTipService.ToolTip>
+                                            </TextBlock>
                                         </Button>
                                     </DataTemplate>
                                 </ItemsRepeater.ItemTemplate>
@@ -114,43 +115,77 @@
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="0,1,0,0">
                 <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="12" DataContext="{x:Bind ViewModel.SelectedFractal, Mode=OneWay}">
-                        <!-- Fractal Name -->
-                        <TextBlock Text="{Binding DisplayName}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold" />
+                    <StackPanel Spacing="12">
+                        <!-- Native Metadata Section -->
+                        <StackPanel Spacing="12" DataContext="{x:Bind ViewModel.SelectedFractal, Mode=OneWay}">
+                            <!-- Fractal Name -->
+                            <TextBlock Text="{Binding DisplayName}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold" />
 
-                        <!-- Description -->
-                        <TextBlock Text="{Binding Description}"
-                                   TextWrapping="Wrap"
-                                   FontSize="12"
-                                   Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}}" />
+                            <!-- Description -->
+                            <TextBlock Text="{Binding Description}"
+                                       TextWrapping="Wrap"
+                                       FontSize="12"
+                                       Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}}" />
 
-                        <!-- Formula Section -->
-                        <StackPanel Spacing="4" Visibility="{Binding Formula, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Text="Formula:"
-                                       FontWeight="SemiBold"
-                                       FontSize="11"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                            <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
-                                    Padding="8"
-                                    CornerRadius="4">
-                                <TextBlock Text="{Binding Formula}"
-                                           FontFamily="Consolas"
+                            <!-- Formula Section -->
+                            <StackPanel Spacing="4" Visibility="{Binding Formula, Converter={StaticResource NullToVisibilityConverter}}">
+                                <TextBlock Text="Formula:"
+                                           FontWeight="SemiBold"
                                            FontSize="11"
-                                           TextWrapping="Wrap"
-                                           IsTextSelectionEnabled="True" />
-                            </Border>
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                                        Padding="8"
+                                        CornerRadius="4">
+                                    <TextBlock Text="{Binding Formula}"
+                                               FontFamily="Consolas"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               IsTextSelectionEnabled="True" />
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Category -->
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="Category:"
+                                           FontWeight="SemiBold"
+                                           FontSize="11"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock Text="{Binding Category}"
+                                           FontSize="11" />
+                            </StackPanel>
                         </StackPanel>
 
-                        <!-- Category -->
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBlock Text="Category:"
+                        <!-- Divider -->
+                        <Border BorderThickness="0,1,0,0"
+                                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                Margin="0,4" />
+
+                        <!-- User Notes Section -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="📝 My Notes"
                                        FontWeight="SemiBold"
                                        FontSize="11"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                            <TextBlock Text="{Binding Category}"
-                                       FontSize="11" />
+                            <TextBox Text="{x:Bind ViewModel.UserNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     PlaceholderText="Add your personal notes, observations, or favorite coordinates..."
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     MinHeight="60"
+                                     MaxHeight="100"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button Content="Save Notes"
+                                        Command="{x:Bind ViewModel.SaveUserNotesCommand}"
+                                        Style="{StaticResource AccentButtonStyle}"
+                                        FontSize="11"
+                                        Padding="12,6" />
+                                <Button Content="Clear"
+                                        Command="{x:Bind ViewModel.ClearUserNotesCommand}"
+                                        FontSize="11"
+                                        Padding="12,6" />
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>

@@ -25,6 +25,7 @@ public partial class FractalBrowserViewModel : ObservableObject
     /// Week 5 Task 6: MainViewModel subscribes to this to handle fractal loading.
     /// </summary>
     public event EventHandler<FractalSelectedEventArgs>? FractalSelected;
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // SEARCH & FILTER
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -69,12 +70,25 @@ public partial class FractalBrowserViewModel : ObservableObject
     [ObservableProperty]
     private FractalNode? selectedFractal;
 
+    /// <summary>
+    /// User notes for the currently selected fractal.
+    /// Editable text that persists separately from native metadata.
+    /// </summary>
+    [ObservableProperty]
+    private string userNotes = string.Empty;
+
     partial void OnSelectedFractalChanged(FractalNode? value)
     {
         if (value != null)
         {
             System.Diagnostics.Debug.WriteLine($"[FractalBrowserViewModel] Selected: {value.Name}");
+            // Load user notes for the selected fractal
+            UserNotes = _settingsService?.GetFractalNotes(value.Name) ?? string.Empty;
             // Week 5: Fire FractalSelected event to MainViewModel
+        }
+        else
+        {
+            UserNotes = string.Empty;
         }
     }
 
@@ -283,6 +297,37 @@ public partial class FractalBrowserViewModel : ObservableObject
 
         // Raise event with fractal info
         FractalSelected?.Invoke(this, new FractalSelectedEventArgs(fractal));
+    }
+
+    /// <summary>
+    /// Save user notes for the currently selected fractal.
+    /// </summary>
+    [RelayCommand]
+    private void SaveUserNotes()
+    {
+        if (SelectedFractal == null || _settingsService == null)
+            return;
+
+        _settingsService.SetFractalNotes(SelectedFractal.Name, UserNotes);
+
+        System.Diagnostics.Debug.WriteLine(
+            $"[FractalBrowserViewModel] Saved notes for {SelectedFractal.Name}");
+    }
+
+    /// <summary>
+    /// Clear user notes for the currently selected fractal.
+    /// </summary>
+    [RelayCommand]
+    private void ClearUserNotes()
+    {
+        UserNotes = string.Empty;
+
+        if (SelectedFractal != null && _settingsService != null)
+        {
+            _settingsService.SetFractalNotes(SelectedFractal.Name, null);
+            System.Diagnostics.Debug.WriteLine(
+                $"[FractalBrowserViewModel] Cleared notes for {SelectedFractal.Name}");
+        }
     }
 }
 
