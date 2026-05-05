@@ -1,4 +1,4 @@
-#include "FractalRegistry.h"
+﻿#include "FractalRegistry.h"
 #include "MandelbrotCalculator.h"
 #include <set>
 #include <stdexcept>
@@ -175,6 +175,7 @@ extern void RegisterStrangeAttractorsExtendedFamily(); // Extended strange attra
 extern void RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
 extern void RegisterExponentialLogarithmicFamily(); // Exponential, Logarithmic, ExpSquare, PowerTower, ComplexPower, ExponentialJulia = 6
 extern void RegisterRationalFunctionFamily();   // Newton z³-1, z⁴-1, z⁵-1, Halley, Möbius, Rational maps = 8
+extern void RegisterHistoricalFractalsFamily(); // Biomorphs, Pickover Stalks, Martin, Chip, Quaternion2D, Collatz, Duffing, Sinusoidal = 8
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -216,7 +217,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
     RegisterExponentialLogarithmicFamily(); // Exponential/logarithmic variants = 6
     RegisterRationalFunctionFamily();   // Newton, Halley, Rational maps = 8
-    // Total: 214 fractals
+    RegisterHistoricalFractalsFamily(); // Historical fractals = 8
+    // Total: 222 fractals
 
     s_initialized = true;
 }
