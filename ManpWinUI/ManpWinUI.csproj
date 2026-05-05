@@ -88,6 +88,10 @@
       <Page Update="Views\Settings\SettingsView.xaml">
         <Generator>MSBuild:Compile</Generator>
       </Page>
+      <!-- Phase 1: Animation Control Panel -->
+      <Page Update="Views\Animation\AnimationControlPanel.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
     </ItemGroup>
 
 
@@ -171,6 +175,9 @@
     </ItemGroup>
     <ItemGroup>
       <None Update="Themes\OceanBlue.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </None>
+      <None Update="Views\Animation\AnimationControlPanel.xaml">
         <Generator>MSBuild:Compile</Generator>
       </None>
       <None Update="Views\Canvas\FractalCanvasView.xaml">

@@ -125,10 +125,17 @@ namespace ManpWinUI
             services.AddSingleton<IFractalParameterService, FractalParameterService>(); // Task 1: Flexible parameter system
             services.AddSingleton<IFractalMetadataService, FractalMetadataService>(); // Task 3: Metadata caching
 
+            // Animation Services (Phase 1)
+            services.AddSingleton<Services.Animation.FrameInterpolator>();
+            services.AddSingleton<Services.Animation.AnimationRenderer>();
+            services.AddSingleton<Services.Animation.AnimationService>();
+            services.AddSingleton<Services.Animation.Export.IAnimationExporter, Services.Animation.Export.Mp4Exporter>();
+
             // ViewModels
             services.AddTransient<MainViewModel>();
             services.AddSingleton<ViewModels.Browser.FractalBrowserViewModel>(); // Task 2: Fix DI pattern
             services.AddSingleton<ViewModels.Properties.RenderSettingsViewModel>(); // Week 9 Task 2: Deep zoom toggle
+            services.AddTransient<AnimationViewModel>(); // Phase 1: Animation control
 
             return services.BuildServiceProvider();
         }
