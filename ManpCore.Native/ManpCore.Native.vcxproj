@@ -106,6 +106,7 @@
     <ClCompile Include="ComplexFunctionsFamily.cpp" />
     <ClCompile Include="DistanceEstimatorFamily.cpp" />
     <ClCompile Include="ExoticFormulasFamily.cpp" />
+    <ClCompile Include="ExponentialLogarithmicFamily.cpp" />
     <ClCompile Include="HybridFamily.cpp" />
     <ClCompile Include="IFSFamily.cpp" />
     <ClCompile Include="JuliaVariantsFamily.cpp" />
@@ -113,6 +114,7 @@
     <ClCompile Include="MandelVariantsFamily.cpp" />
     <ClCompile Include="OrbitalFractalsFamily.cpp" />
     <ClCompile Include="PerturbationStubs.cpp" />
+    <ClCompile Include="PolynomialFamily.cpp" />
     <ClCompile Include="PolynomialVariantsFamily.cpp" />
     <ClCompile Include="SpecialExoticFamily.cpp" />
     <ClCompile Include="Attractors3DFamily.cpp" />
@@ -125,7 +127,7 @@
     <ClCompile Include="FractalRegistryWrapper.cpp" />
     <ClCompile Include="MandelbrotFamily.cpp" />
     <ClCompile Include="PhoenixFamily.cpp" />
-    <ClCompile Include="StrangeAttractorsExtendedFamily.cpp" />`n    <ClCompile Include="PolynomialFamily.cpp" />`n    <ClCompile Include="ExponentialLogarithmicFamily.cpp" />
+    <ClCompile Include="StrangeAttractorsExtendedFamily.cpp" />
     <ClCompile Include="TricornFamily.cpp" />
     <ClCompile Include="MultibrotFamily.cpp" />
     <ClCompile Include="NewtonFamily.cpp" />

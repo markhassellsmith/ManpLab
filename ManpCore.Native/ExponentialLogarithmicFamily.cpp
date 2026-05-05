@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "FractalRegistry.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
@@ -7,7 +6,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-namespace ManpCore::Native
+namespace Native
 {
     void RegisterExponentialLogarithmicFamily()
     {
@@ -23,7 +22,8 @@ namespace ManpCore::Native
             spec.name = "Exponential";
             spec.displayName = "Exponential Mandelbrot";
             spec.category = "Exponential Fractals";
-            spec.description = "Uses exponential function in iteration: z(n+1) = exp(z(n)) + c. Creates spiraling patterns with period-based structure. The exponential function causes rapid growth, creating distinctive layered spiral arms.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Uses exponential function in iteration: z(n+1) = exp(z(n)) + c. Creates spiraling patterns with period-based structure.";
             spec.formula = "z(n+1) = exp(z(n)) + c";
             spec.formulaLatex = R"(z_{n+1} = e^{z_n} + c)";
             spec.supportsJulia = true;
@@ -36,42 +36,30 @@ namespace ManpCore::Native
             spec.defaultCenterX = -0.5;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 0.15;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 100.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
                     // exp(z) = exp(x+iy) = exp(x) * (cos(y) + i*sin(y))
                     double expX = std::exp(z.real);
-                    z.real = expX * std::cos(z.imag) + c.real;
-                    z.imag = expX * std::sin(z.imag) + c.imag;
+                    z.real = expX * std::cos(z.imag) + constant.real;
+                    z.imag = expX * std::sin(z.imag) + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 100.0)  // Higher bailout for exponential
+                    if (mag2 > 100.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(i);
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -85,7 +73,8 @@ namespace ManpCore::Native
             spec.name = "Logarithmic";
             spec.displayName = "Logarithmic Mandelbrot";
             spec.category = "Exponential Fractals";
-            spec.description = "Uses logarithmic function in iteration: z(n+1) = log(z(n)) + c. The natural logarithm creates branch-cut discontinuities along the negative real axis, resulting in unusual fractal structures.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Uses logarithmic function in iteration: z(n+1) = log(z(n)) + c. Creates branch-cut discontinuities along the negative real axis.";
             spec.formula = "z(n+1) = log(z(n)) + c";
             spec.formulaLatex = R"(z_{n+1} = \ln(z_n) + c)";
             spec.supportsJulia = true;
@@ -98,55 +87,39 @@ namespace ManpCore::Native
             spec.defaultCenterX = 1.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 0.5;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 100.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.1, 0.1);  // Start away from zero
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.1, 0.1);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
                     double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
 
-                    if (mag < 1e-10)  // Avoid log(0)
+                    if (mag < 1e-10)
                     {
-                        result.iterations = maxIter;
-                        result.finalMagnitude = 0.0;
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(maxIter);
                     }
 
                     // log(z) = log|z| + i*arg(z)
                     double logMag = std::log(mag);
                     double arg = std::atan2(z.imag, z.real);
 
-                    z.real = logMag + c.real;
-                    z.imag = arg + c.imag;
+                    z.real = logMag + constant.real;
+                    z.imag = arg + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
                     if (mag2 > 100.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(i);
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -160,6 +133,7 @@ namespace ManpCore::Native
             spec.name = "ExpSquare";
             spec.displayName = "Exponential Square";
             spec.category = "Exponential Fractals";
+            spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Combines squaring and exponential: z(n+1) = exp(z²) + c. Creates hybrid structures combining polynomial and exponential characteristics.";
             spec.formula = "z(n+1) = exp(z²) + c";
             spec.formulaLatex = R"(z_{n+1} = e^{z_n^2} + c)";
@@ -173,16 +147,13 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 0.3;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 100.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -194,27 +165,18 @@ namespace ManpCore::Native
 
                     // Then exp(z²)
                     double expX = std::exp(zSquaredReal);
-                    z.real = expX * std::cos(zSquaredImag) + c.real;
-                    z.imag = expX * std::sin(zSquaredImag) + c.imag;
+                    z.real = expX * std::cos(zSquaredImag) + constant.real;
+                    z.imag = expX * std::sin(zSquaredImag) + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
                     if (mag2 > 100.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(i);
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -228,7 +190,8 @@ namespace ManpCore::Native
             spec.name = "PowerTower";
             spec.displayName = "Power Tower (z^z)";
             spec.category = "Exponential Fractals";
-            spec.description = "Uses self-exponentiation: z(n+1) = z^z + c. The power tower operation z^z = exp(z*log(z)) creates highly intricate and chaotic structures.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Uses self-exponentiation: z(n+1) = z^z + c. The power tower operation z^z = exp(z*log(z)) creates highly intricate structures.";
             spec.formula = "z(n+1) = z^z + c";
             spec.formulaLatex = R"(z_{n+1} = z_n^{z_n} + c)";
             spec.supportsJulia = true;
@@ -241,32 +204,24 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 1.0;
-            spec.defaultMaxIterations = 128;
+            spec.defaultBailout = 100.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.5, 0.5);  // Start away from zero
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
                     double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
 
-                    if (mag < 1e-10)  // Avoid log(0)
+                    if (mag < 1e-10)
                     {
-                        result.iterations = maxIter;
-                        result.finalMagnitude = 0.0;
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(maxIter);
                     }
 
                     // z^z = exp(z * log(z))
-                    // First compute log(z)
                     double logMag = std::log(mag);
                     double arg = std::atan2(z.imag, z.real);
                     double logReal = logMag;
@@ -278,27 +233,18 @@ namespace ManpCore::Native
 
                     // Exponentiate: exp(z * log(z))
                     double expX = std::exp(productReal);
-                    z.real = expX * std::cos(productImag) + c.real;
-                    z.imag = expX * std::sin(productImag) + c.imag;
+                    z.real = expX * std::cos(productImag) + constant.real;
+                    z.imag = expX * std::sin(productImag) + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
                     if (mag2 > 100.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(i);
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -312,12 +258,13 @@ namespace ManpCore::Native
             spec.name = "ComplexPower";
             spec.displayName = "Complex Power";
             spec.category = "Exponential Fractals";
-            spec.description = "Raises z to the power c: z(n+1) = z^c + c. Since c is complex, this creates fractal patterns that vary dramatically with the parameter c.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Raises z to the power c: z(n+1) = z^c + c. Creates fractal patterns that vary dramatically with the parameter c.";
             spec.formula = "z(n+1) = z^c + c";
             spec.formulaLatex = R"(z_{n+1} = z_n^c + c)";
             spec.supportsJulia = true;
 
-            spec.visualCharacteristics = "Varies greatly with parameter c, can show polynomial or exponential behavior depending on c";
+            spec.visualCharacteristics = "Varies greatly with parameter c, can show polynomial or exponential behavior";
             spec.discoveredBy = "Fractal community exploration";
             spec.discoveryYear = 1990;
             spec.computationalNotes = "z^c = exp(c*ln(z)); parameter-dependent structure";
@@ -325,16 +272,13 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 1.0;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 100.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.5, 0.5);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -342,11 +286,7 @@ namespace ManpCore::Native
 
                     if (mag < 1e-10)
                     {
-                        result.iterations = maxIter;
-                        result.finalMagnitude = 0.0;
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(maxIter);
                     }
 
                     // z^c = exp(c * log(z))
@@ -354,32 +294,23 @@ namespace ManpCore::Native
                     double arg = std::atan2(z.imag, z.real);
 
                     // c * log(z)
-                    double productReal = c.real * logMag - c.imag * arg;
-                    double productImag = c.real * arg + c.imag * logMag;
+                    double productReal = constant.real * logMag - constant.imag * arg;
+                    double productImag = constant.real * arg + constant.imag * logMag;
 
                     // exp(c * log(z))
                     double expX = std::exp(productReal);
-                    z.real = expX * std::cos(productImag) + c.real;
-                    z.imag = expX * std::sin(productImag) + c.imag;
+                    z.real = expX * std::cos(productImag) + constant.real;
+                    z.imag = expX * std::sin(productImag) + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
                     if (mag2 > 100.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(i);
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -393,7 +324,8 @@ namespace ManpCore::Native
             spec.name = "ExponentialJulia";
             spec.displayName = "Exponential Julia";
             spec.category = "Exponential Fractals";
-            spec.description = "Hybrid formula: z(n+1) = c*exp(z) + z. Combines exponential growth with linear feedback, creating spiral structures with attracting/repelling dynamics.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Hybrid formula: z(n+1) = c*exp(z) + z. Combines exponential growth with linear feedback.";
             spec.formula = "z(n+1) = c*exp(z) + z";
             spec.formulaLatex = R"(z_{n+1} = c \cdot e^{z_n} + z_n)";
             spec.supportsJulia = true;
@@ -406,16 +338,13 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 0.5;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 100.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -425,8 +354,8 @@ namespace ManpCore::Native
                     double expImag = expX * std::sin(z.imag);
 
                     // c * exp(z) + z
-                    double newReal = c.real * expReal - c.imag * expImag + z.real;
-                    double newImag = c.real * expImag + c.imag * expReal + z.imag;
+                    double newReal = constant.real * expReal - constant.imag * expImag + z.real;
+                    double newImag = constant.real * expImag + constant.imag * expReal + z.imag;
 
                     z.real = newReal;
                     z.imag = newImag;
@@ -435,20 +364,11 @@ namespace ManpCore::Native
 
                     if (mag2 > 100.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        return static_cast<double>(i);
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);

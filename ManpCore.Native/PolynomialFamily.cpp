@@ -1,9 +1,8 @@
-#include "pch.h"
 #include "FractalRegistry.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
-namespace ManpCore::Native
+namespace Native
 {
     void RegisterPolynomialFamily()
     {
@@ -19,12 +18,13 @@ namespace ManpCore::Native
             spec.name = "Multibrot-3";
             spec.displayName = "Multibrot-3 (Cubic)";
             spec.category = "Polynomial Fractals";
-            spec.description = "Third-order polynomial fractal using z³+c iteration. Features three-fold rotational symmetry and produces distinctive triple-spiral arms. The main body is more triangular than the classic Mandelbrot set.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Third-order polynomial fractal using z³+c iteration. Features three-fold rotational symmetry and produces distinctive triple-spiral arms.";
             spec.formula = "z(n+1) = z(n)³ + c";
             spec.formulaLatex = R"(z_{n+1} = z_n^3 + c)";
             spec.supportsJulia = true;
 
-            spec.visualCharacteristics = "Triangular main body with three major spiral arms, three-fold rotational symmetry, sharper cusps than Mandelbrot set";
+            spec.visualCharacteristics = "Triangular main body with three major spiral arms, three-fold rotational symmetry";
             spec.discoveredBy = "Derived from Mandelbrot's work";
             spec.discoveryYear = 1980;
             spec.computationalNotes = "Slightly slower than quadratic due to cubic multiplication";
@@ -32,47 +32,36 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 0.8;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
-                    // z³ = (x + iy)³ = x³ + 3x²(iy) + 3x(iy)² + (iy)³
-                    //    = x³ - 3xy² + i(3x²y - y³)
+                    // z³ = x³ - 3xy² + i(3x²y - y³)
                     double x = z.real;
                     double y = z.imag;
                     double x2 = x * x;
                     double y2 = y * y;
 
-                    z.real = x * x2 - 3.0 * x * y2 + c.real;
-                    z.imag = 3.0 * x2 * y - y * y2 + c.imag;
+                    z.real = x * x2 - 3.0 * x * y2 + constant.real;
+                    z.imag = 3.0 * x2 * y - y * y2 + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 4.0)
+                    if (mag2 > 256.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -86,29 +75,27 @@ namespace ManpCore::Native
             spec.name = "Multibrot-4";
             spec.displayName = "Multibrot-4 (Quartic)";
             spec.category = "Polynomial Fractals";
-            spec.description = "Fourth-order polynomial fractal using z⁴+c iteration. Exhibits four-fold rotational symmetry with square-like main body and four major spiral arms.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Fourth-order polynomial fractal using z⁴+c iteration. Exhibits four-fold rotational symmetry with square-like main body.";
             spec.formula = "z(n+1) = z(n)⁴ + c";
             spec.formulaLatex = R"(z_{n+1} = z_n^4 + c)";
             spec.supportsJulia = true;
 
-            spec.visualCharacteristics = "Square main body, four-fold rotational symmetry, four spiral arms arranged in cross pattern";
+            spec.visualCharacteristics = "Square main body, four-fold rotational symmetry, four spiral arms in cross pattern";
             spec.discoveredBy = "Derived from Mandelbrot's work";
             spec.discoveryYear = 1980;
-            spec.computationalNotes = "Requires quartic calculation per iteration";
+            spec.computationalNotes = "Computed efficiently as (z²)²";
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 1.0;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = true;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -116,32 +103,23 @@ namespace ManpCore::Native
                     double x = z.real;
                     double y = z.imag;
 
-                    // First compute z²
                     double x2 = x * x - y * y;
                     double y2 = 2.0 * x * y;
 
-                    // Then square again for z⁴
-                    z.real = x2 * x2 - y2 * y2 + c.real;
-                    z.imag = 2.0 * x2 * y2 + c.imag;
+                    z.real = x2 * x2 - y2 * y2 + constant.real;
+                    z.imag = 2.0 * x2 * y2 + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 4.0)
+                    if (mag2 > 256.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -155,7 +133,8 @@ namespace ManpCore::Native
             spec.name = "Multibrot-5";
             spec.displayName = "Multibrot-5 (Quintic)";
             spec.category = "Polynomial Fractals";
-            spec.description = "Fifth-order polynomial fractal using z⁵+c iteration. Shows five-fold rotational symmetry with pentagonal structure and five major spiral arms.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Fifth-order polynomial fractal using z⁵+c iteration. Shows five-fold rotational symmetry with pentagonal structure.";
             spec.formula = "z(n+1) = z(n)⁵ + c";
             spec.formulaLatex = R"(z_{n+1} = z_n^5 + c)";
             spec.supportsJulia = true;
@@ -163,58 +142,45 @@ namespace ManpCore::Native
             spec.visualCharacteristics = "Pentagonal main body, five-fold rotational symmetry, five evenly-spaced spiral arms";
             spec.discoveredBy = "Derived from Mandelbrot's work";
             spec.discoveryYear = 1980;
-            spec.computationalNotes = "Computationally intensive due to quintic power";
+            spec.computationalNotes = "Computed as z⁴ * z";
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 1.2;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
-                    // z⁵ = z⁴ * z = (z²)² * z
+                    // z⁵ = z⁴ * z
                     double x = z.real;
                     double y = z.imag;
 
-                    // Compute z²
                     double x2 = x * x - y * y;
                     double y2 = 2.0 * x * y;
 
-                    // Compute z⁴ = (z²)²
                     double x4 = x2 * x2 - y2 * y2;
                     double y4 = 2.0 * x2 * y2;
 
-                    // Compute z⁵ = z⁴ * z
-                    z.real = x4 * x - y4 * y + c.real;
-                    z.imag = x4 * y + y4 * x + c.imag;
+                    z.real = x4 * x - y4 * y + constant.real;
+                    z.imag = x4 * y + y4 * x + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 4.0)
+                    if (mag2 > 256.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -228,29 +194,27 @@ namespace ManpCore::Native
             spec.name = "Multibrot-6";
             spec.displayName = "Multibrot-6 (Sextic)";
             spec.category = "Polynomial Fractals";
-            spec.description = "Sixth-order polynomial fractal using z⁶+c iteration. Features six-fold rotational symmetry with hexagonal main structure and six spiral arms.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Sixth-order polynomial fractal using z⁶+c iteration. Features six-fold rotational symmetry with hexagonal main structure.";
             spec.formula = "z(n+1) = z(n)⁶ + c";
             spec.formulaLatex = R"(z_{n+1} = z_n^6 + c)";
             spec.supportsJulia = true;
 
-            spec.visualCharacteristics = "Hexagonal main body, six-fold rotational symmetry, snowflake-like patterns in detail areas";
+            spec.visualCharacteristics = "Hexagonal main body, six-fold rotational symmetry, snowflake-like patterns";
             spec.discoveredBy = "Derived from Mandelbrot's work";
             spec.discoveryYear = 1980;
-            spec.computationalNotes = "Can be computed efficiently as (z³)²";
+            spec.computationalNotes = "Computed efficiently as (z³)²";
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 1.3;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = true;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -260,32 +224,23 @@ namespace ManpCore::Native
                     double x2 = x * x;
                     double y2 = y * y;
 
-                    // Compute z³
                     double x3 = x * x2 - 3.0 * x * y2;
                     double y3 = 3.0 * x2 * y - y * y2;
 
-                    // Square z³ to get z⁶
-                    z.real = x3 * x3 - y3 * y3 + c.real;
-                    z.imag = 2.0 * x3 * y3 + c.imag;
+                    z.real = x3 * x3 - y3 * y3 + constant.real;
+                    z.imag = 2.0 * x3 * y3 + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 4.0)
+                    if (mag2 > 256.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -299,7 +254,8 @@ namespace ManpCore::Native
             spec.name = "Multibrot-8";
             spec.displayName = "Multibrot-8 (Octic)";
             spec.category = "Polynomial Fractals";
-            spec.description = "Eighth-order polynomial fractal using z⁸+c iteration. Exhibits eight-fold rotational symmetry with octagonal structure and eight symmetrically arranged spiral arms.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Eighth-order polynomial fractal using z⁸+c iteration. Exhibits eight-fold rotational symmetry with octagonal structure.";
             spec.formula = "z(n+1) = z(n)⁸ + c";
             spec.formulaLatex = R"(z_{n+1} = z_n^8 + c)";
             spec.supportsJulia = true;
@@ -312,16 +268,13 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 1.4;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = true;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -329,36 +282,26 @@ namespace ManpCore::Native
                     double x = z.real;
                     double y = z.imag;
 
-                    // Compute z²
                     double x2 = x * x - y * y;
                     double y2 = 2.0 * x * y;
 
-                    // Compute z⁴ = (z²)²
                     double x4 = x2 * x2 - y2 * y2;
                     double y4 = 2.0 * x2 * y2;
 
-                    // Compute z⁸ = (z⁴)²
-                    z.real = x4 * x4 - y4 * y4 + c.real;
-                    z.imag = 2.0 * x4 * y4 + c.imag;
+                    z.real = x4 * x4 - y4 * y4 + constant.real;
+                    z.imag = 2.0 * x4 * y4 + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 4.0)
+                    if (mag2 > 256.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -372,12 +315,13 @@ namespace ManpCore::Native
             spec.name = "Multibrot-10";
             spec.displayName = "Multibrot-10 (Decic)";
             spec.category = "Polynomial Fractals";
-            spec.description = "Tenth-order polynomial fractal using z¹⁰+c iteration. Shows ten-fold rotational symmetry with decagonal structure and ten evenly-spaced spiral arms.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Tenth-order polynomial fractal using z¹⁰+c iteration. Shows ten-fold rotational symmetry with decagonal structure.";
             spec.formula = "z(n+1) = z(n)¹⁰ + c";
             spec.formulaLatex = R"(z_{n+1} = z_n^{10} + c)";
             spec.supportsJulia = true;
 
-            spec.visualCharacteristics = "Decagonal main body, ten-fold rotational symmetry, nearly circular appearance with fine detail";
+            spec.visualCharacteristics = "Decagonal main body, ten-fold rotational symmetry, nearly circular appearance";
             spec.discoveredBy = "Derived from Mandelbrot's work";
             spec.discoveryYear = 1980;
             spec.computationalNotes = "Computed as (z⁵)² for efficiency";
@@ -385,16 +329,13 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 1.5;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = true;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -402,40 +343,29 @@ namespace ManpCore::Native
                     double x = z.real;
                     double y = z.imag;
 
-                    // Compute z² first
                     double x2 = x * x - y * y;
                     double y2 = 2.0 * x * y;
 
-                    // Compute z⁴
                     double x4 = x2 * x2 - y2 * y2;
                     double y4 = 2.0 * x2 * y2;
 
-                    // Compute z⁵ = z⁴ * z
                     double x5 = x4 * x - y4 * y;
                     double y5 = x4 * y + y4 * x;
 
-                    // Square z⁵ to get z¹⁰
-                    z.real = x5 * x5 - y5 * y5 + c.real;
-                    z.imag = 2.0 * x5 * y5 + c.imag;
+                    z.real = x5 * x5 - y5 * y5 + constant.real;
+                    z.imag = 2.0 * x5 * y5 + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 4.0)
+                    if (mag2 > 256.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -446,15 +376,16 @@ namespace ManpCore::Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "Tricorn";
-            spec.displayName = "Tricorn (Mandelbar)";
+            spec.name = "Tricorn-Poly";
+            spec.displayName = "Tricorn (Polynomial)";
             spec.category = "Polynomial Fractals";
-            spec.description = "Uses conjugate iteration z̄²+c instead of z²+c. Breaks rotational symmetry but preserves reflection symmetry across the real axis. Features distinctive three-pointed structure.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Uses conjugate iteration z̄²+c instead of z²+c. Features distinctive three-pointed structure with reflection symmetry.";
             spec.formula = "z(n+1) = conjugate(z(n))² + c";
             spec.formulaLatex = R"(z_{n+1} = \overline{z_n}^2 + c)";
             spec.supportsJulia = true;
 
-            spec.visualCharacteristics = "Three prominent spikes, reflection symmetry only, lacks rotational symmetry of Mandelbrot set";
+            spec.visualCharacteristics = "Three prominent spikes, reflection symmetry only, lacks rotational symmetry";
             spec.discoveredBy = "W. D. Crowe, R. Hasson, P. J. Rippon, P. E. D. Strain-Clark";
             spec.discoveryYear = 1989;
             spec.computationalNotes = "Uses complex conjugate before squaring";
@@ -462,44 +393,34 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 0.6;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = false;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
                     // Conjugate: z̄ = x - iy, then square
                     double x = z.real;
-                    double y = -z.imag;  // Conjugate
+                    double y = -z.imag;
 
-                    z.real = x * x - y * y + c.real;
-                    z.imag = 2.0 * x * y + c.imag;
+                    z.real = x * x - y * y + constant.real;
+                    z.imag = 2.0 * x * y + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 4.0)
+                    if (mag2 > 256.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
@@ -513,7 +434,8 @@ namespace ManpCore::Native
             spec.name = "Buffalo";
             spec.displayName = "Buffalo Fractal";
             spec.category = "Polynomial Fractals";
-            spec.description = "Variant using |Re(z)| + i*|Im(z)| before squaring. Creates distinctive buffalo-head shape with bilateral symmetry across both axes.";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Variant using |Re(z)| + i*|Im(z)| before squaring. Creates distinctive buffalo-head shape with bilateral symmetry.";
             spec.formula = "z(n+1) = (|Re(z)| + i*|Im(z)|)² + c";
             spec.formulaLatex = R"(z_{n+1} = (|x_n| + i|y_n|)^2 + c)";
             spec.supportsJulia = true;
@@ -526,16 +448,13 @@ namespace ManpCore::Native
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
             spec.defaultZoom = 0.7;
-            spec.defaultMaxIterations = 256;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = true;
 
-            spec.calculator = [](double cx, double cy, int maxIter, IterationMode mode, double juliaReal, double juliaImag) -> IterationResult
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                IterationResult result{};
-                result.escaped = false;
-                result.finalMagnitude = 0.0;
-
-                ComplexD z = (mode == IterationMode::Julia) ? ComplexD(cx, cy) : ComplexD(0.0, 0.0);
-                ComplexD c = (mode == IterationMode::Julia) ? ComplexD(juliaReal, juliaImag) : ComplexD(cx, cy);
+                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -543,27 +462,20 @@ namespace ManpCore::Native
                     double x = std::abs(z.real);
                     double y = std::abs(z.imag);
 
-                    z.real = x * x - y * y + c.real;
-                    z.imag = 2.0 * x * y + c.imag;
+                    z.real = x * x - y * y + constant.real;
+                    z.imag = 2.0 * x * y + constant.imag;
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag2 > 4.0)
+                    if (mag2 > 256.0)
                     {
-                        result.escaped = true;
-                        result.iterations = i;
-                        result.finalMagnitude = std::sqrt(mag2);
-                        result.finalReal = z.real;
-                        result.finalImag = z.imag;
-                        return result;
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
                     }
                 }
 
-                result.iterations = maxIter;
-                result.finalMagnitude = std::sqrt(z.real * z.real + z.imag * z.imag);
-                result.finalReal = z.real;
-                result.finalImag = z.imag;
-                return result;
+                return static_cast<double>(maxIter);
             };
 
             FractalRegistry::Register(spec);
