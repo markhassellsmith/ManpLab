@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -119,6 +119,7 @@
     <ClCompile Include="PolynomialVariantsFamily.cpp" />
     <ClCompile Include="RationalFunctionFamily.cpp" />
     <ClCompile Include="SpecialExoticFamily.cpp" />
+    <ClCompile Include="SpecialFunctionFamily.cpp" />
     <ClCompile Include="Attractors3DFamily.cpp" />
     <ClCompile Include="ClassicEscapeTimeFamily.cpp" />
     <ClCompile Include="FractalEngineWrapper.cpp" />
