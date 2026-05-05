@@ -104,6 +104,7 @@
     <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="BarnsleyFamily.cpp" />
     <ClCompile Include="ComplexFunctionsFamily.cpp" />
+    <ClCompile Include="DistanceEstimatorFamily.cpp" />
     <ClCompile Include="HybridFamily.cpp" />
     <ClCompile Include="IFSFamily.cpp" />
     <ClCompile Include="LambdaExtendedFamily.cpp" />

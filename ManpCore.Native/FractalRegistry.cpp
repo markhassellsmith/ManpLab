@@ -165,6 +165,7 @@ extern void RegisterMandelVariantsFamily();     // Mandelbrot variants: Mandel4,
 extern void RegisterComplexFunctionsFamily();   // Complex function combinations: SqrTrig, TrigSqr, TrigPlusTrig, etc.
 extern void RegisterBifurcationFamily();        // Bifurcation diagrams and parameter space
 extern void RegisterIFSFamily();                // Iterated Function Systems: Barnsley fern, Sierpinski, Dragon curve, etc.
+extern void RegisterDistanceEstimatorFamily();  // Distance estimator variants for smooth boundaries
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -196,7 +197,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterComplexFunctionsFamily();   // Complex function combinations: SqrTrig, TrigSqr, etc. = 8
     RegisterBifurcationFamily();        // Bifurcation diagrams and parameter space = 6
     RegisterIFSFamily();                // Iterated Function Systems = 5
-    // Total: 142 fractals
+    RegisterDistanceEstimatorFamily();  // Distance estimator variants = 4
+    // Total: 146 fractals
 
     s_initialized = true;
 }
