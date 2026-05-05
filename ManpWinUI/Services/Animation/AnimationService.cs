@@ -1,8 +1,10 @@
 using ManpWinUI.Models.Animation;
+using ManpWinUI.Services.Animation.Export;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,13 +17,16 @@ namespace ManpWinUI.Services.Animation;
 public class AnimationService
 {
     private readonly AnimationRenderer _renderer;
+    private readonly IEnumerable<IAnimationExporter> _exporters;
     private readonly ILogger<AnimationService> _logger;
 
     public AnimationService(
         AnimationRenderer renderer,
+        IEnumerable<IAnimationExporter> exporters,
         ILogger<AnimationService> logger)
     {
         _renderer = renderer;
+        _exporters = exporters;
         _logger = logger;
     }
 
@@ -43,33 +48,41 @@ public class AnimationService
             settings.FrameCount,
             settings.ExportFormat);
 
+        List<WriteableBitmap>? frames = null;
+
         try
         {
             // Phase 1: Render frames
             _logger.LogInformation("Phase 1: Rendering {FrameCount} frames...", settings.FrameCount);
 
-            var frames = await _renderer.RenderFramesAsync(
+            frames = await _renderer.RenderFramesAsync(
                 settings,
                 progress,
                 cancellationToken);
 
             _logger.LogInformation("Rendering complete. {FrameCount} frames ready for export.", frames.Count);
 
-            // Phase 2: Export (will be implemented in Task 1.3)
-            progress?.Report(new AnimationProgress
+            // Phase 2: Export
+            _logger.LogInformation("Phase 2: Exporting to {Format}...", settings.ExportFormat);
+
+            var exporter = _exporters.FirstOrDefault(e => e.SupportedFormat == settings.ExportFormat);
+
+            if (exporter == null)
             {
-                CurrentFrame = frames.Count,
-                TotalFrames = frames.Count,
-                Phase = "Export Ready",
-                StatusMessage = $"Rendered {frames.Count} frames. Export functionality coming in Task 1.3."
-            });
+                throw new NotSupportedException(
+                    $"No exporter found for format: {settings.ExportFormat}. " +
+                    $"Available formats: {string.Join(", ", _exporters.Select(e => e.SupportedFormat))}");
+            }
 
-            _logger.LogInformation(
-                "Animation creation complete. Frames stored in memory (export pending Task 1.3).");
+            var outputPath = await exporter.ExportAsync(
+                frames,
+                settings,
+                progress,
+                cancellationToken);
 
-            // TODO: Task 1.3 will add export functionality here
+            _logger.LogInformation("Animation creation complete: {OutputPath}", outputPath);
 
-            return settings.OutputPath; // Return intended output path
+            return outputPath;
         }
         catch (OperationCanceledException)
         {
@@ -80,6 +93,14 @@ public class AnimationService
         {
             _logger.LogError(ex, "Failed to create animation");
             throw;
+        }
+        finally
+        {
+            // Cleanup frames from memory
+            if (frames != null)
+            {
+                _renderer.DisposeFrames(frames);
+            }
         }
     }
 
