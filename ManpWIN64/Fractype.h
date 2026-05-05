@@ -283,6 +283,34 @@
 #define TOWER			243
 #define NUMFRACTAL		244	// dedicated to an 11 year old girl who "discovered" it
 #define HAILSTONE		245	// 2D Hailstone sequence visualization with cycle detection
+// New fractal types - polynomial fractals (Multibrot sets)
+#define MULTIBROT3		246	// z^3 + c Mandelbrot variant
+#define MULTIBROT4		247	// z^4 + c Mandelbrot variant
+#define MULTIBROT5		248	// z^5 + c Mandelbrot variant
+#define MULTIBROT6		249	// z^6 + c Mandelbrot variant
+// Exponential/Logarithmic fractals
+#define EXPFRACTAL2		250	// exp(z) + c
+#define LOGFRACTAL		251	// log(z) + c
+#define EXPLOGFRACTAL		252	// exp(log(z)) + c
+// Transcendental fractals
+#define SINFRACTAL2		253	// sin(z) + c
+#define COSFRACTAL		254	// cos(z) + c
+#define TANFRACTAL		255	// tan(z) + c
+#define SINHFRACTAL		256	// sinh(z) + c
+#define COSHFRACTAL		257	// cosh(z) + c
+#define TANHFRACTAL		258	// tanh(z) + c
+// Rational function fractals
+#define RATIONALFRACTAL1	259	// (z^2 + c) / (z^2 - c)
+#define RATIONALFRACTAL2	260	// (z^3 + c) / (z + c)
+// Historical fractals
+#define CELTIC			261	// Celtic Mandelbrot
+#define MANDELBARCELTIC		262	// Mandelbar Celtic
+#define PERPCELTIC		263	// Perpendicular Celtic
+#define CUBICFLYINGSQUIRREL	264	// Cubic Flying Squirrel
+// More Julia variants
+#define MULTIBROT3JULIA		265	// Julia set for z^3
+#define MULTIBROT4JULIA		266	// Julia set for z^4
+#define MULTIBROT5JULIA		267	// Julia set for z^5
 //#define CELTIC			235
 //#define MANDELBARCELTIC		236
 //#define PERPCELTIC		237
