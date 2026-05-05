@@ -232,10 +232,100 @@ RenderSettingsViewModel = viewModel.RenderSettingsViewModel; // ✅ CORRECT - Us
 
 ---
 
+### Week 11 - Hailstone Visualization Separation
+
+#### Issue #3: Verify 2-D Hailstone Trajectory Visualization Correctness
+**Discovered**: Week 11 - During separation of Hailstone modes  
+**Files**:
+  - `ManpWinUI/Services/HailstoneRenderService.cs`
+  - `ManpWinUI/ViewModels/MainViewModel.Hailstone.cs`
+  - `ManpWinUI/Views/MainPage.cs`
+  - `ManpCore.Native/SpecialExoticFamily.cpp`
+**Severity**: Medium - Visual correctness needs verification  
+**Status**: ⚠️ **NEEDS TESTING**
+
+**Description**:
+The 2-D Hailstone trajectory visualization has been implemented and separated from the original Hailstone fractal. Both are now available in the browser, but the trajectory rendering needs debugging to verify correctness.
+
+**What Needs Testing**:
+- [ ] Verify trajectory path rendering is correct for the Collatz sequence
+- [ ] Confirm point markers appear at correct coordinates
+- [ ] Check axis labels and scaling
+- [ ] Test coordinate labels on trajectory points
+- [ ] Validate viewport bounds calculation
+- [ ] Test zoom and pan interactions in trajectory mode
+- [ ] Verify different starting values (X, Y) produce expected paths
+- [ ] Check MaxIterations parameter behavior
+
+**Technical Details**:
+- Registry name: `Hailstone2D`
+- Display name: `2-D Hailstone Trajectory`
+- Renderer: `HailstoneRenderService`
+- Mode flag: `UseHailstoneTrajectoryMode`
+- Selection path: Browser → Special category → 2-D Hailstone Trajectory
+
+**Expected Behavior**:
+- Black background
+- Coordinate axes with labels
+- Trajectory path connecting sequence points
+- Point markers at each iteration
+- Optional labels showing coordinates
+
+**Impact**:
+- Visual correctness of custom Hailstone visualization
+- User-requested feature needs validation
+
+**Recommended Action**:
+Test with various starting values and verify against known Collatz sequence trajectories.
+
+---
+
+#### Issue #4: Audit Properties Panel Tabs for Setting Duplication and Clarity
+**Discovered**: Week 11 - User request for UI clarity review  
+**Files**:
+  - `ManpWinUI/Views/Properties/ParametersView.xaml`
+  - `ManpWinUI/Views/Properties/RenderView.xaml`
+  - `ManpWinUI/ViewModels/MainViewModel.cs`
+**Severity**: Medium - UX clarity and potential redundancy  
+**Status**: ⚠️ **NEEDS AUDIT**
+
+**Description**:
+The Properties panel contains two tabs (Parameters and Render) with various settings. Need to audit all settings on both tabs to:
+1. Determine the meaning and purpose of each setting
+2. Confirm the actual effect of each setting on rendering behavior
+3. Identify any duplication or overlap between the two tabs
+4. Assess whether the current organization is logical and intuitive
+
+**What Needs Review**:
+- [ ] Document the purpose of each setting on the Parameters tab
+- [ ] Document the purpose of each setting on the Render tab
+- [ ] Test each setting to confirm it has the expected effect
+- [ ] Identify any duplicated functionality between tabs
+- [ ] Determine if settings are organized logically
+- [ ] Consider whether some settings should be moved or consolidated
+- [ ] Add tooltips or help text where meaning is unclear
+
+**Expected Outcome**:
+- Clear documentation of what each setting does
+- No duplicated settings between tabs
+- Logical grouping of related settings
+- Clear tab organization (e.g., "Parameters" = fractal math, "Render" = visual/performance)
+
+**Impact**:
+- User confusion about which settings to use
+- Potential redundancy in UI
+- Discoverability of features
+
+**Recommended Action**:
+Perform systematic audit of both tabs, test each setting, document findings, and propose consolidation/reorganization if needed.
+
+---
+
 ## 📊 Issue Tracking Statistics
 
-### Total Issues: 3
+### Total Issues: 5
 - ❌ Open High Priority: 1 (Deep Zoom Integration)
+- ⚠️ Open Medium Priority: 2 (2-D Hailstone Verification, Properties Panel Audit)
 - ✅ Resolved: 2 (Render Button State, DI Container)
 
 ### Average Resolution Time:
@@ -245,5 +335,5 @@ RenderSettingsViewModel = viewModel.RenderSettingsViewModel; // ✅ CORRECT - Us
 
 ---
 
-**Last Updated**: January 2025 (Documentation Cleanup Session)  
-**Next Review**: After Phase 3.5 (Perturbation Integration) completion
+**Last Updated**: January 2025 (Week 11 - Hailstone Visualization Separation)  
+**Next Review**: After 2-D Hailstone testing and Phase 3.5 (Perturbation Integration) completion
