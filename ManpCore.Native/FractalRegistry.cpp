@@ -169,6 +169,7 @@ extern void RegisterDistanceEstimatorFamily();  // Distance estimator variants f
 extern void RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, Zubieta, etc.
 extern void RegisterOrbitalFractalsFamily();    // Orbit trap and modification techniques
 extern void RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc.
+extern void RegisterTrigonometricExtendedFamily(); // Extended trig functions: tan, cot, sec, csc, arcsin, arccos, arctan, tanh
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -204,7 +205,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, etc. = 8
     RegisterOrbitalFractalsFamily();    // Orbit trap and modification = 8
     RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc. = 8
-    // Total: 170 fractals
+    RegisterTrigonometricExtendedFamily(); // Extended trig functions = 8
+    // Total: 178 fractals
 
     s_initialized = true;
 }

@@ -128,6 +128,7 @@
     <ClCompile Include="MultibrotFamily.cpp" />
     <ClCompile Include="NewtonFamily.cpp" />
     <ClCompile Include="MagnetFamily.cpp" />
+    <ClCompile Include="TrigonometricExtendedFamily.cpp" />
     <ClCompile Include="TrigonometricFamily.cpp" />
     <ClCompile Include="ExponentialFamily.cpp" />
     <ClCompile Include="ExtendedJuliaFamily.cpp" />
