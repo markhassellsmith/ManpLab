@@ -42,6 +42,7 @@
             <converters:BoolNegationConverter x:Key="BoolNegationConverter"/>
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:InvertedNullToVisibilityConverter x:Key="InvertedNullToVisibilityConverter"/>
             <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
             <converters:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter"/>
             <converters:JuliaModeTextConverter x:Key="JuliaModeTextConverter"/>

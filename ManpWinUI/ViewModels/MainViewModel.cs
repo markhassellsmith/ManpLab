@@ -54,6 +54,59 @@ public partial class MainViewModel(
     private readonly ViewModels.Properties.RenderSettingsViewModel _renderSettingsViewModel = renderSettingsViewModel;
 
     // ═══════════════════════════════════════════════════════════════════════════════
+    // FRACTAL METADATA (INFO TAB)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Currently selected fractal information for display in the Info tab.
+    /// Populated when a fractal is selected from the browser.
+    /// </summary>
+    [ObservableProperty]
+    private ManpCore.Native.FractalInfo? selectedFractalInfo;
+
+    /// <summary>
+    /// User notes for the currently selected fractal.
+    /// Editable text that persists separately from native metadata.
+    /// </summary>
+    [ObservableProperty]
+    private string userNotes = string.Empty;
+
+    /// <summary>
+    /// Updates the selected fractal info when a fractal is selected from the browser.
+    /// </summary>
+    public void UpdateSelectedFractalInfo(string fractalName)
+    {
+        SelectedFractalInfo = ManpCore.Native.FractalRegistryWrapper.GetFractalInfo(fractalName);
+        UserNotes = _settingsService.GetFractalNotes(fractalName) ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Saves user notes for the currently selected fractal.
+    /// </summary>
+    [RelayCommand]
+    private void SaveUserNotes()
+    {
+        if (SelectedFractalInfo == null)
+            return;
+
+        _settingsService.SetFractalNotes(SelectedFractalInfo.Name, UserNotes);
+    }
+
+    /// <summary>
+    /// Clears user notes for the currently selected fractal.
+    /// </summary>
+    [RelayCommand]
+    private void ClearUserNotes()
+    {
+        UserNotes = string.Empty;
+
+        if (SelectedFractalInfo != null)
+        {
+            _settingsService.SetFractalNotes(SelectedFractalInfo.Name, null);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
     // INITIALIZATION
     // ═══════════════════════════════════════════════════════════════════════════════
 

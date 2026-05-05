@@ -847,18 +847,96 @@
                                     <SymbolIconSource Symbol="Help" />
                                 </TabViewItem.IconSource>
                                 <ScrollViewer Padding="16">
-                                    <StackPanel Spacing="12">
-                                        <TextBlock Text="Fractal Information"
+                                    <Grid>
+                                        <!-- Content when fractal is selected -->
+                                        <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.SelectedFractalInfo, Mode=OneWay, Converter={StaticResource InvertedNullToVisibilityConverter}}">
+                                            <!-- Header -->
+                                            <TextBlock Text="{x:Bind ViewModel.SelectedFractalInfo.DisplayName, Mode=OneWay, FallbackValue='Fractal Name'}"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="18" />
+
+                                            <TextBlock Text="{x:Bind ViewModel.SelectedFractalInfo.Category, Mode=OneWay, FallbackValue='Category'}"
+                                                       FontSize="12"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+                                            <MenuFlyoutSeparator />
+
+                                            <!-- Description -->
+                                            <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.SelectedFractalInfo.Description, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                <TextBlock Text="Description" FontWeight="SemiBold" FontSize="14" />
+                                                <TextBlock Text="{x:Bind ViewModel.SelectedFractalInfo.Description, Mode=OneWay}"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                            </StackPanel>
+
+                                            <!-- Formula -->
+                                            <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.SelectedFractalInfo.Formula, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                <TextBlock Text="Formula" FontWeight="SemiBold" FontSize="14" />
+                                                <Border BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="4"
+                                                        Padding="12"
+                                                        Background="{ThemeResource LayerFillColorAltBrush}">
+                                                    <TextBlock Text="{x:Bind ViewModel.SelectedFractalInfo.Formula, Mode=OneWay}"
+                                                               FontFamily="Consolas"
+                                                               TextWrapping="Wrap" />
+                                                </Border>
+                                            </StackPanel>
+
+                                            <!-- Visual Characteristics -->
+                                            <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.SelectedFractalInfo.VisualCharacteristics, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                <TextBlock Text="Visual Characteristics" FontWeight="SemiBold" FontSize="14" />
+                                                <TextBlock Text="{x:Bind ViewModel.SelectedFractalInfo.VisualCharacteristics, Mode=OneWay}"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                            </StackPanel>
+
+                                            <!-- Discovery Info -->
+                                            <StackPanel Spacing="4" Visibility="{x:Bind ViewModel.SelectedFractalInfo.DiscoveredBy, Mode=OneWay, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                <TextBlock Text="Discovery" FontWeight="SemiBold" FontSize="14" />
+                                                <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                                    <Run Text="Discovered by " />
+                                                    <Run Text="{x:Bind ViewModel.SelectedFractalInfo.DiscoveredBy, Mode=OneWay}" FontWeight="SemiBold" />
+                                                    <Run Text=" in " />
+                                                    <Run Text="{x:Bind ViewModel.SelectedFractalInfo.DiscoveryYear, Mode=OneWay}" FontWeight="SemiBold" />
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <MenuFlyoutSeparator />
+
+                                            <!-- User Notes Section -->
+                                            <StackPanel Spacing="8">
+                                                <TextBlock Text="Personal Notes" FontWeight="SemiBold" FontSize="14" />
+                                                <TextBox Text="{x:Bind ViewModel.UserNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                         PlaceholderText="Add your notes about this fractal..."
+                                                         TextWrapping="Wrap"
+                                                         AcceptsReturn="True"
+                                                         MinHeight="100"
+                                                         MaxHeight="200" />
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <Button Content="Save Notes"
+                                                            Command="{x:Bind ViewModel.SaveUserNotesCommand}"
+                                                            Style="{StaticResource AccentButtonStyle}">
+                                                        <Button.KeyboardAccelerators>
+                                                            <KeyboardAccelerator Key="S" Modifiers="Control" />
+                                                        </Button.KeyboardAccelerators>
+                                                    </Button>
+                                                    <Button Content="Clear Notes"
+                                                            Command="{x:Bind ViewModel.ClearUserNotesCommand}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Empty state when no fractal is selected -->
+                                        <StackPanel Spacing="12" Visibility="{x:Bind ViewModel.SelectedFractalInfo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
+                                            <TextBlock Text="Fractal Information"
                                                        FontWeight="SemiBold"
                                                        FontSize="16" />
-                                        <TextBlock Text="Select a fractal from the browser to see its description and properties."
+                                            <TextBlock Text="Select a fractal from the browser to see its description and properties."
                                                        TextWrapping="Wrap"
                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                        <TextBlock Text="Week 5: Dynamic fractal metadata will appear here"
-                                                       FontSize="11"
-                                                       FontStyle="Italic"
-                                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
-                                    </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
                                 </ScrollViewer>
                             </TabViewItem>
 

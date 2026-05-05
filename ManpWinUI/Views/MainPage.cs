@@ -124,6 +124,7 @@ namespace ManpWinUI.Views
         /// Week 6 Task 2: Load parameters in ParameterEditorViewModel.
         /// Task 3: Use cached metadata service instead of direct P/Invoke.
         /// Task 7: Use flexible parameter system when available.
+        /// Week 10: Update Info tab with fractal metadata.
         /// </summary>
         private void OnFractalSelected(object? sender, ViewModels.Browser.FractalSelectedEventArgs e)
         {
@@ -150,6 +151,9 @@ namespace ManpWinUI.Views
 
                 // Set the current visualization name from the browser
                 ViewModel.CurrentVisualizationName = metadata.DisplayName;
+
+                // Week 10: Update Info tab with selected fractal metadata
+                ViewModel.UpdateSelectedFractalInfo(e.Fractal.Name);
 
                 // ═════════════════════════════════════════════════════════════════════════
                 // TASK 7: Load parameter editor from flexible parameter system
