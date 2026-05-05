@@ -119,25 +119,29 @@
     </ItemGroup>
 
     <!-- Copy ManpCore.Native.dll and its dependencies to output directory after build -->
-    <Target Name="CopyNativeWrapper" AfterTargets="Build">
+    <Target Name="CopyNativeWrapper" AfterTargets="Build" DependsOnTargets="ResolveProjectReferences">
         <ItemGroup>
             <NativeDlls Include="$(SolutionDir)x64\$(Configuration)\*.dll" />
         </ItemGroup>
-        <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
-        <Message Text="Copied native DLLs from $(SolutionDir)x64\$(Configuration) to $(OutDir)" Importance="high" />
+        <Message Text="[CopyNativeWrapper] Checking for DLLs in $(SolutionDir)x64\$(Configuration)" Importance="high" />
+        <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="false" Condition="Exists('$(SolutionDir)x64\$(Configuration)\ManpCore.Native.dll')" />
+        <Warning Text="[CopyNativeWrapper] ManpCore.Native.dll not found - native project may not have built" Condition="!Exists('$(SolutionDir)x64\$(Configuration)\ManpCore.Native.dll')" />
+        <Message Text="[CopyNativeWrapper] Copied native DLLs from $(SolutionDir)x64\$(Configuration) to $(OutDir)" Importance="high" Condition="Exists('$(SolutionDir)x64\$(Configuration)\ManpCore.Native.dll')" />
     </Target>
 
     <!-- For MSIX packaging: Copy native DLLs to AppX folder before packaging AND before running -->
-    <Target Name="CopyNativeToAppX" AfterTargets="Build" BeforeTargets="PrepareForRun" Condition="'$(WindowsPackageType)'=='MSIX'">
+    <Target Name="CopyNativeToAppX" AfterTargets="CopyNativeWrapper" BeforeTargets="PrepareForRun" Condition="'$(WindowsPackageType)'=='MSIX'">
         <ItemGroup>
             <NativeDlls Include="$(SolutionDir)x64\$(Configuration)\*.dll" />
         </ItemGroup>
-        <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(OutDir)AppX\" SkipUnchangedFiles="false" />
-        <Message Text="Copied native DLLs from $(SolutionDir)x64\$(Configuration) to $(OutDir)AppX\" Importance="high" />
+        <Message Text="[CopyNativeToAppX] Checking for DLLs in $(SolutionDir)x64\$(Configuration)" Importance="high" />
+        <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(OutDir)AppX\" SkipUnchangedFiles="false" Condition="Exists('$(SolutionDir)x64\$(Configuration)\ManpCore.Native.dll')" />
+        <Warning Text="[CopyNativeToAppX] ManpCore.Native.dll not found - native project may not have built" Condition="!Exists('$(SolutionDir)x64\$(Configuration)\ManpCore.Native.dll')" />
+        <Message Text="[CopyNativeToAppX] Copied native DLLs from $(SolutionDir)x64\$(Configuration) to $(OutDir)AppX\" Importance="high" Condition="Exists('$(SolutionDir)x64\$(Configuration)\ManpCore.Native.dll')" />
     </Target>
 
     <!-- Also copy before debugging to ensure DLL is always present -->
-    <Target Name="EnsureNativeDllBeforeRun" BeforeTargets="BeforeBuild;CoreCompile">
+    <Target Name="EnsureNativeDllBeforeRun" BeforeTargets="BeforeBuild;CoreCompile" DependsOnTargets="ResolveProjectReferences">
         <ItemGroup>
             <NativeDlls Include="$(SolutionDir)x64\$(Configuration)\*.dll" />
         </ItemGroup>

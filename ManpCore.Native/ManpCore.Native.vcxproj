@@ -168,8 +168,26 @@
   </ImportGroup>
   <!-- Copy DLL to solution output directory after build for C# project references -->
   <Target Name="CopyToSolutionOutput" AfterTargets="Build">
-    <MakeDir Directories="$(SolutionDir)x64\$(Configuration)" Condition="!Exists('$(SolutionDir)x64\$(Configuration)')" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)x64\$(Configuration)" />
-    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(SolutionDir)x64\$(Configuration)" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    <!-- Build to ManpCore.Native\x64\Debug, then copy to solution root x64\Debug -->
+    <PropertyGroup>
+      <SolutionOutputDir>$(MSBuildThisFileDirectory)..\x64\$(Configuration)</SolutionOutputDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(SolutionOutputDir)" Condition="!Exists('$(SolutionOutputDir)')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionOutputDir)" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(SolutionOutputDir)" SkipUnchangedFiles="false" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    <Message Text="[CopyToSolutionOutput] Copied $(TargetPath) to $(SolutionOutputDir)" Importance="high" />
+  </Target>
+
+  <!-- Also copy all dependency DLLs (mpfr-6.dll, gmp-10.dll, etc.) -->
+  <Target Name="CopyDependencies" AfterTargets="CopyToSolutionOutput">
+    <PropertyGroup>
+      <SolutionOutputDir>$(MSBuildThisFileDirectory)..\x64\$(Configuration)</SolutionOutputDir>
+      <MpfrBinDir>$(MSBuildThisFileDirectory)..\external\mpfr\bin\x64</MpfrBinDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <DependencyDlls Include="$(MpfrBinDir)\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(SolutionOutputDir)" SkipUnchangedFiles="false" Condition="Exists('$(MpfrBinDir)')" />
+    <Message Text="[CopyDependencies] Copied MPFR/GMP DLLs to $(SolutionOutputDir)" Importance="high" />
   </Target>
 </Project>
