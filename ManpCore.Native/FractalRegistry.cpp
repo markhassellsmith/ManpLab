@@ -171,6 +171,7 @@ extern void RegisterOrbitalFractalsFamily();    // Orbit trap and modification t
 extern void RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc.
 extern void RegisterTrigonometricExtendedFamily(); // Extended trig functions: tan, cot, sec, csc, arcsin, arccos, arctan, tanh
 extern void RegisterJuliaVariantsFamily();      // Julia set variations with different formulas
+extern void RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors: Clifford, De Jong, Tinkerbell, etc.
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -208,7 +209,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc. = 8
     RegisterTrigonometricExtendedFamily(); // Extended trig functions = 8
     RegisterJuliaVariantsFamily();      // Julia set variations = 8
-    // Total: 186 fractals
+    RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors = 6
+    // Total: 192 fractals
 
     s_initialized = true;
 }
