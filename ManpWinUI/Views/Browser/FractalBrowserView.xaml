@@ -15,7 +15,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -70,98 +69,5 @@
                 </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
         </ScrollViewer>
-
-        <!-- Info Panel (Collapsible) -->
-        <Expander Grid.Row="3"
-                  HorizontalAlignment="Stretch"
-                  HorizontalContentAlignment="Stretch"
-                  IsExpanded="True"
-                  Visibility="{x:Bind ViewModel.SelectedFractal, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
-            <Expander.Header>
-                <TextBlock Text="ℹ️ Fractal Information"
-                           FontWeight="SemiBold"
-                           FontSize="12" />
-            </Expander.Header>
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    Padding="12"
-                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                    BorderThickness="0,1,0,0">
-                <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="12">
-                        <!-- Native Metadata Section -->
-                        <StackPanel Spacing="12" DataContext="{x:Bind ViewModel.SelectedFractal, Mode=OneWay}">
-                            <!-- Fractal Name -->
-                            <TextBlock Text="{Binding DisplayName}"
-                                       FontSize="14"
-                                       FontWeight="SemiBold" />
-
-                            <!-- Description -->
-                            <TextBlock Text="{Binding Description}"
-                                       TextWrapping="Wrap"
-                                       FontSize="12"
-                                       Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}}" />
-
-                            <!-- Formula Section -->
-                            <StackPanel Spacing="4" Visibility="{Binding Formula, Converter={StaticResource NullToVisibilityConverter}}">
-                                <TextBlock Text="Formula:"
-                                           FontWeight="SemiBold"
-                                           FontSize="11"
-                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
-                                        Padding="8"
-                                        CornerRadius="4">
-                                    <TextBlock Text="{Binding Formula}"
-                                               FontFamily="Consolas"
-                                               FontSize="11"
-                                               TextWrapping="Wrap"
-                                               IsTextSelectionEnabled="True" />
-                                </Border>
-                            </StackPanel>
-
-                            <!-- Category -->
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBlock Text="Category:"
-                                           FontWeight="SemiBold"
-                                           FontSize="11"
-                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                <TextBlock Text="{Binding Category}"
-                                           FontSize="11" />
-                            </StackPanel>
-                        </StackPanel>
-
-                        <!-- Divider -->
-                        <Border BorderThickness="0,1,0,0"
-                                BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
-                                Margin="0,4" />
-
-                        <!-- User Notes Section -->
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="📝 My Notes"
-                                       FontWeight="SemiBold"
-                                       FontSize="11"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                            <TextBox Text="{x:Bind ViewModel.UserNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     PlaceholderText="Add your personal notes, observations, or favorite coordinates..."
-                                     AcceptsReturn="True"
-                                     TextWrapping="Wrap"
-                                     MinHeight="60"
-                                     MaxHeight="100"
-                                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <Button Content="Save Notes"
-                                        Command="{x:Bind ViewModel.SaveUserNotesCommand}"
-                                        Style="{StaticResource AccentButtonStyle}"
-                                        FontSize="11"
-                                        Padding="12,6" />
-                                <Button Content="Clear"
-                                        Command="{x:Bind ViewModel.ClearUserNotesCommand}"
-                                        FontSize="11"
-                                        Padding="12,6" />
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
-        </Expander>
     </Grid>
 </UserControl>

@@ -138,6 +138,34 @@ namespace ManpWinUI.Views
 
                 Debug.WriteLine($"[MainPage] Loading fractal: {e.Fractal.Name}");
 
+                // Special handling for 2-D Hailstone trajectory visualization
+                if (e.Fractal.Name == "Hailstone2D")
+                {
+                    Debug.WriteLine("[MainPage] Detected Hailstone2D - switching to Hailstone mode");
+
+                    // Switch to Hailstone mode (IsHailstoneMode is computed from SelectedFractalType)
+                    ViewModel.SelectedFractalType = "Hailstone";
+
+                    // Set default Hailstone parameters
+                    ViewModel.HailstoneStartX = 27;
+                    ViewModel.HailstoneStartY = 0;
+                    ViewModel.HailstoneMaxIterations = 1000;
+                    ViewModel.ShowHailstoneAxes = true;
+                    ViewModel.ShowHailstonePoints = true;
+                    ViewModel.ShowHailstoneLabels = true;
+                    ViewModel.UseFixedHailstoneViewport = false;
+
+                    ViewModel.CurrentVisualizationName = "2-D Hailstone Trajectory";
+                    ViewModel.StatusMessage = "Loading 2-D Hailstone Trajectory...";
+
+                    // Update Info tab
+                    ViewModel.UpdateSelectedFractalInfo(e.Fractal.Name);
+
+                    // Render the Hailstone sequence
+                    _ = ViewModel.RenderCommand.ExecuteAsync(null);
+                    return;
+                }
+
                 // Task 3: Get fractal metadata from cache (no P/Invoke!)
                 var metadata = MetadataService.GetFractalOrDefault(e.Fractal.Name);
                 Debug.WriteLine($"[MainPage] Got metadata for '{metadata.Name}' - Center: ({metadata.DefaultCenterX}, {metadata.DefaultCenterY}), Zoom: {metadata.DefaultZoom}");

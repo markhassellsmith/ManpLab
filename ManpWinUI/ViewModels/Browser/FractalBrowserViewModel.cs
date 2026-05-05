@@ -73,6 +73,7 @@ public partial class FractalBrowserViewModel : ObservableObject
     /// <summary>
     /// User notes for the currently selected fractal.
     /// Editable text that persists separately from native metadata.
+    /// Displayed on the right-side Info tab.
     /// </summary>
     [ObservableProperty]
     private string userNotes = string.Empty;
@@ -82,7 +83,7 @@ public partial class FractalBrowserViewModel : ObservableObject
         if (value != null)
         {
             System.Diagnostics.Debug.WriteLine($"[FractalBrowserViewModel] Selected: {value.Name}");
-            // Load user notes for the selected fractal
+            // Load user notes for the selected fractal (displayed on Info tab)
             UserNotes = _settingsService?.GetFractalNotes(value.Name) ?? string.Empty;
             // Week 5: Fire FractalSelected event to MainViewModel
         }
@@ -301,6 +302,7 @@ public partial class FractalBrowserViewModel : ObservableObject
 
     /// <summary>
     /// Save user notes for the currently selected fractal.
+    /// Called from the right-side Info tab.
     /// </summary>
     [RelayCommand]
     private void SaveUserNotes()
@@ -316,6 +318,7 @@ public partial class FractalBrowserViewModel : ObservableObject
 
     /// <summary>
     /// Clear user notes for the currently selected fractal.
+    /// Called from the right-side Info tab.
     /// </summary>
     [RelayCommand]
     private void ClearUserNotes()

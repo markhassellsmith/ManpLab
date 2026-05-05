@@ -186,13 +186,6 @@ namespace ManpWinUI.Views
 
         private void FractalImage_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            // Disable mouse interactions in Hailstone mode
-            if (ViewModel.IsHailstoneMode)
-            {
-                e.Handled = true;
-                return;
-            }
-
             if (_isDragging)
             {
                 _isDragging = false;
@@ -201,7 +194,7 @@ namespace ManpWinUI.Views
 
                 if (_isPanning)
                 {
-                    // Pan complete - auto-render the new view (standard fractals only)
+                    // Pan complete - auto-render the new view
                     if (ViewModel.RenderCommand.CanExecute(null))
                     {
                         ViewModel.RenderCommand.Execute(null);
@@ -389,7 +382,6 @@ namespace ManpWinUI.Views
                 var rectCenterDisplayX = imageRelativeLeft + rectWidth / 2.0;
                 var rectCenterDisplayY = imageRelativeTop + rectHeight / 2.0;
 
-                // Standard fractal box zoom
                 // Convert display coordinates to bitmap pixel coordinates
                 var displayScale = displayWidth / bitmapWidth;
                 var rectCenterPixelX = rectCenterDisplayX / displayScale;
@@ -397,58 +389,117 @@ namespace ManpWinUI.Views
                 var rectWidthPixels = rectWidth / displayScale;
                 var rectHeightPixels = rectHeight / displayScale;
 
-                // Current fractal view dimensions (must match FractalRenderService calculation!)
-                var fractalWidth = 3.0 / ViewModel.Zoom;
-                var fractalHeight = fractalWidth * ((double)bitmapHeight / bitmapWidth);
-
-                // Scale factors (fractal units per BITMAP pixel) for CURRENT view
-                var scaleX = fractalWidth / bitmapWidth;
-                var scaleY = fractalHeight / bitmapHeight;
-
-                // Convert bitmap pixel position to fractal coordinates
-                // Pixel (0,0) maps to top-left of fractal view
-                // Pixel center of image (bitmapWidth/2, bitmapHeight/2) maps to fractal center
-                var offsetX = (rectCenterPixelX - bitmapWidth / 2.0) * scaleX;
-                var offsetY = -(rectCenterPixelY - bitmapHeight / 2.0) * scaleY;
-
-                // New center - ALWAYS use the selection rectangle's center
-                var newCenterX = ViewModel.CenterX + offsetX;
-                var newCenterY = ViewModel.CenterY + offsetY;
-
-                // Calculate zoom level based on which dimension requires LESS expansion
-                // This ensures minimal adjustment to match the bitmap's aspect ratio
-                var selectionAspectRatio = rectWidthPixels / rectHeightPixels;
-                var targetAspectRatio = (double)bitmapWidth / bitmapHeight;
-
-                double zoomFactor;
-                if (selectionAspectRatio > targetAspectRatio)
+                if (ViewModel.IsHailstoneMode)
                 {
-                    // Selection is wider than target - constrain by width, expand vertically
-                    zoomFactor = bitmapWidth / rectWidthPixels;
+                    // Hailstone box zoom: manipulate viewport bounds
+                    if (ViewModel.CurrentHailstoneResult != null)
+                    {
+                        // Get current viewport (or use sequence bounds if no custom viewport)
+                        double viewMinX = ViewModel.HailstoneViewportMinX ?? ViewModel.CurrentHailstoneResult.MinX;
+                        double viewMaxX = ViewModel.HailstoneViewportMaxX ?? ViewModel.CurrentHailstoneResult.MaxX;
+                        double viewMinY = ViewModel.HailstoneViewportMinY ?? ViewModel.CurrentHailstoneResult.MinY;
+                        double viewMaxY = ViewModel.HailstoneViewportMaxY ?? ViewModel.CurrentHailstoneResult.MaxY;
+
+                        // Add 15% padding if using auto-bounds
+                        if (!ViewModel.HasCustomHailstoneViewport)
+                        {
+                            double rangeX = viewMaxX - viewMinX;
+                            double rangeY = viewMaxY - viewMinY;
+                            if (rangeX == 0) rangeX = 2;
+                            if (rangeY == 0) rangeY = 2;
+                            double paddingX = rangeX * 0.15;
+                            double paddingY = rangeY * 0.15;
+                            viewMinX -= paddingX;
+                            viewMaxX += paddingX;
+                            viewMinY -= paddingY;
+                            viewMaxY += paddingY;
+                        }
+
+                        var viewRangeX = viewMaxX - viewMinX;
+                        var viewRangeY = viewMaxY - viewMinY;
+
+                        // Scale factors (world units per bitmap pixel) for CURRENT view
+                        var scaleX = viewRangeX / bitmapWidth;
+                        var scaleY = viewRangeY / bitmapHeight;
+
+                        // Convert bitmap pixel position to world coordinates
+                        // Pixel (0,0) maps to top-left corner: (viewMinX, viewMaxY)
+                        var worldLeft = viewMinX + (imageRelativeLeft / displayScale) * scaleX;
+                        var worldRight = viewMinX + ((imageRelativeLeft + rectWidth) / displayScale) * scaleX;
+                        var worldTop = viewMaxY - (imageRelativeTop / displayScale) * scaleY;
+                        var worldBottom = viewMaxY - ((imageRelativeTop + rectHeight) / displayScale) * scaleY;
+
+                        // Set new viewport to the selected rectangle
+                        ViewModel.SetHailstoneViewport(worldLeft, worldRight, worldBottom, worldTop);
+                        ViewModel.StatusMessage = $"Zooming to Hailstone region [{worldLeft:F1}, {worldRight:F1}] × [{worldBottom:F1}, {worldTop:F1}]...";
+
+                        // Auto-render the new view
+                        if (ViewModel.RenderCommand.CanExecute(null))
+                        {
+                            ViewModel.RenderCommand.Execute(null);
+                        }
+                    }
+                    else
+                    {
+                        ViewModel.StatusMessage = "No Hailstone sequence loaded - render first before zooming";
+                    }
                 }
                 else
                 {
-                    // Selection is taller than target - constrain by height, expand horizontally
-                    zoomFactor = bitmapHeight / rectHeightPixels;
-                }
+                    // Standard fractal box zoom
+                    // Current fractal view dimensions (must match FractalRenderService calculation!)
+                    var fractalWidth = 3.0 / ViewModel.Zoom;
+                    var fractalHeight = fractalWidth * ((double)bitmapHeight / bitmapWidth);
 
-                var newZoom = ViewModel.Zoom * zoomFactor;
+                    // Scale factors (fractal units per BITMAP pixel) for CURRENT view
+                    var scaleX = fractalWidth / bitmapWidth;
+                    var scaleY = fractalHeight / bitmapHeight;
 
-                // Calculate new view dimensions (always matches bitmap aspect ratio)
-                var newFractalWidth = 3.0 / newZoom;
-                var newFractalHeight = newFractalWidth * ((double)bitmapHeight / bitmapWidth);
+                    // Convert bitmap pixel position to fractal coordinates
+                    // Pixel (0,0) maps to top-left of fractal view
+                    // Pixel center of image (bitmapWidth/2, bitmapHeight/2) maps to fractal center
+                    var offsetX = (rectCenterPixelX - bitmapWidth / 2.0) * scaleX;
+                    var offsetY = -(rectCenterPixelY - bitmapHeight / 2.0) * scaleY;
 
-                // Update ViewModel
-                ViewModel.CenterX = newCenterX;
-                ViewModel.CenterY = newCenterY;
-                ViewModel.Zoom = newZoom;
+                    // New center - ALWAYS use the selection rectangle's center
+                    var newCenterX = ViewModel.CenterX + offsetX;
+                    var newCenterY = ViewModel.CenterY + offsetY;
 
-                ViewModel.StatusMessage = $"Zoom: {newZoom:F2}x @ ({newCenterX:F8}, {newCenterY:F8}) | View: {newFractalWidth:F8}×{newFractalHeight:F8}";
+                    // Calculate zoom level based on which dimension requires LESS expansion
+                    // This ensures minimal adjustment to match the bitmap's aspect ratio
+                    var selectionAspectRatio = rectWidthPixels / rectHeightPixels;
+                    var targetAspectRatio = (double)bitmapWidth / bitmapHeight;
 
-                // Auto-render the new view
-                if (ViewModel.RenderCommand.CanExecute(null))
-                {
-                    ViewModel.RenderCommand.Execute(null);
+                    double zoomFactor;
+                    if (selectionAspectRatio > targetAspectRatio)
+                    {
+                        // Selection is wider than target - constrain by width, expand vertically
+                        zoomFactor = bitmapWidth / rectWidthPixels;
+                    }
+                    else
+                    {
+                        // Selection is taller than target - constrain by height, expand horizontally
+                        zoomFactor = bitmapHeight / rectHeightPixels;
+                    }
+
+                    var newZoom = ViewModel.Zoom * zoomFactor;
+
+                    // Calculate new view dimensions (always matches bitmap aspect ratio)
+                    var newFractalWidth = 3.0 / newZoom;
+                    var newFractalHeight = newFractalWidth * ((double)bitmapHeight / bitmapWidth);
+
+                    // Update ViewModel
+                    ViewModel.CenterX = newCenterX;
+                    ViewModel.CenterY = newCenterY;
+                    ViewModel.Zoom = newZoom;
+
+                    ViewModel.StatusMessage = $"Zoom: {newZoom:F2}x @ ({newCenterX:F8}, {newCenterY:F8}) | View: {newFractalWidth:F8}×{newFractalHeight:F8}";
+
+                    // Auto-render the new view
+                    if (ViewModel.RenderCommand.CanExecute(null))
+                    {
+                        ViewModel.RenderCommand.Execute(null);
+                    }
                 }
             }
         }
