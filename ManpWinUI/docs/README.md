@@ -58,8 +58,9 @@ If you're new to the project or resuming work, start with these:
 - **METADATA_POPULATION_MAINTENANCE.md** - Metadata maintenance guide
 
 #### Deep Zoom
-- **DEEP_ZOOM_INTEGRATION_PLAN.md** - Perturbation theory integration plan (12-17 days)
-- **DEEP_ZOOM_THRESHOLD_FIX.md** - Deep zoom threshold fix documentation
+- **DEEP_ZOOM_INTEGRATION_PLAN.md** - Perturbation theory integration plan (COMPLETE!)
+- **DEEP_ZOOM_THRESHOLD_FIX.md** - Deep zoom auto-enable threshold fix
+- **BLA_IMAGE_DIMENSION_FIX.md** - BLA optimization details
 
 #### Other Features
 - **BatchRenderer-Guide.md** - Batch rendering system documentation
