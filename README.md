@@ -1,4 +1,4 @@
-# ManpLab - Fractal Explorer Suite
+# ManpLab - Fractal Explorer Suite - Release 1.0 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -10,7 +10,7 @@
 ## 🎯 Choose Your Application
 
 ### 🚀 [ManpWinUI](ManpWinUI/) - Modern Fractal Explorer
-**Windows 11 | WinUI 3 | .NET 10**
+**Windows 11 | .NET 10** | WinUI 3 | MVVM architecture
 
 A complete modern fractal application with comprehensive features:
 - ✨ Modern, clean WinUI 3 interface with MVVM architecture
@@ -27,7 +27,7 @@ A complete modern fractal application with comprehensive features:
 ---
 
 ### 🔬 [ManpWIN64](ManpWIN64/) - Research & Advanced Features
-**Windows 10/11 | C++17 | CMake**
+**Windows 10/11 | C++17 | CMake** | Windows Forms UI
 
 For researchers and advanced users needing maximum capability:
 - 🌌 **300 fractal types** (Mandelbrot variants, Julia sets, Newton, IFS, attractors)
@@ -93,7 +93,7 @@ This project serves as a comprehensive platform for studying fractals, numerical
 ### Mathematics
 
 **Complex Dynamics & Numerical Analysis:**
-- 240+ fractal types: Mandelbrot, Julia sets, Newton fractals, exotic variants
+- 300 fractal types: Mandelbrot, Julia sets, Newton fractals, exotic variants
 - Perturbation theory for studying chaotic systems
 - Deep zoom with magnifications exceeding 10^100
 - Arbitrary-precision arithmetic (MPFR, QD, DD libraries)
@@ -159,7 +159,7 @@ This project serves as a comprehensive platform for studying fractals, numerical
 
 ---
 
-## Fractal Categories (240+ Types)
+## Fractal Categories (300 Types)
 
 **Classic Fractals (20+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals
 
