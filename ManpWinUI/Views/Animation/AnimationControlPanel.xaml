@@ -306,24 +306,11 @@
                     Spacing="8"
                     Visibility="{x:Bind (Visibility)ViewModel.IsRendering, Mode=OneWay}">
 
-                    <!-- Progress bar with inline cancel link -->
-                    <Grid>
-                        <ProgressBar 
-                            Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
-                            Maximum="100"
-                            ShowError="False"
-                            ShowPaused="False"/>
-
-                        <!-- Cancel link overlaid on progress bar -->
-                        <HyperlinkButton 
-                            Content="✕ Cancel"
-                            Command="{x:Bind ViewModel.CancelAnimationCommand}"
-                            FontSize="11"
-                            Padding="8,4"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Foreground="{ThemeResource SystemColorHighlightTextColor}"/>
-                    </Grid>
+                    <ProgressBar 
+                        Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
+                        Maximum="100"
+                        ShowError="False"
+                        ShowPaused="False"/>
 
                     <!-- Line 1: Rendering Frame X / Y -->
                     <TextBlock 
