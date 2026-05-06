@@ -9,15 +9,18 @@
 
 ## 🎯 Choose Your Application
 
-### 🚀 [ManpWinUI](ManpWinUI/) - Modern Learning Tool (NEW)
+### 🚀 [ManpWinUI](ManpWinUI/) - Modern Fractal Explorer
 **Windows 11 | WinUI 3 | .NET 10**
 
-Perfect for students and beginners learning fractals:
-- ✨ Modern, clean interface with MVVM architecture
-- 🎨 Interactive exploration with mouse & keyboard
-- 📚 Educational focus with comprehensive documentation
+A complete modern fractal application with comprehensive features:
+- ✨ Modern, clean WinUI 3 interface with MVVM architecture
+- 🌌 **300 fractal types** - Mandelbrot variants, Julia sets, strange attractors, IFS, and more
+- 🎨 Interactive exploration with mouse, keyboard, and touch
+- 🎬 **Animation rendering** - Create MP4 videos with FFmpeg integration
+- 📚 **Fractal browser** with metadata, formulas, and bookmarks
+- 🎨 **Theme system** - Light, Dark, Ocean Blue, and System themes
+- 🔍 **Deep zoom** with high-precision arithmetic
 - ⌨️ [Full keyboard shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
-- 🎯 2 core fractals (Mandelbrot, Julia) - more coming soon
 
 👉 **[Get Started with ManpWinUI →](ManpWinUI/README.md)**
 
@@ -27,7 +30,7 @@ Perfect for students and beginners learning fractals:
 **Windows 10/11 | C++17 | CMake**
 
 For researchers and advanced users needing maximum capability:
-- 🌌 **240+ fractal types** (Mandelbrot variants, Julia sets, Newton, IFS, attractors)
+- 🌌 **300 fractal types** (Mandelbrot variants, Julia sets, Newton, IFS, attractors)
 - 🔭 **Deep zoom** with perturbation theory (magnification > 10^100)
 - 🧮 **Arbitrary precision** arithmetic (MPFR, QD libraries)
 - ⚡ **BLA acceleration** for extreme performance

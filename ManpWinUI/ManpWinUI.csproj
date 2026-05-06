@@ -209,4 +209,67 @@
     <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
         <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
     </PropertyGroup>
+
+    <!-- Documentation Files -->
+    <ItemGroup>
+      <!-- Root Documentation -->
+      <None Include="..\README.md" Link="Documentation\README.md" />
+      <None Include="..\CONTRIBUTING.md" Link="Documentation\CONTRIBUTING.md" />
+      <None Include="..\KEYBOARD_SHORTCUTS.md" Link="Documentation\KEYBOARD_SHORTCUTS.md" />
+
+      <!-- ManpWinUI Documentation -->
+      <None Include="README.md" Link="Documentation\ManpWinUI\README.md" />
+      <None Include="KEYBOARD_SHORTCUTS.md" Link="Documentation\ManpWinUI\KEYBOARD_SHORTCUTS.md" />
+      <None Include="RESUME_HERE.md" Link="Documentation\ManpWinUI\RESUME_HERE.md" />
+
+      <!-- Developer Guides -->
+      <None Include="docs\DEVELOPER_GUIDE.md" Link="Documentation\Developer\DEVELOPER_GUIDE.md" />
+      <None Include="..\ManpCore.Native\ADDING_FRACTALS.md" Link="Documentation\Developer\ADDING_FRACTALS.md" />
+      <None Include="..\ManpCore.Native\FRACTAL_QUICK_REFERENCE.md" Link="Documentation\Developer\FRACTAL_QUICK_REFERENCE.md" />
+      <None Include="docs\ARCHITECTURE_NATIVE_ENGINE.md" Link="Documentation\Developer\ARCHITECTURE_NATIVE_ENGINE.md" />
+      <None Include="Services\ARCHITECTURE_README.md" Link="Documentation\Developer\ARCHITECTURE_SERVICES.md" />
+      <None Include="Services\GRAPHICS_RENDERING.md" Link="Documentation\Developer\GRAPHICS_RENDERING.md" />
+      <None Include="Services\RENDERING_ABSTRACTION_SUMMARY.md" Link="Documentation\Developer\RENDERING_ABSTRACTION.md" />
+      <None Include="docs\WINUI3_THEME_BEST_PRACTICES.md" Link="Documentation\Developer\WINUI3_THEME_BEST_PRACTICES.md" />
+      <None Include="docs\DEVELOPER_INFRASTRUCTURE_SUMMARY.md" Link="Documentation\Developer\DEVELOPER_INFRASTRUCTURE.md" />
+      <None Include="docs\FRACTAL_DEVELOPER_INFRASTRUCTURE.md" Link="Documentation\Developer\FRACTAL_INFRASTRUCTURE.md" />
+
+      <!-- Feature Documentation -->
+      <None Include="docs\ANIMATION_FEATURE_PLAN.md" Link="Documentation\Features\ANIMATION_FEATURE_PLAN.md" />
+      <None Include="docs\FRACTAL_METADATA_SUMMARY.md" Link="Documentation\Features\FRACTAL_METADATA_SUMMARY.md" />
+      <None Include="docs\FRACTAL_KNOWLEDGE_BASE_PLAN.md" Link="Documentation\Features\FRACTAL_KNOWLEDGE_BASE.md" />
+      <None Include="docs\FRACTAL_REGISTRY_PROGRESS.md" Link="Documentation\Features\FRACTAL_REGISTRY.md" />
+      <None Include="docs\FRACTAL_EXPANSION_TO_300.md" Link="Documentation\Features\FRACTAL_EXPANSION_PLAN.md" />
+      <None Include="docs\BatchRenderer-Guide.md" Link="Documentation\Features\BatchRenderer-Guide.md" />
+      <None Include="docs\DEEP_ZOOM_INTEGRATION_PLAN.md" Link="Documentation\Features\DEEP_ZOOM_INTEGRATION_PLAN.md" />
+      <None Include="docs\Hailstone.md" Link="Documentation\Features\Hailstone.md" />
+      <None Include="docs\METADATA_POPULATION_MAINTENANCE.md" Link="Documentation\Features\METADATA_MAINTENANCE.md" />
+      <None Include="docs\PROJECT_PLAN.md" Link="Documentation\Features\PROJECT_PLAN.md" />
+      <None Include="docs\ROADMAP_STATUS_UPDATE.md" Link="Documentation\Features\ROADMAP_STATUS.md" />
+
+      <!-- Status & Issues -->
+      <None Include="docs\FEATURE_VERIFICATION_SUMMARY.md" Link="Documentation\Status\FEATURE_VERIFICATION_SUMMARY.md" />
+      <None Include="docs\FINAL_CLEANUP_SUMMARY.md" Link="Documentation\Status\FINAL_CLEANUP_SUMMARY.md" />
+      <None Include="docs\PROGRESS_SUMMARY.md" Link="Documentation\Status\PROGRESS_SUMMARY.md" />
+      <None Include="docs\README_FRACTAL_DEVELOPMENT.md" Link="Documentation\Status\FRACTAL_DEVELOPMENT_HISTORY.md" />
+      <None Include="docs\KNOWN_ISSUES.md" Link="Documentation\Status\KNOWN_ISSUES.md" />
+
+      <!-- Theme System Fixes -->
+      <None Include="docs\THEME_FIX_SUMMARY_MAY_2026.md" Link="Documentation\Fixes\THEME_FIX_SUMMARY_MAY_2026.md" />
+      <None Include="docs\DARK_THEME_TOOLBAR_FIX.md" Link="Documentation\Fixes\DARK_THEME_TOOLBAR_FIX.md" />
+      <None Include="docs\DARK_THEME_TOOLBAR_REGRESSION_ANALYSIS.md" Link="Documentation\Fixes\DARK_THEME_TOOLBAR_REGRESSION_ANALYSIS.md" />
+
+      <!-- Deployment -->
+      <None Include="docs\MSIX_DEPLOYMENT.md" Link="Documentation\Deployment\MSIX_DEPLOYMENT.md" />
+      <None Include="..\docs\DEPLOYMENT_FIX.md" Link="Documentation\Deployment\DEPLOYMENT_FIX.md" />
+      <None Include="docs\MPEG_INTEGRATION.md" Link="Documentation\Deployment\MPEG_INTEGRATION.md" />
+
+      <!-- Reference Materials -->
+      <None Include="..\docs\FRACTAL_VISUAL_VALIDATION.md" Link="Documentation\Reference\FRACTAL_VISUAL_VALIDATION.md" />
+      <None Include="..\docs\PARAMETER_NAMING_CONVENTIONS.md" Link="Documentation\Reference\PARAMETER_NAMING_CONVENTIONS.md" />
+      <None Include="..\docs\HAILSTONE.md" Link="Documentation\Reference\HAILSTONE_LEGACY.md" />
+
+      <!-- Documentation Index -->
+      <None Include="docs\README.md" Link="Documentation\INDEX.md" />
+    </ItemGroup>
 </Project>

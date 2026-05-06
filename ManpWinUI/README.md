@@ -5,25 +5,55 @@
 ![WinUI](https://img.shields.io/badge/WinUI-3-purple.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-A modern WinUI 3 fractal rendering application built with .NET 10, featuring MVVM architecture, interactive exploration, and comprehensive keyboard shortcuts. This is a clean reimplementation of ManpWIN with a contemporary user interface.
+A comprehensive modern fractal rendering application built with WinUI 3 and .NET 10, featuring 300 fractal types, animation rendering, deep zoom, and an intuitive MVVM architecture.
 
 ---
 
 ## ✨ Features
 
-### 🎨 Rendering
-- **Mandelbrot Set** - Classic fractal with deep zoom capability
-- **Julia Set Mode** - Toggle between Standard and Julia modes
-- **Color Palettes** - Multiple built-in color schemes
-- **Real-time Rendering** - Multi-threaded computation engine
-- **High Resolution** - Presets up to 4K (3840×2160)
+### 🌌 300 Fractal Types
+- **Classic Sets** - Mandelbrot, Julia, Burning Ship, Newton, Phoenix
+- **Power Variants** - Multibrot (powers 3-10), Tricorn, Buffalo
+- **Strange Attractors** - Lorenz, Rössler, Hénon, Clifford, Pickover
+- **IFS Fractals** - Barnsley fern, Sierpinski, Dragon curve
+- **Exotic Formulas** - Celtic, Heart, Zubieta, Perpendicular
+- **Orbital Modifications** - Circular trap, Cross trap, Stalks, Smoothed
+- **23 Famous Julia Presets** - Golden, Dendrite, Spiral, Dragon, and more
+
+### 🎬 Animation System
+- **MP4 Export** - Create high-quality fractal animations with FFmpeg
+- **Parameter Interpolation** - Smooth transitions between fractal states
+- **Zoom Animations** - Automated deep-zoom sequences
+- **Color Cycling** - Animated palette rotations
+- **Batch Rendering** - Queue multiple animations
+
+### 🎨 Rendering & Visualization
+- **Real-time Rendering** - Multi-threaded native computation engine
+- **Deep Zoom** - Arbitrary precision arithmetic for extreme magnification
+- **Color Palettes** - Multiple built-in schemes with smooth gradients
+- **High Resolution** - Export up to 4K (3840×2160) and beyond
+- **Julia Mode Toggle** - Instant switching between Mandelbrot and Julia sets
 
 ### 🖱️ Interactive Exploration
-- **Click to Zoom** - Left-click on any point to zoom in
+- **Click to Zoom** - Left-click any point to zoom in
 - **Rectangle Zoom** - Click and drag to define zoom area
 - **Pan Navigation** - Right-click drag or arrow keys to pan
-- **Coordinate Axes** - Optional overlay showing fractal coordinates
-- **Auto-scale Iterations** - Automatically adjust detail level
+- **Mouse Wheel** - Zoom in/out with precise control
+- **Coordinate Display** - Real-time fractal coordinates and zoom level
+
+### 📚 Fractal Browser
+- **Searchable Library** - Browse all 300 fractals by name or category
+- **Metadata Display** - Formulas (TeX and plaintext), descriptions, parameters
+- **User Bookmarks** - Save favorite fractals with custom names and notes
+- **Navigation History** - Back/forward through exploration history
+- **User Notes** - Annotate fractals with personal observations
+
+### 🎨 Theme System
+- **Light Theme** - Clean, bright interface
+- **Dark Theme** - Reduced eye strain for extended sessions
+- **Ocean Blue** - Custom maritime-inspired theme
+- **System Theme** - Follows Windows settings
+- **State Preservation** - Theme changes don't reset your work
 
 ### ⌨️ Keyboard Shortcuts
 - **F1** - Show help with all shortcuts
@@ -32,9 +62,9 @@ A modern WinUI 3 fractal rendering application built with .NET 10, featuring MVV
 - **+/-** - Zoom in/out
 - **1-4** - Quick resolution presets (HD, FHD, 2K, 4K)
 - **Space** - Reset to default view
-- **Page Up/Down** - Adjust iterations
-- **T** - Toggle Julia mode
-- **A** - Toggle coordinate axes
+- **Ctrl+B** - Toggle browser panel
+- **Ctrl+P** - Toggle properties panel
+- **Ctrl+S** - Save image
 
 👉 **[Full Keyboard Reference](KEYBOARD_SHORTCUTS.md)**
 
