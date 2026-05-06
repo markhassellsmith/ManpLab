@@ -151,13 +151,16 @@ public class AppSettingsService : IAppSettingsService
     {
         if (_localSettings.Values.TryGetValue(DefaultPaletteKey, out var value) && value is string palette)
         {
+            System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Retrieved saved palette: '{palette}'");
             return palette;
         }
+        System.Diagnostics.Debug.WriteLine("[AppSettingsService] No saved palette found, returning default: 'Classic'");
         return "Classic"; // Default palette
     }
 
     public void SetDefaultPalette(string palette)
     {
+        System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Saving palette: '{palette}'");
         _localSettings.Values[DefaultPaletteKey] = palette;
     }
 

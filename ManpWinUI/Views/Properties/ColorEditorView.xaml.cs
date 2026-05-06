@@ -10,22 +10,12 @@ namespace ManpWinUI.Views.Properties
     /// </summary>
     public sealed partial class ColorEditorView : UserControl
     {
-        public ColorEditorViewModel ViewModel { get; }
+        public ColorEditorViewModel ViewModel { get; set; } = null!;
 
         public ColorEditorView()
         {
+            // ViewModel will be set via DataContext from MainPage
             this.InitializeComponent();
-            ViewModel = new ColorEditorViewModel();
-        }
-
-        /// <summary>
-        /// Constructor accepting a ViewModel (for MainPage injection).
-        /// Week 7 Task 2: Enable event subscription from MainPage.
-        /// </summary>
-        public ColorEditorView(ColorEditorViewModel viewModel)
-        {
-            this.InitializeComponent();
-            ViewModel = viewModel;
         }
 
         /// <summary>

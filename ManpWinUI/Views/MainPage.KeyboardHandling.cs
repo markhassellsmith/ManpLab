@@ -33,6 +33,42 @@ namespace ManpWinUI.Views
                     e.Handled = true;
                     break;
 
+                // Ctrl+B: Toggle Browser Panel
+                case VirtualKey.B when ctrlPressed:
+                    if (ViewModel.ToggleBrowserPanelCommand.CanExecute(null))
+                    {
+                        ViewModel.ToggleBrowserPanelCommand.Execute(null);
+                    }
+                    e.Handled = true;
+                    break;
+
+                // Ctrl+P: Toggle Properties Panel
+                case VirtualKey.P when ctrlPressed:
+                    if (ViewModel.TogglePropertiesPanelCommand.CanExecute(null))
+                    {
+                        ViewModel.TogglePropertiesPanelCommand.Execute(null);
+                    }
+                    e.Handled = true;
+                    break;
+
+                // Ctrl+Z: Undo Navigation
+                case VirtualKey.Z when ctrlPressed:
+                    if (ViewModel.UndoNavigationCommand.CanExecute(null))
+                    {
+                        ViewModel.UndoNavigationCommand.Execute(null);
+                    }
+                    e.Handled = true;
+                    break;
+
+                // Ctrl+Y: Redo Navigation
+                case VirtualKey.Y when ctrlPressed:
+                    if (ViewModel.RedoNavigationCommand.CanExecute(null))
+                    {
+                        ViewModel.RedoNavigationCommand.Execute(null);
+                    }
+                    e.Handled = true;
+                    break;
+
                 // Ctrl+R or F5: Render
                 case VirtualKey.R when ctrlPressed:
                 case VirtualKey.F5:
@@ -213,30 +249,6 @@ namespace ManpWinUI.Views
         }
 
         /// <summary>
-        /// Handles Ctrl+B keyboard accelerator for toggling Browser panel.
-        /// </summary>
-        private void ToggleBrowserPanel_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            if (ViewModel.ToggleBrowserPanelCommand.CanExecute(null))
-            {
-                ViewModel.ToggleBrowserPanelCommand.Execute(null);
-            }
-            args.Handled = true;
-        }
-
-        /// <summary>
-        /// Handles Ctrl+P keyboard accelerator for toggling Properties panel.
-        /// </summary>
-        private void TogglePropertiesPanel_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            if (ViewModel.TogglePropertiesPanelCommand.CanExecute(null))
-            {
-                ViewModel.TogglePropertiesPanelCommand.Execute(null);
-            }
-            args.Handled = true;
-        }
-
-        /// <summary>
         /// Pan the view by a percentage of the current view width/height.
         /// </summary>
         /// <param name="xPercent">Horizontal pan (-1.0 to 1.0, where 0.1 = 10% of view width)</param>
@@ -339,7 +351,6 @@ MODES & DISPLAY
 T                  Toggle Standard/Julia mode
 A                  Toggle coordinate axes
 Ctrl+S             Save image
-B                  Toggle bookmarks panel
 
 ═══════════════════════════════════════
 NAVIGATION HISTORY (Week 8)
@@ -364,30 +375,6 @@ F1                 Show this help dialog",
             };
 
             await dialog.ShowAsync();
-        }
-
-        /// <summary>
-        /// Keyboard accelerator handler for Undo Navigation (Ctrl+Z).
-        /// </summary>
-        private async void UndoNavigation_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            if (ViewModel.UndoNavigationCommand.CanExecute(null))
-            {
-                await ViewModel.UndoNavigationCommand.ExecuteAsync(null);
-                args.Handled = true;
-            }
-        }
-
-        /// <summary>
-        /// Keyboard accelerator handler for Redo Navigation (Ctrl+Y).
-        /// </summary>
-        private async void RedoNavigation_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
-        {
-            if (ViewModel.RedoNavigationCommand.CanExecute(null))
-            {
-                await ViewModel.RedoNavigationCommand.ExecuteAsync(null);
-                args.Handled = true;
-            }
         }
     }
 }

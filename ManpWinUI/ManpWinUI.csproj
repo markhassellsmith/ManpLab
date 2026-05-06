@@ -88,6 +88,10 @@
       <Page Update="Views\Settings\SettingsView.xaml">
         <Generator>MSBuild:Compile</Generator>
       </Page>
+      <!-- Phase 1: Animation Control Panel -->
+      <Page Update="Views\Animation\AnimationControlPanel.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
     </ItemGroup>
 
 
@@ -105,6 +109,13 @@
 
         <!-- Win2D for GPU-accelerated 2D graphics rendering -->
         <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.2.0" />
+
+        <!-- Animation: FFmpeg for video encoding (MP4, WebM) -->
+        <PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
+        <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.2.6" />
+
+        <!-- Security: Override vulnerable Newtonsoft.Json 9.0.1 from WindowsAppSDK transitive dependency -->
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
         <Manifest Include="$(ApplicationManifest)" />
     </ItemGroup>
@@ -168,6 +179,9 @@
     </ItemGroup>
     <ItemGroup>
       <None Update="Themes\OceanBlue.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </None>
+      <None Update="Views\Animation\AnimationControlPanel.xaml">
         <Generator>MSBuild:Compile</Generator>
       </None>
       <None Update="Views\Canvas\FractalCanvasView.xaml">
