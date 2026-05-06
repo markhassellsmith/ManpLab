@@ -47,4 +47,5 @@ vcpkg_installed/
 
 # Release artifacts (binaries for GitHub Releases, not source)
 release-package/
+AppPackages/
 *.zip
