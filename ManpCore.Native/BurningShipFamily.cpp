@@ -35,6 +35,351 @@ void RegisterBurningShipFamily()
     spec.parameters = {};
 
     FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Burning Ship Power Variations
+    //=========================================================================
+
+    // Burning Ship Cubic (power 3)
+    spec.name = "BurningShipCubic";
+    spec.displayName = "Burning Ship Cubic";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Burning Ship with cubic power: z = (|Re(z)| + i|Im(z)|)³ + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            double abs_re = abs(z.real);
+            double abs_im = abs(z.imag);
+            ComplexD abs_z(abs_re, abs_im);
+
+            // z^3
+            z = abs_z * abs_z * abs_z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.6;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Burning Ship Quartic (power 4)
+    spec.name = "BurningShipQuartic";
+    spec.displayName = "Burning Ship Quartic";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Burning Ship with quartic power: z = (|Re(z)| + i|Im(z)|)⁴ + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            double abs_re = abs(z.real);
+            double abs_im = abs(z.imag);
+            ComplexD abs_z(abs_re, abs_im);
+            ComplexD z2 = abs_z * abs_z;
+
+            z = z2 * z2 + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.6;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Burning Ship Quintic (power 5)
+    spec.name = "BurningShipQuintic";
+    spec.displayName = "Burning Ship Quintic";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Burning Ship with quintic power: z = (|Re(z)| + i|Im(z)|)⁵ + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            double abs_re = abs(z.real);
+            double abs_im = abs(z.imag);
+            ComplexD abs_z(abs_re, abs_im);
+            ComplexD z2 = abs_z * abs_z;
+            ComplexD z4 = z2 * z2;
+
+            z = z4 * abs_z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Perpendicular Burning Ship
+    spec.name = "PerpendicularBurningShip";
+    spec.displayName = "Perpendicular Burning Ship";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Perpendicular variant: z = (|Re(z)| - i|Im(z)|)² + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            z = ComplexD(abs(z.real), -abs(z.imag));
+            z = z * z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.8;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Buffalo Burning Ship
+    spec.name = "BuffaloBurningShip";
+    spec.displayName = "Buffalo Burning Ship";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Buffalo variant with subtraction: z = (|Re(z)| + i|Im(z)|)² - c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            z = ComplexD(abs(z.real), abs(z.imag));
+            z = z * z - constant;  // Note: minus c
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.8;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Shark Burning Ship
+    spec.name = "SharkBurningShip";
+    spec.displayName = "Shark Burning Ship";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Shark variant: z = (|Re(z)| + i|Im(z)|)² + c/z";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0.1, 0.1);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            double z_mag_sq = z.real * z.real + z.imag * z.imag;
+            if (z_mag_sq < 1e-10) break;
+
+            ComplexD c_over_z((constant.real * z.real + constant.imag * z.imag) / z_mag_sq,
+                             (constant.imag * z.real - constant.real * z.imag) / z_mag_sq);
+
+            z = ComplexD(abs(z.real), abs(z.imag));
+            z = z * z + c_over_z;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.8;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Celtic Burning Ship
+    spec.name = "CelticBurningShip";
+    spec.displayName = "Celtic Burning Ship";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Celtic variant: z = (|Re(z²)| + i*Im(z²)) + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            z = z * z;
+            z = ComplexD(abs(z.real), z.imag) + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.8;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Reverse Burning Ship
+    spec.name = "ReverseBurningShip";
+    spec.displayName = "Reverse Burning Ship";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Reverse variant: z = (Re(z) + i|Im(z)|)² + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            z = ComplexD(z.real, abs(z.imag));
+            z = z * z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.8;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Vertical Burning Ship
+    spec.name = "VerticalBurningShip";
+    spec.displayName = "Vertical Burning Ship";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Vertical variant: z = (|Re(z)| + i*Im(z))² + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            z = ComplexD(abs(z.real), z.imag);
+            z = z * z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.8;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    // Diagonal Burning Ship
+    spec.name = "DiagonalBurningShip";
+    spec.displayName = "Diagonal Burning Ship";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Diagonal variant: z = (|Re(z) + Im(z)| + i|Re(z) - Im(z)|)² + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            double sum = abs(z.real + z.imag);
+            double diff = abs(z.real - z.imag);
+            z = ComplexD(sum, diff);
+            z = z * z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = -0.5;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.8;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
 }
 
 } // namespace Native

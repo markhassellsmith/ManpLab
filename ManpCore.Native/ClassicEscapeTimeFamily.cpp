@@ -367,6 +367,391 @@ void RegisterClassicEscapeTimeFamily()
     spec.parameters = {};
 
     FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Simple Variations Added to Reach 300 Total
+    //=========================================================================
+
+    //=========================================================================
+    // Perpendicular Mandelbrot
+    //=========================================================================
+    spec.name = "PerpendicularMandelbrot";
+    spec.displayName = "Perpendicular Mandelbrot";
+    spec.category = "Mandelbrot Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Perpendicular Mandelbrot: abs(re) - i*abs(im), then z^2 + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            z = ComplexD(abs(z.real), -abs(z.imag));
+            z = z * z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Heart Mandelbrot
+    //=========================================================================
+    spec.name = "HeartMandelbrot";
+    spec.displayName = "Heart Mandelbrot";
+    spec.category = "Mandelbrot Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Heart-shaped variation: z^2 + c + sin(z)";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            // Calculate sin(z)
+            double sin_re = sin(z.real) * cosh(z.imag);
+            double sin_im = cos(z.real) * sinh(z.imag);
+            ComplexD sin_z(sin_re, sin_im);
+
+            z = z * z + constant + sin_z;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Shark Fin Mandelbrot
+    //=========================================================================
+    spec.name = "SharkFinMandelbrot";
+    spec.displayName = "Shark Fin Mandelbrot";
+    spec.category = "Mandelbrot Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Shark Fin variation: z^2 + c/z";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0.1, 0.1);  // Non-zero start to avoid divide by zero
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            double z_mag_sq = z.real * z.real + z.imag * z.imag;
+            if (z_mag_sq < 1e-10) break;  // Avoid division by very small numbers
+
+            ComplexD c_over_z((constant.real * z.real + constant.imag * z.imag) / z_mag_sq,
+                             (constant.imag * z.real - constant.real * z.imag) / z_mag_sq);
+
+            z = z * z + c_over_z;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Partial Burning Ship
+    //=========================================================================
+    spec.name = "PartialBurningShip";
+    spec.displayName = "Partial Burning Ship";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Partial Burning Ship: re^2 + i*abs(im)^2 + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            double re_sq = z.real * z.real;
+            double im_abs_sq = abs(z.imag) * abs(z.imag);
+            z = ComplexD(re_sq - im_abs_sq, 2.0 * z.real * abs(z.imag)) + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Bird of Prey
+    //=========================================================================
+    spec.name = "BirdOfPrey";
+    spec.displayName = "Bird of Prey";
+    spec.category = "Burning Ship Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Bird of Prey: abs(re)^2 + i*im^2 + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            double re_abs_sq = abs(z.real) * abs(z.real);
+            double im_sq = z.imag * z.imag;
+            z = ComplexD(re_abs_sq - im_sq, 2.0 * abs(z.real) * z.imag) + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Celtic Heart
+    //=========================================================================
+    spec.name = "CelticHeart";
+    spec.displayName = "Celtic Heart";
+    spec.category = "Mandelbrot Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Celtic Heart: abs(re) + i*im, then z^2 + sin(z) + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            z = ComplexD(abs(z.real), z.imag);
+
+            // Calculate sin(z)
+            double sin_re = sin(z.real) * cosh(z.imag);
+            double sin_im = cos(z.real) * sinh(z.imag);
+            ComplexD sin_z(sin_re, sin_im);
+
+            z = z * z + sin_z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Wavy Mandelbrot
+    //=========================================================================
+    spec.name = "WavyMandelbrot";
+    spec.displayName = "Wavy Mandelbrot";
+    spec.category = "Mandelbrot Variants";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Wavy variation: z^2 + c + 0.1*sin(z)";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            // Calculate sin(z)
+            double sin_re = sin(z.real) * cosh(z.imag);
+            double sin_im = cos(z.real) * sinh(z.imag);
+            ComplexD sin_z(sin_re * 0.1, sin_im * 0.1);  // 0.1 scaling factor
+
+            z = z * z + constant + sin_z;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Sinh Mandelbrot
+    //=========================================================================
+    spec.name = "SinhMandelbrot";
+    spec.displayName = "Sinh Mandelbrot";
+    spec.category = "Trigonometric";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Hyperbolic sine: sinh(z)^2 + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            // Calculate sinh(z) = (e^z - e^-z)/2
+            double sinh_re = sinh(z.real) * cos(z.imag);
+            double sinh_im = cosh(z.real) * sin(z.imag);
+            ComplexD sinh_z(sinh_re, sinh_im);
+
+            z = sinh_z * sinh_z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Cosh Mandelbrot
+    //=========================================================================
+    spec.name = "CoshMandelbrot";
+    spec.displayName = "Cosh Mandelbrot";
+    spec.category = "Trigonometric";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Hyperbolic cosine: cosh(z)^2 + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            // Calculate cosh(z) = (e^z + e^-z)/2
+            double cosh_re = cosh(z.real) * cos(z.imag);
+            double cosh_im = sinh(z.real) * sin(z.imag);
+            ComplexD cosh_z(cosh_re, cosh_im);
+
+            z = cosh_z * cosh_z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // Tanh Mandelbrot
+    //=========================================================================
+    spec.name = "TanhMandelbrot";
+    spec.displayName = "Tanh Mandelbrot";
+    spec.category = "Trigonometric";
+    spec.type = FractalCategory::EscapeTime2D;
+    spec.description = "Hyperbolic tangent: tanh(z)^2 + c";
+
+    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        ComplexD z(0, 0);
+        ComplexD constant = isJulia ? juliaC : c;
+
+        for (int iter = 0; iter < maxIter; ++iter) {
+            // Calculate tanh(z) = sinh(z)/cosh(z)
+            double sinh_re = sinh(z.real) * cos(z.imag);
+            double sinh_im = cosh(z.real) * sin(z.imag);
+            double cosh_re = cosh(z.real) * cos(z.imag);
+            double cosh_im = sinh(z.real) * sin(z.imag);
+
+            double denom = cosh_re * cosh_re + cosh_im * cosh_im;
+            if (denom < 1e-10) break;
+
+            double tanh_re = (sinh_re * cosh_re + sinh_im * cosh_im) / denom;
+            double tanh_im = (sinh_im * cosh_re - sinh_re * cosh_im) / denom;
+            ComplexD tanh_z(tanh_re, tanh_im);
+
+            z = tanh_z * tanh_z + constant;
+
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 256.0)
+                return iter + 1.0 - log(log(modulus)) / log(2.0);
+        }
+        return static_cast<double>(maxIter);
+    };
+
+    spec.supportsJulia = true;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 1.5;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = false;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
 }
 
 } // namespace Native
