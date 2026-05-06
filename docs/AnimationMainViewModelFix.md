@@ -45,6 +45,8 @@ Added after browser initialization:
 AnimationPanel.ViewModel.SetMainViewModel(ViewModel);
 ```
 
+**Additional Enhancement**: The default animation filename now uses the current fractal or bookmark name instead of "ManpWinUI". When `SetMainViewModel` is called, it automatically updates the filename to include the fractal/bookmark name plus timestamp (e.g., `Mandelbrot_20240115_143052.mp4` or `MyFavorite_20240115_143052.mp4`).
+
 **File**: `ManpWinUI\Views\Animation\AnimationControlPanel.xaml.cs`
 
 Removed the problematic code from `OnLoaded`:
@@ -104,6 +106,12 @@ Animation renders:
 - MainViewModel remains Transient (important for potential multi-window scenarios)
 - Each window/page gets its own instance
 - Explicit passing avoids accidental cross-instance pollution
+
+### 5. **Smart Default Filenames**
+- Filenames now include the fractal or bookmark name
+- Example: `Mandelbrot_20240115_143052.mp4` instead of `ManpWinUI_Animation_20240115_143052.mp4`
+- Makes exported files easier to identify and organize
+- Uses bookmark/visualization name if available, otherwise fractal type
 
 ## Technical Details
 

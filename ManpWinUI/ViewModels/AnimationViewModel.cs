@@ -39,7 +39,7 @@ public partial class AnimationViewModel : ObservableObject
 
         // Load last used directory from app settings, or use Documents folder as default
         var lastDirectory = LoadLastUsedDirectory();
-        var defaultFileName = $"ManpWinUI_Animation_{DateTime.Now:yyyyMMdd_HHmmss}.mp4";
+        var defaultFileName = $"Animation_{DateTime.Now:yyyyMMdd_HHmmss}.mp4";
         outputPath = System.IO.Path.Combine(lastDirectory, defaultFileName);
 
         _logger.LogDebug("AnimationViewModel initialized with output path: {OutputPath}", outputPath);
@@ -54,6 +54,79 @@ public partial class AnimationViewModel : ObservableObject
         _mainViewModel = mainViewModel;
         _logger.LogDebug("MainViewModel reference {Status}", 
             mainViewModel != null ? "set" : "cleared");
+
+        // Update default filename to use current fractal/bookmark name
+        if (mainViewModel != null)
+        {
+            UpdateDefaultFileName();
+        }
+    }
+
+    /// <summary>
+    /// Updates the output filename to include the current fractal or bookmark name.
+    /// Called when MainViewModel is set or when the fractal changes.
+    /// </summary>
+    private void UpdateDefaultFileName()
+    {
+        if (_mainViewModel == null) return;
+
+        // Get directory from current output path
+        var directory = System.IO.Path.GetDirectoryName(OutputPath);
+        if (string.IsNullOrEmpty(directory))
+        {
+            directory = LoadLastUsedDirectory();
+        }
+
+        // Determine the base name: prefer bookmark/visualization name, fall back to fractal type
+        string baseName;
+        if (!string.IsNullOrWhiteSpace(_mainViewModel.CurrentVisualizationName))
+        {
+            // Use visualization/bookmark name
+            baseName = SanitizeFileName(_mainViewModel.CurrentVisualizationName);
+        }
+        else if (!string.IsNullOrWhiteSpace(_mainViewModel.SelectedFractalType))
+        {
+            // Use fractal type
+            baseName = SanitizeFileName(_mainViewModel.SelectedFractalType);
+        }
+        else
+        {
+            // Fallback to generic name
+            baseName = "Animation";
+        }
+
+        // Build filename with timestamp
+        var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        var extension = GetFileExtension(SelectedExportFormat);
+        var fileName = $"{baseName}_{timestamp}.{extension}";
+
+        OutputPath = System.IO.Path.Combine(directory, fileName);
+        _logger.LogDebug("Updated default filename to: {FileName}", fileName);
+    }
+
+    /// <summary>
+    /// Sanitizes a string to be safe for use as a filename.
+    /// Removes invalid characters and limits length.
+    /// </summary>
+    private string SanitizeFileName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return "Animation";
+
+        // Remove invalid filename characters
+        var invalidChars = System.IO.Path.GetInvalidFileNameChars();
+        var sanitized = string.Join("_", name.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
+
+        // Replace spaces with underscores for better compatibility
+        sanitized = sanitized.Replace(' ', '_');
+
+        // Limit length to avoid overly long filenames
+        if (sanitized.Length > 50)
+        {
+            sanitized = sanitized.Substring(0, 50);
+        }
+
+        return string.IsNullOrWhiteSpace(sanitized) ? "Animation" : sanitized;
     }
 
     /// <summary>
