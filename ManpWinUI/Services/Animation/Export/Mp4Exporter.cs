@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
+using Xabe.FFmpeg.Downloader;
 
 namespace ManpWinUI.Services.Animation.Export;
 
@@ -57,6 +58,11 @@ public class Mp4Exporter : IAnimationExporter
             _logger.LogInformation("Phase 1: Saving {FrameCount} frames as PNGs...", frames.Count);
             await SaveFramesAsPngAsync(frames, tempDir, progress, cancellationToken);
 
+            // Allow file system to fully flush all writes before FFmpeg reads
+            // This prevents "Cannot find the file" or corrupt frame issues
+            await Task.Delay(500, cancellationToken);
+            _logger.LogDebug("File system flush delay complete");
+
             // Phase 2: Ensure FFmpeg is available
             await EnsureFfmpegAsync(cancellationToken);
 
@@ -94,12 +100,28 @@ public class Mp4Exporter : IAnimationExporter
         IProgress<AnimationProgress>? progress,
         CancellationToken cancellationToken)
     {
+        var savedFiles = new List<string>();
+
         for (int i = 0; i < frames.Count; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var framePath = Path.Combine(outputDirectory, $"frame_{i:D6}.png");
             await SaveFrameAsPngAsync(frames[i], framePath);
+
+            // Verify file was created and has content
+            if (!File.Exists(framePath))
+            {
+                throw new InvalidOperationException($"Failed to create frame file: {framePath}");
+            }
+
+            var fileInfo = new FileInfo(framePath);
+            if (fileInfo.Length == 0)
+            {
+                throw new InvalidOperationException($"Frame file is empty: {framePath}");
+            }
+
+            savedFiles.Add(framePath);
 
             progress?.Report(new AnimationProgress
             {
@@ -110,7 +132,10 @@ public class Mp4Exporter : IAnimationExporter
             });
         }
 
-        _logger.LogDebug("Saved {FrameCount} PNG frames to {Directory}", frames.Count, outputDirectory);
+        _logger.LogDebug("Saved {FrameCount} PNG frames to {Directory}. Total size: {TotalSize} bytes", 
+            frames.Count, 
+            outputDirectory,
+            savedFiles.Sum(f => new FileInfo(f).Length));
     }
 
     /// <summary>
@@ -121,20 +146,29 @@ public class Mp4Exporter : IAnimationExporter
         // Get pixel data from bitmap
         var pixelData = bitmap.PixelBuffer.ToArray();
 
-        // WinUI WriteableBitmap is in BGRA format, need to convert to RGBA for PNG
-        // Actually, WinRT encoder handles this, so we can write directly
+        // Create parent directory if it doesn't exist
+        var directory = Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
 
-        // Use WinRT BitmapEncoder
-        var file = await Windows.Storage.StorageFile.GetFileFromPathAsync(filePath);
+        // Create or overwrite the file using StorageFolder API
+        var folder = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(directory!);
+        var fileName = Path.GetFileName(filePath);
+        var file = await folder.CreateFileAsync(fileName, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+
         using (var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
         {
             var encoder = await Windows.Graphics.Imaging.BitmapEncoder.CreateAsync(
                 Windows.Graphics.Imaging.BitmapEncoder.PngEncoderId,
                 stream);
 
+            // Use Straight alpha mode (not Premultiplied) to avoid color corruption
+            // BGRA8 with Straight alpha ensures proper color representation for video encoding
             encoder.SetPixelData(
                 Windows.Graphics.Imaging.BitmapPixelFormat.Bgra8,
-                Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied,
+                Windows.Graphics.Imaging.BitmapAlphaMode.Straight,
                 (uint)bitmap.PixelWidth,
                 (uint)bitmap.PixelHeight,
                 96.0, // DPI X
@@ -142,32 +176,63 @@ public class Mp4Exporter : IAnimationExporter
                 pixelData);
 
             await encoder.FlushAsync();
+
+            // Ensure all data is written to disk before proceeding
+            await stream.FlushAsync();
         }
     }
 
     /// <summary>
     /// Ensure FFmpeg binaries are available.
-    /// For now, requires FFmpeg to be installed on the system PATH.
-    /// Future: Implement automatic download.
+    /// First checks system PATH, then downloads to app's local folder if needed.
     /// </summary>
-    private Task EnsureFfmpegAsync(CancellationToken cancellationToken)
+    private async Task EnsureFfmpegAsync(CancellationToken cancellationToken)
     {
-        // Try to find FFmpeg on PATH
+        // Try to find FFmpeg on PATH first (for development/user installations)
         var ffmpegPath = FindFfmpegInPath();
 
-        if (ffmpegPath == null)
+        if (ffmpegPath != null)
         {
-            _logger.LogError("FFmpeg not found on system PATH");
-            throw new InvalidOperationException(
-                "FFmpeg is required for MP4 export but was not found. " +
-                "Please install FFmpeg and add it to your system PATH. " +
-                "Download from: https://ffmpeg.org/download.html");
+            _logger.LogInformation("FFmpeg found on system PATH: {FFmpegPath}", ffmpegPath);
+            FFmpeg.SetExecutablesPath(Path.GetDirectoryName(ffmpegPath)!);
+            return;
         }
 
-        _logger.LogInformation("FFmpeg found: {FFmpegPath}", ffmpegPath);
-        FFmpeg.SetExecutablesPath(Path.GetDirectoryName(ffmpegPath)!);
+        // Not on PATH - check if we've downloaded it to app local folder
+        var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var ffmpegDir = Path.Combine(localAppData, "ManpWinUI", "ffmpeg");
+        var localFfmpegPath = Path.Combine(ffmpegDir, "ffmpeg.exe");
 
-        return Task.CompletedTask;
+        if (File.Exists(localFfmpegPath))
+        {
+            _logger.LogInformation("FFmpeg found in app folder: {FFmpegPath}", localFfmpegPath);
+            FFmpeg.SetExecutablesPath(ffmpegDir);
+            return;
+        }
+
+        // Download FFmpeg to app local folder
+        _logger.LogInformation("FFmpeg not found. Downloading to: {FFmpegDir}", ffmpegDir);
+
+        try
+        {
+            Directory.CreateDirectory(ffmpegDir);
+
+            // Use Xabe.FFmpeg.Downloader's API
+            await FFmpegDownloader.GetLatestVersion(
+                FFmpegVersion.Official,
+                ffmpegDir);
+
+            FFmpeg.SetExecutablesPath(ffmpegDir);
+            _logger.LogInformation("FFmpeg downloaded successfully to: {FFmpegDir}", ffmpegDir);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to download FFmpeg");
+            throw new InvalidOperationException(
+                "FFmpeg is required for MP4 export but could not be downloaded. " +
+                "Please install FFmpeg manually and add it to your system PATH. " +
+                "Download from: https://ffmpeg.org/download.html", ex);
+        }
     }
 
     /// <summary>
@@ -216,35 +281,100 @@ public class Mp4Exporter : IAnimationExporter
             settings.OutputPath,
             settings.FrameRate);
 
-        // Build FFmpeg conversion
+        // Ensure output directory exists
+        var outputDir = Path.GetDirectoryName(settings.OutputPath);
+        if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+        {
+            Directory.CreateDirectory(outputDir);
+            _logger.LogDebug("Created output directory: {OutputDir}", outputDir);
+        }
+
+        // Validate output path is writable
+        try
+        {
+            var testFile = Path.Combine(outputDir ?? ".", $"test_write_{Guid.NewGuid():N}.tmp");
+            File.WriteAllText(testFile, "test");
+            File.Delete(testFile);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Output directory is not writable: {OutputDir}", outputDir);
+            throw new InvalidOperationException($"Cannot write to output directory: {outputDir}", ex);
+        }
+
+        // Check if output file already exists and try to delete it to ensure it's writable
+        if (File.Exists(settings.OutputPath))
+        {
+            _logger.LogWarning("Output file already exists, deleting before encoding: {OutputPath}", settings.OutputPath);
+            try
+            {
+                File.Delete(settings.OutputPath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Cannot overwrite existing output file: {OutputPath}", settings.OutputPath);
+                throw new InvalidOperationException($"Output file exists and cannot be overwritten: {settings.OutputPath}", ex);
+            }
+        }
+
+        // Build FFmpeg conversion with correct H.264/MP4 encoding parameters
+        // Reference: FFmpeg H.264 encoding guide and MP4 container best practices
+        // Critical for compatibility: yuv420p, faststart flag, explicit sync
         var conversion = FFmpeg.Conversions.New()
-            .AddParameter($"-framerate {settings.FrameRate}") // Input framerate
-            .AddParameter($"-i \"{inputPattern}\"") // Input files
-            .AddParameter("-c:v libx264") // H.264 codec
-            .AddParameter("-preset medium") // Encoding speed/quality balance
-            .AddParameter("-crf 18") // Quality (0-51, lower=better, 18=visually lossless)
-            .AddParameter("-pix_fmt yuv420p") // Pixel format (compatible with most players)
-            .AddParameter($"-r {settings.FrameRate}") // Output framerate
-            .SetOutput(settings.OutputPath);
+            .AddParameter($"-framerate {settings.FrameRate}", ParameterPosition.PreInput) // Input framerate
+            .AddParameter($"-i \"{inputPattern}\"", ParameterPosition.PreInput) // Input file pattern
+            .AddParameter("-c:v libx264", ParameterPosition.PostInput) // H.264 video codec
+            .AddParameter("-preset medium", ParameterPosition.PostInput) // Encoding speed/quality balance
+            .AddParameter("-crf 18", ParameterPosition.PostInput) // Constant quality (18 = visually lossless)
+            .AddParameter("-pix_fmt yuv420p", ParameterPosition.PostInput) // YUV 4:2:0 chroma (universal compatibility)
+            .AddParameter("-vf scale=trunc(iw/2)*2:trunc(ih/2)*2", ParameterPosition.PostInput) // Ensure even dimensions
+            .AddParameter("-fps_mode cfr", ParameterPosition.PostInput) // Constant frame rate (replaces deprecated -vsync)
+            .AddParameter("-movflags +faststart", ParameterPosition.PostInput) // Move metadata to start (web/streaming)
+            .SetOutput(settings.OutputPath) // Use SetOutput instead of AddParameter - handles -y automatically
+            .SetOverwriteOutput(true); // Enable overwrite
 
         _logger.LogDebug("FFmpeg command: {Command}", conversion.Build());
 
-        // Set up progress monitoring
-        conversion.OnProgress += (sender, args) =>
+        try
         {
-            // FFmpeg reports progress as percentage
-            progress?.Report(new AnimationProgress
+            // Set up progress monitoring
+            conversion.OnProgress += (sender, args) =>
             {
-                CurrentFrame = (int)(args.Percent * settings.FrameCount / 100.0),
-                TotalFrames = settings.FrameCount,
-                Phase = "Encoding MP4",
-                StatusMessage = $"Encoding: {args.Percent:F1}%"
-            });
-        };
+                // FFmpeg reports progress as percentage
+                progress?.Report(new AnimationProgress
+                {
+                    CurrentFrame = (int)(args.Percent * settings.FrameCount / 100.0),
+                    TotalFrames = settings.FrameCount,
+                    Phase = "Encoding MP4",
+                    StatusMessage = $"Encoding: {args.Percent:F1}%"
+                });
+            };
 
-        // Execute conversion
-        await conversion.Start(cancellationToken);
+            // Capture FFmpeg output for diagnostics
+            var conversionResult = await conversion.Start(cancellationToken);
+            _logger.LogDebug("FFmpeg output: {Output}", conversionResult);
+            _logger.LogInformation("FFmpeg encoding complete: {OutputPath}", settings.OutputPath);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "FFmpeg encoding failed. Command: {Command}", conversion.Build());
+            throw new InvalidOperationException($"FFmpeg encoding failed: {ex.Message}", ex);
+        }
 
-        _logger.LogInformation("FFmpeg encoding complete: {OutputPath}", settings.OutputPath);
+        // Verify output file was created
+        if (!File.Exists(settings.OutputPath))
+        {
+            throw new InvalidOperationException(
+                $"FFmpeg completed but output file was not created: {settings.OutputPath}");
+        }
+
+        var fileInfo = new FileInfo(settings.OutputPath);
+        if (fileInfo.Length == 0)
+        {
+            throw new InvalidOperationException(
+                $"FFmpeg created an empty output file: {settings.OutputPath}");
+        }
+
+        _logger.LogInformation("Output file verified: {Size} bytes", fileInfo.Length);
     }
 }

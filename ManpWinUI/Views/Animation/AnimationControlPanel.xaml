@@ -6,7 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:animation="using:ManpWinUI.Models.Animation"
+    xmlns:converters="using:ManpWinUI.Converters"
+    Loaded="OnLoaded"
     mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:TimeSpanToStringConverter x:Key="TimeSpanToStringConverter"/>
+    </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Padding="16" Spacing="12">
@@ -17,19 +23,40 @@
                 Style="{StaticResource SubtitleTextBlockStyle}"
                 Margin="0,0,0,8"/>
 
+            <!-- Current View Info -->
+            <Border 
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="12"
+                Margin="0,0,0,8">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Current Fractal View" FontWeight="SemiBold" FontSize="12"/>
+                    <TextBlock 
+                        FontSize="11" 
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap">
+                        <Run Text="Your animation will use the current fractal type, colors, and all custom parameters from the main view."/>
+                    </TextBlock>
+                    <Button 
+                        Content="↻ Sync Start Position from Current View"
+                        Click="SyncFromCurrentViewButton_Click"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0"
+                        Style="{StaticResource AccentButtonStyle}"/>
+                </StackPanel>
+            </Border>
+
             <!-- Animation Type Selector -->
             <StackPanel Spacing="8">
                 <TextBlock Text="Animation Type" FontWeight="SemiBold"/>
                 <ComboBox 
                     x:Name="AnimationTypeComboBox"
+                    ItemsSource="{x:Bind ViewModel.AvailableAnimationTypes, Mode=OneTime}"
                     SelectedItem="{x:Bind ViewModel.SelectedAnimationType, Mode=TwoWay}"
                     HorizontalAlignment="Stretch"
-                    PlaceholderText="Select animation type">
-                    <x:String>Zoom</x:String>
-                    <x:String>Pan</x:String>
-                    <x:String>Parameter</x:String>
-                    <x:String>ColorCycle</x:String>
-                </ComboBox>
+                    PlaceholderText="Select animation type"/>
             </StackPanel>
 
             <!-- Zoom Settings (visible when Zoom selected) -->
@@ -37,6 +64,23 @@
                 Spacing="8">
 
                 <TextBlock Text="Zoom Settings" FontWeight="SemiBold" Margin="0,8,0,0"/>
+
+                <!-- Zoom Speed Preset Selector -->
+                <StackPanel>
+                    <TextBlock Text="Zoom Speed" FontSize="12"/>
+                    <ComboBox 
+                        ItemsSource="{x:Bind ViewModel.AvailableZoomSpeedPresets, Mode=OneTime}"
+                        SelectedItem="{x:Bind ViewModel.SelectedZoomSpeed, Mode=TwoWay}"
+                        HorizontalAlignment="Stretch"
+                        PlaceholderText="Select zoom speed"/>
+                    <TextBlock 
+                        FontSize="11" 
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap"
+                        Margin="0,4,0,0">
+                        <Run Text="Tip: 'Medium' = 1000x zoom. Choose 'Very Slow' or 'Slow' for smoother animations."/>
+                    </TextBlock>
+                </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <StackPanel>
@@ -59,6 +103,15 @@
                             Width="150"/>
                     </StackPanel>
                 </StackPanel>
+
+                <!-- Zoom Ratio Display -->
+                <TextBlock 
+                    FontSize="11" 
+                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                    Margin="0,0,0,0">
+                    <Run Text="Total Magnification: "/>
+                    <Run Text="{x:Bind ViewModel.ZoomRatioDisplay, Mode=OneWay}" FontWeight="SemiBold"/>
+                </TextBlock>
             </StackPanel>
 
             <!-- Parameter Settings (visible when Parameter selected) -->
@@ -179,17 +232,9 @@
             <StackPanel>
                 <TextBlock Text="Easing Function" FontSize="12"/>
                 <ComboBox 
+                    ItemsSource="{x:Bind ViewModel.AvailableEasingFunctions, Mode=OneTime}"
                     SelectedItem="{x:Bind ViewModel.SelectedEasing, Mode=TwoWay}"
-                    HorizontalAlignment="Stretch">
-                    <x:String>Linear</x:String>
-                    <x:String>EaseInQuad</x:String>
-                    <x:String>EaseOutQuad</x:String>
-                    <x:String>EaseInOutQuad</x:String>
-                    <x:String>EaseInCubic</x:String>
-                    <x:String>EaseOutCubic</x:String>
-                    <x:String>EaseInOutCubic</x:String>
-                    <x:String>Exponential</x:String>
-                </ComboBox>
+                    HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,8"/>
@@ -200,13 +245,9 @@
             <StackPanel>
                 <TextBlock Text="Format" FontSize="12"/>
                 <ComboBox 
+                    ItemsSource="{x:Bind ViewModel.AvailableExportFormats, Mode=OneTime}"
                     SelectedItem="{x:Bind ViewModel.SelectedExportFormat, Mode=TwoWay}"
-                    HorizontalAlignment="Stretch">
-                    <x:String>MP4</x:String>
-                    <x:String>GIF</x:String>
-                    <x:String>PNGSequence</x:String>
-                    <x:String>WebM</x:String>
-                </ComboBox>
+                    HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <StackPanel>
@@ -227,6 +268,13 @@
                         Content="Browse..."
                         Click="BrowseButton_Click"/>
                 </Grid>
+
+                <!-- Output path status indicator -->
+                <TextBlock 
+                    Text="{x:Bind ViewModel.OutputPathStatus, Mode=OneWay}"
+                    FontSize="11"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Margin="0,4,0,0"/>
             </StackPanel>
 
             <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,8"/>
@@ -258,39 +306,70 @@
                     Spacing="8"
                     Visibility="{x:Bind (Visibility)ViewModel.IsRendering, Mode=OneWay}">
 
-                    <ProgressBar 
-                        Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
-                        Maximum="100"
-                        ShowError="False"
-                        ShowPaused="False"/>
+                    <!-- Progress bar with inline cancel link -->
+                    <Grid>
+                        <ProgressBar 
+                            Value="{x:Bind ViewModel.RenderProgress, Mode=OneWay}"
+                            Maximum="100"
+                            ShowError="False"
+                            ShowPaused="False"/>
 
+                        <!-- Cancel link overlaid on progress bar -->
+                        <HyperlinkButton 
+                            Content="✕ Cancel"
+                            Command="{x:Bind ViewModel.CancelAnimationCommand}"
+                            FontSize="11"
+                            Padding="8,4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Foreground="{ThemeResource SystemColorHighlightTextColor}"/>
+                    </Grid>
+
+                    <!-- Line 1: Rendering Frame X / Y -->
                     <TextBlock 
-                        Text="{x:Bind ViewModel.RenderStatusMessage, Mode=OneWay}"
                         FontSize="12"
-                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                        <Run Text="{x:Bind ViewModel.RenderPhase, Mode=OneWay}"/>
+                        <Run Text="Frame"/>
+                        <Run Text="{x:Bind ViewModel.CurrentFrame, Mode=OneWay}"/>
+                        <Run Text="/"/>
+                        <Run Text="{x:Bind ViewModel.TotalFrames, Mode=OneWay}"/>
+                    </TextBlock>
 
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock 
-                            Text="{x:Bind ViewModel.RenderPhase, Mode=OneWay}"
-                            FontSize="11"
-                            FontWeight="SemiBold"/>
-                        <TextBlock 
-                            FontSize="11"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                            <Run Text="Frame"/>
-                            <Run Text="{x:Bind ViewModel.CurrentFrame, Mode=OneWay}"/>
-                            <Run Text="/"/>
-                            <Run Text="{x:Bind ViewModel.TotalFrames, Mode=OneWay}"/>
-                        </TextBlock>
-                    </StackPanel>
+                    <!-- Line 2: Rendering Time elapsed / total estimated -->
+                    <TextBlock 
+                        FontSize="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                        <Run Text="Rendering Time"/>
+                        <Run Text="{x:Bind ViewModel.ElapsedTime, Mode=OneWay, Converter={StaticResource TimeSpanToStringConverter}}"/>
+                        <Run Text="/"/>
+                        <Run Text="{x:Bind ViewModel.TotalEstimatedTime, Mode=OneWay, Converter={StaticResource TimeSpanToStringConverter}}"/>
+                    </TextBlock>
                 </StackPanel>
 
                 <!-- Status Message (when not rendering) -->
-                <TextBlock 
-                    Text="{x:Bind ViewModel.RenderStatusMessage, Mode=OneWay}"
-                    FontSize="12"
-                    TextWrapping="Wrap"
-                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <StackPanel Spacing="4">
+                    <!-- Error messages or progress text (selectable) -->
+                    <TextBox 
+                        Text="{x:Bind ViewModel.RenderStatusMessage, Mode=OneWay}"
+                        FontSize="12"
+                        TextWrapping="Wrap"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        IsReadOnly="True"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        IsSpellCheckEnabled="False"
+                        Padding="0"
+                        Visibility="{x:Bind (Visibility)ViewModel.HasCompletedFile, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
+
+                    <!-- Clickable full file path when complete -->
+                    <HyperlinkButton 
+                        Content="{x:Bind ViewModel.RenderStatusMessage, Mode=OneWay}"
+                        Command="{x:Bind ViewModel.OpenCompletedFileCommand}"
+                        Visibility="{x:Bind (Visibility)ViewModel.HasCompletedFile, Mode=OneWay}"
+                        FontSize="12"
+                        Padding="0"/>
+                </StackPanel>
             </StackPanel>
 
             <!-- Info Panel -->

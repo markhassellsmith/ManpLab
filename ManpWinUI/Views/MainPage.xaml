@@ -17,16 +17,7 @@
     d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
     KeyDown="Page_KeyDown">
 
-    <Page.KeyboardAccelerators>
-        <!-- Ctrl+B: Toggle Browser Panel -->
-        <KeyboardAccelerator Key="B" Modifiers="Control" Invoked="ToggleBrowserPanel_Invoked" />
-        <!-- Ctrl+P: Toggle Properties Panel -->
-        <KeyboardAccelerator Key="P" Modifiers="Control" Invoked="TogglePropertiesPanel_Invoked" />
-        <!-- Ctrl+Z: Undo Navigation -->
-        <KeyboardAccelerator Key="Z" Modifiers="Control" Invoked="UndoNavigation_Invoked" />
-        <!-- Ctrl+Y: Redo Navigation -->
-        <KeyboardAccelerator Key="Y" Modifiers="Control" Invoked="RedoNavigation_Invoked" />
-    </Page.KeyboardAccelerators>
+    <!-- KeyboardAccelerators removed - handled in Page_KeyDown to avoid automatic tooltips -->
 
     <Grid>
         <Grid.RowDefinitions>
@@ -497,6 +488,9 @@
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="Setting" />
                                 </TabViewItem.IconSource>
+                                <ToolTipService.ToolTip>
+                                    <ToolTip Content="Parameters - Fractal settings and coordinates" />
+                                </ToolTipService.ToolTip>
                                 <ScrollViewer Padding="16">
                                     <StackPanel Spacing="12">
                                         <!-- NEW: Dynamic Parameter Editor -->
@@ -831,6 +825,9 @@
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="Highlight" />
                                 </TabViewItem.IconSource>
+                                <ToolTipService.ToolTip>
+                                    <ToolTip Content="Colors - Color palettes and gradient controls" />
+                                </ToolTipService.ToolTip>
                                 <properties:ColorEditorView x:Name="ColorEditor" />
                             </TabViewItem>
 
@@ -839,6 +836,9 @@
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="RepeatAll" />
                                 </TabViewItem.IconSource>
+                                <ToolTipService.ToolTip>
+                                    <ToolTip Content="Render - Rendering engine and performance settings" />
+                                </ToolTipService.ToolTip>
                                 <properties:RenderSettingsView x:Name="RenderSettingsView" />
                             </TabViewItem>
 
@@ -847,6 +847,9 @@
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="Help" />
                                 </TabViewItem.IconSource>
+                                <ToolTipService.ToolTip>
+                                    <ToolTip Content="Info - Fractal information and personal notes" />
+                                </ToolTipService.ToolTip>
                                 <ScrollViewer Padding="16">
                                     <Grid>
                                         <!-- Content when fractal is selected -->
@@ -946,6 +949,9 @@
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="Favorite" />
                                 </TabViewItem.IconSource>
+                                <ToolTipService.ToolTip>
+                                    <ToolTip Content="Bookmarks - Save and manage favorite locations" />
+                                </ToolTipService.ToolTip>
                                 <ScrollViewer Padding="16">
                                     <StackPanel Spacing="12">
                                         <!-- Header -->
@@ -1000,6 +1006,9 @@
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="Clock" />
                                 </TabViewItem.IconSource>
+                                <ToolTipService.ToolTip>
+                                    <ToolTip Content="History - Navigation history and undo/redo" />
+                                </ToolTipService.ToolTip>
                                 <ScrollViewer Padding="16">
                                     <StackPanel Spacing="12">
                                         <!-- Header -->
@@ -1089,6 +1098,9 @@
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="Video" />
                                 </TabViewItem.IconSource>
+                                <ToolTipService.ToolTip>
+                                    <ToolTip Content="Animation - Create zoom and pan animations" />
+                                </ToolTipService.ToolTip>
                                 <animation:AnimationControlPanel x:Name="AnimationPanel" />
                             </TabViewItem>
 
@@ -1097,6 +1109,9 @@
                                 <TabViewItem.IconSource>
                                     <SymbolIconSource Symbol="Setting" />
                                 </TabViewItem.IconSource>
+                                <ToolTipService.ToolTip>
+                                    <ToolTip Content="Settings - Application preferences and theme" />
+                                </ToolTipService.ToolTip>
                                 <settings:SettingsView />
                             </TabViewItem>
                         </TabView>

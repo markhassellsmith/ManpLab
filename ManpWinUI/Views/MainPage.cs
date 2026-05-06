@@ -51,13 +51,21 @@ namespace ManpWinUI.Views
             // Week 6 Task 5: Subscribe to parameter changes for automatic re-rendering
             ParameterEditorViewModel.ParameterChanged += OnParameterChanged;
 
-            // Initialize ColorEditor ViewModel (Week 7 Task 2)
-            // ColorEditorView creates its own ViewModel internally, so we need to reference it
-            ColorEditorViewModel = ColorEditor.ViewModel;
+            // Initialize ColorEditor ViewModel (Week 7 Task 2) with settings service for palette persistence
+            ColorEditorViewModel = App.Current.Services.GetRequiredService<ColorEditorViewModel>();
+            ColorEditor.ViewModel = ColorEditorViewModel; // Set ViewModel property for x:Bind
+            ColorEditor.DataContext = ColorEditorViewModel; // Also set DataContext for TwoWay binding
 
             // Week 7 Task 2: Subscribe to palette changes to trigger re-render with new colors
             ColorEditorViewModel.PaletteChanged += OnPaletteChanged;
             ColorEditorViewModel.ColorSettingsChanged += OnColorSettingsChanged;
+
+            // Initialize MainViewModel's palette from the persisted selection
+            if (ColorEditorViewModel.SelectedPalette != null)
+            {
+                ViewModel.SelectedPalette = ColorEditorViewModel.SelectedPalette.Name;
+                Debug.WriteLine($"[MainPage] Initialized MainViewModel palette from persistence: {ViewModel.SelectedPalette}");
+            }
 
             // Initialize RenderSettings ViewModel (Week 7 Task 2)
             // Week 9 Task 1 Fix: Use the SAME instance injected into MainViewModel from DI
@@ -72,6 +80,10 @@ namespace ManpWinUI.Views
             BrowserView.ViewModel = BrowserViewModel;
             BrowserView.DataContext = BrowserViewModel;
             BrowserViewModel.FractalSelected += OnFractalSelected;
+
+            // Week 12: Inject MainViewModel into AnimationPanel so it uses the correct instance
+            // This ensures the animation uses the current viewport, colors, and settings
+            AnimationPanel.ViewModel.SetMainViewModel(ViewModel);
 
             // Initialize ViewModel asynchronously
             _ = InitializeViewModelAsync();

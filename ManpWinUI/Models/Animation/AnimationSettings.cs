@@ -3,6 +3,47 @@ using ManpWinUI.Models.Parameters;
 namespace ManpWinUI.Models.Animation;
 
 /// <summary>
+/// Zoom speed presets for easier animation configuration.
+/// </summary>
+public enum ZoomSpeedPreset
+{
+    /// <summary>
+    /// Very slow zoom: 10x magnification over animation duration.
+    /// </summary>
+    VerySlow,
+
+    /// <summary>
+    /// Slow zoom: 100x magnification over animation duration.
+    /// </summary>
+    Slow,
+
+    /// <summary>
+    /// Medium zoom: 1,000x magnification (default).
+    /// </summary>
+    Medium,
+
+    /// <summary>
+    /// Fast zoom: 10,000x magnification.
+    /// </summary>
+    Fast,
+
+    /// <summary>
+    /// Very fast zoom: 100,000x magnification.
+    /// </summary>
+    VeryFast,
+
+    /// <summary>
+    /// Extreme zoom: 1,000,000x magnification.
+    /// </summary>
+    Extreme,
+
+    /// <summary>
+    /// Custom: Use manually specified start/end zoom values.
+    /// </summary>
+    Custom
+}
+
+/// <summary>
 /// Configuration for zoom animation type.
 /// </summary>
 public class ZoomAnimationSettings

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 
 namespace ManpWinUI.ViewModels.Properties
 {
@@ -75,6 +76,7 @@ namespace ManpWinUI.ViewModels.Properties
     /// </summary>
     public class ColorEditorViewModel : INotifyPropertyChanged
     {
+        private readonly ManpWinUI.Services.IAppSettingsService _settingsService;
         private PaletteItem? _selectedPalette;
         private int _colorCycleSpeed = 50;
         private int _colorOffset = 0;
@@ -106,6 +108,13 @@ namespace ManpWinUI.ViewModels.Properties
                         _selectedPalette.IsSelected = true;
 
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedPalette)));
+
+                    // Save the selected palette to settings
+                    if (_selectedPalette != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ColorEditorViewModel] Saving palette selection: '{_selectedPalette.Name}'");
+                        _settingsService.SetDefaultPalette(_selectedPalette.Name);
+                    }
 
                     // Week 7 Task 2: Will notify for re-render with new palette
                     PaletteChanged?.Invoke(this, EventArgs.Empty);
@@ -161,8 +170,9 @@ namespace ManpWinUI.ViewModels.Properties
         /// </summary>
         public event EventHandler? ColorSettingsChanged;
 
-        public ColorEditorViewModel()
+        public ColorEditorViewModel(ManpWinUI.Services.IAppSettingsService settingsService)
         {
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             LoadDefaultPalettes();
         }
 
@@ -194,8 +204,8 @@ namespace ManpWinUI.ViewModels.Properties
             {
                 Name = "Classic",
                 Type = PaletteType.Classic,
-                Description = "Traditional blue and cyan fractal colors",
-                IsSelected = true
+                Description = "Traditional blue and cyan fractal colors"
+                // Note: IsSelected will be set below based on saved preference
             };
             classic.PreviewColors.Add("#000040"); // Dark blue
             classic.PreviewColors.Add("#0000FF"); // Blue
@@ -280,10 +290,24 @@ namespace ManpWinUI.ViewModels.Properties
             spectrum.PreviewColors.Add("#FF00FF"); // Magenta (300°)
             Palettes.Add(spectrum);
 
-            // Set Classic as default selection
-            _selectedPalette = classic;
+            // Load saved palette preference or default to Classic
+            string savedPalette = _settingsService.GetDefaultPalette();
+            System.Diagnostics.Debug.WriteLine($"[ColorEditorViewModel] Loading saved palette: '{savedPalette}'");
 
-            System.Diagnostics.Debug.WriteLine($"[ColorEditorViewModel] Loaded {Palettes.Count} default palettes (aligned with ManpCore.Native)");
+            // Clear all selections first
+            foreach (var palette in Palettes)
+            {
+                palette.IsSelected = false;
+            }
+
+            // Set the selected palette
+            _selectedPalette = Palettes.FirstOrDefault(p => p.Name == savedPalette) ?? classic;
+            if (_selectedPalette != null)
+            {
+                _selectedPalette.IsSelected = true;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[ColorEditorViewModel] Loaded {Palettes.Count} default palettes (aligned with ManpCore.Native), selected: {_selectedPalette?.Name}");
         }
 
         /// <summary>

@@ -135,7 +135,8 @@ namespace ManpWinUI
             services.AddTransient<MainViewModel>();
             services.AddSingleton<ViewModels.Browser.FractalBrowserViewModel>(); // Task 2: Fix DI pattern
             services.AddSingleton<ViewModels.Properties.RenderSettingsViewModel>(); // Week 9 Task 2: Deep zoom toggle
-            services.AddTransient<AnimationViewModel>(); // Phase 1: Animation control
+            services.AddSingleton<ViewModels.Properties.ColorEditorViewModel>(); // Color palette with persistence
+            services.AddSingleton<AnimationViewModel>(); // Phase 1: Animation control - Singleton to preserve state across tab switches
 
             return services.BuildServiceProvider();
         }

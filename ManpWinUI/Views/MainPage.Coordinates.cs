@@ -186,10 +186,22 @@ namespace ManpWinUI.Views
 
         private static string FormatCoordinate(double value)
         {
-            // Use scientific notation for very small or very large numbers
-            if (Math.Abs(value) < 0.0001 || Math.Abs(value) > 10000)
+            // Special case: treat values very close to zero as exactly zero
+            if (Math.Abs(value) < 1e-10)
             {
-                return value.ToString("0.##e0");
+                value = 0.0;
+            }
+
+            // Determine if we're far from origin (use scientific notation)
+            // Use 2-digit scientific notation for very small or very large numbers
+            if (Math.Abs(value) < 0.001 || Math.Abs(value) > 1000)
+            {
+                // For zero, use fixed format to match nearby values
+                if (value == 0.0)
+                {
+                    return "0.00";
+                }
+                return value.ToString("0.00e0"); // 2-digit scientific notation
             }
             else if (Math.Abs(value) < 0.01)
             {
