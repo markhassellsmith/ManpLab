@@ -5,6 +5,28 @@
 ![.NET](https://img.shields.io/badge/.NET-10-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
+---
+
+## 📦 Download Release 1.0
+
+**Ready-to-install Windows application - no dependencies required!**
+
+[![Download Latest Release](https://img.shields.io/badge/Download-ManpWinUI%20v1.0.0-blue?style=for-the-badge&logo=windows)](https://github.com/markhassellsmith/ManpLab/releases/latest)
+
+**[📥 Download ManpWinUI v1.0.0 (MSIX Package)](https://github.com/markhassellsmith/ManpLab/releases/latest)** — Self-contained installer for Windows 10/11
+
+### Quick Install
+1. Download `ManpWinUI_1.0.0.0_x64.msix` from the [Releases page](https://github.com/markhassellsmith/ManpLab/releases)
+2. Double-click the `.msix` file
+3. Click "Install" when prompted
+4. Launch "ManpWinUI" from your Start Menu
+
+**System Requirements:** Windows 10 (build 17763+) or Windows 11 · x64 processor · No additional downloads needed
+
+> **Note:** FFmpeg binaries (~50MB) download automatically on first animation export.
+
+---
+
 **Two complementary fractal applications for education and research:**
 
 ## 🎯 Choose Your Application
