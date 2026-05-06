@@ -18,19 +18,19 @@
             <!-- Theme-Specific Side Panel Backgrounds -->
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
-                    <!-- Light theme uses default system brush -->
+                    <!-- Only override what we need for our custom panels -->
                     <SolidColorBrush x:Key="SidePanelBackgroundBrush" Color="{ThemeResource LayerFillColorDefault}" />
-                    <SolidColorBrush x:Key="CommandBarBackground" Color="{ThemeResource LayerFillColorDefault}" />
+                    <!-- Removed CommandBarBackground override - let WinUI 3 handle it -->
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
-                    <!-- Dark theme uses much darker gray - RGB(18, 18, 18) -->
+                    <!-- Only override what we need for our custom panels -->
                     <SolidColorBrush x:Key="SidePanelBackgroundBrush" Color="#121212" />
-                    <SolidColorBrush x:Key="CommandBarBackground" Color="#1E1E1E" />
+                    <!-- Removed CommandBarBackground override - let WinUI 3 handle it -->
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Default">
-                    <!-- System theme uses default -->
+                    <!-- Only override what we need for our custom panels -->
                     <SolidColorBrush x:Key="SidePanelBackgroundBrush" Color="{ThemeResource LayerFillColorDefault}" />
-                    <SolidColorBrush x:Key="CommandBarBackground" Color="{ThemeResource LayerFillColorDefault}" />
+                    <!-- Removed CommandBarBackground override - let WinUI 3 handle it -->
                 </ResourceDictionary>
 
                 <!-- Ocean Blue theme moved to Themes/OceanBlue.xaml - loaded dynamically -->
@@ -93,6 +93,13 @@
                 <Setter Property="MinWidth" Value="0" />
                 <Setter Property="MinHeight" Value="0" />
             </Style>
+
+            <!-- AppBarButton implicit style for theme-aware foreground -->
+            <!-- TEMPORARILY DISABLED FOR TESTING
+            <Style TargetType="AppBarButton">
+                <Setter Property="Foreground" Value="{ThemeResource AppBarButtonForeground}" />
+            </Style>
+            -->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

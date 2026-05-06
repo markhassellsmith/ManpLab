@@ -263,8 +263,8 @@ namespace ManpWinUI
         /// <summary>
         /// Applies the saved theme preference to the application window.
         /// Supports custom themes (Ocean Blue) via dynamic resource dictionary loading.
-        /// Forces a complete UI refresh to ensure theme changes are visible.
-        /// Preserves properties panel visibility and selected tab to ensure smooth UX during theme changes.
+        /// Preserves all application state including rendered fractals, panel visibility, and settings.
+        /// Theme changes are purely visual and do not trigger navigation or state reset.
         /// </summary>
         public void ApplyTheme()
         {
@@ -276,24 +276,11 @@ namespace ManpWinUI
                 var settingsService = _serviceProvider.GetRequiredService<IAppSettingsService>();
                 var themeName = settingsService.GetTheme();
 
-                // Save the current properties panel state before reloading
-                // This ensures the panel reopens to the same tab after theme change for a smoother experience
-                bool wasPropertiesPanelVisible = settingsService.GetPropertiesPanelVisible();
-                int? currentTabIndex = settingsService.GetPropertiesTabIndex();
-
-                // If the properties panel is currently visible, ensure it stays open after reload
-                // and preserve the selected tab index (especially important for Settings tab)
-                if (wasPropertiesPanelVisible)
-                {
-                    settingsService.SetPropertiesPanelVisible(true);
-                    if (currentTabIndex.HasValue)
-                    {
-                        settingsService.SetPropertiesTabIndex(currentTabIndex.Value);
-                    }
-                }
-
                 if (window.Content is Frame rootFrame)
                 {
+                    // Store current RequestedTheme to detect changes
+                    var previousTheme = rootFrame.RequestedTheme;
+
                     // Handle custom themes (Ocean Blue)
                     if (themeName == "Ocean Blue")
                     {
@@ -316,19 +303,18 @@ namespace ManpWinUI
                         rootFrame.RequestedTheme = elementTheme;
                     }
 
-                    // Force complete UI refresh by recreating the Frame
-                    // This is the only reliable way to make WinUI 3 re-evaluate all ThemeResource bindings
-                    var newFrame = new Frame
+                    // Force theme refresh without destroying state
+                    // Temporarily toggle to trigger re-evaluation, then set back
+                    if (rootFrame.RequestedTheme == previousTheme)
                     {
-                        RequestedTheme = rootFrame.RequestedTheme
-                    };
-                    newFrame.NavigationFailed += OnNavigationFailed;
+                        // If theme enum didn't change (e.g., Light->OceanBlue both use Light),
+                        // toggle to force refresh
+                        var temp = rootFrame.RequestedTheme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark;
+                        rootFrame.RequestedTheme = temp;
+                    }
+                    rootFrame.RequestedTheme = themeName == "Ocean Blue" ? ElementTheme.Light : ThemeNameToElementTheme(themeName);
 
-                    window.Content = newFrame;
-                    newFrame.Navigate(typeof(MainPage));
-
-                    Log.Information("Applied theme: {Theme} (Properties panel will reopen: {PanelState}, Tab index: {TabIndex})", 
-                        themeName, wasPropertiesPanelVisible, currentTabIndex ?? 0);
+                    Log.Information("Applied theme: {Theme} (State preserved, no navigation)", themeName);
                 }
             }
             catch (Exception ex)

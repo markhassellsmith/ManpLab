@@ -32,7 +32,7 @@
         <!-- Toolbar -->
         <CommandBar Grid.Row="0"
                     DefaultLabelPosition="Right"
-                    Background="{ThemeResource CommandBarBackground}">
+                    Background="{ThemeResource AppBarBackground}">
             <AppBarButton
                 Icon="Play"
                 Label="Render"
