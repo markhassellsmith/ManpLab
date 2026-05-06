@@ -179,25 +179,37 @@ These remain in the backlog per `ANIMATION_FEATURE_PLAN.md`:
 
 ---
 
-### ❌ **6. Presets & Saved Locations (NOT STARTED)**
-**Status**: ❌ **Deferred to post-release**  
-**Original Plan**: Week 8, deferred  
-**Estimate**: 1-2 weeks
+### ✅ **6. Bookmarks & Presets System (COMPLETE!)**
+**Status**: ✅ **FULLY IMPLEMENTED** and in `development`  
+**Original Plan**: Week 8 / Presets & History System  
+**Completion Date**: Phase 2 (already complete)
 
-#### Planned Features
-- ⏳ Save favorite locations/parameter combinations
-- ⏳ Preset management UI (add, delete, rename)
-- ⏳ Import/export presets (JSON format)
-- ⏳ Quick-access preset dropdown or panel
+#### Implemented Features
+- ✅ Save named fractal bookmarks permanently
+- ✅ Persistent JSON storage in ApplicationData.LocalFolder
+- ✅ Famous preset locations (Full Mandelbrot, Seahorse Valley, Elephant Valley, Mini Mandelbrot, Spiral, etc.)
+- ✅ Bookmark management UI (add, delete, favorite, filter)
+- ✅ Promote navigation history entries to bookmarks
+- ✅ Load bookmarks with full state restoration
+- ✅ Favorites filtering (show all or favorites only)
+- ✅ Preset protection (can't delete built-in presets)
+- ✅ Full fractal state capture (coordinates, zoom, colors, Julia parameters)
 
-**Note**: Navigation history undo/redo is already implemented. Presets add the ability to save named bookmarks permanently.
+#### Files
+- ✅ `ManpWinUI\Services\BookmarkService.cs` - Bookmark persistence
+- ✅ `ManpWinUI\Services\IBookmarkService.cs` - Service interface
+- ✅ `ManpWinUI\Models\FractalBookmark.cs` - Bookmark data model with JSON serialization
+- ✅ `ManpWinUI\ViewModels\MainViewModel.Bookmarks.cs` - Bookmark commands and UI state
+- ✅ `ManpWinUI\Views\MainPage.xaml` - Bookmarks panel in browser tabs
 
-**Recommendation**: Low priority; current bookmark system provides similar functionality.
+**Note**: This feature was already complete alongside navigation history. Bookmarks provide permanent named storage, while navigation history provides undo/redo for the current session.
+
+**Status**: **PRODUCTION READY**
 
 ---
 
 ### ❌ **7. Polish & Release (NOT STARTED)**
-**Status**: ❌ **Planned for future release**  
+**Status**: ❌ **Planned for future release**
 **Estimate**: 2 weeks
 
 #### Planned Tasks
@@ -243,10 +255,13 @@ Based on current implementation status, here's the recommended work order:
    - WebM/VP9 export
 
 ### **Long Term (Q2 2026)**
-4. 💾 **Presets & Saved Locations** (1-2 weeks)
-   - Named bookmark management
-   - Import/export functionality
-   - Preset library UI
+4. 💾 **Animation Phase 3** (1.5-2 weeks) - Advanced Features
+   - Keyframe timeline UI for multi-segment animations
+   - Multi-parameter animations (zoom + color + rotation)
+   - Animation presets ("Journeys" - educational paths)
+   - "Animate to here" interaction
+   - "Record exploration" mode
+   - WebM/VP9 export
 
 5. ✨ **Polish & Release** (2 weeks)
    - Final optimization and documentation
@@ -282,6 +297,14 @@ Based on current implementation status, here's the recommended work order:
 - ✅ Render performance metrics (last render time)
 - ✅ 4-column streamlined layout with acrylic background
 - ✅ Real-time updates on zoom/pan operations
+
+### Bookmarks & Presets (Already Complete!)
+- ✅ Save/load named fractal bookmarks permanently
+- ✅ JSON-based persistent storage
+- ✅ Famous preset locations included
+- ✅ Bookmark management (add, delete, favorite, filter)
+- ✅ Full state restoration (coordinates, colors, Julia parameters)
+- ✅ Favorites filtering and preset protection
 
 ### Navigation History (Already Complete)
 - ✅ Full undo/redo stack with Ctrl+Z/Ctrl+Y
@@ -324,11 +347,12 @@ Based on current implementation status, here's the recommended work order:
 
 ---
 
-**Conclusion**: Items 1-5 from the original roadmap are now **complete and production-ready**:
+**Conclusion**: Items 1-6 from the original roadmap are now **complete and production-ready**:
 1. ✅ **Animation System** (Phase 1 MVP)
 2. ✅ **Navigation History** (Undo/Redo)
 3. ✅ **Enhanced Status Bar** (with deep zoom indicator and scientific notation)
 4. 🟡 **Fractal Registry** (41.7% complete, ongoing)
 5. ✅ **Deep Zoom Integration** (Full perturbation theory, 10^100+ zoom capability)
+6. ✅ **Bookmarks & Presets System** (Save/load named bookmarks with persistent storage)
 
 The **next priorities** are **Animation Phase 2**, **Fractal Registry expansion**, and **Animation Phase 3** based on user demand.

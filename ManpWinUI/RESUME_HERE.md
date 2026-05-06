@@ -96,6 +96,37 @@ All features are committed and merged to `development` branch.
 - `ManpWinUI/ViewModels/MainViewModel.StandardFractals.cs` - View dimensions, deep zoom indicator
 - `ManpWinUI/ViewModels/MainViewModel.Rendering.cs` - Render time tracking
 
+### Bookmarks & Presets System ✅
+**Completed**: Phase 2 (already in `development`)  
+**Branch**: Implemented directly in `development`
+
+**What Was Implemented**:
+- Save/load named fractal bookmarks permanently
+- Persistent JSON storage in ApplicationData.LocalFolder
+- Famous preset locations (Seahorse Valley, Elephant Valley, etc.)
+- Bookmark management UI (add, delete, favorite, filter)
+- Promote history entries to bookmarks
+- Load bookmarks with full state restoration (coordinates, colors, parameters)
+- Favorites filtering (show all or favorites only)
+- Preset protection (can't delete built-in presets)
+
+**Files**:
+- `ManpWinUI/Services/BookmarkService.cs` - Bookmark persistence and management
+- `ManpWinUI/Services/IBookmarkService.cs` - Service interface
+- `ManpWinUI/Models/FractalBookmark.cs` - Bookmark data model with JSON serialization
+- `ManpWinUI/ViewModels/MainViewModel.Bookmarks.cs` - Bookmark commands and UI state
+- `ManpWinUI/Views/MainPage.xaml` - Bookmarks panel in browser tabs
+
+**Features**:
+- ✅ Save current view as named bookmark
+- ✅ Load bookmarks with one click
+- ✅ Mark bookmarks as favorites
+- ✅ Filter to show favorites only
+- ✅ Delete user bookmarks (presets protected)
+- ✅ Famous preset locations included
+- ✅ Persistent storage across app sessions
+- ✅ Full fractal state capture (coordinates, zoom, colors, Julia parameters)
+
 ---
 
 ## 🎯 **What's Next? Recommended Priorities**
@@ -139,18 +170,7 @@ See `FRACTAL_REGISTRY_PROGRESS.md` for detailed tracking.
 
 ---
 
-### **4. Presets & Saved Locations** (1-2 weeks)
-**Status**: Not started (deferred to post-release)  
-**Features**:
-- Save named bookmarks permanently
-- Import/export functionality
-- Preset management UI
-
-**Note**: Navigation history (undo/redo) already exists; presets add permanent named bookmarks
-
----
-
-### **5. Polish & Release** (2 weeks)
+### **4. Polish & Release** (2 weeks)
 **Status**: Planned for future release  
 **Tasks**:
 - Performance optimization pass
