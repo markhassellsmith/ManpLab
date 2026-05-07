@@ -355,8 +355,19 @@
         <Generator>MSBuild:Compile</Generator>
       </None>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Documentation\Components\ManpCore.Native\" />
+      <Folder Include="Documentation\Components\ManpWIN64\" />
+      <Folder Include="Documentation\Components\ManpWinUI\" />
+      <Folder Include="Documentation\FractalReviewAudit\Checklists\" />
+      <Folder Include="Documentation\FractalReviewAudit\Guides\" />
+    </ItemGroup>
 
-    <!-- 
+	<ItemGroup>
+		<None Include="Documentation\**\*.md" />
+	</ItemGroup>
+
+	<!-- 
         Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
         Explorer "Package and Publish" context menu entry to be enabled for this project even if 
         the Windows App SDK Nuget package has not yet been restored.

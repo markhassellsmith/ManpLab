@@ -1,0 +1,17 @@
+﻿Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{10000000-0000-0000-0000-000000000001}"
+ProjectSection(SolutionItems) = preProject
+Documentation\README.md = Documentation\README.md
+Documentation\CONSOLIDATION_SUMMARY.md = Documentation\CONSOLIDATION_SUMMARY.md
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FractalReviewAudit", "FractalReviewAudit", "{10000002-0000-0000-0000-000000000001}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{10000003-0000-0000-0000-000000000001}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Architecture", "Architecture", "{10000004-0000-0000-0000-000000000001}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{10000005-0000-0000-0000-000000000001}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{10000006-0000-0000-0000-000000000001}"
+EndProject
+
