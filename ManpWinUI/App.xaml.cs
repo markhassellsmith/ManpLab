@@ -180,6 +180,9 @@ namespace ManpWinUI
             // Set window title
             window.Title = "ManpLab - Fractal Explorer";
 
+            // Set title bar icon (WinUI 3 requires explicit API call)
+            SetTitleBarIcon(window);
+
             // Subscribe to window close event to save navigation history
             window.Closed += OnWindowClosed;
 
@@ -375,6 +378,49 @@ namespace ManpWinUI
                 "System" => ElementTheme.Default,
                 _ => ElementTheme.Default
             };
+        }
+
+        /// <summary>
+        /// Sets the title bar icon for the window.
+        /// WinUI 3 requires explicit AppWindow API calls to display title bar icons.
+        /// </summary>
+        private static void SetTitleBarIcon(Window window)
+        {
+            try
+            {
+                // Get the AppWindow for the Window
+                var appWindow = GetAppWindowForWindow(window);
+                if (appWindow != null)
+                {
+                    // Set the icon using the unplated 32x32 variant
+                    var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledLocation.Path,
+                        "Assets", "ManpLab-Square44x44Logo.targetsize-32_altform-unplated.png");
+
+                    if (File.Exists(iconPath))
+                    {
+                        appWindow.SetIcon(iconPath);
+                        Log.Information("Title bar icon set successfully: {IconPath}", iconPath);
+                    }
+                    else
+                    {
+                        Log.Warning("Title bar icon not found at {IconPath}", iconPath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to set title bar icon");
+            }
+        }
+
+        /// <summary>
+        /// Gets the AppWindow for a WinUI 3 Window.
+        /// </summary>
+        private static Microsoft.UI.Windowing.AppWindow? GetAppWindowForWindow(Window window)
+        {
+            var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
+            var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(windowHandle);
+            return Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
         }
     }
 }
