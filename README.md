@@ -7,7 +7,7 @@
 
 ---
 ## Notice of Upcoming Patch
-This project is primarily AI driven. I will be reviewing all 300 fractal formulas and initial values to fix any inaccuracies and to ensure that the first render provides a decent visualization.  When finished, I'll release a minor version with those corrections. (a few weeks from now, 2026-05-08)
+Because this project is primarily AI driven, I will be reviewing all 300 fractals in the coming weeks. I will check formulas and initial values to fix any inaccuracies and to ensure that the first render provides a decent visualization.  When finished, I'll release a minor version with those corrections. (a few weeks from now, 2026-05-08)
 
 ## 📦 Download Release 1.0
 
