@@ -1,4 +1,4 @@
-# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
+﻿# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -7,43 +7,43 @@
 
 **A modern WinUI 3 fractal explorer powered by Paul de Leeuw's production-grade rendering engine**
 
-## ?? Overview
+## 🚀 Overview
 
 ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exceptional fractal rendering engine - featuring perturbation theory, BLA acceleration, and arbitrary-precision arithmetic for extreme deep zoom capabilities (magnification > 10^100).
 
 ### Key Features
 
-- ? **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
-- ?? **300 Fractal Types** - Extended from Paul's 246 originals with 54 new implementations
-- ?? **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
-- ? **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
-- ?? **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
-- ?? **Animation Rendering** - Create MP4 videos with FFmpeg integration
-- ?? **Fractal Browser** - Metadata, formulas, bookmarks, navigation history
-- ?? **Theme System** - Light, Dark, Ocean Blue, and System themes
-- ??? **Interactive Exploration** - Mouse, keyboard, and touch navigation
-- ?? [Full Keyboard Shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
+- ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
+- 🎨 **300 Fractal Types** - Extended from Paul's 246 originals with 54 new implementations
+- 🔬 **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
+- ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
+- 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
+- 🎬 **Animation Rendering** - Create MP4 videos with FFmpeg integration
+- 📚 **Fractal Browser** - Metadata, formulas, bookmarks, navigation history
+- 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
+- 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
+- ⌨️ [Full Keyboard Shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
 
-?? **[Get Started with ManpWinUI ?](ManpWinUI/README.md)**
+🔗 **[Get Started with ManpWinUI →](ManpWinUI/README.md)**
 
 ### Architecture
 
 ```
-+-----------------------------------------+
-�   ManpWinUI (WinUI 3 / .NET 10)        �
-�   Modern UI, MVVM, Theme System         �
-+-----------------------------------------+
-                   �
-+------------------?----------------------+
-�   Native C++ Fractal Engine             �
-�   (Paul de Leeuw's Production Engine)   �
-�   � Perturbation Theory                 �
-�   � BLA Acceleration                    �
-�   � Arbitrary Precision (MPFR/QD)       �
-�   � 246 Original Fractal Types          �
-�   � Extended to 300 Types in ManpLab    �
-�   � Multithreaded Rendering             �
-+-----------------------------------------+
+┌─────────────────────────────────────────┐
+│   ManpWinUI (WinUI 3 / .NET 10)        │
+│   Modern UI, MVVM, Theme System         │
+└──────────────────┬──────────────────────┘
+                   │
+┌──────────────────▼──────────────────────┐
+│   Native C++ Fractal Engine             │
+│   (Paul de Leeuw's Production Engine)   │
+│   • Perturbation Theory                 │
+│   • BLA Acceleration                    │
+│   • Arbitrary Precision (MPFR/QD)       │
+│   • 246 Original Fractal Types          │
+│   • Extended to 300 Types in ManpLab    │
+│   • Multithreaded Rendering             │
+└─────────────────────────────────────────┘
 ```
 
 This educational fork makes Paul's sophisticated rendering technology accessible through a modern, user-friendly interface designed for students, educators, and researchers.
@@ -81,9 +81,9 @@ This educational fork makes Paul's sophisticated rendering technology accessible
 
 [![Latest Release](https://img.shields.io/github/v/release/markhassellsmith/ManpLab)](https://github.com/markhassellsmith/ManpLab/releases/latest)
 
-**[Download Latest Release ?](https://github.com/markhassellsmith/ManpLab/releases/latest)**
+**[Download Latest Release →](https://github.com/markhassellsmith/ManpLab/releases/latest)**
 
-#### Portable ZIP (Recommended) ?
+#### Portable ZIP (Recommended) ✅
 - **No installation** - extract and run `ManpWinUI.exe`
 - **No security warnings** - runs immediately
 - **Self-contained** - includes all dependencies
@@ -91,7 +91,7 @@ This educational fork makes Paul's sophisticated rendering technology accessible
 
 #### MSIX Package (Alternative)
 - **Modern Windows app** - clean install/uninstall via Settings
-- **?? Shows security warning** - unsigned package (normal for open-source)
+- **⚠️ Shows security warning** - unsigned package (normal for open-source)
 - See installation guide included in the download
 - **Best for**: Users preferring managed apps with auto-update support
 
@@ -153,7 +153,7 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 **Applications Across Disciplines:**
 - **Electrical:** Chua's circuit, fractal antennas, chaos-based encryption
 - **Mechanical:** Turbulent flow, nonlinear oscillators, fracture mechanics
-- **General:** Strange attractors (Lorenz, R�ssler, H�non), bifurcation analysis, orbit traps, Lyapunov exponents
+- **General:** Strange attractors (Lorenz, Rössler, Hénon), bifurcation analysis, orbit traps, Lyapunov exponents
 
 ---
 
@@ -206,7 +206,7 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 
 **Advanced Variants (40+):** MandelDerivatives, Mandelbar/Tricorn, Spider, Thorn, Tetration, Power Towers
 
-**Scientific Systems (30+):** Strange attractors (Lorenz, R�ssler, H�non, Pickover, Chua), bifurcation diagrams, Lyapunov fractals
+**Scientific Systems (30+):** Strange attractors (Lorenz, Rössler, Hénon, Pickover, Chua), bifurcation diagrams, Lyapunov fractals
 
 **Hailstone Sequences:** 2D integer lattice dynamics with cycle detection, 5 transformation presets
 
@@ -226,31 +226,31 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 
 ```
 ManpLab/
-+-- ManpWinUI/              # WinUI 3 application (.NET 10)
-�   +-- ViewModels/         # MVVM view models
-�   +-- Views/              # XAML pages and controls
-�   +-- Services/           # Business logic layer
-�   +-- Documentation/      # Comprehensive project docs
-�
-+-- ManpCore.Services/      # Shared .NET services
-�   +-- FractalEngineWrapper.cs
-�
-+-- ManpCore.Native/        # C++/WinRT interop layer
-�   +-- FractalEngineWrapper.cpp/.h
-�
-+-- ManpWIN64/              # Native C++ rendering engine (156 files)
-�   +-- Perturbation.cpp    # Perturbation algorithm
-�   +-- Approximation.cpp   # BLA acceleration
-�   +-- Slope.cpp           # Derivative shading
-�   +-- BigComplex.cpp      # Arbitrary-precision complex
-�   +-- Pixel.cpp           # Standard iteration engine
-�   +-- ...
-�
-+-- parser/                 # Formula parser & VM (21 files)
-+-- qdlib/                  # Quad-double arithmetic
-+-- pnglib/                 # PNG export
-+-- ZLib/                   # Compression
-+-- external/               # MPFR, GMP, FFmpeg libraries
+├── ManpWinUI/              # WinUI 3 application (.NET 10)
+│   ├── ViewModels/         # MVVM view models
+│   ├── Views/              # XAML pages and controls
+│   ├── Services/           # Business logic layer
+│   └── Documentation/      # Comprehensive project docs
+│
+├── ManpCore.Services/      # Shared .NET services
+│   └── FractalEngineWrapper.cs
+│
+├── ManpCore.Native/        # C++/WinRT interop layer
+│   └── FractalEngineWrapper.cpp/.h
+│
+├── ManpWIN64/              # Native C++ rendering engine (156 files)
+│   ├── Perturbation.cpp    # Perturbation algorithm
+│   ├── Approximation.cpp   # BLA acceleration
+│   ├── Slope.cpp           # Derivative shading
+│   ├── BigComplex.cpp      # Arbitrary-precision complex
+│   ├── Pixel.cpp           # Standard iteration engine
+│   └── ...
+│
+├── parser/                 # Formula parser & VM (21 files)
+├── qdlib/                  # Quad-double arithmetic
+├── pnglib/                 # PNG export
+├── ZLib/                   # Compression
+└── external/               # MPFR, GMP, FFmpeg libraries
 ```
 
 ### Key Source Categories (Native Engine)
