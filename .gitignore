@@ -7,6 +7,11 @@ obj/
 Release/
 Debug/
 
+# But allow Build/ scripts directory (capital B)
+!Build/
+Build/Output/
+Build/Artifacts/
+
 # CMake generated
 CMakeCache.txt
 CMakeFiles/

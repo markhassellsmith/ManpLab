@@ -1,0 +1,74 @@
+name: Build and Package ManpLab
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3
+
+    - name: Restore NuGet packages
+      run: dotnet restore ManpLab.sln
+
+    - name: Build Solution
+      run: dotnet build ManpLab.sln -c Release --no-restore
+
+    - name: Run Packaging Script
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}" -replace '^v', ''
+        if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+          $version = "${{ github.event.inputs.version }}"
+        }
+        .\Build\Package-Release.ps1 -Version $version -Configuration Release -Platform x64
+
+    - name: Upload Portable ZIP
+      uses: actions/upload-artifact@v4
+      with:
+        name: ManpLab-Portable
+        path: Build/Artifacts/*.zip
+
+    - name: Upload MSIX Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: ManpLab-MSIX
+        path: Build/Artifacts/*.msix
+
+    - name: Upload Installation Guide
+      uses: actions/upload-artifact@v4
+      with:
+        name: Installation-Guide
+        path: Build/Artifacts/MSIX-Installation-Guide.txt
+
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          Build/Artifacts/*.zip
+          Build/Artifacts/*.msix
+          Build/Artifacts/MSIX-Installation-Guide.txt
+        draft: true
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

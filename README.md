@@ -68,13 +68,23 @@ This educational fork makes Paul's sophisticated rendering technology accessible
 
 ## Quick Start
 
-### Pre-built Executable
+### Pre-built Distributions
 
 [![Latest Release](https://img.shields.io/github/v/release/markhassellsmith/ManpLab)](https://github.com/markhassellsmith/ManpLab/releases/latest)
 
-**[Download Latest Release](https://github.com/markhassellsmith/ManpLab/releases/latest)**
+**[Download Latest Release →](https://github.com/markhassellsmith/ManpLab/releases/latest)**
 
-No installation required. Extract and run ManpWinUI on Windows 10/11 (64-bit).
+#### Portable ZIP (Recommended) ✅
+- **No installation** - extract and run `ManpWinUI.exe`
+- **No security warnings** - runs immediately
+- **Self-contained** - includes all dependencies
+- **Perfect for**: Educational use, quick testing, no admin rights needed
+
+#### MSIX Package (Alternative)
+- **Modern Windows app** - clean install/uninstall via Settings
+- **⚠️ Shows security warning** - unsigned package (normal for open-source)
+- See installation guide included in the download
+- **Best for**: Users preferring managed apps with auto-update support
 
 ### Build from Source
 
