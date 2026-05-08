@@ -52,11 +52,11 @@ This educational fork makes Paul's sophisticated rendering technology accessible
 
 ## Screenshots
 
-![Mandelbrot Set](images/mandelbrot-classic.png)
+![Mandelbrot Set in Spectrum Palette](images/mandelbrot-classic.png)
 
-![Deep Zoom](images/deep-zoom-perturbation.png)
+![Tetrate Deep Zoom in Psychedelic Palette](images/deep-zoom-perturbation.png)
 
-![Barnsley M2 Fractal](images/barnsley-m2.png)
+![Julia Classic in Fire Palette](images/barnsley-m2.png)
 
 ![Hailstone Sequence](images/Hailstone-sequence.png)
 
