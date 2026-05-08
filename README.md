@@ -17,7 +17,7 @@ A complete modern fractal application with comprehensive features:
 - 🎨 **300 fractal types** - Mandelbrot variants, Julia sets, strange attractors, IFS, and more
 - 🖱️ Interactive exploration with mouse, keyboard, and touch
 - 🎬 **Animation rendering** - Create MP4 videos with FFmpeg integration
-- 📚 **Fractal browser** with metadata, formulas, and bookmarks
+- 📚 **Fractal browser** with metadata, formulas, bookmarks (favorites), back/forward buttons with fractal navigation history
 - 🎨 **Theme system** - Light, Dark, Ocean Blue, and System themes
 - 🔬 **Deep zoom** with high-precision arithmetic
 - ⌨️ [Full keyboard shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
