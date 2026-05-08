@@ -125,7 +125,7 @@ Write-Host "Creating ZIP archive: $ZipName..." -ForegroundColor Gray
 Compress-Archive -Path "$PortableDir\*" -DestinationPath $ZipPath -CompressionLevel Optimal -Force
 
 $ZipSize = [math]::Round((Get-Item $ZipPath).Length / 1MB, 2)
-Write-Host "✓ Portable ZIP created: $ZipSize MB" -ForegroundColor Green
+Write-Host "[SUCCESS] Portable ZIP created: $ZipSize MB" -ForegroundColor Green
 Write-Host ""
 
 # ============================================
@@ -162,7 +162,7 @@ if ($MsixSource) {
     Copy-Item $MsixSource.FullName -Destination $MsixPath
 
     $MsixSize = [math]::Round((Get-Item $MsixPath).Length / 1MB, 2)
-    Write-Host "✓ MSIX package created: $MsixSize MB" -ForegroundColor Green
+    Write-Host "[SUCCESS] MSIX package created: $MsixSize MB" -ForegroundColor Green
 
     # Create installation guide
     $MsixReadme = @"
@@ -227,7 +227,7 @@ MIT License - See LICENSE file for details.
     Set-Content -Path (Join-Path $ArtifactsDir "MSIX-Installation-Guide.txt") -Value $MsixReadme
 
 } else {
-    Write-Host "⚠ MSIX package not found in expected location" -ForegroundColor Yellow
+    Write-Host "[WARNING] MSIX package not found in expected location" -ForegroundColor Yellow
     Write-Host "  This might be OK - check ManpWinUI\AppPackages manually" -ForegroundColor Yellow
 }
 

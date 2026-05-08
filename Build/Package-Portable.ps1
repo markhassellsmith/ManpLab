@@ -70,5 +70,5 @@ Compress-Archive -Path "$PortableDir\*" -DestinationPath $ZipPath -CompressionLe
 
 $ZipSize = [math]::Round((Get-Item $ZipPath).Length / 1MB, 2)
 Write-Host ""
-Write-Host "✓ Success! Created: $ZipName ($ZipSize MB)" -ForegroundColor Green
+Write-Host "[SUCCESS] Created: $ZipName ($ZipSize MB)" -ForegroundColor Green
 Write-Host "Location: $ArtifactsDir" -ForegroundColor Cyan
