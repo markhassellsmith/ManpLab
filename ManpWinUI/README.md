@@ -50,18 +50,28 @@ This educational fork makes Paul's sophisticated rendering technology accessible
 
 ---
 
-THIS IS THE REAL README
-
 
 ## Screenshots
 
-![Mandelbrot Set](Documentation/images/mandelbrot-classic.png)
+![Mandelbrot Set rendered in the Spectrum palette](Documentation/images/Mandelbrot-in-Spectrum-palette.png)
 
-![Deep Zoom](Documentation/images/deep-zoom-perturbation.png)
+*Mandelbrot Set rendered in the Spectrum palette*
 
-![Barnsley M2 Fractal](Documentation/images/barnsley-m2.png)
 
-![Hailstone Sequence](Documentation/images/Hailstone-sequence.png)
+![Classic Julia Set rendered in the Fire palette](Documentation/images/JuliaClassic-in-Fire-palette.png)
+
+*Classic Julia Set rendered in the Fire palette*
+
+
+![Zoomed Tetrate rendered in the Psychedelic palette](Documentation/images/Tetrate-zoomed-in-Psychedelic-palette.png)
+
+*Zoomed Tetrate rendered in the Psychedelic palette*
+
+
+![2-Dimensional Hailstone Sequence with segments and point labels](Documentation/images/Hailstone-sequence.png)
+
+*2-Dimensional Hailstone Sequence with segments and point labels*
+
 
 ---
 
