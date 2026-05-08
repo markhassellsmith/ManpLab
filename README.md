@@ -1,45 +1,52 @@
-# ManpLab - Fractal Explorer Suite - Release 1.0 (Educational Fork)
+# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
 ![.NET](https://img.shields.io/badge/.NET-10-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-**Two complementary fractal applications for education and research:**
+**A modern WinUI 3 fractal explorer powered by Paul de Leeuw's production-grade rendering engine**
 
-## 📋 Choose Your Application
+## 🚀 Overview
 
-### 🖥️ [ManpWinUI](ManpWinUI/) - Modern Fractal Explorer
-**Windows 11 | .NET 10** | WinUI 3 | MVVM architecture
+ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exceptional fractal rendering engine - featuring perturbation theory, BLA acceleration, and arbitrary-precision arithmetic for extreme deep zoom capabilities (magnification > 10^100).
 
-A complete modern fractal application with comprehensive features:
-- ✨ Modern, clean WinUI 3 interface with MVVM architecture
-- 🎨 **300 fractal types** - Mandelbrot variants, Julia sets, strange attractors, IFS, and more
-- 🖱️ Interactive exploration with mouse, keyboard, and touch
-- 🎬 **Animation rendering** - Create MP4 videos with FFmpeg integration
-- 📚 **Fractal browser** with metadata, formulas, bookmarks (favorites), back/forward buttons with fractal navigation history
-- 🎨 **Theme system** - Light, Dark, Ocean Blue, and System themes
-- 🔬 **Deep zoom** with high-precision arithmetic
-- ⌨️ [Full keyboard shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
+### Key Features
+
+- ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
+- 🎨 **300 Fractal Types** - Extended from Paul's 246 originals with 54 new implementations
+- 🔬 **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
+- ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
+- 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
+- 🎬 **Animation Rendering** - Create MP4 videos with FFmpeg integration
+- 📚 **Fractal Browser** - Metadata, formulas, bookmarks, navigation history
+- 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
+- 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
+- ⌨️ [Full Keyboard Shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
 
 🔗 **[Get Started with ManpWinUI →](ManpWinUI/README.md)**
 
----
+### Architecture
 
-### 🔬 [ManpWIN64](ManpWIN64/) - Research & Advanced Features
-**Windows 10/11 | C++17 | CMake** | Windows Forms UI
+```
+┌─────────────────────────────────────────┐
+│   ManpWinUI (WinUI 3 / .NET 10)        │
+│   Modern UI, MVVM, Theme System         │
+└──────────────────┬──────────────────────┘
+                   │
+┌──────────────────▼──────────────────────┐
+│   Native C++ Fractal Engine             │
+│   (Paul de Leeuw's Production Engine)   │
+│   • Perturbation Theory                 │
+│   • BLA Acceleration                    │
+│   • Arbitrary Precision (MPFR/QD)       │
+│   • 246 Original Fractal Types          │
+│   • Extended to 300 Types in ManpLab    │
+│   • Multithreaded Rendering             │
+└─────────────────────────────────────────┘
+```
 
-For researchers and advanced users needing maximum capability:
-- 🎨 **300 fractal types** (Mandelbrot variants, Julia sets, Newton, IFS, attractors)
-- 🔭 **Deep zoom** with perturbation theory (magnification > 10^100)
-- 🧮 **Arbitrary precision** arithmetic (MPFR, QD libraries)
-- ⚡ **BLA acceleration** for extreme performance
-- 🎨 Advanced coloring with Fractint palette support
-- ⌨️ [Full keyboard shortcuts](ManpWIN64/KEYBOARD_SHORTCUTS.md)
-
-🔗 **[Get Started with ManpWIN64 →](ManpWIN64/README.md)**
-
-**This README documents ManpWIN64.** An educational C++ fractal rendering application featuring deep-zoom technology, BLA acceleration, and arbitrary-precision arithmetic. This self-contained fork includes all dependencies and requires no configuration.
+This educational fork makes Paul's sophisticated rendering technology accessible through a modern, user-friendly interface designed for students, educators, and researchers.
 
 ---
 
@@ -63,18 +70,18 @@ For researchers and advanced users needing maximum capability:
 
 ### Pre-built Executable
 
-[![Latest Release](https://img.shields.io/github/v/release/markhassellsmith/manpwin)](https://github.com/markhassellsmith/manpwin/releases/latest)
+[![Latest Release](https://img.shields.io/github/v/release/markhassellsmith/ManpLab)](https://github.com/markhassellsmith/ManpLab/releases/latest)
 
-**[Download Latest Release](https://github.com/markhassellsmith/manpwin/releases/latest)**
+**[Download Latest Release](https://github.com/markhassellsmith/ManpLab/releases/latest)**
 
-No installation or Visual Studio required. Extract and run on Windows 10/11 (64-bit).
+No installation required. Extract and run ManpWinUI on Windows 10/11 (64-bit).
 
 ### Build from Source
 
 ```bash
-git clone https://github.com/markhassellsmith/manpwin.git
-cd manpwin
-# Open ManpWIN64.sln in Visual Studio 2022 and build (F5)
+git clone https://github.com/markhassellsmith/ManpLab.git
+cd ManpLab
+# Open ManpLab.sln in Visual Studio 2022 and build (F5)
 ```
 
 All dependencies are included. The project builds without additional configuration.
@@ -82,80 +89,95 @@ All dependencies are included. The project builds without additional configurati
 **Requirements:**
 - Windows 10 or 11 (x64)
 - Visual Studio 2022 (Community Edition supported)
+- .NET 10 SDK
 - Git (for cloning)
 
 ---
 
 ## Educational Applications
 
-This project serves as a comprehensive platform for studying fractals, numerical methods, and computational mathematics across multiple disciplines.
+ManpLab serves as a comprehensive platform for studying fractals, numerical methods, and computational mathematics across multiple disciplines, combining modern software engineering with advanced mathematical algorithms.
 
 ### Mathematics
 
 **Complex Dynamics & Numerical Analysis:**
-- 300 fractal types: Mandelbrot, Julia sets, Newton fractals, exotic variants
-- Perturbation theory for studying chaotic systems
+- 300 fractal types (246 from Paul de Leeuw, 54 new implementations): Mandelbrot, Julia sets, Newton fractals, exotic variants
+- Perturbation theory for studying chaotic systems at extreme scales
 - Deep zoom with magnifications exceeding 10^100
 - Arbitrary-precision arithmetic (MPFR, QD, DD libraries)
-- Numerical stability demonstrations
+- Numerical stability demonstrations and precision management
 
 **Advanced Algorithms:**
 - BLA (Bilinear Approximation) series approximation
 - Perturbation algorithm with reference orbits
-- Newton-Raphson root finding
-- Analytical derivative calculations
+- Newton-Raphson root finding for fractal boundaries
+- Analytical derivative calculations for distance estimation
 
 ### Computer Science
 
-**Software Architecture:**
-- Large-scale C++ project (156 source files, 6 CMake subprojects)
+**Modern Software Architecture:**
+- WinUI 3 application with MVVM pattern
+- C++/WinRT native-managed interop
+- Large-scale C++ engine (156 source files, 6 CMake subprojects)
 - Template metaprogramming with generic numeric types
-- Object-oriented design patterns
-- Custom formula parser with VM execution
+- Service-oriented architecture with dependency injection
 
 **Performance Engineering:**
-- Multithreaded rendering engine
+- Multithreaded rendering engine (utilizes all CPU cores)
 - Cache optimization techniques
 - Memory management with smart pointers
 - Vectorization-ready code structure
+- Progressive rendering with cancellation support
 
 ### Physics & Engineering
 
 **Applications Across Disciplines:**
 - **Electrical:** Chua's circuit, fractal antennas, chaos-based encryption
 - **Mechanical:** Turbulent flow, nonlinear oscillators, fracture mechanics
-- **General:** Strange attractors (Lorenz, Rössler, Hénon), bifurcation analysis, orbit traps
+- **General:** Strange attractors (Lorenz, Rössler, Hénon), bifurcation analysis, orbit traps, Lyapunov exponents
 
 ---
 
 ## Technical Features
 
-### Deep Zoom Technology
-- Perturbation theory for efficient extreme magnification
-- BLA series expansion to skip iterations
-- Arbitrary precision (MPFR) up to thousands of decimal places
-- FloatExp extended exponent range
-- Automatic precision scaling
+### Native C++ Rendering Engine (Paul de Leeuw's Implementation)
 
-### Rendering Capabilities
-- Escape-time, slope/derivative shading, distance estimation
-- Potential field, orbit trap, biomorph modes
+#### Deep Zoom Technology
+- Perturbation theory for efficient extreme magnification
+- BLA series expansion to skip hundreds of iterations
+- Arbitrary precision (MPFR) up to thousands of decimal places
+- FloatExp extended exponent range for ultra-deep zooms
+- Automatic precision scaling based on zoom level
+
+#### Rendering Capabilities
+- Multiple render modes: escape-time, slope/derivative shading, distance estimation
+- Potential field, orbit trap, and biomorph coloring
 - 24-bit true color with smooth gradients
 - Bump mapping and animated color cycling
 - Fractint .map palette support
 
-### Performance
-- Multithreaded engine (all CPU cores)
-- Solid guessing and boundary tracing
-- Progressive rendering
+#### Performance Optimizations
+- Multithreaded engine utilizing all CPU cores
+- Solid guessing and boundary tracing algorithms
+- Progressive rendering with cancellation
 - Dynamic task distribution
-- Memory-mapped file support
+- Memory-mapped file support for large datasets
 
-### Formula System
-- Custom scripting language
+#### Formula System
+- Custom scripting language for fractal definitions
 - Virtual machine bytecode execution
 - 100+ built-in mathematical functions
 - Fractint formula compatibility
+
+### Modern WinUI 3 Interface
+
+- Responsive, touch-friendly design
+- MVVM architecture with data binding
+- Theme support (Light, Dark, Ocean Blue, System)
+- Real-time parameter updates
+- Fractal metadata browser with favorites
+- Animation timeline editor
+- Keyboard shortcuts for power users
 
 ---
 
@@ -184,24 +206,35 @@ This project serves as a comprehensive platform for studying fractals, numerical
 ## Project Structure
 
 ```
-manpwin/
-├── ManpWIN64/              # Main application (156 C++ files)
+ManpLab/
+├── ManpWinUI/              # WinUI 3 application (.NET 10)
+│   ├── ViewModels/         # MVVM view models
+│   ├── Views/              # XAML pages and controls
+│   ├── Services/           # Business logic layer
+│   └── Documentation/      # Comprehensive project docs
+│
+├── ManpCore.Services/      # Shared .NET services
+│   └── FractalEngineWrapper.cs
+│
+├── ManpCore.Native/        # C++/WinRT interop layer
+│   └── FractalEngineWrapper.cpp/.h
+│
+├── ManpWIN64/              # Native C++ rendering engine (156 files)
 │   ├── Perturbation.cpp    # Perturbation algorithm
 │   ├── Approximation.cpp   # BLA acceleration
 │   ├── Slope.cpp           # Derivative shading
 │   ├── BigComplex.cpp      # Arbitrary-precision complex
-│   ├── Pixel.cpp           # Standard iteration
+│   ├── Pixel.cpp           # Standard iteration engine
 │   └── ...
+│
 ├── parser/                 # Formula parser & VM (21 files)
 ├── qdlib/                  # Quad-double arithmetic
 ├── pnglib/                 # PNG export
 ├── ZLib/                   # Compression
-├── external/               # MPFR, GMP libraries
-├── CMakeLists.txt          # Build configuration
-└── ManpWIN64.sln           # Visual Studio solution
+└── external/               # MPFR, GMP, FFmpeg libraries
 ```
 
-### Key Source Categories
+### Key Source Categories (Native Engine)
 
 **Core Rendering:** `Pixel.cpp`, `BigPixel.cpp`, `Perturbation.cpp`, `PertEngine.cpp`
 
@@ -255,19 +288,24 @@ manpwin/
 
 ### Visual Studio (Recommended)
 
-1. Install Visual Studio 2022 with "Desktop development with C++" workload
-2. Clone repository: `git clone https://github.com/markhassellsmith/manpwin.git`
-3. Open `ManpWIN64.sln`
-4. Build (F5)
+1. Install Visual Studio 2022 with:
+   - "Desktop development with C++" workload
+   - ".NET desktop development" workload
+   - .NET 10 SDK
+2. Clone repository: `git clone https://github.com/markhassellsmith/ManpLab.git`
+3. Open `ManpLab.sln`
+4. Build (F5) - ManpWinUI will be set as startup project
 
 ### Command Line
 
 ```bash
-git clone https://github.com/markhassellsmith/manpwin.git
-cd manpwin
+git clone https://github.com/markhassellsmith/ManpLab.git
+cd ManpLab
+# Build native engine
 cmake -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Release
-build\Release\ManpWIN64.exe
+# Build WinUI app
+dotnet build ManpWinUI/ManpWinUI.csproj -c Release
 ```
 
 ---
@@ -275,29 +313,33 @@ build\Release\ManpWIN64.exe
 ## Troubleshooting
 
 **Build Issues:**
-- Ensure all files from `external/lib/x64/` are present
+- Ensure C++ and .NET workloads are installed
+- Verify .NET 10 SDK is present
 - Clean and rebuild if linker errors occur
-- Verify "Desktop development with C++" workload is installed
+- Check that all NuGet packages restore successfully
 
 **Runtime Issues:**
 - Use Release build for production (Debug is significantly slower)
-- Blank window: Clean and rebuild to recompile resources
-- Crashes: Ensure Debug/Release configuration matches
+- Ensure native dependencies (MPFR, GMP) are in output directory
+- Check Windows 10/11 is up to date for WinUI 3 support
 
 **Performance:**
-- Enable BLA for deep zooms (automatic in most cases)
+- Deep zoom automatically enables BLA and perturbation theory
 - Reduce max iterations for initial exploration
-- Use multithreading (automatic)
+- Multithreading is automatic (uses all CPU cores)
+- Use "Progressive rendering" for interactive feedback
 
 ---
 
 ## Technology Stack
 
-**Core:** C++17, Win32 API, CMake 3.23+, Visual Studio 2022
+**Frontend:** .NET 10, WinUI 3, C#, XAML, MVVM Toolkit
+
+**Native Engine:** C++17, Win32 API, CMake 3.23+
 
 **Mathematical Libraries:** MPFR 4.2.2, GMP 6.3.0, QD Library, DD Arithmetic
 
-**Supporting:** libpng, ZLib, MPEG
+**Media:** FFmpeg (animation export), libpng, ZLib
 
 ---
 
@@ -346,11 +388,13 @@ Contributions are welcome from students, educators, and researchers.
 
 ## Credits
 
-**Original Author:** Paul de Leeuw (Paul the LionHeart)
+**Paul de Leeuw (Paul the LionHeart)** - Native rendering engine with perturbation theory, BLA acceleration, and 246 original fractal implementations
 
-**Educational Fork:** Mark Hassell Smith (2026)
+**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 54 new fractals, metadata system, and educational materials
 
-This is an educational fork created for teaching purposes. Special thanks to the fractal community at FractalForums.org for inspiration and research contributions.
+**GitHub Copilot** - Development assistance and documentation support
+
+Special thanks to the fractal community at FractalForums.org for continued inspiration and technical contributions.
 
 ---
 
@@ -365,12 +409,17 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 ## Version History
 
 **v1.0 (2026)** - Educational fork release
-- Complete restructure for teaching
-- Documentation overhaul
-- Build system modernization
+- Modern WinUI 3 interface with MVVM architecture
+- Complete integration of Paul de Leeuw's native engine
+- Extended from 246 to 300 fractal types (54 new implementations)
+- Comprehensive fractal metadata system
+- Animation rendering with FFmpeg
+- Theme system and accessibility features
+- Comprehensive documentation
 - Self-contained dependency management
 
 **Original ManpWIN** - Paul de Leeuw (multiple versions 1990s-2010s)
-- Original deep zoom implementation
-- Perturbation and BLA algorithms
-- Formula parser and 300+ fractal types
+- Deep zoom with perturbation theory
+- BLA acceleration algorithms
+- Formula parser and 246 fractal implementations
+- Arbitrary-precision arithmetic integration
