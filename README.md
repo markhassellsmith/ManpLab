@@ -52,17 +52,13 @@ This educational fork makes Paul's sophisticated rendering technology accessible
 
 ## Screenshots
 
-![Mandelbrot Set](docs/images/mandelbrot-classic.png)
-*Classic Mandelbrot set with smooth coloring*
+![Mandelbrot Set](images/mandelbrot-classic.png)
 
-![Deep Zoom](docs/images/deep-zoom-perturbation.png)
-*Deep zoom using perturbation theory and BLA acceleration*
+![Deep Zoom](images/deep-zoom-perturbation.png)
 
-![Barnsley M2 Fractal](docs/images/barnsley-m2.png)
-*Barnsley M2 IFS fractal*
+![Barnsley M2 Fractal](images/barnsley-m2.png)
 
-![Hailstone Sequence](docs/images/Hailstone-sequence.png)
-*2D Hailstone sequence with cycle detection*
+![Hailstone Sequence](images/Hailstone-sequence.png)
 
 ---
 
