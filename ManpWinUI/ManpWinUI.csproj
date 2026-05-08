@@ -367,6 +367,13 @@
 		<None Include="Documentation\**\*.md" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Documentation\images\mandelbrot-classic.png" />
+		<Content Include="Documentation\images\deep-zoom-perturbation.png" />
+		<Content Include="Documentation\images\barnsley-m2.png" />
+		<Content Include="Documentation\images\Hailstone-sequence.png" />
+	</ItemGroup>
+
 	<!-- 
         Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
         Explorer "Package and Publish" context menu entry to be enabled for this project even if 

@@ -1,13 +1,19 @@
+using System.Text.Json;
 using Windows.Storage;
 
 namespace ManpWinUI.Services;
 
 /// <summary>
-/// Implementation of app settings service using ApplicationData.LocalSettings.
+/// Implementation of app settings service that works for both packaged (MSIX) and unpackaged (portable ZIP) scenarios.
+/// For packaged apps: uses ApplicationData.LocalSettings
+/// For unpackaged apps: uses JSON file in AppData\Local
 /// </summary>
 public class AppSettingsService : IAppSettingsService
 {
-    private readonly ApplicationDataContainer _localSettings;
+    private readonly ApplicationDataContainer? _localSettings;
+    private readonly string? _settingsFilePath;
+    private readonly Dictionary<string, object> _fileSettings;
+    private readonly bool _isPackaged;
 
     private const string BrowserWidthKey = "BrowserPanelWidth";
     private const string PropertiesWidthKey = "PropertiesPanelWidth";
@@ -32,77 +38,165 @@ public class AppSettingsService : IAppSettingsService
 
     public AppSettingsService()
     {
-        _localSettings = ApplicationData.Current.LocalSettings;
+        // Try to detect if we're running as a packaged app (MSIX) or unpackaged (portable ZIP)
+        try
+        {
+            _localSettings = ApplicationData.Current.LocalSettings;
+            _isPackaged = true;
+            System.Diagnostics.Debug.WriteLine("[AppSettingsService] Running as packaged app (MSIX) - using ApplicationData.LocalSettings");
+        }
+        catch (Exception ex)
+        {
+            // If ApplicationData.Current fails, we're running unpackaged
+            _isPackaged = false;
+            System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Running as unpackaged app (portable) - using JSON file storage: {ex.Message}");
+
+            // Use JSON file in LocalAppData for unpackaged scenarios
+            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appFolder = Path.Combine(localAppData, "ManpLab");
+            Directory.CreateDirectory(appFolder);
+            _settingsFilePath = Path.Combine(appFolder, "settings.json");
+
+            // Load existing settings from file
+            _fileSettings = LoadSettingsFromFile();
+            System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Settings file: {_settingsFilePath}");
+        }
+    }
+
+    private Dictionary<string, object> LoadSettingsFromFile()
+    {
+        if (!string.IsNullOrEmpty(_settingsFilePath) && File.Exists(_settingsFilePath))
+        {
+            try
+            {
+                var json = File.ReadAllText(_settingsFilePath);
+                var settings = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+                if (settings != null)
+                {
+                    // Convert JsonElement to appropriate types
+                    var result = new Dictionary<string, object>();
+                    foreach (var kvp in settings)
+                    {
+                        result[kvp.Key] = ConvertJsonElement(kvp.Value);
+                    }
+                    System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Loaded {result.Count} settings from file");
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Error loading settings file: {ex.Message}");
+            }
+        }
+        return new Dictionary<string, object>();
+    }
+
+    private object ConvertJsonElement(JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.String => element.GetString() ?? string.Empty,
+            JsonValueKind.Number => element.TryGetInt32(out var i) ? (object)i : element.GetDouble(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            _ => element.ToString()
+        };
+    }
+
+    private void SaveSettingsToFile()
+    {
+        if (string.IsNullOrEmpty(_settingsFilePath)) return;
+
+        try
+        {
+            var json = JsonSerializer.Serialize(_fileSettings, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(_settingsFilePath, json);
+            System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Saved {_fileSettings.Count} settings to file");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Error saving settings file: {ex.Message}");
+        }
+    }
+
+    private object? GetValue(string key)
+    {
+        if (_isPackaged && _localSettings != null)
+        {
+            return _localSettings.Values.TryGetValue(key, out var value) ? value : null;
+        }
+        else
+        {
+            return _fileSettings.TryGetValue(key, out var value) ? value : null;
+        }
+    }
+
+    private void SetValue(string key, object value)
+    {
+        if (_isPackaged && _localSettings != null)
+        {
+            _localSettings.Values[key] = value;
+        }
+        else
+        {
+            _fileSettings[key] = value;
+            SaveSettingsToFile();
+        }
     }
 
     public double? GetBrowserPanelWidth()
     {
-        if (_localSettings.Values.TryGetValue(BrowserWidthKey, out var value) && value is double width)
-        {
-            return width;
-        }
-        return null;
+        var value = GetValue(BrowserWidthKey);
+        return value is double width ? width : null;
     }
 
     public void SetBrowserPanelWidth(double width)
     {
-        _localSettings.Values[BrowserWidthKey] = width;
+        SetValue(BrowserWidthKey, width);
     }
 
     public double? GetPropertiesPanelWidth()
     {
-        if (_localSettings.Values.TryGetValue(PropertiesWidthKey, out var value) && value is double width)
-        {
-            return width;
-        }
-        return null;
+        var value = GetValue(PropertiesWidthKey);
+        return value is double width ? width : null;
     }
 
     public void SetPropertiesPanelWidth(double width)
     {
-        _localSettings.Values[PropertiesWidthKey] = width;
+        SetValue(PropertiesWidthKey, width);
     }
 
     public bool GetBrowserPanelVisible()
     {
-        if (_localSettings.Values.TryGetValue(BrowserVisibleKey, out var value) && value is bool visible)
-        {
-            return visible;
-        }
-        return true; // Default to visible
+        var value = GetValue(BrowserVisibleKey);
+        return value is bool visible ? visible : true; // Default to visible
     }
 
     public void SetBrowserPanelVisible(bool visible)
     {
-        _localSettings.Values[BrowserVisibleKey] = visible;
+        SetValue(BrowserVisibleKey, visible);
     }
 
     public bool GetPropertiesPanelVisible()
     {
-        if (_localSettings.Values.TryGetValue(PropertiesVisibleKey, out var value) && value is bool visible)
-        {
-            return visible;
-        }
-        return true; // Default to visible
+        var value = GetValue(PropertiesVisibleKey);
+        return value is bool visible ? visible : true; // Default to visible
     }
 
     public void SetPropertiesPanelVisible(bool visible)
     {
-        _localSettings.Values[PropertiesVisibleKey] = visible;
+        SetValue(PropertiesVisibleKey, visible);
     }
 
     public string? GetSelectedFractal()
     {
-        if (_localSettings.Values.TryGetValue(SelectedFractalKey, out var value) && value is string fractalName)
-        {
-            return fractalName;
-        }
-        return null;
+        var value = GetValue(SelectedFractalKey);
+        return value as string;
     }
 
     public void SetSelectedFractal(string fractalName)
     {
-        _localSettings.Values[SelectedFractalKey] = fractalName;
+        SetValue(SelectedFractalKey, fractalName);
     }
 
     /// <summary>
@@ -112,11 +206,8 @@ public class AppSettingsService : IAppSettingsService
     public string? GetFractalParameters(string fractalName)
     {
         var key = FractalParametersKeyPrefix + fractalName;
-        if (_localSettings.Values.TryGetValue(key, out var value) && value is string json)
-        {
-            return json;
-        }
-        return null;
+        var value = GetValue(key);
+        return value as string;
     }
 
     /// <summary>
@@ -126,7 +217,7 @@ public class AppSettingsService : IAppSettingsService
     public void SetFractalParameters(string fractalName, string parametersJson)
     {
         var key = FractalParametersKeyPrefix + fractalName;
-        _localSettings.Values[key] = parametersJson;
+        SetValue(key, parametersJson);
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -135,103 +226,84 @@ public class AppSettingsService : IAppSettingsService
 
     public string GetTheme()
     {
-        if (_localSettings.Values.TryGetValue(ThemeKey, out var value) && value is string theme)
-        {
-            return theme;
-        }
-        return "System"; // Default to system theme
+        var value = GetValue(ThemeKey);
+        return value as string ?? "System"; // Default to system theme
     }
 
     public void SetTheme(string theme)
     {
-        _localSettings.Values[ThemeKey] = theme;
+        SetValue(ThemeKey, theme);
     }
 
     public string GetDefaultPalette()
     {
-        if (_localSettings.Values.TryGetValue(DefaultPaletteKey, out var value) && value is string palette)
-        {
-            System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Retrieved saved palette: '{palette}'");
-            return palette;
-        }
-        System.Diagnostics.Debug.WriteLine("[AppSettingsService] No saved palette found, returning default: 'Classic'");
-        return "Classic"; // Default palette
+        var value = GetValue(DefaultPaletteKey);
+        var palette = value as string ?? "Classic"; // Default palette
+        System.Diagnostics.Debug.WriteLine(value != null
+            ? $"[AppSettingsService] Retrieved saved palette: '{palette}'"
+            : "[AppSettingsService] No saved palette found, returning default: 'Classic'");
+        return palette;
     }
 
     public void SetDefaultPalette(string palette)
     {
         System.Diagnostics.Debug.WriteLine($"[AppSettingsService] Saving palette: '{palette}'");
-        _localSettings.Values[DefaultPaletteKey] = palette;
+        SetValue(DefaultPaletteKey, palette);
     }
 
     public bool GetShowAxesByDefault()
     {
-        if (_localSettings.Values.TryGetValue(ShowAxesByDefaultKey, out var value) && value is bool show)
-        {
-            return show;
-        }
-        return true; // Default to showing axes
+        var value = GetValue(ShowAxesByDefaultKey);
+        return value is bool show ? show : true; // Default to showing axes
     }
 
     public void SetShowAxesByDefault(bool show)
     {
-        _localSettings.Values[ShowAxesByDefaultKey] = show;
+        SetValue(ShowAxesByDefaultKey, show);
     }
 
     public bool GetUseSmoothColoringByDefault()
     {
-        if (_localSettings.Values.TryGetValue(UseSmoothColoringByDefaultKey, out var value) && value is bool use)
-        {
-            return use;
-        }
-        return false; // Default to standard coloring
+        var value = GetValue(UseSmoothColoringByDefaultKey);
+        return value is bool use ? use : false; // Default to standard coloring
     }
 
     public void SetUseSmoothColoringByDefault(bool use)
     {
-        _localSettings.Values[UseSmoothColoringByDefaultKey] = use;
+        SetValue(UseSmoothColoringByDefaultKey, use);
     }
 
     public string GetDefaultAntialiasingLevel()
     {
-        if (_localSettings.Values.TryGetValue(DefaultAntialiasingLevelKey, out var value) && value is string level)
-        {
-            return level;
-        }
-        return "None"; // Default to no antialiasing
+        var value = GetValue(DefaultAntialiasingLevelKey);
+        return value as string ?? "None"; // Default to no antialiasing
     }
 
     public void SetDefaultAntialiasingLevel(string level)
     {
-        _localSettings.Values[DefaultAntialiasingLevelKey] = level;
+        SetValue(DefaultAntialiasingLevelKey, level);
     }
 
     public int? GetPropertiesTabIndex()
     {
-        if (_localSettings.Values.TryGetValue(PropertiesTabIndexKey, out var value) && value is int index)
-        {
-            return index;
-        }
-        return null;
+        var value = GetValue(PropertiesTabIndexKey);
+        return value is int index ? index : null;
     }
 
     public void SetPropertiesTabIndex(int index)
     {
-        _localSettings.Values[PropertiesTabIndexKey] = index;
+        SetValue(PropertiesTabIndexKey, index);
     }
 
     public bool GetUseDeepZoom()
     {
-        if (_localSettings.Values.TryGetValue(UseDeepZoomKey, out var value) && value is bool use)
-        {
-            return use;
-        }
-        return false; // Default to disabled for safety
+        var value = GetValue(UseDeepZoomKey);
+        return value is bool use ? use : false; // Default to disabled for safety
     }
 
     public void SetUseDeepZoom(bool use)
     {
-        _localSettings.Values[UseDeepZoomKey] = use;
+        SetValue(UseDeepZoomKey, use);
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -241,24 +313,13 @@ public class AppSettingsService : IAppSettingsService
     public string? GetFractalNotes(string fractalName)
     {
         var key = FractalNotesKeyPrefix + fractalName;
-        if (_localSettings.Values.TryGetValue(key, out var value) && value is string notes)
-        {
-            return notes;
-        }
-        return null;
+        var value = GetValue(key);
+        return value as string;
     }
 
-    public void SetFractalNotes(string fractalName, string? notes)
+    public void SetFractalNotes(string fractalName, string notes)
     {
         var key = FractalNotesKeyPrefix + fractalName;
-        if (string.IsNullOrWhiteSpace(notes))
-        {
-            // Remove the key if notes are empty
-            _localSettings.Values.Remove(key);
-        }
-        else
-        {
-            _localSettings.Values[key] = notes;
-        }
+        SetValue(key, notes);
     }
 }
