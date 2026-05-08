@@ -368,9 +368,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Documentation\images\mandelbrot-classic.png" />
-		<Content Include="Documentation\images\deep-zoom-perturbation.png" />
-		<Content Include="Documentation\images\barnsley-m2.png" />
 		<Content Include="Documentation\images\Hailstone-sequence.png" />
 	</ItemGroup>
 
