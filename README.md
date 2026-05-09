@@ -12,6 +12,9 @@
 ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exceptional fractal rendering engine - featuring perturbation theory, BLA acceleration, and arbitrary-precision arithmetic for extreme deep zoom capabilities (magnification > 10^100).
 
 ### Application Screenshot
+![ManpLab Application Screenshot](ManpWinUI/Documentation/images/ManpLab-Application-Screenshot.png)
+
+*ManpLab Application Screenshot (above)*
 
 
 
@@ -55,26 +58,26 @@ This educational fork makes Paul's sophisticated rendering technology accessible
 ---
 
 
-## Screenshots
+## Fractal Samples
 
 ![Mandelbrot Set rendered in the Spectrum palette](ManpWinUI/Documentation/images/Mandelbrot-in-Spectrum-palette.png)
 
-*Mandelbrot Set rendered in the Spectrum palette*
+*Mandelbrot Set rendered in the Spectrum palette (above)*
 
 
 ![Classic Julia Set rendered in the Fire palette](ManpWinUI/Documentation/images/JuliaClassic-in-Fire-palette.png)
 
-*Classic Julia Set rendered in the Fire palette*
+*Classic Julia Set rendered in the Fire palette (above)*
 
 
 ![Zoomed Tetrate rendered in the Psychedelic palette](ManpWinUI/Documentation/images/Tetrate-zoomed-in-Psychedelic-palette.png)
 
-*Zoomed Tetrate rendered in the Psychedelic palette*
+*Zoomed Tetrate rendered in the Psychedelic palette (above)*
 
 
 ![2-Dimensional Hailstone Sequence with segments and point labels](ManpWinUI/Documentation/images/Hailstone-sequence.png)
 
-*2-Dimensional Hailstone Sequence with segments and point labels*
+*2-Dimensional Hailstone Sequence with segments and point labels (above)*
 
 
 ---
