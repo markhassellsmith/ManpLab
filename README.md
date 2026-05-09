@@ -14,7 +14,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 ### Application Screenshot
 ![ManpLab Application Screenshot](ManpWinUI/Documentation/images/ManpLab-Application-Screenshot.png)
 
-*ManpLab Application Screenshot (above)*
+*ManpLab Application - Dark theme- Screenshot (above)*
 
 
 
