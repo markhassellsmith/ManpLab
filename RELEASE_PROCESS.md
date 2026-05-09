@@ -114,6 +114,85 @@ Compress-Archive -Path "Output\Portable\*" `
 
 ## GitHub Release Process
 
+> **📘 For detailed instructions, see [GITHUB_RELEASE_GUIDE.md](GITHUB_RELEASE_GUIDE.md)**
+
+### 🚀 Quick Start with Helper Script (Recommended)
+
+```powershell
+# This script handles everything: build, tag, and prepare for GitHub
+.\Prepare-GitHub-Release.ps1 -Version "1.1.1"
+```
+
+This will:
+1. ✅ Build MSIX and ZIP packages
+2. ✅ Run validation checks
+3. ✅ Create Git tag
+4. ✅ Push to GitHub
+5. ✅ Open browser to create release
+
+---
+
+### 📝 Manual Process
+
+#### Creating a New Release
+
+1. **Build packages:**
+   ```powershell
+   .\Build-Release.ps1 -Version "1.1.1"
+   ```
+
+2. **Create Git tag:**
+   ```bash
+   git tag -a v1.1.1 -m "Release v1.1.1"
+   git push origin v1.1.1
+   ```
+
+3. **Create release on GitHub:**
+   - Go to: https://github.com/markhassellsmith/ManpLab/releases
+   - Click "Draft a new release"
+   - Select tag: `v1.1.1`
+   - Add title: `ManpLab v1.1.1 - [Description]`
+   - Upload files from `Release-Output\`:
+     - `ManpLab-1.1.1-x64.msix`
+     - `ManpLab-Portable-1.1.1-x64.zip`
+   - Click "Publish release"
+
+#### Replacing Files in Existing Release
+
+**Option A: Edit Release (Quick Fix)**
+1. Go to your release page
+2. Click "Edit release" (pencil icon)
+3. Delete old files (click 🗑️ icon)
+4. Upload new files (drag & drop)
+5. Click "Update release"
+
+**Option B: Using GitHub CLI**
+```powershell
+# Delete old files
+gh release delete-asset v1.1.1 ManpLab-1.1.1-x64.msix
+gh release delete-asset v1.1.1 ManpLab-Portable-1.1.1-x64.zip
+
+# Upload new files
+gh release upload v1.1.1 `
+  "Release-Output\MSIX\ManpLab-1.1.1-x64.msix" `
+  "Release-Output\Portable-ZIP\ManpLab-Portable-1.1.1-x64.zip"
+```
+
+**Option C: Delete and Recreate**
+```powershell
+# On GitHub: Go to release → Delete
+# Delete tag:
+git push --delete origin v1.1.1
+git tag -d v1.1.1
+
+# Recreate:
+git tag -a v1.1.1 -m "Release v1.1.1"
+git push origin v1.1.1
+# Then create new release on GitHub
+```
+
+---
+
 ### Using GitHub Actions (Automated)
 
 1. **Create and push a tag:**
