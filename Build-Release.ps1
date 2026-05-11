@@ -70,8 +70,11 @@ if (-not $ZipOnly) {
         if (Test-Path $appPackagesDir) {
             $msixFiles = Get-ChildItem -Path $appPackagesDir -Filter "*.msix" -Recurse
             if ($msixFiles.Count -gt 0) {
-                Copy-Item $msixFiles[0].FullName -Destination $msixOutputDir -Force
-                Write-Host "  MSIX package created" -ForegroundColor Green
+                # Rename MSIX to consistent dash-based naming
+                $standardizedMsixName = "ManpLab-$Version-$Platform.msix"
+                $destinationPath = Join-Path $msixOutputDir $standardizedMsixName
+                Copy-Item $msixFiles[0].FullName -Destination $destinationPath -Force
+                Write-Host "  MSIX package created: $standardizedMsixName" -ForegroundColor Green
             }
         }
 
@@ -189,3 +192,9 @@ if (-not $MsixOnly) {
 }
 
 Write-Host "`nNext: Test packages, then create GitHub release" -ForegroundColor Cyan
+
+# Run validation check
+Write-Host "`n--- Running Release File Validation ---" -ForegroundColor Cyan
+if (Test-Path "Build\Validate-Release-Files.ps1") {
+    & "Build\Validate-Release-Files.ps1" -OutputDir $outputRoot
+}

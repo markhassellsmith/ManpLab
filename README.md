@@ -1,4 +1,4 @@
-# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
+﻿# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -9,7 +9,14 @@
 
 ## 🚀 Overview
 
-ManpLab combines an intuitive WinUI 3 interface with Paul de Leeuw's exceptional fractal rendering engine - featuring perturbation theory, BLA acceleration, and arbitrary-precision arithmetic for extreme deep zoom capabilities (magnification > 10^100).
+ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exceptional fractal rendering engine - featuring perturbation theory, BLA acceleration, and arbitrary-precision arithmetic for extreme deep zoom capabilities (magnification > 10^100).
+
+### Application Screenshot
+![ManpLab Application Screenshot](ManpWinUI/Documentation/images/ManpLab-Application-Screenshot.png)
+
+*ManpLab Application - Dark theme- Screenshot (above)*
+
+
 
 ### Key Features
 
@@ -46,19 +53,32 @@ ManpLab combines an intuitive WinUI 3 interface with Paul de Leeuw's exceptional
 └─────────────────────────────────────────┘
 ```
 
-This educational fork makes Paul's sophisticated rendering technology accessible through a modern, user-friendly interface designed for students, educators, and researchers.
+This educational fork makes Paul DeLeeuw's well-engineered rendering technology accessible through a modern, user-friendly interface designed for students, educators, and researchers.
 
 ---
 
-## Screenshots
 
-![Mandelbrot Set in Spectrum Palette](images/mandelbrot-classic.png)
+## Fractal Samples
 
-![Tetrate Deep Zoom in Psychedelic Palette](images/deep-zoom-perturbation.png)
+![Mandelbrot Set rendered in the Spectrum palette](ManpWinUI/Documentation/images/Mandelbrot-in-Spectrum-palette.png)
 
-![Julia Classic in Fire Palette](images/barnsley-m2.png)
+*Mandelbrot Set rendered in the Spectrum palette (above)*
 
-![Hailstone Sequence](images/Hailstone-sequence.png)
+
+![Classic Julia Set rendered in the Fire palette](ManpWinUI/Documentation/images/JuliaClassic-in-Fire-palette.png)
+
+*Classic Julia Set rendered in the Fire palette (above)*
+
+
+![Zoomed Tetrate rendered in the Psychedelic palette](ManpWinUI/Documentation/images/Tetrate-zoomed-in-Psychedelic-palette.png)
+
+*Zoomed Tetrate rendered in the Psychedelic palette (above)*
+
+
+![2-Dimensional Hailstone Sequence with segments and point labels](ManpWinUI/Documentation/images/Hailstone-sequence.png)
+
+*2-Dimensional Hailstone Sequence with segments and point labels (above)*
+
 
 ---
 
