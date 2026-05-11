@@ -192,7 +192,7 @@ void RegisterSpecialExoticFamily()
     spec.name = "Popcorn";
     spec.displayName = "Popcorn";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Popcorn attractor fractal";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {

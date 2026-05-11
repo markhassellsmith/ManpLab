@@ -20,7 +20,7 @@ void RegisterAttractors3DFamily()
     spec.name = "Lorenz";
     spec.displayName = "Lorenz Attractor";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Classic Lorenz strange attractor (2D projection)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
@@ -67,7 +67,7 @@ void RegisterAttractors3DFamily()
     spec.name = "Rossler";
     spec.displayName = "Rössler Attractor";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Rössler strange attractor";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
@@ -113,7 +113,7 @@ void RegisterAttractors3DFamily()
     spec.name = "Henon";
     spec.displayName = "Hénon Map";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Hénon discrete-time chaotic map";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
@@ -154,7 +154,7 @@ void RegisterAttractors3DFamily()
     spec.name = "Pickover";
     spec.displayName = "Pickover Attractor";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Clifford Pickover's biomorphic attractor";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
@@ -200,7 +200,7 @@ void RegisterAttractors3DFamily()
     spec.name = "Gingerbread";
     spec.displayName = "Gingerbread Man";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Gingerbread man chaotic attractor";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
@@ -238,7 +238,7 @@ void RegisterAttractors3DFamily()
     spec.name = "Chua";
     spec.displayName = "Chua's Circuit";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Chua's circuit strange attractor";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
@@ -286,7 +286,7 @@ void RegisterAttractors3DFamily()
     spec.name = "Ikeda";
     spec.displayName = "Ikeda Map";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Ikeda nonlinear dynamical system";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
@@ -326,7 +326,7 @@ void RegisterAttractors3DFamily()
     spec.name = "Hopalong";
     spec.displayName = "Hopalong Attractor";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Barry Martin's Hopalong attractor";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {

@@ -404,12 +404,36 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
 
         Debug::WriteLine(String::Format("Native Calculate: Using fractal: '{0}'", gcnew String(fractalType.c_str())));
 
+        // Get fractal specification and check rendering category
+        const ::Native::FractalSpec* spec = ::Native::FractalRegistry::GetSpec(fractalType);
+        if (spec == nullptr)
+        {
+            throw gcnew InvalidOperationException(String::Format("Fractal specification not found: {0}", gcnew String(fractalType.c_str())));
+        }
+
+        Debug::WriteLine(String::Format("Native Calculate: Fractal category: {0}", (int)spec->type));
+
+        // Check if this fractal requires histogram-based rendering
+        if (spec->type == ::Native::FractalCategory::HistogramBased)
+        {
+            Debug::WriteLine("Native Calculate: Histogram-based fractal detected");
+            Debug::WriteLine("  This fractal requires orbit accumulation rendering (not yet implemented)");
+            Debug::WriteLine("  Expected fractals: Lorenz, Rössler, Hénon, Pickover, Gingerbread, Chua, Ikeda, Hopalong, Popcorn");
+
+            throw gcnew NotImplementedException(
+                String::Format("Histogram rendering not yet implemented for fractal '{0}'. "
+                              "This fractal requires orbit accumulation visualization. "
+                              "Phase 2 implementation pending.",
+                              gcnew String(fractalType.c_str())));
+        }
+
         // Prepare parameter map for extensibility (currently empty, but ready for custom params)
         ::Native::ParamMap customParams;
 
         long long totalIterations = 0;
         int escapedPixels = 0;
 
+        Debug::WriteLine("Native Calculate: Using per-pixel escape-time rendering");
         Debug::WriteLine("Native Calculate: Starting pixel loop...");
 
         // Calculate fractal using native C++ code
