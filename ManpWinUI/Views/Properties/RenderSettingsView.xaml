@@ -103,49 +103,25 @@
                 </CheckBox>
             </StackPanel>
 
-            <!-- Resolution Settings -->
-            <StackPanel Spacing="12">
-                <TextBlock Text="Resolution" FontWeight="SemiBold"/>
-
-                <!-- Resolution Presets -->
+            <!-- Resolution Note -->
+            <Border 
+                Background="{ThemeResource SystemFillColorAttentionBackgroundBrush}"
+                BorderBrush="{ThemeResource SystemFillColorAttentionBrush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="12">
                 <StackPanel Spacing="4">
-                    <TextBlock Text="Presets:" FontSize="12"/>
-                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
-                        <Button Grid.Column="0" Content="SD" Click="ResolutionSD_Click" HorizontalAlignment="Stretch"/>
-                        <Button Grid.Column="1" Content="HD" Click="ResolutionHD_Click" HorizontalAlignment="Stretch"/>
-                        <Button Grid.Column="2" Content="Full HD" Click="ResolutionFullHD_Click" HorizontalAlignment="Stretch"/>
-                        <Button Grid.Column="3" Content="4K" Click="Resolution4K_Click" HorizontalAlignment="Stretch"/>
-                    </Grid>
+                    <TextBlock 
+                        Text="ℹ️ Resolution Settings" 
+                        FontWeight="SemiBold"
+                        FontSize="12"/>
+                    <TextBlock 
+                        Text="Image resolution is configured in the Parameters tab under 'Image Resolution' section."
+                        FontSize="11"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap"/>
                 </StackPanel>
-
-                <!-- Custom Resolution -->
-                <StackPanel Spacing="4">
-                    <TextBlock Text="Custom Resolution:" FontSize="12"/>
-                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="8">
-                        <NumberBox 
-                            Grid.Column="0"
-                            Header="Width"
-                            Value="{x:Bind ViewModel.RenderWidth, Mode=TwoWay}"
-                            Minimum="100"
-                            Maximum="7680"
-                            SpinButtonPlacementMode="Inline"
-                            ValueChanged="Resolution_Changed"/>
-                        <TextBlock 
-                            Grid.Column="1" 
-                            Text="×" 
-                            VerticalAlignment="Center"
-                            Margin="0,20,0,0"/>
-                        <NumberBox 
-                            Grid.Column="2"
-                            Header="Height"
-                            Value="{x:Bind ViewModel.RenderHeight, Mode=TwoWay}"
-                            Minimum="100"
-                            Maximum="4320"
-                            SpinButtonPlacementMode="Inline"
-                            ValueChanged="Resolution_Changed"/>
-                    </Grid>
-                </StackPanel>
-            </StackPanel>
+            </Border>
 
             <!-- Reset Button -->
             <Button 

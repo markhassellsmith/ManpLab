@@ -86,11 +86,20 @@ public partial class MainViewModel
         if (value < 50) MaxIterations = 50;
         if (value > 50000) MaxIterations = 50000;
 
+        // Update iteration suggestion message when iterations change
+        UpdateIterationSuggestion();
+
         // TASK 5: Sync to parameter system
         if (UseParameterSystem && CurrentParameters != null)
         {
             SetParameter("max_iterations", value);
         }
+    }
+
+    partial void OnAutoScaleIterationsChanged(bool value)
+    {
+        // Update iteration suggestion message when auto-scale toggle changes
+        UpdateIterationSuggestion();
     }
 
     partial void OnSelectedIterationModeChanged(string value)
@@ -128,6 +137,9 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(CurrentViewHeight));
         OnPropertyChanged(nameof(IsDeepZoomActive));
         OnPropertyChanged(nameof(DeepZoomIndicator));
+
+        // Update iteration suggestion when zoom changes (recommended iterations depend on zoom)
+        UpdateIterationSuggestion();
 
         System.Diagnostics.Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
 
@@ -195,5 +207,33 @@ public partial class MainViewModel
 
         // Clamp to reasonable range (allow up to 20000 for very deep zooms)
         return Math.Clamp(recommended, 512, 20000);
+    }
+
+    /// <summary>
+    /// Updates the iteration suggestion message based on current zoom and max iterations.
+    /// Called when zoom or max iterations change to keep the message current.
+    /// </summary>
+    private void UpdateIterationSuggestion()
+    {
+        var recommendedIterations = CalculateRecommendedIterations(Zoom);
+
+        if (!AutoScaleIterations)
+        {
+            // Manual mode: Show warning if current iterations are below recommended
+            if (MaxIterations < recommendedIterations)
+            {
+                IterationSuggestion = $"⚠️ Consider increasing iterations to ~{recommendedIterations} for better detail at zoom {Zoom:F2}x (currently {MaxIterations})";
+            }
+            else
+            {
+                // User has set iterations at or above recommendation - clear the message
+                IterationSuggestion = string.Empty;
+            }
+        }
+        else
+        {
+            // Auto-scale mode: Just show current status
+            IterationSuggestion = $"Using {MaxIterations} iterations at zoom {Zoom:F2}x";
+        }
     }
 }

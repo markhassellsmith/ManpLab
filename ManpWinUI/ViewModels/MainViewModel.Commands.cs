@@ -447,8 +447,9 @@ public partial class MainViewModel
 
     /// <summary>
     /// Unified render command that routes to the appropriate render method.
+    /// Disabled while rendering is in progress.
     /// </summary>
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanRender))]
     private async Task RenderAsync()
     {
         if (IsHailstoneMode)
@@ -460,6 +461,11 @@ public partial class MainViewModel
             await RenderMandelbrotAsync();
         }
     }
+
+    /// <summary>
+    /// Determines whether render can be executed (not currently rendering).
+    /// </summary>
+    private bool CanRender() => !IsRendering;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // RENDER CONTROL
