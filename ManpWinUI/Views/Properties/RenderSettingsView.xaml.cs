@@ -57,47 +57,6 @@ namespace ManpWinUI.Views.Properties
         }
 
         /// <summary>
-        /// Handle resolution change.
-        /// Week 7 Task 4: Update output dimensions.
-        /// </summary>
-        private void Resolution_Changed(NumberBox sender, NumberBoxValueChangedEventArgs args)
-        {
-            System.Diagnostics.Debug.WriteLine($"[RenderSettingsView] Resolution: {ViewModel.RenderWidth}x{ViewModel.RenderHeight}");
-        }
-
-        /// <summary>
-        /// Apply SD resolution preset (800x600).
-        /// </summary>
-        private void ResolutionSD_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ApplyResolutionPreset("sd");
-        }
-
-        /// <summary>
-        /// Apply HD resolution preset (1280x720).
-        /// </summary>
-        private void ResolutionHD_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ApplyResolutionPreset("hd");
-        }
-
-        /// <summary>
-        /// Apply Full HD resolution preset (1920x1080).
-        /// </summary>
-        private void ResolutionFullHD_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ApplyResolutionPreset("fullhd");
-        }
-
-        /// <summary>
-        /// Apply 4K resolution preset (3840x2160).
-        /// </summary>
-        private void Resolution4K_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ApplyResolutionPreset("4k");
-        }
-
-        /// <summary>
         /// Handle reset button click.
         /// Week 7 Task 1: Reset all settings to defaults.
         /// </summary>
