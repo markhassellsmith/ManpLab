@@ -278,7 +278,8 @@ public class FractalRenderService : IFractalRenderService
                         Height = result.Height,
                         RenderTime = result.RenderTime,
                         TotalIterations = result.IterationCount,
-                        EscapedPixels = result.EscapedPixelCount
+                        EscapedPixels = result.EscapedPixelCount,
+                        Category = (FractalCategory)(int)result.Category
                     };
                 }
                 catch (Exception ex)
@@ -396,7 +397,8 @@ public class FractalRenderService : IFractalRenderService
                     Height = result.Height,
                     RenderTime = result.RenderTime,
                     TotalIterations = result.IterationCount,
-                    EscapedPixels = result.EscapedPixelCount
+                    EscapedPixels = result.EscapedPixelCount,
+                    Category = (FractalCategory)(int)result.Category
                 };
             }
             catch (Exception ex)

@@ -7,6 +7,27 @@ namespace ManpCore {
 namespace Native {
 
     /// <summary>
+    /// Fractal rendering category determines appropriate visualization behavior.
+    /// </summary>
+    public enum class FractalCategory
+    {
+        /// <summary>Standard escape-time fractals (Mandelbrot, Julia, Burning Ship, etc.) - escape percentage is meaningful</summary>
+        EscapeTime2D = 0,
+
+        /// <summary>Sequence-based fractals (Hailstone, bifurcation) - use step/trajectory counts</summary>
+        Sequence2D = 1,
+
+        /// <summary>Legacy 3D attractor rendering (deprecated - use HistogramBased instead)</summary>
+        AttractorBased3D = 2,
+
+        /// <summary>Histogram/orbit accumulation rendering (attractors, flame fractals) - escape percentage not meaningful</summary>
+        HistogramBased = 3,
+
+        /// <summary>Special renderers (Buddhabrot, perturbation) - custom metrics</summary>
+        Special = 4
+    };
+
+    /// <summary>
     /// Color palette types for fractal rendering.
     /// Each palette uses mathematical color generation for smooth, infinite-resolution gradients.
     /// </summary>
@@ -482,8 +503,21 @@ namespace Native {
         /// Useful for diagnosing "black screen" issues.
         /// If EscapedPixelCount is very low, you're looking at the interior of the set.
         /// Percentage escaped = (EscapedPixelCount / TotalPixels) * 100
+        /// NOTE: Only meaningful for EscapeTime2D fractals. For HistogramBased fractals, this is always 0.
         /// </remarks>
         property int EscapedPixelCount;
+
+        /// <summary>
+        /// Fractal rendering category for context-aware status messages.
+        /// </summary>
+        /// <value>Category indicating the type of fractal and appropriate UI feedback</value>
+        /// <remarks>
+        /// Used to generate appropriate status bar messages:
+        /// - EscapeTime2D: Show escape percentage and boundary guidance
+        /// - HistogramBased: Show orbit accumulation info, no escape percentage
+        /// - Sequence2D: Show trajectory/sequence metrics
+        /// </remarks>
+        property FractalCategory Category;
 
         // ========== Deep Zoom / Perturbation-specific properties ==========
 

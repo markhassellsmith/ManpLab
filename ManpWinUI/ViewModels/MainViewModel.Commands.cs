@@ -265,17 +265,51 @@ public partial class MainViewModel
                 // Build status message with optional Deep Zoom indicator
                 string deepZoomIndicator = shouldUseDeepZoom ? " | Deep Zoom mode" : "";
 
-                if (escapePercent < 1.0)
+                // Generate context-aware status message based on fractal category
+                switch (result.Category)
                 {
-                    StatusMessage = $"⚠️ Only {escapePercent:F2}% of pixels escaped - You're inside the Mandelbrot set! Zoom to the boundary for detail.{deepZoomIndicator}";
-                }
-                else if (escapePercent < 10.0)
-                {
-                    StatusMessage = $"Low detail: {escapePercent:F1}% escaped - Try zooming to colorful boundaries{deepZoomIndicator}";
-                }
-                else
-                {
-                    StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped){deepZoomIndicator}";
+                    case FractalCategory.HistogramBased:
+                        // Histogram/orbit accumulation fractals (attractors, flame fractals)
+                        // Escape percentage is not meaningful - show render time only
+                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s | Orbit accumulation mode{deepZoomIndicator}";
+                        break;
+
+                    case FractalCategory.EscapeTime2D:
+                        // Standard escape-time fractals (Mandelbrot, Julia, Burning Ship, etc.)
+                        // Escape percentage is meaningful and helps guide exploration
+                        if (escapePercent < 1.0)
+                        {
+                            StatusMessage = $"⚠️ Only {escapePercent:F2}% escaped - Inside the set! Zoom to boundaries for detail{deepZoomIndicator}";
+                        }
+                        else if (escapePercent < 10.0)
+                        {
+                            StatusMessage = $"Low detail: {escapePercent:F1}% escaped - Try zooming to colorful boundaries{deepZoomIndicator}";
+                        }
+                        else
+                        {
+                            StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped){deepZoomIndicator}";
+                        }
+                        break;
+
+                    case FractalCategory.Sequence2D:
+                        // Sequence-based fractals (Hailstone, bifurcation)
+                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s | Sequence visualization{deepZoomIndicator}";
+                        break;
+
+                    case FractalCategory.AttractorBased3D:
+                        // Legacy 3D attractor mode (deprecated)
+                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s | 3D attractor projection{deepZoomIndicator}";
+                        break;
+
+                    case FractalCategory.Special:
+                        // Special renderers (Buddhabrot, perturbation)
+                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s | Special renderer{deepZoomIndicator}";
+                        break;
+
+                    default:
+                        // Fallback
+                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s{deepZoomIndicator}";
+                        break;
                 }
 
                 // Record navigation state after successful render

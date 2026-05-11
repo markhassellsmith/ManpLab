@@ -613,7 +613,8 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
             stopwatch->Stop();
             result->RenderTime = stopwatch->Elapsed;
             result->IterationCount = 0;  // Not applicable for histogram rendering
-            result->EscapedPixelCount = 0;
+            result->EscapedPixelCount = 0;  // Not meaningful for histogram rendering
+            result->Category = FractalCategory::HistogramBased;
 
             Debug::WriteLine(String::Format("Native Calculate: Histogram rendering complete in {0}ms", stopwatch->ElapsedMilliseconds));
             return result;
@@ -741,6 +742,7 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         result->RenderTime = stopwatch->Elapsed;
         result->IterationCount = totalIterations;
         result->EscapedPixelCount = escapedPixels;
+        result->Category = static_cast<FractalCategory>((int)spec->type);
 
         // Final progress update (only if there are subscribers)
         if (m_progressChangedDelegate != nullptr)
