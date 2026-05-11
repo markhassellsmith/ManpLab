@@ -126,14 +126,14 @@ namespace Native
         }
 
         // ───────────────────────────────────────────────────────────────────────────────
-        // Martin Map (Hopalong variant)
+        // Martin Map (Hopalong variant) - 2D discrete map with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
             spec.name = "MartinMap";
             spec.displayName = "Martin Map";
             spec.category = "Historical Fractals";
-            spec.type = FractalCategory::EscapeTime2D;
+            spec.type = FractalCategory::HistogramBased;
             spec.description = "Created by Barry Martin. Uses unusual iteration with square roots creating organic, flowing patterns.";
             spec.formula = "x(n+1) = y - sign(x)*sqrt(|bx - c|), y(n+1) = a - x";
             spec.formulaLatex = R"(x_{n+1} = y_n - \text{sgn}(x_n)\sqrt{|bx_n - c|}, \quad y_{n+1} = a - x_n)";
@@ -146,19 +146,19 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.02;
-            spec.defaultBailout = 1000.0;
+            spec.defaultZoom = 0.5;
+            spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                // Parameters derived from c
-                double a = c.real * 10.0;
-                double b = c.imag * 10.0;
-                double cp = 0.5;
+                // Classic parameters
+                double a = 3.14;
+                double b = -0.9;
+                double cp = 1.0;
 
-                double x = 0.0;
-                double y = 0.0;
+                double x = 0.1;
+                double y = 0.1;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -168,15 +168,25 @@ namespace Native
                     x = xNew;
                     y = yNew;
 
-                    double mag2 = x * x + y * y;
-
-                    if (mag2 > 1000.0)
-                    {
+                    if (std::abs(x) > 100.0 || std::abs(y) > 100.0)
                         return static_cast<double>(i);
-                    }
                 }
 
-                return static_cast<double>(maxIter);
+                return std::sqrt(x * x + y * y) * 10.0;
+            };
+
+            spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+                // Martin Map: x' = y - sign(x)*sqrt(|bx - c|), y' = a - x
+                double a = 3.14;
+                double b = -0.9;
+                double c = 1.0;
+
+                double x_new = y - (x >= 0.0 ? 1.0 : -1.0) * std::sqrt(std::abs(b * x - c));
+                double y_new = a - x;
+
+                x = x_new;
+                y = y_new;
+                // z unused for 2D map
             };
 
             FractalRegistry::Register(spec);
@@ -367,14 +377,14 @@ namespace Native
         }
 
         // ───────────────────────────────────────────────────────────────────────────────
-        // Duffing Map
+        // Duffing Map - 2D discrete map with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
             spec.name = "DuffingMap";
             spec.displayName = "Duffing Map";
             spec.category = "Historical Fractals";
-            spec.type = FractalCategory::EscapeTime2D;
+            spec.type = FractalCategory::HistogramBased;
             spec.description = "Discrete version of Duffing oscillator. Shows chaotic behavior and strange attractors from forced oscillator dynamics.";
             spec.formula = "x(n+1) = y, y(n+1) = -bx + ay - y³";
             spec.formulaLatex = R"(x_{n+1} = y_n, \quad y_{n+1} = -bx_n + ay_n - y_n^3)";
@@ -387,16 +397,16 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.3;
-            spec.defaultBailout = 100.0;
+            spec.defaultZoom = 5.0;
+            spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                double x = c.real;
-                double y = c.imag;
+                double x = 0.1;
+                double y = 0.1;
 
-                // Parameters from position
+                // Classic parameters
                 double a = 2.75;
                 double b = 0.2;
 
@@ -408,15 +418,24 @@ namespace Native
                     x = xNew;
                     y = yNew;
 
-                    double mag2 = x * x + y * y;
-
-                    if (mag2 > 100.0)
-                    {
+                    if (std::abs(x) > 100.0 || std::abs(y) > 100.0)
                         return static_cast<double>(i);
-                    }
                 }
 
-                return static_cast<double>(maxIter);
+                return std::sqrt(x * x + y * y) * 10.0;
+            };
+
+            spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+                // Duffing Map: x' = y, y' = -bx + ay - y³
+                double a = 2.75;
+                double b = 0.2;
+
+                double x_new = y;
+                double y_new = -b * x + a * y - y * y * y;
+
+                x = x_new;
+                y = y_new;
+                // z unused for 2D map
             };
 
             FractalRegistry::Register(spec);
