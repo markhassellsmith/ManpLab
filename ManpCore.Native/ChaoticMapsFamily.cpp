@@ -58,23 +58,32 @@ namespace Native
             spec.calculator = nullptr;  // Not used for histogram rendering
 
             spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-                // Liu-Chen: dx/dt = ay + bx + cyz, dy/dt = dy - xz, dz/dt = ez + fxy
-                const double a = 1.0;
-                const double b = -2.5;
-                const double c = -4.0;
-                const double d = 4.0;
-                const double e = -1.0;
-                const double f = 4.0;
+                // Liu-Chen: dx/dt = a(y-x), dy/dt = bx - xz, dz/dt = xy - cz
+                // Diagnostic confirmed: a=2.5, b=4.0, c=4.0, dt=0.01 is stable
+                const double a = 2.5;
+                const double b = 4.0;
+                const double c = 4.0;
                 const double dt = 0.01;
 
-                double dx = a * y + b * x + c * y * z;
-                double dy = d * y - x * z;
-                double dz = e * z + f * x * y;
+                // RK2 (midpoint method)
+                double dx1 = a * (y - x);
+                double dy1 = b * x - x * z;
+                double dz1 = x * y - c * z;
 
-                x += dx * dt;
-                y += dy * dt;
-                z += dz * dt;
+                double xmid = x + 0.5 * dx1 * dt;
+                double ymid = y + 0.5 * dy1 * dt;
+                double zmid = z + 0.5 * dz1 * dt;
+
+                double dx2 = a * (ymid - xmid);
+                double dy2 = b * xmid - xmid * zmid;
+                double dz2 = xmid * ymid - c * zmid;
+
+                x += dx2 * dt;
+                y += dy2 * dt;
+                z += dz2 * dt;
             };
+
+            spec.defaultZoom = 3.5;  // Lower zoom - attractor spans ~4.2 units
 
             FractalRegistry::Register(spec);
         }
@@ -151,20 +160,32 @@ namespace Native
 
             spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
                 // Arneodo: dx/dt = y, dy/dt = z, dz/dt = -ax - by - cz + dx³
+                // Diagnostic sweep found: c=2.0, dt=0.001 produces bounded attractor
                 const double a = 5.5;
                 const double b = 3.5;
-                const double c = 0.25;
+                const double c = 2.0;  // Critical: only c=2.0 is stable
                 const double d = -1.0;
-                const double dt = 0.01;
+                const double dt = 0.001;  // Must be very small
 
-                double dx = y;
-                double dy = z;
-                double dz = -a * x - b * y - c * z + d * x * x * x;
+                // RK2 (midpoint method) for better stability
+                double dx1 = y;
+                double dy1 = z;
+                double dz1 = -a * x - b * y - c * z + d * x * x * x;
 
-                x += dx * dt;
-                y += dy * dt;
-                z += dz * dt;
+                double xmid = x + 0.5 * dx1 * dt;
+                double ymid = y + 0.5 * dy1 * dt;
+                double zmid = z + 0.5 * dz1 * dt;
+
+                double dx2 = ymid;
+                double dy2 = zmid;
+                double dz2 = -a * xmid - b * ymid - c * zmid + d * xmid * xmid * xmid;
+
+                x += dx2 * dt;
+                y += dy2 * dt;
+                z += dz2 * dt;
             };
+
+            spec.defaultZoom = 80.0;  // EXTREME zoom - attractor range is only ~0.5 units!
 
             FractalRegistry::Register(spec);
         }

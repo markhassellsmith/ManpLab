@@ -133,7 +133,7 @@ void RegisterAttractors3DFamily()
         const double c = 1.7;
         const double d = 2.0;
         const double e = 9.0;
-        const double dt = 0.01;
+        const double dt = 0.005;  // Reduced for stability
 
         double dx = y - a * x + b * y * z;
         double dy = c * y - x * z + z;
@@ -147,7 +147,7 @@ void RegisterAttractors3DFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 8.0;
+    spec.defaultZoom = 15.0;  // Increased to see four-wing detail
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -308,7 +308,7 @@ void RegisterAttractors3DFamily()
         const double a = 5.0;
         const double b = -10.0;
         const double c = -0.38;
-        const double dt = 0.01;
+        const double dt = 0.0008;  // Very small timestep to prevent escape
 
         double dx = a * x - y * z;
         double dy = b * y + x * z;
@@ -322,7 +322,7 @@ void RegisterAttractors3DFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 10.0;
+    spec.defaultZoom = 30.0;  // Higher zoom to capture structure
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
