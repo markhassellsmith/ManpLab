@@ -1,4 +1,4 @@
-﻿#include "FractalRegistry.h"
+#include "FractalRegistry.h"
 #include "MandelbrotCalculator.h"
 #include <set>
 #include <stdexcept>
@@ -24,8 +24,10 @@ void FractalRegistry::Register(const FractalSpec& spec)
     if (spec.name.empty())
         throw std::invalid_argument("Fractal name cannot be empty");
 
-    if (!spec.calculator)
-        throw std::invalid_argument("Fractal calculator function is required");
+    // Calculator is required for non-histogram fractals
+    // Histogram fractals use orbitIterator instead
+    if (!spec.calculator && spec.type != FractalCategory::HistogramBased)
+        throw std::invalid_argument("Fractal calculator function is required for non-histogram fractals");
 
     auto& registry = GetRegistry();
     registry[spec.name] = spec;
