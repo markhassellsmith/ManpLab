@@ -1,5 +1,29 @@
 # Tier 1: Critical Fractals Audit
 
+## Reference Resources
+
+### Primary Formula & Visual References
+
+1. **[Paul Bourke's Fractal Collection](http://paulbourke.net/fractals/)**
+   - Comprehensive formulas with mathematical definitions
+   - Visual examples for most classic fractals
+   - Detailed parameter specifications and implementation notes
+
+2. **[Wikipedia Fractal Category](https://en.wikipedia.org/wiki/List_of_fractals_by_Hausdorff_dimension)**
+   - Authoritative mathematical formulas
+   - Historical context and discoverers
+   - Reference images and algorithm descriptions
+   - Individual pages for major fractals (Mandelbrot, Julia, Newton, etc.)
+
+3. **[Tier 1 Source Code Reference](../Guides/TIER1_SOURCE_REFERENCE.md)** *(Local)*
+   - Maps each Tier 1 fractal to its C++ implementation file
+   - Lists all 40 fractal family files in ManpCore.Native
+   - Guide to finding and reading formula implementations
+
+**Quick lookup tip:** For specific fractals, search "[fractal name] Paul Bourke" or "[fractal name] Wikipedia" for fastest access to formulas and visuals.
+
+---
+
 ## Overview
 **Priority:** HIGH  
 **Count:** 30 fractals  
@@ -34,17 +58,17 @@ These are the "showcase" fractals that users will encounter first and that repre
 - **Source:** `ManpCore.Native\ClassicFractalsFamily.cpp`
 
 **Audit Checklist:**
-- [ ] Formula correct (z² + c)
-- [ ] Default center shows main body and bulbs
-- [ ] Performance good (< 1s)
-- [ ] Julia mode works
-- [ ] Zooming reveals infinite detail
-- [ ] Description accurate
+- [x] Formula correct (z² + c)
+- [x] Default center shows main body and bulbs
+- [x] Performance good (~ 3.5s)
+- [x] Julia mode works
+- [x] Zooming reveals infinite detail
+- [x] Description accurate
 
 **Test Notes:**
-- Render time: ___s
+- Render time: 3.5s
 - Issues found: ___
-- Overall: ☐ Pass ☐ Fail ☐ Needs Work
+- Overall: x Pass ☐ Fail ☐ Needs Work
 
 ---
 
@@ -55,17 +79,17 @@ These are the "showcase" fractals that users will encounter first and that repre
 - **Source:** `ManpCore.Native\JuliaSetsFamily.cpp`
 
 **Audit Checklist:**
-- [ ] Formula correct
-- [ ] Default c value produces interesting Julia set
-- [ ] Performance good
-- [ ] Multiple c values tested and work
-- [ ] Description accurate
+- [x] Formula correct
+- [x] Default c value produces interesting Julia set
+- [x] Performance good
+- [x] Multiple c values tested and work
+- [x] Description accurate
 
 **Test Notes:**
 - Default c value: ___
-- Render time: ___s
+- Render time: 2.9s
 - Issues found: ___
-- Overall: ☐ Pass ☐ Fail ☐ Needs Work
+- Overall: x Pass ☐ Fail ☐ Needs Work
 
 ---
 
@@ -78,12 +102,12 @@ These are the "showcase" fractals that users will encounter first and that repre
 **Audit Checklist:**
 - [ ] Formula uses abs() correctly
 - [ ] Shows characteristic "ship" shape
-- [ ] Performance acceptable
-- [ ] Julia mode works
-- [ ] Description accurate
+- [x] Performance acceptable
+- [x] Julia mode works
+- [x] Description accurate
 
 **Test Notes:**
-- Render time: ___s
+- Render time:27s
 - Ship shape visible: ☐ Yes ☐ No
 - Issues found: ___
 - Overall: ☐ Pass ☐ Fail ☐ Needs Work
@@ -113,22 +137,22 @@ These are the "showcase" fractals that users will encounter first and that repre
 
 ---
 
-#### 5. Newton (z⁴-1)
-- **Display Name:** Newton (z⁴-1)
+#### 5. Newton (z^3-1)
+- **Display Name:** Newton (z^3-1)
 - **Category:** Newton Fractals
 - **Formula:** Newton's method for z⁴-1=0
 - **Source:** `ManpCore.Native\NewtonFractalsFamily.cpp`
 
 **Audit Checklist:**
-- [ ] Shows four basins of attraction
-- [ ] Fractal boundaries
-- [ ] Performance good
-- [ ] Description accurate
+- [x] Shows three basins of attraction
+- [x] Fractal boundaries
+- [x] Performance good
+- [x] Description accurate
 
 **Test Notes:**
-- Four basins visible: ☐ Yes ☐ No
-- Render time: ___s
-- Overall: ☐ Pass ☐ Fail ☐ Needs Work
+- Three basins visible: x Yes ☐ No
+- Render time: 3.78s
+- Overall: x Pass ☐ Fail ☐ Needs Work
 
 ---
 

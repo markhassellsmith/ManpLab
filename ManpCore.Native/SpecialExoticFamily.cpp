@@ -192,7 +192,7 @@ void RegisterSpecialExoticFamily()
     spec.name = "Popcorn";
     spec.displayName = "Popcorn";
     spec.category = "Attractors";
-    spec.type = FractalCategory::AttractorBased3D;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Popcorn attractor fractal";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
@@ -211,6 +211,18 @@ void RegisterSpecialExoticFamily()
                 return static_cast<double>(iter);
         }
         return static_cast<double>(maxIter);
+    };
+
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Popcorn attractor: x' = x - h*sin(y + tan(3*y)), y' = y - h*sin(x + tan(3*x))
+        double h = 0.05;
+
+        double x_new = x - h * sin(y + tan(3.0 * y));
+        double y_new = y - h * sin(x + tan(3.0 * x));
+
+        x = x_new;
+        y = y_new;
+        // z unused for 2D map
     };
 
     spec.supportsJulia = false;
