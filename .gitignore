@@ -55,3 +55,4 @@ release-package/
 AppPackages/
 *.zip
 /ManpLab-Portable-1.1.1-x64
+*.7z
