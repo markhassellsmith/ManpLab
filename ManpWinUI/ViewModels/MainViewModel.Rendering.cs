@@ -83,9 +83,10 @@ public partial class MainViewModel
     /// <summary>
     /// Indicates whether a render operation is currently in progress.
     /// Used for UI state (progress overlay, stop button).
-    /// Does NOT control Render button enablement.
+    /// Controls Render button enablement - disabled while rendering.
     /// </summary>
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RenderCommand))]
     [NotifyCanExecuteChangedFor(nameof(StopRenderCommand))]
     public partial bool IsRendering { get; set; }
 
@@ -94,7 +95,8 @@ public partial class MainViewModel
     /// </summary>
     partial void OnIsRenderingChanged(bool value)
     {
-        // Commands have no CanExecute constraint, so no notification needed
+        // Render button state is controlled by CanRender() method
+        System.Diagnostics.Debug.WriteLine($"[ViewModel] IsRendering changed to: {value}");
     }
 
     /// <summary>

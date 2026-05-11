@@ -40,8 +40,6 @@ namespace ManpWinUI.ViewModels.Properties
         private AntialiasingLevel _antialiasingLevel = AntialiasingLevel.None;
         private bool _useDeepZoom = false;
         private bool _useSmoothColoring = false;
-        private int _renderWidth = 1280;
-        private int _renderHeight = 720;
 
         /// <summary>
         /// Currently selected render mode.
@@ -118,42 +116,6 @@ namespace ManpWinUI.ViewModels.Properties
         }
 
         /// <summary>
-        /// Render output width in pixels.
-        /// Week 7 Task 4: Resolution control.
-        /// </summary>
-        public int RenderWidth
-        {
-            get => _renderWidth;
-            set
-            {
-                if (_renderWidth != value && value > 0)
-                {
-                    _renderWidth = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RenderWidth)));
-                    RenderSettingsChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Render output height in pixels.
-        /// Week 7 Task 4: Resolution control.
-        /// </summary>
-        public int RenderHeight
-        {
-            get => _renderHeight;
-            set
-            {
-                if (_renderHeight != value && value > 0)
-                {
-                    _renderHeight = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RenderHeight)));
-                    RenderSettingsChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <summary>
         /// Description of the current render mode.
         /// Week 7 Task 3: For UI tooltips and help text.
         /// </summary>
@@ -217,46 +179,8 @@ namespace ManpWinUI.ViewModels.Properties
             AntialiasingLevel = AntialiasingLevel.None;
             UseDeepZoom = false;
             UseSmoothColoring = false;
-            RenderWidth = 1280;
-            RenderHeight = 720;
 
             System.Diagnostics.Debug.WriteLine("[RenderSettingsViewModel] Reset to default settings");
-        }
-
-        /// <summary>
-        /// Apply resolution preset.
-        /// Week 7 Task 4: Quick resolution selection.
-        /// </summary>
-        public void ApplyResolutionPreset(string presetName)
-        {
-            switch (presetName.ToLower())
-            {
-                case "sd":
-                    RenderWidth = 1280;
-                    RenderHeight = 720;
-                    break;
-                case "hd":
-                    RenderWidth = 1280;
-                    RenderHeight = 720;
-                    break;
-                case "fullhd":
-                    RenderWidth = 1920;
-                    RenderHeight = 1080;
-                    break;
-                case "4k":
-                    RenderWidth = 3840;
-                    RenderHeight = 2160;
-                    break;
-                case "custom":
-                    // Keep current values
-                    break;
-                default:
-                    RenderWidth = 1280;
-                    RenderHeight = 720;
-                    break;
-            }
-
-            System.Diagnostics.Debug.WriteLine($"[RenderSettingsViewModel] Applied resolution preset: {presetName} ({RenderWidth}x{RenderHeight})");
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

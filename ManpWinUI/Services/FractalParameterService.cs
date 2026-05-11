@@ -71,6 +71,10 @@ public class FractalParameterService : IFractalParameterService
             // Phase 2: Load parameter metadata from native registry (future enhancement)
             // await LoadFromNativeRegistryAsync();
 
+            // *** ONE-TIME FIX: Clear bad ExpSquare MaxIterations saved value ***
+            // Remove this after users have run the app once with this fix
+            ClearExpSquareSettingsIfNeeded();
+
             _initialized = true;
             Debug.WriteLine($"[FractalParameterService] Initialized with {_parameterTemplates.Count} parameter templates");
         }
@@ -231,6 +235,21 @@ public class FractalParameterService : IFractalParameterService
             });
 
             paramSet.AddParameter(StandardParameterTemplates.IntegerExponent(2, 2, 10));
+
+            return paramSet;
+        });
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // EXPONENTIAL FRACTALS WITH CUSTOM DEFAULTS
+        // ═══════════════════════════════════════════════════════════════════════════
+        RegisterTemplate("ExpSquare", () =>
+        {
+            // Create standard template first
+            var paramSet = StandardParameterTemplates.CreateWithJulia("ExpSquare");
+
+            // Set MaxIterations to 1000 (override any saved setting by creating a fresh parameter set)
+            // This fractal was accidentally saved with 5000 which is too high for general use
+            paramSet.SetValue("max_iterations", 1000);
 
             return paramSet;
         });
@@ -532,6 +551,31 @@ public class FractalParameterService : IFractalParameterService
     // ═══════════════════════════════════════════════════════════════════════════════
     // HELPER METHODS
     // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// ONE-TIME FIX: Clear saved ExpSquare MaxIterations setting if it's 5000.
+    /// This was accidentally saved too high and needs to be reset to 1000.
+    /// Remove this method after all users have run the app once with this fix.
+    /// </summary>
+    private void ClearExpSquareSettingsIfNeeded()
+    {
+        try
+        {
+            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var settingsKey = "FractalParams_ExpSquare";
+
+            // Check if there's a saved version
+            if (settings.Values.ContainsKey(settingsKey))
+            {
+                Debug.WriteLine("[FractalParameterService] Found saved ExpSquare parameters - clearing to apply new 1000 default");
+                settings.Values.Remove(settingsKey);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[FractalParameterService] Error clearing ExpSquare settings: {ex.Message}");
+        }
+    }
 
     /// <summary>
     /// Convert JsonElement to appropriate .NET type.

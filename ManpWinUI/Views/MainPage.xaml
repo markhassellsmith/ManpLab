@@ -493,14 +493,14 @@
                                 </ToolTipService.ToolTip>
                                 <ScrollViewer Padding="16">
                                     <StackPanel Spacing="12">
-                                        <!-- NEW: Dynamic Parameter Editor -->
+                                        <!-- Dynamic Parameter Editor -->
                                         <Border BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
                                                 BorderThickness="1"
                                                 CornerRadius="4"
                                                 Padding="12"
                                                 Background="{ThemeResource LayerFillColorAltBrush}">
                                             <StackPanel Spacing="8">
-                                                <TextBlock Text="Dynamic Parameters (Week 6)"
+                                                <TextBlock Text="Dynamic Parameters"
                                                            FontWeight="SemiBold"
                                                            FontSize="14" />
                                                 <TextBlock Text="Parameters for selected fractal will appear below:"
@@ -654,37 +654,6 @@
                                                 <Button Content="Large Test (100, 100)" Click="HailstonePreset3_Click" HorizontalAlignment="Stretch" />
                                                 <Button Content="Negative (-20, -30)" Click="HailstonePreset4_Click" HorizontalAlignment="Stretch" />
                                             </StackPanel>
-                                        </StackPanel>
-
-                                        <MenuFlyoutSeparator />
-
-                                        <!-- Coordinates -->
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="Center X" />
-                                            <NumberBox
-                                        Value="{x:Bind ViewModel.CenterX, Mode=TwoWay}"
-                                        SmallChange="0.1"
-                                        LargeChange="1.0"
-                                        SpinButtonPlacementMode="Inline" />
-                                        </StackPanel>
-
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="Center Y" />
-                                            <NumberBox
-                                        Value="{x:Bind ViewModel.CenterY, Mode=TwoWay}"
-                                        SmallChange="0.1"
-                                        LargeChange="1.0"
-                                        SpinButtonPlacementMode="Inline" />
-                                        </StackPanel>
-
-                                        <StackPanel Spacing="4">
-                                            <TextBlock Text="Zoom Level" />
-                                            <NumberBox
-                                        Value="{x:Bind ViewModel.Zoom, Mode=TwoWay}"
-                                        SmallChange="0.5"
-                                        LargeChange="2.0"
-                                        Minimum="0.001"
-                                        SpinButtonPlacementMode="Inline" />
                                         </StackPanel>
 
                                         <MenuFlyoutSeparator />
