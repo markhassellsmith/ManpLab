@@ -81,51 +81,24 @@ void RegisterAttractors3DFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // ROSSLER (86) - Rössler attractor
+    // THOMAS - Thomas attractor (pretzel-like 3D knot)
     //=========================================================================
-    spec.name = "Rossler";
-    spec.displayName = "Rössler Attractor";
+    spec.name = "Thomas";
+    spec.displayName = "Thomas Attractor";
     spec.category = "Attractors";
     spec.type = FractalCategory::HistogramBased;
-    spec.description = "Rössler strange attractor";
+    spec.description = "Thomas cyclically symmetric attractor with pretzel structure";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Rössler: dx/dt = -y-z, dy/dt = x+ay, dz/dt = b+z(x-c)
-        double a = 0.2;
-        double b = 0.2;
-        double c_param = 5.7;
-        double dt = 0.1;
-
-        double x = c.real * 0.1;
-        double y = c.imag * 0.1;
-        double z = 0.0;
-
-        for (int iter = 0; iter < maxIter; ++iter) {
-            double dx = -y - z;
-            double dy = x + a * y;
-            double dz = b + z * (x - c_param);
-
-            x += dx * dt;
-            y += dy * dt;
-            z += dz * dt;
-
-            if (fabs(x) > 100.0 || fabs(y) > 100.0 || fabs(z) > 100.0)
-                return static_cast<double>(iter);
-        }
-
-        return sqrt(x*x + y*y + z*z) * 10.0;
-    };
+    spec.calculator = nullptr;  // Not used for histogram rendering
 
     spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-        // Rössler attractor: dx/dt = -y-z, dy/dt = x+ay, dz/dt = b+z(x-c)
-        double a = 0.2;
-        double b = 0.2;
-        double c_param = 5.7;
-        double dt = 0.1;
+        // Thomas attractor: dx/dt = sin(y) - b·x, dy/dt = sin(z) - b·y, dz/dt = sin(x) - b·z
+        const double b = 0.208186;
+        const double dt = 0.1;
 
-        double dx = -y - z;
-        double dy = x + a * y;
-        double dz = b + z * (x - c_param);
+        double dx = sin(y) - b * x;
+        double dy = sin(z) - b * y;
+        double dz = sin(x) - b * z;
 
         x += dx * dt;
         y += dy * dt;
@@ -135,61 +108,46 @@ void RegisterAttractors3DFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 5.0;
+    spec.defaultZoom = 3.0;
     spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
+    spec.hasSymmetry = true;
     spec.parameters = {};
 
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // HENON (88) - Hénon map
+    // DADRAS - Dadras attractor (four-wing butterfly)
     //=========================================================================
-    spec.name = "Henon";
-    spec.displayName = "Hénon Map";
+    spec.name = "Dadras";
+    spec.displayName = "Dadras Attractor";
     spec.category = "Attractors";
     spec.type = FractalCategory::HistogramBased;
-    spec.description = "Hénon discrete-time chaotic map";
+    spec.description = "Dadras four-wing chaotic attractor";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Hénon map: x' = 1 - ax² + y, y' = bx
-        double a = 1.4;
-        double b = 0.3;
-
-        double x = c.real * 0.1;
-        double y = c.imag * 0.1;
-
-        for (int iter = 0; iter < maxIter; ++iter) {
-            double x_new = 1.0 - a * x * x + y;
-            double y_new = b * x;
-
-            x = x_new;
-            y = y_new;
-
-            if (fabs(x) > 10.0 || fabs(y) > 10.0)
-                return static_cast<double>(iter);
-        }
-
-        return sqrt(x*x + y*y) * 50.0;
-    };
+    spec.calculator = nullptr;  // Not used for histogram rendering
 
     spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-        // Hénon map: x' = 1 - ax² + y, y' = bx
-        double a = 1.4;
-        double b = 0.3;
+        // Dadras: dx/dt = y - ax + b·y·z, dy/dt = c·y - x·z + z, dz/dt = d·x·y - e·z
+        const double a = 3.0;
+        const double b = 2.7;
+        const double c = 1.7;
+        const double d = 2.0;
+        const double e = 9.0;
+        const double dt = 0.01;
 
-        double x_new = 1.0 - a * x * x + y;
-        double y_new = b * x;
+        double dx = y - a * x + b * y * z;
+        double dy = c * y - x * z + z;
+        double dz = d * x * y - e * z;
 
-        x = x_new;
-        y = y_new;
-        // z unused for 2D map
+        x += dx * dt;
+        y += dy * dt;
+        z += dz * dt;
     };
 
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 8.0;
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -259,111 +217,34 @@ void RegisterAttractors3DFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // CHUA (222) - Chua's circuit attractor
+    // AIZAWA - Aizawa attractor (beautiful butterfly wings)
     //=========================================================================
-    spec.name = "Chua";
-    spec.displayName = "Chua's Circuit";
+    spec.name = "Aizawa";
+    spec.displayName = "Aizawa Attractor";
     spec.category = "Attractors";
     spec.type = FractalCategory::HistogramBased;
-    spec.description = "Chua's circuit strange attractor";
+    spec.description = "Aizawa chaotic attractor with butterfly-like wings";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Chua's circuit system
-        double alpha = 15.6;
-        double beta = 28.0;
-        double a = -1.143;
-        double b = -0.714;
-        double dt = 0.01;
-
-        double x = c.real * 0.1;
-        double y = c.imag * 0.1;
-        double z = 0.0;
-
-        for (int iter = 0; iter < maxIter; ++iter) {
-            double f = b * x + 0.5 * (a - b) * (fabs(x + 1.0) - fabs(x - 1.0));
-            double dx = alpha * (y - x - f);
-            double dy = x - y + z;
-            double dz = -beta * y;
-
-            x += dx * dt;
-            y += dy * dt;
-            z += dz * dt;
-
-            if (fabs(x) > 100.0 || fabs(y) > 100.0 || fabs(z) > 100.0)
-                return static_cast<double>(iter);
-        }
-
-        return sqrt(x*x + y*y) * 10.0;
-    };
+    spec.calculator = nullptr;  // Not used for histogram rendering
 
     spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-        // Chua's circuit: dx/dt = α(y - x - f(x)), dy/dt = x - y + z, dz/dt = -βy
-        double alpha = 15.6;
-        double beta = 28.0;
-        double a = -1.143;
-        double b = -0.714;
-        double dt = 0.01;
+        // Aizawa system
+        const double a = 0.95;
+        const double b = 0.7;
+        const double c = 0.6;
+        const double d = 3.5;
+        const double e = 0.25;
+        const double f = 0.1;
+        const double dt = 0.01;
 
-        double f = b * x + 0.5 * (a - b) * (fabs(x + 1.0) - fabs(x - 1.0));
-        double dx = alpha * (y - x - f);
-        double dy = x - y + z;
-        double dz = -beta * y;
+        double dx = (z - b) * x - d * y;
+        double dy = d * x + (z - b) * y;
+        double dz = c + a * z - (z * z * z) / 3.0 - 
+                    (x * x + y * y) * (1.0 + e * z) + f * z * x * x * x;
 
         x += dx * dt;
         y += dy * dt;
         z += dz * dt;
-    };
-
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 5.0;
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
-    // IKEDA (213) - Ikeda map
-    //=========================================================================
-    spec.name = "Ikeda";
-    spec.displayName = "Ikeda Map";
-    spec.category = "Attractors";
-    spec.type = FractalCategory::HistogramBased;
-    spec.description = "Ikeda nonlinear dynamical system";
-
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Ikeda map from laser physics
-        double u = 0.918;
-        double x = c.real * 0.5;
-        double y = c.imag * 0.5;
-
-        for (int iter = 0; iter < maxIter; ++iter) {
-            double t = 0.4 - 6.0 / (1.0 + x*x + y*y);
-            double x_new = 1.0 + u * (x * cos(t) - y * sin(t));
-            double y_new = u * (x * sin(t) + y * cos(t));
-
-            x = x_new;
-            y = y_new;
-
-            if (fabs(x) > 100.0 || fabs(y) > 100.0)
-                return static_cast<double>(iter);
-        }
-
-        return sqrt(x*x + y*y) * 20.0;
-    };
-
-    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-        // Ikeda map: complex nonlinear map from laser physics
-        double u = 0.918;
-        double t = 0.4 - 6.0 / (1.0 + x*x + y*y);
-        double x_new = 1.0 + u * (x * cos(t) - y * sin(t));
-        double y_new = u * (x * sin(t) + y * cos(t));
-
-        x = x_new;
-        y = y_new;
-        // z unused for 2D map
     };
 
     spec.supportsJulia = false;
@@ -377,51 +258,65 @@ void RegisterAttractors3DFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // HOPALONG (120) - Martin-Hopalong attractor
+    // HALVORSEN - Halvorsen attractor (triple-lobed structure)
     //=========================================================================
-    spec.name = "Hopalong";
-    spec.displayName = "Hopalong Attractor";
+    spec.name = "Halvorsen";
+    spec.displayName = "Halvorsen Attractor";
     spec.category = "Attractors";
     spec.type = FractalCategory::HistogramBased;
-    spec.description = "Barry Martin's Hopalong attractor";
+    spec.description = "Halvorsen threefold symmetric attractor";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Hopalong: x' = y - sign(x)*sqrt(|b*x-c|), y' = a - x
-        double a = 0.4;
-        double b = 1.0;
-        double c_param = 0.0;
-
-        double x = c.real * 0.1;
-        double y = c.imag * 0.1;
-
-        for (int iter = 0; iter < maxIter; ++iter) {
-            double sign_x = (x >= 0) ? 1.0 : -1.0;
-            double x_new = y - sign_x * sqrt(fabs(b * x - c_param));
-            double y_new = a - x;
-
-            x = x_new;
-            y = y_new;
-
-            if (fabs(x) > 100.0 || fabs(y) > 100.0)
-                return static_cast<double>(iter);
-        }
-
-        return sqrt(x*x + y*y) * 10.0;
-    };
+    spec.calculator = nullptr;  // Not used for histogram rendering
 
     spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-        // Hopalong attractor: x' = y - sign(x)*sqrt(|b*x-c|), y' = a - x
-        double a = 0.4;
-        double b = 1.0;
-        double c_param = 0.0;
+        // Halvorsen: dx/dt = -a·x - 4y - 4z - y², dy/dt = -a·y - 4z - 4x - z², dz/dt = -a·z - 4x - 4y - x²
+        const double a = 1.89;
+        const double dt = 0.01;
 
-        double sign_x = (x >= 0) ? 1.0 : -1.0;
-        double x_new = y - sign_x * sqrt(fabs(b * x - c_param));
-        double y_new = a - x;
+        double dx = -a * x - 4.0 * y - 4.0 * z - y * y;
+        double dy = -a * y - 4.0 * z - 4.0 * x - z * z;
+        double dz = -a * z - 4.0 * x - 4.0 * y - x * x;
 
-        x = x_new;
-        y = y_new;
-        // z unused for 2D map
+        x += dx * dt;
+        y += dy * dt;
+        z += dz * dt;
+    };
+
+    spec.supportsJulia = false;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 5.0;
+    spec.defaultBailout = 256.0;
+    spec.hasSymmetry = true;
+    spec.parameters = {};
+
+    FractalRegistry::Register(spec);
+
+    //=========================================================================
+    // CHEN-LEE - Chen-Lee attractor (double-scroll)
+    //=========================================================================
+    spec.name = "ChenLee";
+    spec.displayName = "Chen-Lee Attractor";
+    spec.category = "Attractors";
+    spec.type = FractalCategory::HistogramBased;
+    spec.description = "Chen-Lee double-scroll chaotic attractor";
+
+    spec.calculator = nullptr;  // Not used for histogram rendering
+
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Chen-Lee: dx/dt = a·x - y·z, dy/dt = b·y + x·z, dz/dt = c·z + x·y/3
+        const double a = 5.0;
+        const double b = -10.0;
+        const double c = -0.38;
+        const double dt = 0.01;
+
+        double dx = a * x - y * z;
+        double dy = b * y + x * z;
+        double dz = c * z + x * y / 3.0;
+
+        x += dx * dt;
+        y += dy * dt;
+        z += dz * dt;
     };
 
     spec.supportsJulia = false;
