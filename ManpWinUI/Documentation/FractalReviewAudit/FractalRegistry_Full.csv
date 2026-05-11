@@ -1,0 +1,301 @@
+Index	Fractal Family	Fractal Name	Rendering	Performance	Julia Mode	Zooming	Formula	Description
+1	Attractors	Chua's Circuit						
+2	Attractors	Gingerbread Man						
+3	Attractors	Hénon Map						
+4	Attractors	Hopalong Attractor						
+5	Attractors	Ikeda Map						
+6	Attractors	Lorenz Attractor						
+7	Attractors	Pickover Attractor						
+8	Attractors	Popcorn						
+9	Attractors	Rössler Attractor						
+10	Barnsley	Barnsley J1						
+11	Barnsley	Barnsley J2						
+12	Barnsley	Barnsley J3						
+13	Barnsley	Barnsley M1						
+14	Barnsley	Barnsley M2						
+15	Barnsley	Barnsley M3						
+16	Bifurcation	Henon Map Bifurcation						
+17	Bifurcation	Lambda Bifurcation						
+18	Bifurcation	Logistic Bifurcation						
+19	Bifurcation	Mandelbrot Parameter Space						
+20	Bifurcation	May-Lyapunov Reference						
+21	Bifurcation	Orbit Diagram						
+22	Burning Ship Family	Burning Ship (Power 3)						
+23	Burning Ship Family	Burning Ship (Power 4)						
+24	Burning Ship Variants	Bird of Prey						
+25	Burning Ship Variants	Buffalo Burning Ship						
+26	Burning Ship Variants	Burning Ship Cubic						
+27	Burning Ship Variants	Burning Ship Quartic						
+28	Burning Ship Variants	Burning Ship Quintic						
+29	Burning Ship Variants	Celtic Burning Ship						
+30	Burning Ship Variants	Diagonal Burning Ship						
+31	Burning Ship Variants	Partial Burning Ship						
+32	Burning Ship Variants	Perpendicular Burning Ship						
+33	Burning Ship Variants	Reverse Burning Ship						
+34	Burning Ship Variants	Shark Burning Ship						
+35	Burning Ship Variants	Vertical Burning Ship						
+36	Chaotic Maps	Bedhead Attractor						
+37	Chaotic Maps	Clifford Attractor						
+38	Chaotic Maps	De Jong Attractor						
+39	Chaotic Maps	Gingerbreadman Map						
+40	Chaotic Maps	Sprott Polynomial Attractor						
+41	Chaotic Maps	Svensson Attractor						
+42	Chaotic Maps	Symmetric Icon						
+43	Chaotic Maps	Tinkerbell Map						
+44	Classic Fractals	Lambda						
+45	Classic Fractals	Mandelbrot Set						
+46	Classic Fractals	Mandel-Lambda						
+47	Classic Fractals	Tetrate						
+48	Classic Fractals	Unity						
+49	Complex Functions	1/sin(z)²						
+50	Complex Functions	cos(z)/tan(z)						
+51	Complex Functions	Square + Trig						
+52	Complex Functions	Tetration (z^z)						
+53	Complex Functions	Trig + Trig						
+54	Complex Functions	Trig × Trig						
+55	Complex Functions	Trig Squared						
+56	Complex Functions	z·sin(z) + z						
+57	Distance Estimator	Burning Ship (Distance Estimator)						
+58	Distance Estimator	Julia (Distance Estimator)						
+59	Distance Estimator	Mandelbrot (Distance Estimator)						
+60	Distance Estimator	Tricorn (Distance Estimator)						
+61	Exotic	Buffalo Fractal						
+62	Exotic	Celtic Mandelbrot						
+63	Exotic	Heart Mandelbrot						
+64	Exotic	Perpendicular Mandelbrot						
+65	Exotic	Quasi-Perpendicular						
+66	Exotic	Shark Fin						
+67	Exotic	Wavy						
+68	Exotic	Zubieta						
+69	Exotic Fractals	Magnet I						
+70	Exotic Fractals	Magnet II						
+71	Exotic Fractals	Phoenix Fractal						
+72	Exponential Fractals	Complex Power						
+73	Exponential Fractals	Exponential Fractal						
+74	Exponential Fractals	Exponential Julia						
+75	Exponential Fractals	Exponential Mandelbrot						
+76	Exponential Fractals	Exponential Square						
+77	Exponential Fractals	Lambda Lambda Exponential						
+78	Exponential Fractals	Lambda Mandel Exponential						
+79	Exponential Fractals	Logarithm Fractal						
+80	Exponential Fractals	Logarithmic Mandelbrot						
+81	Exponential Fractals	Mandelbrot Exponential						
+82	Exponential Fractals	Power Tower (z^z)						
+83	Exponential Fractals	z^z + c						
+84	Historical Fractals	Chip Map						
+85	Historical Fractals	Collatz Fractal						
+86	Historical Fractals	Duffing Map						
+87	Historical Fractals	Martin Map						
+88	Historical Fractals	Pickover Biomorphs						
+89	Historical Fractals	Pickover Stalks						
+90	Historical Fractals	Quaternion Julia (2D slice)						
+91	Historical Fractals	Sinusoidal Fractal						
+92	Hybrid Fractals	Bifurcation-Mandelbrot						
+93	Hybrid Fractals	Burning Mandelbrot Hybrid						
+94	Hybrid Fractals	Celtic Mandelbrot						
+95	Hybrid Fractals	Celtic-Burning Ship Hybrid						
+96	Hybrid Fractals	Collatz-Style Hybrid						
+97	Hybrid Fractals	Exponential-Mandelbrot Blend						
+98	Hybrid Fractals	Exponential-Mandelbrot Hybrid						
+99	Hybrid Fractals	Magnet-Mandelbrot Hybrid						
+100	Hybrid Fractals	Mandelbrot-Burning Ship Hybrid						
+101	Hybrid Fractals	Mandelbrot-Lambda Mix						
+102	Hybrid Fractals	Multi-Power Cycle						
+103	Hybrid Fractals	Mutant Mandelbrot (Power Evolution)						
+104	Hybrid Fractals	Newton-Mandelbrot Blend						
+105	Hybrid Fractals	Perturbed Newton						
+106	Hybrid Fractals	Sierpinski-Mandelbrot Cross						
+107	Hybrid Fractals	Sine-Mandelbrot Hybrid						
+108	Hybrid Fractals	Tricorn-Phoenix Hybrid						
+109	Hybrid Fractals	Trig-Mandelbrot Blend						
+110	IFS	Barnsley Fern (IFS)						
+111	IFS	Dragon Curve (IFS)						
+112	IFS	Pentagon (IFS)						
+113	IFS	Sierpinski Triangle (IFS)						
+114	IFS	Tree (IFS)						
+115	Julia Presets	Julia - Airplane						
+116	Julia Presets	Julia - Backbone						
+117	Julia Presets	Julia - Cauliflower						
+118	Julia Presets	Julia - Crystal						
+119	Julia Presets	Julia - Dendrite						
+120	Julia Presets	Julia - Dragon						
+121	Julia Presets	Julia - Eye						
+122	Julia Presets	Julia - Feigenbaum Point						
+123	Julia Presets	Julia - Flower						
+124	Julia Presets	Julia - Fractal Tree						
+125	Julia Presets	Julia - Fuzzy Blob						
+126	Julia Presets	Julia - Golden Ratio						
+127	Julia Presets	Julia - Heart						
+128	Julia Presets	Julia - Lightning						
+129	Julia Presets	Julia - Medusa						
+130	Julia Presets	Julia - Neurons						
+131	Julia Presets	Julia - Paisley						
+132	Julia Presets	Julia - Seahorse Valley						
+133	Julia Presets	Julia - Snowflake						
+134	Julia Presets	Julia - Spiral						
+135	Julia Presets	Julia - Spiral Galaxy						
+136	Julia Presets	Julia - Triple Spiral						
+137	Julia Presets	Julia - Twisted Cross						
+138	Julia Sets	Julia - Custom						
+139	Julia Sets	Julia - Dendrite						
+140	Julia Sets	Julia - Douady Rabbit						
+141	Julia Sets	Julia - Dragon						
+142	Julia Sets	Julia - San Marco						
+143	Julia Sets	Julia - Siegel Disk						
+144	Julia Sets	Julia - Siegel Disk						
+145	Julia Sets	Julia - Spiral						
+146	Julia Sets	Julia (Power 5)						
+147	Julia Sets	Julia (Power 6)						
+148	Julia Sets	Julia Burning Ship						
+149	Julia Sets	Julia Classic						
+150	Julia Sets	Julia Cubic						
+151	Julia Sets	Julia Exponential						
+152	Julia Sets	Julia Lambda						
+153	Julia Sets	Julia Magnet						
+154	Julia Sets	Julia Phoenix						
+155	Julia Sets	Julia Sine						
+156	Julia Sets	Lambda Julia						
+157	Julia Sets	Multibrot 3 Julia						
+158	Julia Sets	Multibrot 4 Julia						
+159	Lambda Fractals	Lambda Flip						
+160	Lambda Fractals	Lambda Modified						
+161	Lambda Fractals	Lambda Phoenix						
+162	Lambda Fractals	Lambda Power 3						
+163	Lambda Fractals	Lambda Power 4						
+164	Lambda Fractals	Lambda Squared						
+165	Lambda Fractals	Lambda Tan						
+166	Lambda Fractals	Lambda Tanh						
+167	Magnet Fractals	Magnet I Cubic						
+168	Magnet Fractals	Magnet I Julia						
+169	Magnet Fractals	Magnet II Cubic						
+170	Magnet Fractals	Magnet II Julia						
+171	Mandelbrot Variants	Burning Ship						
+172	Mandelbrot Variants	Celtic Heart						
+173	Mandelbrot Variants	Heart Mandelbrot						
+174	Mandelbrot Variants	Julia Power 4						
+175	Mandelbrot Variants	Mandelbar						
+176	Mandelbrot Variants	Mandelbar (Conjugate)						
+177	Mandelbrot Variants	Mandelbrot Power 4						
+178	Mandelbrot Variants	Mandelbrot-Lambda						
+179	Mandelbrot Variants	Manowar						
+180	Mandelbrot Variants	Marks Julia						
+181	Mandelbrot Variants	Marks Mandelbrot						
+182	Mandelbrot Variants	Marks Mandelbrot						
+183	Mandelbrot Variants	Multibrot (Power 6)						
+184	Mandelbrot Variants	Multibrot (Power 7)						
+185	Mandelbrot Variants	Multibrot (Power 8)						
+186	Mandelbrot Variants	Multibrot³ (Cubic)						
+187	Mandelbrot Variants	Multibrot? (Quartic)						
+188	Mandelbrot Variants	Multibrot? (Quintic)						
+189	Mandelbrot Variants	Perpendicular Mandelbrot						
+190	Mandelbrot Variants	Shark Fin Mandelbrot						
+191	Mandelbrot Variants	Spider						
+192	Mandelbrot Variants	Spider Variant						
+193	Mandelbrot Variants	Thorn						
+194	Mandelbrot Variants	Thorn						
+195	Mandelbrot Variants	Tricorn (Mandelbar)						
+196	Mandelbrot Variants	Wavy Mandelbrot						
+197	Newton's Method	Newton (z³-1)						
+198	Newton's Method	Newton Basin (z³-1)						
+199	Newton's Method	Newton Cosh						
+200	Newton's Method	Newton Quartic (z?-1)						
+201	Newton's Method	Newton Quintic (z?-1)						
+202	Newton's Method	Newton Sextic (z?-1)						
+203	Newton's Method	Newton Sine						
+204	Newton's Method	Nova						
+205	Orbit Modification	Angle Average						
+206	Orbit Modification	Average Distance						
+207	Orbit Modification	Maximum Distance						
+208	Orbit Modification	Minimum Distance						
+209	Orbit Trap	Orbit Trap (Circle)						
+210	Orbit Trap	Orbit Trap (Cross)						
+211	Orbit Trap	Orbit Trap (Point)						
+212	Orbit Trap	Orbit Trap (Square)						
+213	Orbital Modifications	Circular Orbit Trap						
+214	Orbital Modifications	Cross Orbit Trap						
+215	Orbital Modifications	Delta Magnitude Tracking						
+216	Orbital Modifications	Orbit Angle Accumulation						
+217	Orbital Modifications	Orbital Curvature Tracking						
+218	Orbital Modifications	Point-Line Orbit Trap						
+219	Orbital Modifications	Smoothed Orbit (Running Average)						
+220	Orbital Modifications	Stalks (Conditional)						
+221	Orbital Modifications	Stripe Average Coloring						
+222	Orbital Modifications	Triangle Orbit Trap						
+223	Phoenix Fractals	Phoenix Complex Feedback						
+224	Phoenix Fractals	Phoenix Cosh						
+225	Phoenix Fractals	Phoenix Cubic						
+226	Phoenix Fractals	Phoenix Julia						
+227	Phoenix Fractals	Phoenix Lambda						
+228	Phoenix Fractals	Phoenix Mandelbrot						
+229	Phoenix Fractals	Phoenix Quartic						
+230	Phoenix Fractals	Phoenix Sine						
+231	Polynomial	Biomorph						
+232	Polynomial	Cubic Mandelbrot						
+233	Polynomial	Polynomial z³-z+c						
+234	Polynomial	Polynomial z?+z³+c						
+235	Polynomial	Quartic Mandelbrot						
+236	Polynomial	Quintic Mandelbrot						
+237	Polynomial	Rational R1						
+238	Polynomial	Sextic Mandelbrot						
+239	Polynomial Fractals	Buffalo Fractal						
+240	Polynomial Fractals	Multibrot-10 (Decic)						
+241	Polynomial Fractals	Multibrot-3 (Cubic)						
+242	Polynomial Fractals	Multibrot-4 (Quartic)						
+243	Polynomial Fractals	Multibrot-5 (Quintic)						
+244	Polynomial Fractals	Multibrot-6 (Sextic)						
+245	Polynomial Fractals	Multibrot-8 (Octic)						
+246	Polynomial Fractals	Tricorn (Polynomial)						
+247	Rational Function Fractals	Halley's Method z³-1						
+248	Rational Function Fractals	Möbius Fractal						
+249	Rational Function Fractals	Newton z³-1						
+250	Rational Function Fractals	Newton z?-1						
+251	Rational Function Fractals	Newton z?-1						
+252	Rational Function Fractals	Rational (z²+c)/(z²-c)						
+253	Rational Function Fractals	Rational z²/(z³+c)						
+254	Rational Function Fractals	Rational z³/(z³+c)						
+255	Special	2-D Hailstone Trajectory						
+256	Special	Buddhabrot						
+257	Special	Hailstone Sequence						
+258	Special	Lyapunov						
+259	Special	NumFractal						
+260	Special	Sierpinski Triangle						
+261	Special	Tetration						
+262	Special Function Fractals	Bessel-like Oscillatory						
+263	Special Function Fractals	Continued Fraction Fractal						
+264	Special Function Fractals	Error Function (erf) Fractal						
+265	Special Function Fractals	Gamma Function Fractal						
+266	Special Function Fractals	Hyperbolic Combination						
+267	Special Function Fractals	Lambert W Function						
+268	Special Function Fractals	Tetration (Power Tower)						
+269	Strange Attractors	Bedhead Attractor						
+270	Strange Attractors	Clifford Attractor						
+271	Strange Attractors	De Jong Attractor						
+272	Strange Attractors	Duffing Attractor						
+273	Strange Attractors	Svensson Attractor						
+274	Strange Attractors	Tinkerbell Attractor						
+275	Tricorn Family	Tricorn (Power 3)						
+276	Tricorn Family	Tricorn (Power 4)						
+277	Trigonometric	ArcCos Mandelbrot						
+278	Trigonometric	ArcSin Mandelbrot						
+279	Trigonometric	ArcTan Mandelbrot						
+280	Trigonometric	Cosecant Mandelbrot						
+281	Trigonometric	Cosh Mandelbrot						
+282	Trigonometric	Cotangent Mandelbrot						
+283	Trigonometric	Mandel Trig						
+284	Trigonometric	Secant Mandelbrot						
+285	Trigonometric	Sinh Mandelbrot						
+286	Trigonometric	Tangent Mandelbrot						
+287	Trigonometric	Tanh Mandelbrot						
+288	Trigonometric	Tanh Mandelbrot						
+289	Trigonometric Fractals	Cos(z) + c						
+290	Trigonometric Fractals	Lambda Lambda Cosh						
+291	Trigonometric Fractals	Lambda Lambda Cosine						
+292	Trigonometric Fractals	Lambda Lambda Sine						
+293	Trigonometric Fractals	Lambda Lambda Sinh						
+294	Trigonometric Fractals	Lambda Mandel Cosh						
+295	Trigonometric Fractals	Lambda Mandel Cosine						
+296	Trigonometric Fractals	Lambda Mandel Sine						
+297	Trigonometric Fractals	Lambda Mandel Sinh						
+298	Trigonometric Fractals	Mandelbrot Trig						
+299	Trigonometric Fractals	Sin(z) + c						
+300	Trigonometric Fractals	Sine Fractal						
