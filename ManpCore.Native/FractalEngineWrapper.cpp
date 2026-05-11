@@ -244,6 +244,189 @@ FractalEngineWrapper::!FractalEngineWrapper()
     }
 }
 
+//=============================================================================
+// Histogram-Based Rendering (Phase 2)
+// For strange attractors and other orbit accumulation fractals
+//=============================================================================
+
+/// <summary>
+/// Render a histogram-based fractal using orbit accumulation.
+/// Iterates a dynamical system millions of times and accumulates visit counts per pixel.
+/// </summary>
+/// <param name="result">Output buffer to write pixel data</param>
+/// <param name="spec">Fractal specification with orbitIterator</param>
+/// <param name="params">Render parameters (center, zoom, etc.)</param>
+/// <param name="width">Image width in pixels</param>
+/// <param name="height">Image height in pixels</param>
+/// <param name="palette">Color palette for density mapping</param>
+/// <param name="colorOffset">Color rotation offset</param>
+static void RenderHistogramFractal(
+    FractalResult^ result,
+    const ::Native::FractalSpec* spec,
+    const ::Native::MandelbrotParams& params,
+    int width,
+    int height,
+    ::Native::PaletteType palette,
+    int colorOffset)
+{
+    Debug::WriteLine("RenderHistogramFractal: Starting histogram-based rendering");
+    Debug::WriteLine(String::Format("  Fractal: {0}", gcnew String(spec->name.c_str())));
+    Debug::WriteLine(String::Format("  Canvas: {0}x{1}", width, height));
+
+    // Validate orbitIterator exists
+    if (!spec->orbitIterator)
+    {
+        throw gcnew InvalidOperationException(
+            String::Format("Fractal '{0}' is marked as HistogramBased but has no orbitIterator defined. "
+                          "Please add spec.orbitIterator in the fractal registration code.",
+                          gcnew String(spec->name.c_str())));
+    }
+
+    Debug::WriteLine("  OrbitIterator validated");
+
+    // Step 1: Allocate histogram buffer (visit counter per pixel)
+    std::vector<int> histogram(width * height, 0);
+    Debug::WriteLine(String::Format("  Allocated histogram buffer: {0} pixels", width * height));
+
+    // Step 2: Initialize starting point
+    double x = 0.1;
+    double y = 0.1;
+    double z = 1.0;
+
+    // Step 3: Iterate system and accumulate histogram
+    const int orbitCount = 5000000;  // 5 million iterations
+    int skipIterations = 100;  // Skip transient behavior
+
+    Debug::WriteLine(String::Format("  Orbit count: {0:N0}", orbitCount));
+    Debug::WriteLine(String::Format("  Skip transient: {0}", skipIterations));
+
+    // Track bounds for coordinate mapping
+    double minX = 1e10, maxX = -1e10;
+    double minY = 1e10, maxY = -1e10;
+
+    // Empty parameter map for now
+    ::Native::ParamMap customParams;
+
+    // Phase 1: Iterate to find actual attractor bounds
+    for (int iter = 0; iter < orbitCount; ++iter)
+    {
+        // Call the fractal's orbit iterator to update (x, y, z)
+        spec->orbitIterator(x, y, z, customParams);
+
+        // Skip initial transient iterations
+        if (iter < skipIterations)
+            continue;
+
+        // Track bounds
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+    }
+
+    Debug::WriteLine(String::Format("  Orbit bounds: X=[{0:F2}, {1:F2}], Y=[{2:F2}, {3:F2}]", minX, maxX, minY, maxY));
+
+    // Phase 2: Reset and accumulate histogram using discovered bounds
+    x = 0.1;
+    y = 0.1;
+    z = 1.0;
+
+    // Use attractor's natural bounds for viewport (ignore user zoom/pan for now)
+    double rangeX = maxX - minX;
+    double rangeY = maxY - minY;
+    double margin = 0.1;  // 10% margin
+    double viewLeft = minX - rangeX * margin;
+    double viewRight = maxX + rangeX * margin;
+    double viewBottom = minY - rangeY * margin;
+    double viewTop = maxY + rangeY * margin;
+    double viewWidth = viewRight - viewLeft;
+    double viewHeight = viewTop - viewBottom;
+
+    Debug::WriteLine(String::Format("  Viewport: X=[{0:F2}, {1:F2}], Y=[{2:F2}, {3:F2}]", viewLeft, viewRight, viewBottom, viewTop));
+
+    for (int iter = 0; iter < orbitCount; ++iter)
+    {
+        // Call the fractal's orbit iterator to update (x, y, z)
+        spec->orbitIterator(x, y, z, customParams);
+
+        // Skip initial transient iterations
+        if (iter < skipIterations)
+            continue;
+
+        // Map attractor coordinates to pixel coordinates using auto-fit viewport
+        double worldX = x;
+        double worldY = y;
+
+        // Map to pixel coordinates
+        int px = (int)((worldX - viewLeft) / viewWidth * width);
+        int py = (int)((viewTop - worldY) / viewHeight * height);
+
+        // Bounds check
+        if (px >= 0 && px < width && py >= 0 && py < height)
+        {
+            histogram[py * width + px]++;
+        }
+
+        // Progress reporting every 500k iterations
+        if (iter % 500000 == 0 && iter > 0)
+        {
+            Debug::WriteLine(String::Format("  Progress: {0:N0} / {1:N0} iterations ({2:F1}%)", 
+                iter, orbitCount, (iter * 100.0 / orbitCount)));
+        }
+    }
+
+    // Step 4: Find max histogram value for normalization
+    int maxVisits = 0;
+    for (int i = 0; i < width * height; ++i)
+    {
+        if (histogram[i] > maxVisits)
+            maxVisits = histogram[i];
+    }
+
+    Debug::WriteLine(String::Format("  Max visits per pixel: {0}", maxVisits));
+
+    // Step 5: Convert histogram to colors
+    Debug::WriteLine("  Converting histogram to colors...");
+
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            int index = y * width + x;
+            int visits = histogram[index];
+
+            // Normalize to [0, 1] with logarithmic scaling for better visibility
+            double density = 0.0;
+            if (visits > 0 && maxVisits > 0)
+            {
+                // Log scaling: density = log(visits + 1) / log(maxVisits + 1)
+                density = std::log(visits + 1.0) / std::log(maxVisits + 1.0);
+            }
+
+            // Map density to iteration count for color palette
+            // Scale to maxIterations range for palette compatibility
+            double iterationValue = density * params.maxIterations;
+
+            // Convert to color using existing palette system
+            ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
+                iterationValue,
+                params.maxIterations,
+                palette,
+                colorOffset
+            );
+
+            // Write BGRA pixel
+            int pixelIndex = index * 4;
+            result->PixelData[pixelIndex + 0] = color.b;  // Blue
+            result->PixelData[pixelIndex + 1] = color.g;  // Green
+            result->PixelData[pixelIndex + 2] = color.r;  // Red
+            result->PixelData[pixelIndex + 3] = 255;      // Alpha
+        }
+    }
+
+    Debug::WriteLine("RenderHistogramFractal: Rendering complete");
+}
+
 // Calculate fractal
 FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
 {
@@ -417,14 +600,23 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
         if (spec->type == ::Native::FractalCategory::HistogramBased)
         {
             Debug::WriteLine("Native Calculate: Histogram-based fractal detected");
-            Debug::WriteLine("  This fractal requires orbit accumulation rendering (not yet implemented)");
-            Debug::WriteLine("  Expected fractals: Lorenz, Rössler, Hénon, Pickover, Gingerbread, Chua, Ikeda, Hopalong, Popcorn");
+            Debug::WriteLine("  Calling RenderHistogramFractal for orbit accumulation rendering");
 
-            throw gcnew NotImplementedException(
-                String::Format("Histogram rendering not yet implemented for fractal '{0}'. "
-                              "This fractal requires orbit accumulation visualization. "
-                              "Phase 2 implementation pending.",
-                              gcnew String(fractalType.c_str())));
+            // Convert managed palette enum to native
+            ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
+            int colorOffset = parameters->ColorOffset;
+
+            // Call histogram renderer
+            RenderHistogramFractal(result, spec, nativeParams, width, height, nativePalette, colorOffset);
+
+            // Set statistics and timing
+            stopwatch->Stop();
+            result->RenderTime = stopwatch->Elapsed;
+            result->IterationCount = 0;  // Not applicable for histogram rendering
+            result->EscapedPixelCount = 0;
+
+            Debug::WriteLine(String::Format("Native Calculate: Histogram rendering complete in {0}ms", stopwatch->ElapsedMilliseconds));
+            return result;
         }
 
         // Prepare parameter map for extensibility (currently empty, but ready for custom params)

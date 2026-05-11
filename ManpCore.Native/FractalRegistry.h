@@ -147,6 +147,12 @@ typedef std::map<std::string, double> ParamMap;
 typedef std::function<double(ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params)> 
     FractalCalculator;
 
+// Orbit iteration function for histogram-based rendering (strange attractors, etc.)
+// Updates (x, y, z) coordinates in-place according to the dynamical system
+// Used by histogram renderer to trace orbits through phase space
+typedef std::function<void(double& x, double& y, double& z, const ParamMap& params)>
+    OrbitIterator;
+
 //=============================================================================
 // Fractal Specification
 //=============================================================================
@@ -158,7 +164,8 @@ struct FractalSpec
     std::string category;           // Group name (e.g., "Mandelbrot Variants")
     FractalCategory type;           // Category enum
 
-    FractalCalculator calculator;   // Calculation function
+    FractalCalculator calculator;   // Calculation function (for escape-time fractals)
+    OrbitIterator orbitIterator;    // Orbit iteration function (for histogram-based fractals)
 
     std::vector<ParameterSpec> parameters;  // Custom parameters
 

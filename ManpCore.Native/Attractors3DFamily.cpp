@@ -51,6 +51,25 @@ void RegisterAttractors3DFamily()
         return sqrt(x*x + y*y) * 10.0;
     };
 
+    // Orbit iterator for histogram-based rendering
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Lorenz system parameters
+        const double sigma = 10.0;
+        const double rho = 28.0;
+        const double beta = 8.0 / 3.0;
+        const double dt = 0.01;
+
+        // Compute derivatives
+        double dx = sigma * (y - x);
+        double dy = x * (rho - z) - y;
+        double dz = x * y - beta * z;
+
+        // Euler integration step
+        x += dx * dt;
+        y += dy * dt;
+        z += dz * dt;
+    };
+
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
@@ -97,6 +116,22 @@ void RegisterAttractors3DFamily()
         return sqrt(x*x + y*y + z*z) * 10.0;
     };
 
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Rössler attractor: dx/dt = -y-z, dy/dt = x+ay, dz/dt = b+z(x-c)
+        double a = 0.2;
+        double b = 0.2;
+        double c_param = 5.7;
+        double dt = 0.1;
+
+        double dx = -y - z;
+        double dy = x + a * y;
+        double dz = b + z * (x - c_param);
+
+        x += dx * dt;
+        y += dy * dt;
+        z += dz * dt;
+    };
+
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
@@ -136,6 +171,19 @@ void RegisterAttractors3DFamily()
         }
 
         return sqrt(x*x + y*y) * 50.0;
+    };
+
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Hénon map: x' = 1 - ax² + y, y' = bx
+        double a = 1.4;
+        double b = 0.3;
+
+        double x_new = 1.0 - a * x * x + y;
+        double y_new = b * x;
+
+        x = x_new;
+        y = y_new;
+        // z unused for 2D map
     };
 
     spec.supportsJulia = false;
@@ -184,6 +232,22 @@ void RegisterAttractors3DFamily()
         return sqrt(x*x + y*y) * 20.0;
     };
 
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Pickover attractor: x' = sin(a*y) - z*cos(b*x), y' = z*sin(c*x) - cos(d*y), z' = sin(x)
+        double a = 2.24;
+        double b = 0.43;
+        double c_param = -0.65;
+        double d = -2.43;
+
+        double x_new = sin(a * y) - z * cos(b * x);
+        double y_new = z * sin(c_param * x) - cos(d * y);
+        double z_new = sin(x);
+
+        x = x_new;
+        y = y_new;
+        z = z_new;
+    };
+
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
@@ -220,6 +284,16 @@ void RegisterAttractors3DFamily()
         }
 
         return sqrt(x*x + y*y) * 10.0;
+    };
+
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Gingerbread man: x' = 1 - y + |x|, y' = x
+        double x_new = 1.0 - y + fabs(x);
+        double y_new = x;
+
+        x = x_new;
+        y = y_new;
+        // z unused for 2D map
     };
 
     spec.supportsJulia = false;
@@ -270,6 +344,24 @@ void RegisterAttractors3DFamily()
         return sqrt(x*x + y*y) * 10.0;
     };
 
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Chua's circuit: dx/dt = α(y - x - f(x)), dy/dt = x - y + z, dz/dt = -βy
+        double alpha = 15.6;
+        double beta = 28.0;
+        double a = -1.143;
+        double b = -0.714;
+        double dt = 0.01;
+
+        double f = b * x + 0.5 * (a - b) * (fabs(x + 1.0) - fabs(x - 1.0));
+        double dx = alpha * (y - x - f);
+        double dy = x - y + z;
+        double dz = -beta * y;
+
+        x += dx * dt;
+        y += dy * dt;
+        z += dz * dt;
+    };
+
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
@@ -308,6 +400,18 @@ void RegisterAttractors3DFamily()
         }
 
         return sqrt(x*x + y*y) * 20.0;
+    };
+
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Ikeda map: complex nonlinear map from laser physics
+        double u = 0.918;
+        double t = 0.4 - 6.0 / (1.0 + x*x + y*y);
+        double x_new = 1.0 + u * (x * cos(t) - y * sin(t));
+        double y_new = u * (x * sin(t) + y * cos(t));
+
+        x = x_new;
+        y = y_new;
+        // z unused for 2D map
     };
 
     spec.supportsJulia = false;
@@ -351,6 +455,21 @@ void RegisterAttractors3DFamily()
         }
 
         return sqrt(x*x + y*y) * 10.0;
+    };
+
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Hopalong attractor: x' = y - sign(x)*sqrt(|b*x-c|), y' = a - x
+        double a = 0.4;
+        double b = 1.0;
+        double c_param = 0.0;
+
+        double sign_x = (x >= 0) ? 1.0 : -1.0;
+        double x_new = y - sign_x * sqrt(fabs(b * x - c_param));
+        double y_new = a - x;
+
+        x = x_new;
+        y = y_new;
+        // z unused for 2D map
     };
 
     spec.supportsJulia = false;
