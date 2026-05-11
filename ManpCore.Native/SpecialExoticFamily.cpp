@@ -187,55 +187,6 @@ void RegisterSpecialExoticFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // POPCORN (230) - Popcorn attractor
-    //=========================================================================
-    spec.name = "Popcorn";
-    spec.displayName = "Popcorn";
-    spec.category = "Attractors";
-    spec.type = FractalCategory::HistogramBased;
-    spec.description = "Popcorn attractor fractal";
-
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Popcorn: x' = x - h*sin(y + tan(3*y)), y' = y - h*sin(x + tan(3*x))
-        double x = c.real;
-        double y = c.imag;
-        double h = 0.05;
-
-        for (int iter = 0; iter < maxIter; ++iter) {
-            double x_new = x - h * sin(y + tan(3.0 * y));
-            double y_new = y - h * sin(x + tan(3.0 * x));
-            x = x_new;
-            y = y_new;
-
-            if (fabs(x) > 100.0 || fabs(y) > 100.0)
-                return static_cast<double>(iter);
-        }
-        return static_cast<double>(maxIter);
-    };
-
-    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-        // Popcorn attractor: x' = x - h*sin(y + tan(3*y)), y' = y - h*sin(x + tan(3*x))
-        double h = 0.05;
-
-        double x_new = x - h * sin(y + tan(3.0 * y));
-        double y_new = y - h * sin(x + tan(3.0 * x));
-
-        x = x_new;
-        y = y_new;
-        // z unused for 2D map
-    };
-
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 5.0;
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
     // MANDELBAR (231) - Mandelbar (Tricorn without conjugate in z²)
     //=========================================================================
     spec.name = "Mandelbar";

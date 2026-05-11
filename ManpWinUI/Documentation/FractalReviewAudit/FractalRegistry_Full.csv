@@ -1,13 +1,13 @@
 "Index","Fractal Family","Fractal Name","Rendering","Performance","Julia Mode","Zooming","Formula","Description","Status"
 "1","Attractors","Chua's Circuit","Diagonal Band solid with diffused surroundings - LeftUpper to RightLower","01:06.68","Same rendering","Yes","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
-"2","Attractors","Gingerbread Man","Diagonal Bands of flecks with diffuse surroundings.  Where's the Man?","00:19.90","Same rendering","Yes","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
-"3","Attractors","Hénon Map","","","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
-"4","Attractors","Hopalong Attractor","Solid green background with faint brush streaks of flecks reddish or brown in color, not much interest","00:32.42","Same rendering","Yes","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
-"5","Attractors","Ikeda Map","Solid greener background with random pattern of multicolored flecks.  Faint outline of missing flecks in a curved shape","00:55.50","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
-"6","Attractors","Lorenz Attractor","Rainbow colored spectrum of diffuse diagonal bands with three sharply defined diagonal bands in the center of the band family","00:26.97","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational, VERIFIED butterfly structure"
-"7","Attractors","Pickover Attractor","Solid reddish-pink background with random flecks of yellow/gree and blue","01:15.58","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
-"8","Attractors","Popcorn","black screen no feature","00:01.32","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
-"9","Attractors","Rössler Attractor","Semi-circular bands of color; some diffuse, some sharply defined, some repeating ovals in a band","00:22.42","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
+"2","Attractors","Hénon Map","","","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
+"2","Attractors","Hénon Map","","","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
+"3","Attractors","Hopalong Attractor","Solid green background with faint brush streaks of flecks reddish or brown in color, not much interest","00:32.42","Same rendering","Yes","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
+"4","Attractors","Ikeda Map","Solid greener background with random pattern of multicolored flecks.  Faint outline of missing flecks in a curved shape","00:55.50","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
+"5","Attractors","Lorenz Attractor","Rainbow colored spectrum of diffuse diagonal bands with three sharply defined diagonal bands in the center of the band family","00:26.97","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational, VERIFIED butterfly structure"
+"6","Attractors","Pickover Attractor","Solid reddish-pink background with random flecks of yellow/gree and blue","01:15.58","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
+"7","Attractors","Rössler Attractor","Semi-circular bands of color; some diffuse, some sharply defined, some repeating ovals in a band","00:22.42","","","","","✅ PHASE 2 COMPLETE: OrbitIterator implemented, histogram renderer operational"
+"39","Chaotic Maps","Gingerbread Man","Diagonal Bands of flecks with diffuse surroundings.  Where's the Man?","00:19.90","Same rendering","Yes","","","✅ PHASE 2 COMPLETE: Moved from Attractors to Chaotic Maps (2D discrete map), histogram renderer operational"
 "10","Barnsley","Barnsley J1","","","","","","",""
 "11","Barnsley","Barnsley J2","","","","","","",""
 "12","Barnsley","Barnsley J3","","","","","","",""
@@ -37,7 +37,7 @@
 "36","Chaotic Maps","Bedhead Attractor","","","","","","",
 "37","Chaotic Maps","Clifford Attractor","","","","","","",
 "38","Chaotic Maps","De Jong Attractor","","","","","","",
-"39","Chaotic Maps","Gingerbreadman Map","","","","","","",
+"40","Chaotic Maps","Popcorn","black screen no feature","00:01.32","","","","","✅ PHASE 2 COMPLETE: Moved from Attractors to Chaotic Maps (2D discrete map), histogram renderer operational"
 "40","Chaotic Maps","Sprott Polynomial Attractor","","","","","","",
 "41","Chaotic Maps","Svensson Attractor","","","","","","",
 "42","Chaotic Maps","Symmetric Icon","","","","","","",

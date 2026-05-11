@@ -259,54 +259,6 @@ void RegisterAttractors3DFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // GINGERBREAD (90) - Gingerbread man attractor
-    //=========================================================================
-    spec.name = "Gingerbread";
-    spec.displayName = "Gingerbread Man";
-    spec.category = "Attractors";
-    spec.type = FractalCategory::HistogramBased;
-    spec.description = "Gingerbread man chaotic attractor";
-
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Gingerbread: x' = 1 - y + |x|, y' = x
-        double x = c.real * 0.1;
-        double y = c.imag * 0.1;
-
-        for (int iter = 0; iter < maxIter; ++iter) {
-            double x_new = 1.0 - y + fabs(x);
-            double y_new = x;
-
-            x = x_new;
-            y = y_new;
-
-            if (fabs(x) > 100.0 || fabs(y) > 100.0)
-                return static_cast<double>(iter);
-        }
-
-        return sqrt(x*x + y*y) * 10.0;
-    };
-
-    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-        // Gingerbread man: x' = 1 - y + |x|, y' = x
-        double x_new = 1.0 - y + fabs(x);
-        double y_new = x;
-
-        x = x_new;
-        y = y_new;
-        // z unused for 2D map
-    };
-
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 10.0;
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
     // CHUA (222) - Chua's circuit attractor
     //=========================================================================
     spec.name = "Chua";

@@ -355,14 +355,14 @@ namespace Native
         }
 
         // ───────────────────────────────────────────────────────────────────────────────
-        // Gingerbreadman Map
+        // Gingerbread Man - 2D chaotic map with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "GingerbreadmanMap";
-            spec.displayName = "Gingerbreadman Map";
+            spec.name = "Gingerbread";
+            spec.displayName = "Gingerbread Man";
             spec.category = "Chaotic Maps";
-            spec.type = FractalCategory::EscapeTime2D;
+            spec.type = FractalCategory::HistogramBased;
             spec.description = "Discrete chaotic map: x(n+1) = 1 - y + |x|, y(n+1) = x. Creates patterns resembling a gingerbread man figure.";
             spec.formula = "x' = 1 - y + |x|, y' = x";
             spec.formulaLatex = R"(x_{n+1} = 1 - y_n + |x_n|, \quad y_{n+1} = x_n)";
@@ -371,36 +371,97 @@ namespace Native
             spec.visualCharacteristics = "Gingerbread man shape, discrete points, chaotic distribution";
             spec.discoveredBy = "Robert L. Devaney";
             spec.discoveryYear = 1984;
-            spec.computationalNotes = "Simple piecewise linear map with chaotic behavior";
+            spec.computationalNotes = "2D discrete-time iterative map with chaotic behavior";
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.2;
-            spec.defaultBailout = 100.0;
+            spec.defaultZoom = 10.0;
+            spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                double x = c.real;
-                double y = c.imag;
+                double x = c.real * 0.1;
+                double y = c.imag * 0.1;
 
-                for (int i = 0; i < maxIter; ++i)
-                {
-                    double xNew = 1.0 - y + std::abs(x);
-                    double yNew = x;
+                for (int iter = 0; iter < maxIter; ++iter) {
+                    double x_new = 1.0 - y + fabs(x);
+                    double y_new = x;
 
-                    x = xNew;
-                    y = yNew;
+                    x = x_new;
+                    y = y_new;
 
-                    double mag2 = x * x + y * y;
-
-                    if (mag2 > 100.0)
-                    {
-                        return static_cast<double>(i);
-                    }
+                    if (fabs(x) > 100.0 || fabs(y) > 100.0)
+                        return static_cast<double>(iter);
                 }
 
+                return sqrt(x*x + y*y) * 10.0;
+            };
+
+            spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+                // Gingerbread man: x' = 1 - y + |x|, y' = x
+                double x_new = 1.0 - y + fabs(x);
+                double y_new = x;
+
+                x = x_new;
+                y = y_new;
+                // z unused for 2D map
+            };
+
+            FractalRegistry::Register(spec);
+        }
+
+        // ───────────────────────────────────────────────────────────────────────────────
+        // Popcorn - 2D chaotic map with trigonometric terms and histogram rendering
+        // ───────────────────────────────────────────────────────────────────────────────
+        {
+            FractalSpec spec;
+            spec.name = "Popcorn";
+            spec.displayName = "Popcorn";
+            spec.category = "Chaotic Maps";
+            spec.type = FractalCategory::HistogramBased;
+            spec.description = "Popcorn chaotic map with trigonometric terms: x' = x - h*sin(y + tan(3y)), y' = y - h*sin(x + tan(3x))";
+            spec.formula = "x' = x - h*sin(y + tan(3y)), y' = y - h*sin(x + tan(3x))";
+            spec.formulaLatex = R"(x_{n+1} = x_n - h\sin(y_n + \tan(3y_n)), \quad y_{n+1} = y_n - h\sin(x_n + \tan(3x_n)))";
+            spec.supportsJulia = false;
+
+            spec.visualCharacteristics = "Popcorn-like scattered patterns, trigonometric chaos";
+            spec.computationalNotes = "2D discrete map with trigonometric nonlinearity, h=0.05";
+
+            spec.defaultCenterX = 0.0;
+            spec.defaultCenterY = 0.0;
+            spec.defaultZoom = 5.0;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = false;
+
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+                // Popcorn: x' = x - h*sin(y + tan(3*y)), y' = y - h*sin(x + tan(3*x))
+                double x = c.real;
+                double y = c.imag;
+                double h = 0.05;
+
+                for (int iter = 0; iter < maxIter; ++iter) {
+                    double x_new = x - h * sin(y + tan(3.0 * y));
+                    double y_new = y - h * sin(x + tan(3.0 * x));
+                    x = x_new;
+                    y = y_new;
+
+                    if (fabs(x) > 100.0 || fabs(y) > 100.0)
+                        return static_cast<double>(iter);
+                }
                 return static_cast<double>(maxIter);
+            };
+
+            spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+                // Popcorn attractor: x' = x - h*sin(y + tan(3*y)), y' = y - h*sin(x + tan(3*x))
+                double h = 0.05;
+
+                double x_new = x - h * sin(y + tan(3.0 * y));
+                double y_new = y - h * sin(x + tan(3.0 * x));
+
+                x = x_new;
+                y = y_new;
+                // z unused for 2D map
             };
 
             FractalRegistry::Register(spec);

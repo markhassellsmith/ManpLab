@@ -360,7 +360,6 @@
       <Folder Include="Documentation\Components\ManpWIN64\" />
       <Folder Include="Documentation\Components\ManpWinUI\" />
       <Folder Include="Documentation\FractalReviewAudit\Checklists\" />
-      <Folder Include="Documentation\FractalReviewAudit\Guides\" />
     </ItemGroup>
 
 	<ItemGroup>
