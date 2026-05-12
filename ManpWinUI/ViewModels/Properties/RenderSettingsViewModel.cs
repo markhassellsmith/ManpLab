@@ -52,8 +52,10 @@ namespace ManpWinUI.ViewModels.Properties
             {
                 if (_selectedRenderMode != value)
                 {
+                    System.Diagnostics.Debug.WriteLine($"[RenderSettingsViewModel] SelectedRenderMode changing from {_selectedRenderMode} to {value}");
                     _selectedRenderMode = value;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedRenderMode)));
+                    System.Diagnostics.Debug.WriteLine($"[RenderSettingsViewModel] Raising RenderModeChanged event");
                     RenderModeChanged?.Invoke(this, EventArgs.Empty);
                 }
             }

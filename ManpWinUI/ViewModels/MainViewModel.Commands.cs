@@ -202,6 +202,7 @@ public partial class MainViewModel
                 }
 
                 System.Diagnostics.Debug.WriteLine($"[RenderCommand] Deep Zoom Setting (Legacy): {shouldUseDeepZoom} (User requested: {userRequestedDeepZoom}, ViewWidth: {viewWidth:E2})");
+                System.Diagnostics.Debug.WriteLine($"[RenderCommand] RENDER SETTINGS: RenderMode={SelectedRenderMode} ({(int)SelectedRenderMode}), UseSmoothColoring={UseSmoothColoring}");
 
                 // Fallback: use old individual-property method
                 result = await _renderService.RenderMandelbrotAsync(
