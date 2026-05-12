@@ -42,6 +42,9 @@
         <!-- Enable Win2D Rendering -->
         <DefineConstants>$(DefineConstants);HAS_WIN2D</DefineConstants>
 
+        <!-- Disable XAML debugger break on unhandled exceptions (we handle them in App.xaml.cs) -->
+        <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION</DefineConstants>
+
         <!-- App Options -->
         <UseRidGraph>true</UseRidGraph>
         <Platforms>x86;x64;ARM64</Platforms>

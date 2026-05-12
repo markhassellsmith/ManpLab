@@ -44,6 +44,30 @@ namespace ManpWinUI
         {
             this.InitializeComponent();
 
+            // Add global exception handler to catch InvalidCastException with full stack trace
+            this.UnhandledException += (sender, e) =>
+            {
+                var exceptionInfo = new System.Text.StringBuilder();
+                exceptionInfo.AppendLine("═══════════════════════════════════════════════════════════");
+                exceptionInfo.AppendLine($"UNHANDLED EXCEPTION: {e.Exception.GetType().Name}");
+                exceptionInfo.AppendLine($"Message: {e.Exception.Message}");
+                exceptionInfo.AppendLine($"Stack Trace:\n{e.Exception.StackTrace}");
+                exceptionInfo.AppendLine("═══════════════════════════════════════════════════════════");
+
+                var logMessage = exceptionInfo.ToString();
+                System.Diagnostics.Debug.WriteLine(logMessage);
+
+                // Also log to Serilog if available
+                try
+                {
+                    Log.Error(e.Exception, "Unhandled exception caught in App.UnhandledException handler");
+                }
+                catch { /* Serilog might not be initialized yet */ }
+
+                // Mark as handled to prevent crash
+                e.Handled = true;
+            };
+
             // Configure Serilog
             ConfigureLogging();
 
