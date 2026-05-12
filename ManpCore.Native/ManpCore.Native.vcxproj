@@ -162,6 +162,7 @@
       <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
     <!-- PertEngine.cpp excluded - contains GUI code -->
+    <ClCompile Include="ViewOptimizationDiagnostics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
