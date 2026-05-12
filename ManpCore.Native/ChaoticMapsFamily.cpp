@@ -49,8 +49,8 @@ namespace Native
             spec.discoveryYear = 2004;
             spec.computationalNotes = "Multi-wing attractor, extends Lorenz system";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
+            spec.defaultCenterX = 2.65;
+            spec.defaultCenterY = 2.65;
             spec.defaultZoom = 15.0;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
@@ -82,8 +82,6 @@ namespace Native
                 y += dy2 * dt;
                 z += dz2 * dt;
             };
-
-            spec.defaultZoom = 3.5;  // Lower zoom - attractor spans ~4.2 units
 
             FractalRegistry::Register(spec);
         }
@@ -150,9 +148,9 @@ namespace Native
             spec.discoveryYear = 1981;
             spec.computationalNotes = "Third-order differential equation system";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 5.0;
+            spec.defaultCenterX = 0.04;
+            spec.defaultCenterY = -0.04;
+            spec.defaultZoom = 4.15;  // Optimal for range [-0.22 to 0.30, -0.45 to 0.36, -0.74 to 0.70]
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -184,8 +182,6 @@ namespace Native
                 y += dy2 * dt;
                 z += dz2 * dt;
             };
-
-            spec.defaultZoom = 80.0;  // EXTREME zoom - attractor range is only ~0.5 units!
 
             FractalRegistry::Register(spec);
         }
