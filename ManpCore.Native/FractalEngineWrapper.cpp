@@ -326,22 +326,23 @@ static void RenderHistogramFractal(
 
     Debug::WriteLine(String::Format("  Orbit bounds: X=[{0:F2}, {1:F2}], Y=[{2:F2}, {3:F2}]", minX, maxX, minY, maxY));
 
-    // Phase 2: Reset and accumulate histogram using discovered bounds
+    // Phase 2: Reset and accumulate histogram using USER zoom/pan parameters
     x = 0.1;
     y = 0.1;
     z = 1.0;
 
-    // Use attractor's natural bounds for viewport (ignore user zoom/pan for now)
-    double rangeX = maxX - minX;
-    double rangeY = maxY - minY;
-    double margin = 0.1;  // 10% margin
-    double viewLeft = minX - rangeX * margin;
-    double viewRight = maxX + rangeX * margin;
-    double viewBottom = minY - rangeY * margin;
-    double viewTop = maxY + rangeY * margin;
+    // Use user's zoom/pan parameters from the UI
+    // params.centerX, params.centerY = user's pan position
+    // params.viewWidth, params.viewHeight = zoom level (smaller = more zoomed in)
+    double viewLeft = params.centerX - params.viewWidth / 2.0;
+    double viewRight = params.centerX + params.viewWidth / 2.0;
+    double viewBottom = params.centerY - params.viewHeight / 2.0;
+    double viewTop = params.centerY + params.viewHeight / 2.0;
     double viewWidth = viewRight - viewLeft;
     double viewHeight = viewTop - viewBottom;
 
+    Debug::WriteLine(String::Format("  User Zoom/Pan: Center=({0:F2}, {1:F2}), View={2:F2}x{3:F2}", 
+        params.centerX, params.centerY, params.viewWidth, params.viewHeight));
     Debug::WriteLine(String::Format("  Viewport: X=[{0:F2}, {1:F2}], Y=[{2:F2}, {3:F2}]", viewLeft, viewRight, viewBottom, viewTop));
 
     for (int iter = 0; iter < orbitCount; ++iter)
