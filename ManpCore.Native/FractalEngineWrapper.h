@@ -465,6 +465,8 @@ namespace Native {
             JuliaCY = 0.0;
             Palette = ColorPalette::Classic;  // Default to classic fractal colors
             ColorOffset = 0;  // No offset by default
+            RenderMode = 0;  // Default to EscapeTime
+            UseSmoothColoring = true;  // Default to smooth (anti-banding ON)
             Precision = 50;  // Default MPFR precision for deep zoom
         }
     };

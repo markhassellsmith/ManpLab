@@ -22,26 +22,30 @@
                 <RadioButton 
                     GroupName="RenderMode"
                     Content="Escape Time"
-                    IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=EscapeTime}"
-                    Checked="RenderMode_Changed"/>
+                    IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=EscapeTime}"
+                    Checked="RenderMode_Changed"
+                    Tag="EscapeTime"/>
 
                 <RadioButton 
                     GroupName="RenderMode"
                     Content="Continuous Gradient"
-                    IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=SmoothColoring}"
-                    Checked="RenderMode_Changed"/>
+                    IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=SmoothColoring}"
+                    Checked="RenderMode_Changed"
+                    Tag="SmoothColoring"/>
 
                 <RadioButton 
                     GroupName="RenderMode"
                     Content="Distance Estimation"
-                    IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=DistanceEstimation}"
-                    Checked="RenderMode_Changed"/>
+                    IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=DistanceEstimation}"
+                    Checked="RenderMode_Changed"
+                    Tag="DistanceEstimation"/>
 
                 <RadioButton 
                     GroupName="RenderMode"
                     Content="Orbit Trap"
-                    IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=OrbitTrap}"
-                    Checked="RenderMode_Changed"/>
+                    IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=OrbitTrap}"
+                    Checked="RenderMode_Changed"
+                    Tag="OrbitTrap"/>
 
                 <TextBlock 
                     Text="{x:Bind ViewModel.RenderModeDescription, Mode=OneWay}"

@@ -39,7 +39,7 @@ namespace ManpWinUI.ViewModels.Properties
         private RenderMode _selectedRenderMode = RenderMode.EscapeTime;
         private AntialiasingLevel _antialiasingLevel = AntialiasingLevel.None;
         private bool _useDeepZoom = false;
-        private bool _useSmoothColoring = false;
+        private bool _useSmoothColoring = true;  // Default to anti-banding ON (smooth)
 
         /// <summary>
         /// Currently selected render mode.

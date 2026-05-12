@@ -26,7 +26,14 @@ namespace ManpWinUI.Views.Properties
         /// </summary>
         private void RenderMode_Changed(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine($"[RenderSettingsView] Render mode changed: {ViewModel.SelectedRenderMode}");
+            if (sender is RadioButton rb && rb.IsChecked == true && rb.Tag is string tagValue)
+            {
+                if (Enum.TryParse<ViewModels.Properties.RenderMode>(tagValue, out var mode))
+                {
+                    ViewModel.SelectedRenderMode = mode;
+                    System.Diagnostics.Debug.WriteLine($"[RenderSettingsView] Render mode changed: {mode}");
+                }
+            }
         }
 
         /// <summary>
