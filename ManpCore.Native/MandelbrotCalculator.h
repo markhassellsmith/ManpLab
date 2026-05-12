@@ -366,6 +366,129 @@ namespace Native {
             g = color.g;
             b = color.b;
         }
+
+        /// <summary>
+        /// Calculate distance estimation for edge highlighting.
+        /// Returns a value representing distance to the set boundary.
+        /// </summary>
+        static double CalculateDistanceEstimation(ComplexD c, int maxIter, bool isJulia = false, ComplexD juliaC = ComplexD())
+        {
+            ComplexD z;
+            ComplexD constant;
+
+            if (isJulia)
+            {
+                z = c;
+                constant = juliaC;
+            }
+            else
+            {
+                z = ComplexD(0.0, 0.0);
+                constant = c;
+            }
+
+            ComplexD dz(1.0, 0.0);  // Derivative starts at 1
+            int iteration = 0;
+            double bailout = 256.0;
+
+            while (iteration < maxIter)
+            {
+                double x2 = z.x * z.x;
+                double y2 = z.y * z.y;
+                double magnitude2 = x2 + y2;
+
+                if (magnitude2 > bailout)
+                {
+                    // Distance estimation formula: |z|*log|z| / |dz|
+                    double magnitude = sqrt(magnitude2);
+                    double dzMagnitude = sqrt(dz.x * dz.x + dz.y * dz.y);
+
+                    if (dzMagnitude > 0.0)
+                    {
+                        double distance = (magnitude * log(magnitude)) / dzMagnitude;
+                        // Return normalized value for coloring (0-1 range mapped to 0-maxIter)
+                        return (1.0 - exp(-distance * 10.0)) * maxIter;
+                    }
+                    else
+                    {
+                        return iteration;
+                    }
+                }
+
+                // Update derivative: dz = 2*z*dz + 1 (for Mandelbrot)
+                double dz_x = 2.0 * (z.x * dz.x - z.y * dz.y);
+                double dz_y = 2.0 * (z.x * dz.y + z.y * dz.x);
+                dz.x = dz_x;
+                dz.y = dz_y;
+
+                // Update z: z = z^2 + c
+                double zx_new = x2 - y2 + constant.x;
+                double zy_new = 2.0 * z.x * z.y + constant.y;
+                z.x = zx_new;
+                z.y = zy_new;
+
+                iteration++;
+            }
+
+            return 0.0;  // Inside the set = black
+        }
+
+        /// <summary>
+        /// Calculate orbit trap coloring based on minimum distance to trap point/shape.
+        /// Colors based on how close the orbit gets to the origin (circular trap).
+        /// </summary>
+        static double CalculateOrbitTrap(ComplexD c, int maxIter, bool isJulia = false, ComplexD juliaC = ComplexD())
+        {
+            ComplexD z;
+            ComplexD constant;
+
+            if (isJulia)
+            {
+                z = c;
+                constant = juliaC;
+            }
+            else
+            {
+                z = ComplexD(0.0, 0.0);
+                constant = c;
+            }
+
+            double minDistance = 1e10;  // Track minimum distance to trap
+            int iteration = 0;
+            double bailout = 256.0;
+
+            while (iteration < maxIter)
+            {
+                // Calculate distance to origin (circular trap at 0,0)
+                double distance = sqrt(z.x * z.x + z.y * z.y);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                }
+
+                double x2 = z.x * z.x;
+                double y2 = z.y * z.y;
+                double magnitude2 = x2 + y2;
+
+                if (magnitude2 > bailout)
+                {
+                    // Color based on minimum distance to trap
+                    // Normalize to iteration range for palette mapping
+                    return (1.0 - exp(-minDistance * 5.0)) * maxIter;
+                }
+
+                // Update z: z = z^2 + c
+                double zx_new = x2 - y2 + constant.x;
+                double zy_new = 2.0 * z.x * z.y + constant.y;
+                z.x = zx_new;
+                z.y = zy_new;
+
+                iteration++;
+            }
+
+            // Inside the set - color by minimum distance
+            return (1.0 - exp(-minDistance * 5.0)) * maxIter;
+        }
     };
 
 } // namespace Native

@@ -218,6 +218,7 @@ public partial class MainViewModel
                     JuliaCY,
                     ColorCycleSpeed,
                     ColorOffset,
+                    (int)SelectedRenderMode,  // Pass render mode as int
                     UseSmoothColoring,
                     shouldUseDeepZoom,
                     progress);

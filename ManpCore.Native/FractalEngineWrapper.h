@@ -421,6 +421,29 @@ namespace Native {
         property int ColorOffset;
 
         /// <summary>
+        /// Render mode for fractal coloring algorithm.
+        /// </summary>
+        /// <value>0=EscapeTime, 1=SmoothColoring, 2=DistanceEstimation, 3=OrbitTrap</value>
+        /// <remarks>
+        /// - EscapeTime: Standard iteration count coloring
+        /// - SmoothColoring: Uses the smooth coloring algorithm as primary method
+        /// - DistanceEstimation: Highlights fractal boundaries/edges
+        /// - OrbitTrap: Colors based on orbit proximity to geometric shapes
+        /// </remarks>
+        property int RenderMode;
+
+        /// <summary>
+        /// Enable fractional iteration counts for smoother color gradients.
+        /// </summary>
+        /// <value>True to use fractional iterations (eliminates banding), false for integer-only</value>
+        /// <remarks>
+        /// When true, uses log(log|z|) formula to compute fractional escape iterations.
+        /// Works with any render mode to eliminate color banding artifacts.
+        /// When false, uses integer iteration counts (classic banding effect).
+        /// </remarks>
+        property bool UseSmoothColoring;
+
+        /// <summary>
         /// Creates FractalParameters with default Mandelbrot set values.
         /// </summary>
         /// <remarks>

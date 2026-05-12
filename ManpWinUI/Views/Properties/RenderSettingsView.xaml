@@ -27,7 +27,7 @@
 
                 <RadioButton 
                     GroupName="RenderMode"
-                    Content="Smooth Coloring"
+                    Content="Continuous Gradient"
                     IsChecked="{x:Bind ViewModel.SelectedRenderMode, Mode=TwoWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=SmoothColoring}"
                     Checked="RenderMode_Changed"/>
 
@@ -74,14 +74,14 @@
                         TextWrapping="Wrap"/>
                 </StackPanel>
 
-                <!-- Smooth Coloring Toggle -->
+                <!-- Anti-Banding Toggle -->
                 <CheckBox 
-                    Content="Enable Smooth Coloring"
+                    Content="Anti-Banding (Fractional Iterations)"
                     IsChecked="{x:Bind ViewModel.UseSmoothColoring, Mode=TwoWay}"
                     Checked="SmoothColoring_Changed"
                     Unchecked="SmoothColoring_Changed">
                     <CheckBox.Resources>
-                        <x:String x:Key="ToolTipText">Eliminates color banding for smoother gradients</x:String>
+                        <x:String x:Key="ToolTipText">Uses fractional iteration counts to eliminate color banding for smoother gradients. Works with any render mode.</x:String>
                     </CheckBox.Resources>
                     <ToolTipService.ToolTip>
                         <ToolTip Content="{StaticResource ToolTipText}"/>

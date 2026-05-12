@@ -122,7 +122,7 @@ namespace ManpWinUI.ViewModels.Properties
         public string RenderModeDescription => SelectedRenderMode switch
         {
             RenderMode.EscapeTime => "Standard iteration count coloring - fastest and most common",
-            RenderMode.SmoothColoring => "Continuous gradient coloring - eliminates banding artifacts",
+            RenderMode.SmoothColoring => "Continuous gradient algorithm - smooth color transitions without discrete bands",
             RenderMode.DistanceEstimation => "Edge detection and highlighting - emphasizes fractal boundaries",
             RenderMode.OrbitTrap => "Colors based on orbit proximity to trap shapes - creative effects",
             _ => "Unknown render mode"

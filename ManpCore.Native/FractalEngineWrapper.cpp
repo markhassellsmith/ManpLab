@@ -677,6 +677,47 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
                         customParams
                     );
 
+                    // Apply render mode transformations
+                    int renderMode = parameters->RenderMode;
+                    bool useSmooth = parameters->UseSmoothColoring;
+
+                    // DIAGNOSTIC: Log render mode on first pixel
+                    if (x == 0 && y == 0)
+                    {
+                        Debug::WriteLine(String::Format("RenderMode={0}, UseSmoothColoring={1}", renderMode, useSmooth));
+                    }
+
+                    // Render mode routing:
+                    // 0 = EscapeTime (integer iterations)
+                    // 1 = SmoothColoring (fractional iterations - already computed by registry)
+                    // 2 = DistanceEstimation
+                    // 3 = OrbitTrap
+
+                    if (renderMode == 2)  // Distance Estimation
+                    {
+                        iteration = ::Native::MandelbrotCalculator::CalculateDistanceEstimation(
+                            c,
+                            nativeParams.maxIterations,
+                            nativeParams.isJulia,
+                            ::Native::ComplexD(nativeParams.juliaCX, nativeParams.juliaCY)
+                        );
+                    }
+                    else if (renderMode == 3)  // Orbit Trap
+                    {
+                        iteration = ::Native::MandelbrotCalculator::CalculateOrbitTrap(
+                            c,
+                            nativeParams.maxIterations,
+                            nativeParams.isJulia,
+                            ::Native::ComplexD(nativeParams.juliaCX, nativeParams.juliaCY)
+                        );
+                    }
+                    else if (renderMode == 0 && !useSmooth)  // EscapeTime with anti-banding disabled
+                    {
+                        // Truncate to integer for classic banding effect
+                        iteration = floor(iteration);
+                    }
+                    // else renderMode == 1 (SmoothColoring) or useSmooth == true: use fractional iteration as-is
+
                     // DIAGNOSTIC: Confirm first pixel calculated
                     if (x == 0 && y == 0)
                     {

@@ -335,13 +335,12 @@ namespace ManpWinUI.Views
                 var mode = RenderSettingsViewModel.SelectedRenderMode;
                 Debug.WriteLine($"[MainPage] Render mode changed to: {mode}");
 
-                // Week 7 Task 3: Update smooth coloring based on render mode
-                // Note: Full render mode support requires native engine enhancements
-                ViewModel.UseSmoothColoring = (mode == ViewModels.Properties.RenderMode.SmoothColoring);
+                // Sync render mode to ViewModel
+                ViewModel.SelectedRenderMode = mode;
 
                 if (ViewModel.FractalImage != null)
                 {
-                    ViewModel.StatusMessage = $"Render mode: {mode} - re-rendering with {(ViewModel.UseSmoothColoring ? "smooth" : "standard")} coloring";
+                    ViewModel.StatusMessage = $"Render mode: {mode} - re-rendering";
                     _ = ViewModel.RenderCommand.ExecuteAsync(null);
                 }
             }

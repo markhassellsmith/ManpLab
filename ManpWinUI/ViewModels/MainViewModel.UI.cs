@@ -35,6 +35,12 @@ public partial class MainViewModel
     private int _colorOffset = 0;
 
     /// <summary>
+    /// Selected render mode algorithm (EscapeTime, SmoothColoring, DistanceEstimation, OrbitTrap).
+    /// </summary>
+    [ObservableProperty]
+    private ViewModels.Properties.RenderMode _selectedRenderMode = ViewModels.Properties.RenderMode.EscapeTime;
+
+    /// <summary>
     /// Enable smooth/continuous coloring instead of discrete color bands.
     /// Week 7 Task 3: Produces gradients without banding artifacts.
     /// </summary>

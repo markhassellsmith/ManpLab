@@ -37,6 +37,7 @@ public class FractalRenderService : IFractalRenderService
         double juliaCY = 0.0,
         int colorCycleSpeed = 50,
         int colorOffset = 0,
+        int renderMode = 0,
         bool useSmoothColoring = false,
         bool useDeepZoom = false,
         IProgress<double>? progress = null,
@@ -133,7 +134,9 @@ public class FractalRenderService : IFractalRenderService
                         ColorOffset = colorOffset,  // Apply color offset for palette rotation
                         IsJuliaSet = isJuliaMode,
                         JuliaCX = juliaCX,
-                        JuliaCY = juliaCY
+                        JuliaCY = juliaCY,
+                        RenderMode = renderMode,
+                        UseSmoothColoring = useSmoothColoring
                     };
 
                     System.Diagnostics.Debug.WriteLine($"[FractalRenderService] useDeepZoom parameter received: {useDeepZoom}");
@@ -458,6 +461,7 @@ public class FractalRenderService : IFractalRenderService
             parameters.JuliaCImaginary,
             parameters.ColorCycleSpeed,
             parameters.ColorOffset,
+            0,  // renderMode - default to EscapeTime for now (TODO: add to RenderParameters)
             parameters.UseSmoothColoring,
             parameters.UseDeepZoom,
             progress,
