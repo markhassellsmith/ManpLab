@@ -347,13 +347,13 @@
                         Background="Transparent"
                         IsSpellCheckEnabled="False"
                         Padding="0"
-                        Visibility="{x:Bind (Visibility)ViewModel.HasCompletedFile, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
+                        Visibility="{x:Bind ViewModel.HasCompletedFile, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"/>
 
                     <!-- Clickable full file path when complete -->
                     <HyperlinkButton 
                         Content="{x:Bind ViewModel.RenderStatusMessage, Mode=OneWay}"
                         Command="{x:Bind ViewModel.OpenCompletedFileCommand}"
-                        Visibility="{x:Bind (Visibility)ViewModel.HasCompletedFile, Mode=OneWay}"
+                        Visibility="{x:Bind ViewModel.HasCompletedFile, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                         FontSize="12"
                         Padding="0"/>
                 </StackPanel>
