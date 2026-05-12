@@ -58,6 +58,42 @@ public partial class MainViewModel
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
+    // FRACTAL CATEGORY TRACKING & UI VISIBILITY
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Current fractal category for filtering applicable UI controls.
+    /// </summary>
+    [ObservableProperty]
+    private FractalCategory _currentFractalCategory = FractalCategory.EscapeTime2D;
+
+    partial void OnCurrentFractalCategoryChanged(FractalCategory value)
+    {
+        // Notify all computed visibility properties
+        OnPropertyChanged(nameof(SupportsJuliaMode));
+        OnPropertyChanged(nameof(SupportsMaxIterations));
+        OnPropertyChanged(nameof(ShowIterationModeSelector));
+    }
+
+    /// <summary>
+    /// Whether the current fractal supports Julia mode rendering.
+    /// EscapeTime2D fractals support Julia mode; HistogramBased and Sequence2D do not.
+    /// </summary>
+    public bool SupportsJuliaMode => CurrentFractalCategory == FractalCategory.EscapeTime2D;
+
+    /// <summary>
+    /// Whether the current fractal uses max iterations setting.
+    /// EscapeTime2D fractals use iterations; HistogramBased uses fixed orbit tracing.
+    /// </summary>
+    public bool SupportsMaxIterations => CurrentFractalCategory == FractalCategory.EscapeTime2D;
+
+    /// <summary>
+    /// Whether to show the Iteration Mode selector (Standard/Julia).
+    /// Only shown for EscapeTime2D fractals.
+    /// </summary>
+    public bool ShowIterationModeSelector => SupportsJuliaMode;
+
+    // ═══════════════════════════════════════════════════════════════════════════════
     // COORDINATE AXES & VISUAL TOGGLES
     // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -108,6 +144,9 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(ShowMandelbrotAxes));
 
         System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanged] IsHailstoneMode is now: {IsHailstoneMode}");
+
+        // Update fractal category based on registry metadata
+        UpdateCurrentFractalCategory(value);
 
         // Clear Hailstone-specific data when switching away from Hailstone mode
         if (value != "Hailstone")
@@ -183,6 +222,68 @@ public partial class MainViewModel
         // TASK 5: After defaults are set, sync them to the parameter system
         // ═══════════════════════════════════════════════════════════════════════════
         SyncPropertiesToParameters();
+    }
+
+    /// <summary>
+    /// Updates the current fractal category based on registry metadata.
+    /// This determines which UI controls are shown/hidden.
+    /// </summary>
+    private void UpdateCurrentFractalCategory(string fractalName)
+    {
+        try
+        {
+            // Query the native registry for this fractal's category
+            var fractalInfo = ManpCore.Native.FractalRegistryWrapper.GetFractalInfo(fractalName);
+            if (fractalInfo != null)
+            {
+                // Parse the category enum from the native info
+                // The FractalInfo.Type property should contain the category
+                // For now, we'll use a simple mapping based on known types
+                // TODO: Expose FractalCategory enum value directly from native wrapper
+
+                System.Diagnostics.Debug.WriteLine($"[UpdateCurrentFractalCategory] Fractal: {fractalName}, Category: {fractalInfo.Category}");
+
+                // Map by category string or use heuristics
+                if (fractalName == "Hailstone")
+                {
+                    CurrentFractalCategory = FractalCategory.Sequence2D;
+                }
+                else
+                {
+                    // Check if this fractal is in the registry and has histogram rendering
+                    // For now, detect by checking if SupportsJulia is false for known attractors
+                    var knownHistogramFractals = new[] { 
+                        "Lorenz", "Rossler", "Henon", "Clifford", "DeJong", "Tinkerbell",
+                        "Bedhead", "Svensson", "Duffing", "GingerbreadMan", "Popcorn",
+                        "SymmetricIcon", "Sprott", "Martin", "ChenLee", "Dadras",
+                        "Arneodo", "LiuChen", "RabinovichFabrikant", "SprottB"
+                    };
+
+                    if (System.Array.Exists(knownHistogramFractals, f => f.Equals(fractalName, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        CurrentFractalCategory = FractalCategory.HistogramBased;
+                    }
+                    else
+                    {
+                        // Default to EscapeTime2D for Mandelbrot-like fractals
+                        CurrentFractalCategory = FractalCategory.EscapeTime2D;
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[UpdateCurrentFractalCategory] Set category to: {CurrentFractalCategory}");
+            }
+            else
+            {
+                // Fallback: assume EscapeTime2D for unknown fractals
+                System.Diagnostics.Debug.WriteLine($"[UpdateCurrentFractalCategory] No info found for {fractalName}, defaulting to EscapeTime2D");
+                CurrentFractalCategory = FractalCategory.EscapeTime2D;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[UpdateCurrentFractalCategory] Error: {ex.Message}");
+            CurrentFractalCategory = FractalCategory.EscapeTime2D;
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════

@@ -546,7 +546,8 @@
                                         <MenuFlyoutSeparator />
 
                                         <!-- Iteration Mode (Standard/Julia) -->
-                                        <StackPanel Spacing="4">
+                                        <StackPanel Spacing="4"
+                                            Visibility="{x:Bind ViewModel.ShowIterationModeSelector, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <TextBlock Text="Iteration Mode" FontWeight="SemiBold" />
                                             <ComboBox
                                         SelectedItem="{x:Bind ViewModel.SelectedIterationMode, Mode=TwoWay}"
@@ -661,7 +662,8 @@
                                         <!-- Rendering Quality -->
                                         <TextBlock Text="Rendering Quality" FontWeight="SemiBold" />
 
-                                        <StackPanel Spacing="4">
+                                        <StackPanel Spacing="4"
+                                            Visibility="{x:Bind ViewModel.SupportsMaxIterations, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <TextBlock Text="Max Iterations" />
                                             <NumberBox
                                         Value="{x:Bind ViewModel.MaxIterations, Mode=TwoWay}"
@@ -676,6 +678,7 @@
                                         <CheckBox
                                     IsChecked="{x:Bind ViewModel.AutoScaleIterations, Mode=TwoWay}"
                                     Content="Auto-scale iterations with zoom"
+                                    Visibility="{x:Bind ViewModel.SupportsMaxIterations, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     ToolTipService.ToolTip="Automatically increase iteration count as you zoom deeper" />
 
                                         <TextBlock
