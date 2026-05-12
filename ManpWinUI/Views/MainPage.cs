@@ -330,17 +330,26 @@ namespace ManpWinUI.Views
         /// </summary>
         private void OnRenderModeChanged(object? sender, EventArgs e)
         {
-            var mode = RenderSettingsViewModel.SelectedRenderMode;
-            Debug.WriteLine($"[MainPage] Render mode changed to: {mode}");
-
-            // Week 7 Task 3: Update smooth coloring based on render mode
-            // Note: Full render mode support requires native engine enhancements
-            ViewModel.UseSmoothColoring = (mode == ViewModels.Properties.RenderMode.SmoothColoring);
-
-            if (ViewModel.FractalImage != null)
+            try
             {
-                ViewModel.StatusMessage = $"Render mode: {mode} - re-rendering with {(ViewModel.UseSmoothColoring ? "smooth" : "standard")} coloring";
-                _ = ViewModel.RenderCommand.ExecuteAsync(null);
+                var mode = RenderSettingsViewModel.SelectedRenderMode;
+                Debug.WriteLine($"[MainPage] Render mode changed to: {mode}");
+
+                // Week 7 Task 3: Update smooth coloring based on render mode
+                // Note: Full render mode support requires native engine enhancements
+                ViewModel.UseSmoothColoring = (mode == ViewModels.Properties.RenderMode.SmoothColoring);
+
+                if (ViewModel.FractalImage != null)
+                {
+                    ViewModel.StatusMessage = $"Render mode: {mode} - re-rendering with {(ViewModel.UseSmoothColoring ? "smooth" : "standard")} coloring";
+                    _ = ViewModel.RenderCommand.ExecuteAsync(null);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.WriteLine($"[MainPage] Error in OnRenderModeChanged: {ex.Message}");
+                Debug.WriteLine($"[MainPage] Stack trace: {ex.StackTrace}");
+                ViewModel.StatusMessage = $"Error changing render mode: {ex.Message}";
             }
         }
 
@@ -350,21 +359,30 @@ namespace ManpWinUI.Views
         /// </summary>
         private void OnRenderSettingsChanged(object? sender, EventArgs e)
         {
-            Debug.WriteLine($"[MainPage] Render settings changed - AA: {RenderSettingsViewModel.AntialiasingLevel}, Smooth: {RenderSettingsViewModel.UseSmoothColoring}, DeepZoom: {RenderSettingsViewModel.UseDeepZoom}");
-
-            // Week 7 Task 3: Sync smooth coloring toggle to ViewModel
-            ViewModel.UseSmoothColoring = RenderSettingsViewModel.UseSmoothColoring;
-
-            // Note: Antialiasing and DeepZoom require native engine support (future enhancement)
-            if (RenderSettingsViewModel.AntialiasingLevel != ViewModels.Properties.AntialiasingLevel.None)
+            try
             {
-                ViewModel.StatusMessage = "⚠️ Antialiasing requires native engine enhancement (coming soon)";
+                Debug.WriteLine($"[MainPage] Render settings changed - AA: {RenderSettingsViewModel.AntialiasingLevel}, Smooth: {RenderSettingsViewModel.UseSmoothColoring}, DeepZoom: {RenderSettingsViewModel.UseDeepZoom}");
+
+                // Week 7 Task 3: Sync smooth coloring toggle to ViewModel
+                ViewModel.UseSmoothColoring = RenderSettingsViewModel.UseSmoothColoring;
+
+                // Note: Antialiasing and DeepZoom require native engine support (future enhancement)
+                if (RenderSettingsViewModel.AntialiasingLevel != ViewModels.Properties.AntialiasingLevel.None)
+                {
+                    ViewModel.StatusMessage = "⚠️ Antialiasing requires native engine enhancement (coming soon)";
+                }
+
+                // Auto re-render if smooth coloring changes and we have an image
+                if (ViewModel.FractalImage != null && sender == RenderSettingsViewModel)
+                {
+                    _ = ViewModel.RenderCommand.ExecuteAsync(null);
+                }
             }
-
-            // Auto re-render if smooth coloring changes and we have an image
-            if (ViewModel.FractalImage != null && sender == RenderSettingsViewModel)
+            catch (System.Exception ex)
             {
-                _ = ViewModel.RenderCommand.ExecuteAsync(null);
+                Debug.WriteLine($"[MainPage] Error in OnRenderSettingsChanged: {ex.Message}");
+                Debug.WriteLine($"[MainPage] Stack trace: {ex.StackTrace}");
+                ViewModel.StatusMessage = $"Error applying render settings: {ex.Message}";
             }
         }
 
