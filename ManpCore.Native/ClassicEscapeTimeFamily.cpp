@@ -509,9 +509,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = -0.25;  // Center at (-0.25, 0.00)
+    spec.defaultCenterY = 0.0;    // Center at (-0.25, 0.00)
+    spec.defaultZoom = 0.75;      // Viewport: 4.00 × 2.25
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
