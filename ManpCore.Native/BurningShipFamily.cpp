@@ -67,9 +67,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = 0.0;  // Center at origin
+    spec.defaultCenterY = 0.0;  // Center at origin
+    spec.defaultZoom = 0.6;     // Viewport: 5.0000 × 2.8125
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
