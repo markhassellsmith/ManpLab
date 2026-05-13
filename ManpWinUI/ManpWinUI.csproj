@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+    <!-- Import centralized version configuration -->
+    <Import Project="..\Version.props" />
+
     <PropertyGroup>
         <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
         <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
@@ -14,6 +17,15 @@
         <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
         <AppxBundle>Never</AppxBundle>
         <DefaultLanguage>en-US</DefaultLanguage>
+
+        <!-- Automatic Versioning -->
+        <!-- Version is managed in Version.props at solution root -->
+        <Version>$(VersionPrefix)</Version>
+        <AssemblyVersion>$(FileVersion)</AssemblyVersion>
+        <FileVersion>$(FileVersion)</FileVersion>
+        <ApplicationVersion>$(FileVersion)</ApplicationVersion>
+        <!-- MSIX requires 4-part version -->
+        <AppxPackageVersion>$(FileVersion)</AppxPackageVersion>
 
         <!-- Force deployment in debug mode -->
         <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>

@@ -37,6 +37,12 @@
           "Microsoft.WindowsAppSDK": "1.5.240227000"
         }
       },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.8, )",
+        "resolved": "10.0.8",
+        "contentHash": "dVbSXGIFNR5nZcv2tOLoWI+a9T4jtFd77IYjuND+QVe360qWgAF7H0WtoopYhRw/+SgpGUTyrkrh+65+ClNnfw=="
+      },
       "Microsoft.Web.WebView2": {
         "type": "Direct",
         "requested": "[1.*, )",

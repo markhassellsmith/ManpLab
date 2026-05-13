@@ -4,21 +4,46 @@
 param(
     [string]$Configuration = "Release",
     [string]$Platform = "x64",
-    [string]$Version = "1.0.0"
+    [string]$Version = ""  # If empty, auto-read from Version.props
 )
 
 $ErrorActionPreference = "Stop"
 $SolutionDir = Split-Path $PSScriptRoot -Parent
+
+# Import build utilities
+. "$PSScriptRoot\Build-Utils.ps1"
+
+# Auto-detect version from Version.props if not specified
+if ([string]::IsNullOrWhiteSpace($Version)) {
+    try {
+        $versionInfo = Get-VersionFromProps -PropsPath "$SolutionDir\Version.props"
+        $Version = $versionInfo.Version
+        Write-Host "=====================================" -ForegroundColor Cyan
+        Write-Host "ManpLab Release Packaging" -ForegroundColor Cyan
+        Write-Host "=====================================" -ForegroundColor Cyan
+        Write-VersionInfo -VersionInfo $versionInfo
+        Write-Host "Configuration: $Configuration"
+        Write-Host "Platform: $Platform"
+        Write-Host ""
+    }
+    catch {
+        Write-Host "ERROR: Failed to read version from Version.props: $_" -ForegroundColor Red
+        Write-Host "Please specify version manually with -Version parameter" -ForegroundColor Yellow
+        exit 1
+    }
+}
+else {
+    Write-Host "=====================================" -ForegroundColor Cyan
+    Write-Host "ManpLab Release Packaging" -ForegroundColor Cyan
+    Write-Host "=====================================" -ForegroundColor Cyan
+    Write-Host "Version: $Version (manual override)"
+    Write-Host "Configuration: $Configuration"
+    Write-Host "Platform: $Platform"
+    Write-Host ""
+}
+
 $OutputDir = Join-Path $SolutionDir "Build\Output"
 $ArtifactsDir = Join-Path $SolutionDir "Build\Artifacts"
-
-Write-Host "=====================================" -ForegroundColor Cyan
-Write-Host "ManpLab Release Packaging" -ForegroundColor Cyan
-Write-Host "=====================================" -ForegroundColor Cyan
-Write-Host "Version: $Version"
-Write-Host "Configuration: $Configuration"
-Write-Host "Platform: $Platform"
-Write-Host ""
 
 # Clean previous artifacts
 Write-Host "Cleaning previous artifacts..." -ForegroundColor Yellow

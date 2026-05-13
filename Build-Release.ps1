@@ -2,14 +2,34 @@
 # Builds both MSIX package and Portable ZIP distribution
 
 param(
-    [string]$Version = "1.1.1",
+    [string]$Version = "",  # If empty, auto-read from Version.props
     [string]$Platform = "x64",
     [switch]$MsixOnly,
     [switch]$ZipOnly
 )
 
-Write-Host "`n=== ManpLab Release Builder (MSIX + Portable ZIP) ===" -ForegroundColor Cyan
-Write-Host "Version: $Version | Platform: $Platform`n" -ForegroundColor Yellow
+# Import build utilities
+. "$PSScriptRoot\Build\Build-Utils.ps1"
+
+# Auto-detect version from Version.props if not specified
+if ([string]::IsNullOrWhiteSpace($Version)) {
+    try {
+        $versionInfo = Get-VersionFromProps
+        $Version = $versionInfo.Version
+        Write-Host "`n=== ManpLab Release Builder (MSIX + Portable ZIP) ===" -ForegroundColor Cyan
+        Write-VersionInfo -VersionInfo $versionInfo
+        Write-Host "Platform: $Platform`n" -ForegroundColor Yellow
+    }
+    catch {
+        Write-Host "ERROR: Failed to read version from Version.props: $_" -ForegroundColor Red
+        Write-Host "Please specify version manually with -Version parameter" -ForegroundColor Yellow
+        exit 1
+    }
+}
+else {
+    Write-Host "`n=== ManpLab Release Builder (MSIX + Portable ZIP) ===" -ForegroundColor Cyan
+    Write-Host "Version: $Version (manual override) | Platform: $Platform`n" -ForegroundColor Yellow
+}
 
 # Check we're in the right place
 if (-not (Test-Path "ManpLab.sln")) {

@@ -4,11 +4,34 @@
 param(
     [string]$Configuration = "Release",
     [string]$Platform = "x64",
-    [string]$Version = "1.0.0"
+    [string]$Version = ""  # If empty, auto-read from Version.props
 )
 
 $ErrorActionPreference = "Stop"
 $SolutionDir = Split-Path $PSScriptRoot -Parent
+
+# Import build utilities
+. "$PSScriptRoot\Build-Utils.ps1"
+
+# Auto-detect version from Version.props if not specified
+if ([string]::IsNullOrWhiteSpace($Version)) {
+    try {
+        $versionInfo = Get-VersionFromProps -PropsPath "$SolutionDir\Version.props"
+        $Version = $versionInfo.Version
+        Write-Host "`n=== ManpLab Portable Package Creator ===" -ForegroundColor Cyan
+        Write-VersionInfo -VersionInfo $versionInfo
+    }
+    catch {
+        Write-Host "ERROR: Failed to read version from Version.props: $_" -ForegroundColor Red
+        Write-Host "Please specify version manually with -Version parameter" -ForegroundColor Yellow
+        exit 1
+    }
+}
+else {
+    Write-Host "`n=== ManpLab Portable Package Creator ===" -ForegroundColor Cyan
+    Write-Host "Version: $Version (manual override)`n" -ForegroundColor Yellow
+}
+
 $ArtifactsDir = Join-Path $SolutionDir "Build\Artifacts"
 
 Write-Host "Creating ManpLab Portable v$Version..." -ForegroundColor Cyan

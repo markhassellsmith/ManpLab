@@ -1,38 +1,66 @@
 # Release Process Guide
 
-## Quick Release (Local Build)
+## Automatic Versioning System ✨
 
-### Option 1: Quick Build Script
-```powershell
-.\Quick-Build-Release.ps1
+ManpLab uses **Version.props** as the single source of truth for all version numbers.
+
+### To Create a New Release:
+
+1. **Edit `Version.props`** at solution root:
+   ```xml
+   <VersionPrefix>1.4.0</VersionPrefix>
+   ```
+
+2. **Run build script** (version auto-detected):
+   ```powershell
+   .\Build-Release.ps1
+   ```
+
+3. **Done!** All packages use the correct version automatically.
+
+### Version.props Format
+
+```xml
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>1.4.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>  <!-- Empty for release, or "beta", "rc1", etc. -->
+  </PropertyGroup>
+</Project>
 ```
 
-This builds both MSIX and Portable ZIP packages with default settings.
+- **Release version:** `1.4.0` (VersionSuffix empty)
+- **Pre-release version:** `1.4.0-beta` (VersionSuffix = "beta")
 
-### Option 2: Full Build Script
+---
+
+## Quick Release (Local Build)
+
+### Option 1: Auto-Detect Version (Recommended) ✅
 ```powershell
-.\Build-Release.ps1 -Configuration Release -Platform x64 -Version "1.1.1"
+# Version automatically read from Version.props
+.\Build-Release.ps1
+```
+
+### Option 2: Manual Version Override
+```powershell
+# Override version manually if needed
+.\Build-Release.ps1 -Version "1.4.0-custom"
 ```
 
 **Available Parameters:**
-- `-Configuration`: Debug or Release (default: Release)
+- `-Version`: Version string (default: auto-read from Version.props)
 - `-Platform`: x64, x86, or ARM64 (default: x64)
-- `-Version`: Version string (default: 1.1.0)
-- `-SkipBuild`: Skip rebuild, use existing binaries
 - `-MsixOnly`: Create only MSIX package
 - `-ZipOnly`: Create only Portable ZIP
-- `-SkipClean`: Don't clean output directories first
 
 **Examples:**
 ```powershell
-# Build only portable ZIP
+# Build only portable ZIP (auto-version)
 .\Build-Release.ps1 -ZipOnly
 
 # Build both packages for ARM64
 .\Build-Release.ps1 -Platform ARM64
-
-# Use existing build, just package
-.\Build-Release.ps1 -SkipBuild
 ```
 
 ## Output Structure
@@ -40,31 +68,28 @@ This builds both MSIX and Portable ZIP packages with default settings.
 ```
 Release-Output/
 ├── MSIX/
-│   ├── ManpLab_1.1.1.0_x64.msix
+│   ├── ManpLab_1.4.0.0_x64.msix
 │   └── INSTALLATION_GUIDE.txt
 └── Portable-ZIP/
-    ├── ManpLab-Portable-1.1.1-x64/
+    ├── ManpLab-Portable-1.4.0-x64/
     │   ├── ManpWinUI.exe
     │   ├── ManpCore.Native.dll
     │   ├── (all dependencies)
     │   ├── README.txt
     │   └── LICENSE
-    └── ManpLab-Portable-1.1.1-x64.zip
+    └── ManpLab-Portable-1.4.0-x64.zip
 ```
 
 ## Manual Build Process
 
 ### 1. Update Version Numbers
 
-**Package.appxmanifest:**
+**Edit Version.props only:**
 ```xml
-<Identity Version="1.1.1.0" />
+<VersionPrefix>1.4.0</VersionPrefix>
 ```
 
-**AssemblyInfo (if used):**
-```csharp
-[assembly: AssemblyVersion("1.1.1.0")]
-```
+All other files (Package.appxmanifest, assemblies) are updated automatically at build time.
 
 ### 2. Build in Visual Studio
 
