@@ -50,9 +50,9 @@ void RegisterBifurcationFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 3.0;  // Interesting range: 2.8 to 4.0
-    spec.defaultCenterY = 0.5;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = 2.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 0.697;  // Viewport of approximately 4.303873 by 2.420929
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -202,7 +202,7 @@ void RegisterBifurcationFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.75;
     spec.defaultCenterY = -0.25;
-    spec.defaultZoom = 1.0;  // Viewport of approximately 3.0000 by 1.6875
+    spec.defaultZoom = 1.0;  // Viewport of exactly 3.0000 by 1.6875
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -296,9 +296,9 @@ void RegisterBifurcationFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 3.0;
-    spec.defaultCenterY = 0.5;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = 2.0;  // Center of interesting parameter range
+    spec.defaultCenterY = 0.0;  // Centered vertically
+    spec.defaultZoom = 0.3;     // Viewport: 10.000 × 5.625
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
