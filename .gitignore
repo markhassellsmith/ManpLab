@@ -54,6 +54,7 @@ vcpkg_installed/
 release-package/
 AppPackages/
 ManpWinUI/Release-Output/
+Release-Output/
 *.zip
 /ManpLab-Portable-1.1.1-x64
 *.7z
