@@ -53,6 +53,7 @@ vcpkg_installed/
 # Release artifacts (binaries for GitHub Releases, not source)
 release-package/
 AppPackages/
+ManpWinUI/Release-Output/
 *.zip
 /ManpLab-Portable-1.1.1-x64
 *.7z
