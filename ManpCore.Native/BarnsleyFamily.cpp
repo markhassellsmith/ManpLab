@@ -46,9 +46,9 @@ void RegisterBarnsleyFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -1.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 0.75;  // Viewport of approximately 4.00 by 2.25
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -66,7 +66,7 @@ void RegisterBarnsleyFamily()
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z = c;
-        ComplexD constant(0.6, 1.1);  // Classic Barnsley J1 parameter
+        ComplexD constant(-0.4, 0.6);  // Adjusted for better visibility
 
         for (int iter = 0; iter < maxIter; ++iter) {
             if (z.real >= 0) {
@@ -79,7 +79,7 @@ void RegisterBarnsleyFamily()
                         2.0 * z.real * z.imag + constant.imag);
 
             double modulus = z.real * z.real + z.imag * z.imag;
-            if (modulus > 256.0)
+            if (modulus > 64.0)
                 return iter + 1.0 - log(log(modulus)) / log(2.0);
         }
         return static_cast<double>(maxIter);
@@ -88,8 +88,8 @@ void RegisterBarnsleyFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
-    spec.defaultBailout = 256.0;
+    spec.defaultZoom = 0.5;  // Viewport of approximately 6.000 by 3.375
+    spec.defaultBailout = 64.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
 
@@ -109,15 +109,21 @@ void RegisterBarnsleyFamily()
         ComplexD constant = isJulia ? juliaC : c;
 
         for (int iter = 0; iter < maxIter; ++iter) {
-            // Barnsley M2: if xy < 0: z = (x-1) + i(y-1), else: z = (x+1) + i(y+1)
-            if (z.real * z.imag < 0) {
-                z = ComplexD(z.real - 1.0, z.imag - 1.0);
-            } else {
-                z = ComplexD(z.real + 1.0, z.imag + 1.0);
-            }
+            // Barnsley M2: From "Fractals Everywhere" by Michael Barnsley, p. 331, example 4.2
+            // Calculate intermediate products between z and the constant parameter
+            double foldxinitx = z.real * constant.real;  // zx * cx
+            double foldyinity = z.imag * constant.imag;  // zy * cy
+            double foldxinity = z.real * constant.imag;  // zx * cy
+            double foldyinitx = z.imag * constant.real;  // zy * cx
 
-            z = ComplexD(z.real * z.real - z.imag * z.imag + constant.real,
-                        2.0 * z.real * z.imag + constant.imag);
+            // Orbit calculation based on condition
+            if (foldxinity + foldyinitx >= 0) {
+                z = ComplexD(foldxinitx - constant.real - foldyinity,
+                           foldyinitx - constant.imag + foldxinity);
+            } else {
+                z = ComplexD(foldxinitx + constant.real - foldyinity,
+                           foldyinitx + constant.imag + foldxinity);
+            }
 
             double modulus = z.real * z.real + z.imag * z.imag;
             if (modulus > 256.0)
@@ -129,7 +135,7 @@ void RegisterBarnsleyFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 0.4227129;  // Viewport of approximately 7.091691 by 3.989076
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -147,20 +153,27 @@ void RegisterBarnsleyFamily()
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z = c;
-        ComplexD constant(0.6, 1.1);
+        ComplexD constant(0.6, 1.1);  // Different parameter for visible structure
 
         for (int iter = 0; iter < maxIter; ++iter) {
-            if (z.real * z.imag < 0) {
-                z = ComplexD(z.real - 1.0, z.imag - 1.0);
+            // Barnsley J2: From "Fractals Everywhere" by Michael Barnsley, p. 331, example 4.2
+            // Calculate intermediate products between z and the constant parameter
+            double foldxinitx = z.real * constant.real;  // zx * cx
+            double foldyinity = z.imag * constant.imag;  // zy * cy
+            double foldxinity = z.real * constant.imag;  // zx * cy
+            double foldyinitx = z.imag * constant.real;  // zy * cx
+
+            // Orbit calculation based on condition
+            if (foldxinity + foldyinitx >= 0) {
+                z = ComplexD(foldxinitx - constant.real - foldyinity,
+                           foldyinitx - constant.imag + foldxinity);
             } else {
-                z = ComplexD(z.real + 1.0, z.imag + 1.0);
+                z = ComplexD(foldxinitx + constant.real - foldyinity,
+                           foldyinitx + constant.imag + foldxinity);
             }
 
-            z = ComplexD(z.real * z.real - z.imag * z.imag + constant.real,
-                        2.0 * z.real * z.imag + constant.imag);
-
             double modulus = z.real * z.real + z.imag * z.imag;
-            if (modulus > 256.0)
+            if (modulus > 64.0)
                 return iter + 1.0 - log(log(modulus)) / log(2.0);
         }
         return static_cast<double>(maxIter);
@@ -169,8 +182,8 @@ void RegisterBarnsleyFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
-    spec.defaultBailout = 256.0;
+    spec.defaultZoom = 0.139535;  // Viewport of approximately 21.510317 by 12.099553
+    spec.defaultBailout = 64.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
 
@@ -211,9 +224,9 @@ void RegisterBarnsleyFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -1.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 0.75;  // Viewport of approximately 4.00 by 2.25
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -231,7 +244,7 @@ void RegisterBarnsleyFamily()
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z = c;
-        ComplexD constant(0.6, 1.1);
+        ComplexD constant(-0.4, 0.6);  // Adjusted for better visibility
 
         for (int iter = 0; iter < maxIter; ++iter) {
             double x2 = z.real * z.real;
@@ -246,8 +259,8 @@ void RegisterBarnsleyFamily()
             z = ComplexD(z.real * z.real - z.imag * z.imag + constant.real,
                         2.0 * z.real * z.imag + constant.imag);
 
-            double modulus = x2 + y2;
-            if (modulus > 256.0)
+            double modulus = z.real * z.real + z.imag * z.imag;
+            if (modulus > 64.0)
                 return iter + 1.0 - log(log(modulus)) / log(2.0);
         }
         return static_cast<double>(maxIter);
@@ -256,8 +269,8 @@ void RegisterBarnsleyFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
-    spec.defaultBailout = 256.0;
+    spec.defaultZoom = 0.3855806;  // Viewport of approximately 7.780472 by 4.376516
+    spec.defaultBailout = 64.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
 

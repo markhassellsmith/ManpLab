@@ -73,7 +73,7 @@ void RegisterAttractors3DFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 10.0;
+    spec.defaultZoom = 0.0375;  // Viewport of approximately 80 by 45
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -106,9 +106,9 @@ void RegisterAttractors3DFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 3.0;
+    spec.defaultCenterX = 2.0;
+    spec.defaultCenterY = 2.0;
+    spec.defaultZoom = 0.2962963;  // Viewport of approximately 10.125000 by 5.695313
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
     spec.parameters = {};
@@ -147,7 +147,7 @@ void RegisterAttractors3DFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 15.0;  // Increased to see four-wing detail
+    spec.defaultZoom = 0.0623315;  // Viewport of approximately 48.120300 by 27.067669
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -209,7 +209,7 @@ void RegisterAttractors3DFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 5.0;
+    spec.defaultZoom = 0.4194006;  // Viewport of approximately 7.153387 by 4.023780
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -250,7 +250,7 @@ void RegisterAttractors3DFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.75;  // Viewport of approximately 4.00 by 2.25
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -283,9 +283,9 @@ void RegisterAttractors3DFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 5.0;
+    spec.defaultCenterX = -2.5;
+    spec.defaultCenterY = -5.0;
+    spec.defaultZoom = 0.0801291;  // Viewport of approximately 37.437343 by 21.058506
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
     spec.parameters = {};
@@ -322,7 +322,7 @@ void RegisterAttractors3DFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 30.0;  // Higher zoom to capture structure
+    spec.defaultZoom = 0.0603081;  // Viewport of approximately 49.745700 by 27.981956
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
