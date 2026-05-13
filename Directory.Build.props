@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <!-- ============================================================ -->
+    <!-- Build Performance Optimizations for Mixed C++/C# Solution   -->
+    <!-- Visual Studio 2026 (18.6.0) Features                        -->
+    <!-- ============================================================ -->
+
+    <!-- Enable parallel compilation for C++ projects -->
+    <CL_MPCount>0</CL_MPCount> <!-- 0 = auto-detect CPU cores -->
+
+    <!-- Enable incremental linking for faster C++ builds -->
+    <LinkIncremental>true</LinkIncremental>
+
+    <!-- Enable function-level linking for better optimization -->
+    <EnableFunctionLevelLinking>true</EnableFunctionLevelLinking>
+
+    <!-- C# build optimizations -->
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <Deterministic>true</Deterministic>
+
+    <!-- NuGet restore optimizations -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="'$(CI)' == 'true'">true</RestoreLockedMode>
+  </PropertyGroup>
+
+  <!-- Configuration-specific settings -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <!-- Debug: Prioritize build speed -->
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <!-- Release: Prioritize runtime performance -->
+    <DebugType>embedded</DebugType>
+    <Optimize>true</Optimize>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+</Project>
