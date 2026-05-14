@@ -537,6 +537,34 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("JuliaMagnet", () => CreateJuliaTemplate("JuliaMagnet"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 1: MANDELBROT/MULTIBROT VARIANTS (9 fractals)
+        // Core Mandelbrot variations with different powers and modifications
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        // Mandel4: z⁴ + c quartic Mandelbrot
+        RegisterTemplate("Mandel4", () => CreateJuliaTemplate("Mandel4"));
+
+        // Julia4: z⁴ + c Julia preset
+        RegisterTemplate("Julia4", () => CreateStandardTemplate("Julia4"));
+
+        // MandelLambda: z² + c*z*(1-z) hybrid formula
+        RegisterTemplate("MandelLambda", () => CreateJuliaTemplate("MandelLambda"));
+
+        // MarksJulia: Julia variant with special initialization
+        RegisterTemplate("MarksJulia", () => CreateStandardTemplate("MarksJulia"));
+
+        // Mandelbar: z̄² + c conjugate Mandelbrot
+        RegisterTemplate("Mandelbar", () => CreateJuliaTemplate("Mandelbar"));
+
+        // Thorn: z/c + z² + c unique formula
+        RegisterTemplate("Thorn", () => CreateJuliaTemplate("Thorn"));
+
+        // Multibrot3, 4, 5: Separate registrations for z³, z⁴, z⁵ (distinct from our z3, z4, z5 aliases)
+        RegisterTemplate("Multibrot3", () => CreateMultibrotTemplate("Multibrot3", 3));
+        RegisterTemplate("Multibrot4", () => CreateMultibrotTemplate("Multibrot4", 4));
+        RegisterTemplate("Multibrot5", () => CreateMultibrotTemplate("Multibrot5", 5));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
