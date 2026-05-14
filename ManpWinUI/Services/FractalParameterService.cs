@@ -938,6 +938,142 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("Multibrot4Julia", () => CreateJuliaTemplate("Multibrot4Julia"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 12: ADVANCED TECHNIQUES & EXTENSIONS (19 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Final batch: Orbital modifications, Phoenix/Magnet/Lambda extensions
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Orbital Modifications Family (10 fractals)
+        // Source: OrbitalModificationsFamily.cpp
+        // Advanced orbital techniques with traps and path modifications
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // CircularOrbitTrap: Mandelbrot with circular trap at origin (center 0,0; zoom 0.8)
+        // Colors by minimum distance to trap circle, Julia-enabled
+        // Formula: z(n+1) = z² + c, color by min|z - trap|
+        RegisterTemplate("CircularOrbitTrap", () => CreateJuliaTemplate("CircularOrbitTrap"));
+
+        // CrossOrbitTrap: Orbit trap on coordinate axes (center 0,0; zoom 0.8)
+        // Creates cruciform patterns, Julia-enabled
+        // Formula: z(n+1) = z² + c, trap on x=0 or y=0
+        RegisterTemplate("CrossOrbitTrap", () => CreateJuliaTemplate("CrossOrbitTrap"));
+
+        // StalksConditional: Conditional formula based on magnitude (center 0,0; zoom 0.8)
+        // Stalk-like protrusions, Julia-enabled
+        // Formula: if |z| < r: z² + c, else: z³ + c
+        RegisterTemplate("StalksConditional", () => CreateJuliaTemplate("StalksConditional"));
+
+        // SmoothedOrbit: Averaging of orbit trajectory (center 0,0; zoom 0.8)
+        // Smooth orbital path visualization, Julia-enabled
+        // Formula: z(n+1) = z² + c, averaged orbit
+        RegisterTemplate("SmoothedOrbit", () => CreateJuliaTemplate("SmoothedOrbit"));
+
+        // OrbitAngleAccum: Accumulated angle changes in orbit (center 0,0; zoom 0.8)
+        // Reveals rotation patterns, Julia-enabled
+        // Formula: z(n+1) = z² + c, track Σangle
+        RegisterTemplate("OrbitAngleAccum", () => CreateJuliaTemplate("OrbitAngleAccum"));
+
+        // TriangleOrbitTrap: Triangle-shaped orbit trap (center 0,0; zoom 0.8)
+        // Geometric trap variant, Julia-enabled
+        // Formula: z(n+1) = z² + c, trap on triangle
+        RegisterTemplate("TriangleOrbitTrap", () => CreateJuliaTemplate("TriangleOrbitTrap"));
+
+        // StripeAverage: Average distance from horizontal stripes (center 0,0; zoom 0.8)
+        // Creates banded patterns, Julia-enabled
+        // Formula: z(n+1) = z² + c, stripe trap
+        RegisterTemplate("StripeAverage", () => CreateJuliaTemplate("StripeAverage"));
+
+        // CurvatureTracking: Track orbit path curvature (center 0,0; zoom 0.8)
+        // Reveals trajectory bending, Julia-enabled
+        // Formula: z(n+1) = z² + c, track curvature
+        RegisterTemplate("CurvatureTracking", () => CreateJuliaTemplate("CurvatureTracking"));
+
+        // DeltaMagnitude: Track magnitude changes (center 0,0; zoom 0.8)
+        // Reveals growth rate patterns, Julia-enabled
+        // Formula: z(n+1) = z² + c, track Δ|z|
+        RegisterTemplate("DeltaMagnitude", () => CreateJuliaTemplate("DeltaMagnitude"));
+
+        // PointLineOrbitTrap: Distance to point and line traps (center 0,0; zoom 0.8)
+        // Combined point/line trap geometry, Julia-enabled
+        // Formula: z(n+1) = z² + c, dual trap
+        RegisterTemplate("PointLineOrbitTrap", () => CreateJuliaTemplate("PointLineOrbitTrap"));
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Phoenix Extended Family (3 fractals)
+        // Source: PhoenixExtendedFamily.cpp
+        // Phoenix fractals with advanced functions and parameters
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // PhoenixCosh: Phoenix with hyperbolic cosine (center 0,0; zoom 1.2)
+        // cosh(z) + c + p·z_prev, Julia-enabled
+        // Formula: z(n+1) = cosh(z) + c + p·z(n-1)
+        RegisterTemplate("PhoenixCosh", () => CreateJuliaTemplate("PhoenixCosh"));
+
+        // PhoenixComplex: Phoenix with complex feedback parameter (center 0,0; zoom 0.7)
+        // z² + c + (0.5+0.2i)·z_prev, Julia-enabled
+        // Formula: z(n+1) = z² + c + (0.5+0.2i)·z(n-1)
+        RegisterTemplate("PhoenixComplex", () => CreateJuliaTemplate("PhoenixComplex"));
+
+        // PhoenixLambda: Hybrid Phoenix-Lambda (center 0,0; zoom 1.0)
+        // c·z·(1-z) + p·z_prev, Julia-enabled
+        // Formula: z(n+1) = c·z(1-z) + p·z(n-1)
+        RegisterTemplate("PhoenixLambda", () => CreateJuliaTemplate("PhoenixLambda"));
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Magnet Extended Family (2 fractals)
+        // Source: MagnetExtendedFamily.cpp
+        // Magnet fractals with cubic power variants
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // Magnet1Power3: Magnet I with cubic power (center 0.5,0; zoom 0.7)
+        // ((z²+c-1)/(2z+c-2))³, Julia-enabled
+        // Formula: z(n+1) = [(z²+c-1)/(2z+c-2)]³
+        RegisterTemplate("Magnet1Power3", () => CreateJuliaTemplate("Magnet1Power3"));
+
+        // Magnet2Power3: Magnet II with cubic power (center 1.5,0; zoom 0.6)
+        // ((z³+3(c-1)z+(c-1)(c-2))/(3z²+3(c-2)z+(c-1)(c-2)+1))³, Julia-enabled
+        // Formula: z(n+1) = [complex rational]³
+        RegisterTemplate("Magnet2Power3", () => CreateJuliaTemplate("Magnet2Power3"));
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Lambda Extended Family (2 fractals)
+        // Source: LambdaExtendedFamily.cpp
+        // Lambda fractals with modifications and Phoenix hybrid
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // LambdaModified: Modified Lambda with feedback (center 0,0; zoom 1.0)
+        // λ·z·(1-z) + z, Julia-enabled
+        // Formula: z(n+1) = λ·z·(1-z) + z
+        RegisterTemplate("LambdaModified", () => CreateJuliaTemplate("LambdaModified"));
+
+        // LambdaPhoenix: Lambda with Phoenix-style memory (center 0,0; zoom 1.0)
+        // λ·z·(1-z) + p·z_prev, Julia-enabled
+        // Formula: z(n+1) = λ·z·(1-z) + p·z(n-1)
+        RegisterTemplate("LambdaPhoenix", () => CreateJuliaTemplate("LambdaPhoenix"));
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Rational Function Family (1 fractal)
+        // Source: RationalFunctionFamily.cpp
+        // Newton method for cubic roots
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // NewtonCubic: Newton method for z³-1=0 (center 0,0; zoom 0.6)
+        // Classic Newton fractal with three convergence basins
+        // Formula: z(n+1) = z - (z³-1)/(3z²)
+        RegisterTemplate("NewtonCubic", () => CreateStandardTemplate("NewtonCubic"));
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Special Exotic Family (1 fractal)
+        // Source: SpecialExoticFamily.cpp
+        // 2D Collatz sequence visualization
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // Hailstone2D: 2D Collatz conjecture visualization (center 27,0; zoom 1.0)
+        // Visualizes Collatz sequence starting points
+        // Formula: if even: n/2, if odd: 3n+1
+        RegisterTemplate("Hailstone2D", () => CreateStandardTemplate("Hailstone2D"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
