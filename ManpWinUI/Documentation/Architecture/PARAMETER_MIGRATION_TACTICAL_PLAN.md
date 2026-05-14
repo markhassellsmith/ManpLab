@@ -1048,108 +1048,192 @@ All use standard or Julia-enabled templates.
 
 ---
 
-### 🎯 PHASE 4: June 1-15 - REMAINING COVERAGE (138 fractals)
+### 🎯 PHASE 4: June 1-15 - REMAINING COVERAGE (141 fractals → 115 remaining)
+**Based on actual native inventory reconciliation**  
+**See `MIGRATION_RECONCILIATION.md` for complete priority breakdown**
 
-#### IFS Variants (20 fractals)
-- [ ] BarnsleyFernVariant1
-- [ ] BarnsleyFernVariant2
-- [ ] SierpinskiVariant1
-- [ ] SierpinskiVariant2
-- [ ] SierpinskiVariant3
-- [ ] FractalTree1
-- [ ] FractalTree2
-- [ ] FractalTree3
-- [ ] PythagorasTree
-- [ ] CantorSet
-- [ ] CantorDust
-- [ ] MengerSponge
-- [ ] ApolonianGasket
-- [ ] IFSAttractor1
-- [ ] IFSAttractor2
-- [ ] IFSAttractor3
-- [ ] IFSAttractor4
-- [ ] IFSAttractor5
-- [ ] IFSAttractor6
-- [ ] IFSCustom1
+#### Priority 1: Core Variants (High Visual Impact) - 26/26 fractals ✅
 
-#### Orbital Modifications (18 fractals)
-- [ ] OrbitTrapCircle
-- [ ] OrbitTrapSquare
-- [ ] OrbitTrapLine
+##### Julia Core Variants (8/8) ✅ **COMPLETE - Commit: 32b7db4**
+- [x] JuliaClassic
+- [x] JuliaCubic
+- [x] JuliaBurningShip
+- [x] JuliaPhoenix
+- [x] JuliaLambda
+- [x] JuliaSine
+- [x] JuliaExp
+- [x] JuliaMagnet
+
+##### Mandelbrot/Multibrot Variants (9/9) ✅ **COMPLETE - Commit: b17bbf2**
+- [x] Mandel4
+- [x] Julia4
+- [x] Mandelbar
+- [x] MandelLambda
+- [x] MarksJulia
+- [x] Thorn
+- [x] Multibrot3
+- [x] Multibrot4
+- [x] Multibrot5
+
+##### PowerVariants (9/9) ✅ **COMPLETE - Commit: 82ecfad**
+- [x] Multibrot6
+- [x] Multibrot7
+- [x] Multibrot8
+- [x] Julia5
+- [x] Julia6
+- [x] BurningShip3
+- [x] BurningShip4
+- [x] Tricorn3
+- [x] Tricorn4
+
+---
+
+#### Priority 2: Extended Trigonometric (8 fractals)
+- [ ] TanMandel
+- [ ] CotMandel
+- [ ] SecMandel
+- [ ] CscMandel
+- [ ] ArcSinMandel
+- [ ] ArcCosMandel
+- [ ] ArcTanMandel
+- [ ] TanhMandel (if different from existing)
+
+---
+
+#### Priority 3: Complex Functions & Special (13 fractals)
+**Complex Functions (6):**
+- [ ] CoshMandelbrot
+- [ ] SinhMandelbrot
+- [ ] TanhMandelbrot
+- [ ] HeartMandelbrot
+- [ ] SharkFinMandelbrot
+- [ ] WavyMandelbrot
+
+**Special Functions (7):**
+- [ ] GammaFractal
+- [ ] ErrorFunctionFractal
+- [ ] BesselLikeFractal
+- [ ] ContinuedFraction
+- [ ] LambertW
+- [ ] HyperbolicCombo
+- [ ] Tetration
+
+---
+
+#### Priority 4: Exotic Formulas (8 fractals)
+- [ ] CelticMandel
+- [ ] CelticHeart
+- [ ] HeartMandel
+- [ ] PerpendicularMandel
+- [ ] QuasiPerpendicular
+- [ ] SharkFin
+- [ ] Zubieta
+- [ ] Wavy
+
+---
+
+#### Priority 5: Hybrids & Blends (18 fractals)
+**Fractal Hybrids (8):**
+- [ ] BurningMandel
+- [ ] ExpMandelHybrid
+- [ ] MutantMandelbrot
+- [ ] TrigMandelBlend
+- [ ] SierpinskiMandel
+- [ ] PerturbedNewton
+- [ ] BifurcationMandel
+- [ ] CelticMandelbrot
+
+**Hybrid Family (10):**
+- [ ] MandelBurningHybrid
+- [ ] MandelLambdaMix
+- [ ] TricornPhoenixHybrid
+- [ ] NewtonMandelBlend
+- [ ] SineMandelHybrid
+- [ ] ExpMandelBlend
+- [ ] MultiPowerCycle
+- [ ] MagnetMandelHybrid
+- [ ] CollatzHybrid
+- [ ] CelticBurningHybrid
+
+---
+
+#### Priority 6: Orbital & Distance Estimators (20 fractals)
+**Orbital Fractals (8):**
 - [ ] OrbitTrapCross
+- [ ] OrbitTrapCircle
 - [ ] OrbitTrapPoint
-- [ ] OrbitTrapStar
-- [ ] OrbitTrapSpiral
-- [ ] OrbitTrapGalaxies
-- [ ] OrbitTrapRing
-- [ ] OrbitDistance1
-- [ ] OrbitDistance2
-- [ ] OrbitDistance3
-- [ ] OrbitAngle1
-- [ ] OrbitAngle2
-- [ ] OrbitSum
-- [ ] OrbitProduct
-- [ ] OrbitMin
-- [ ] OrbitMax
+- [ ] OrbitTrapSquare
+- [ ] AverageDistance
+- [ ] MinimumDistance
+- [ ] MaximumDistance
+- [ ] AngleAverage
 
-#### Hybrid Fractals (18 fractals)
-- [ ] MandelbrotNewton (hybrid)
-- [ ] JuliaNewton
-- [ ] BurningShipNewton
-- [ ] MandelbrotPhoenix
-- [ ] JuliaPhoenix
-- [ ] NewtonSpider
-- [ ] MagnetSpider
-- [ ] SinCosHybrid
-- [ ] ExpLogHybrid
-- [ ] TrigExpHybrid
-- [ ] PolynomialTrig
-- [ ] RationalTrig
-- [ ] HybridVariant1
-- [ ] HybridVariant2
-- [ ] HybridVariant3
-- [ ] HybridVariant4
-- [ ] HybridVariant5
-- [ ] HybridVariant6
+**Distance Estimators (12):**
+- [ ] MandelbrotDEM
+- [ ] JuliaDEM
+- [ ] BurningShipDEM
+- [ ] NewtonDEM
+- [ ] TricornDEM
+- [ ] PhoenixDEM
+- [ ] DEMVariant1
+- [ ] DEMVariant2
+- [ ] DEMVariant3
+- [ ] DEMVariant4
+- [ ] DEMVariant5
+- [ ] DEMVariant6
 
-#### Distance Estimator Variants (12 fractals)
-- [ ] MandelbrotDE
-- [ ] JuliaDE
-- [ ] BurningShipDE
-- [ ] NewtonDE
-- [ ] TricornDE
-- [ ] PhoenixDE
-- [ ] DistanceEstimator1
-- [ ] DistanceEstimator2
-- [ ] DistanceEstimator3
-- [ ] DistanceEstimator4
-- [ ] DistanceEstimator5
-- [ ] DistanceEstimator6
+---
 
-#### Bifurcation Diagrams (10 fractals)
+#### Priority 7: IFS & L-Systems (16 fractals)
+**IFS Variants (10):**
+- [ ] KochCurveIFS
+- [ ] HilbertCurveIFS
+- [ ] PentagonIFS
+- [ ] HexagonIFS
+- [ ] TreeIFS1
+- [ ] TreeIFS2
+- [ ] FernVariant1
+- [ ] FernVariant2
+- [ ] ChaosGameTriangle
+- [ ] ChaosGameSquare
+
+**L-Systems (6):**
+- [ ] LSystemTree
+- [ ] LSystemDragon
+- [ ] LSystemKoch
+- [ ] LSystemSierpinski
+- [ ] LSystemCustom1
+- [ ] LSystemCustom2
+
+---
+
+#### Priority 8: Convergence & Chaos (12 fractals)
+**Convergence Methods (6):**
+- [ ] SecantMethodFractal
+- [ ] BisectionFractal
+- [ ] MullerMethod
+- [ ] SteffensenMethod
+- [ ] FixedPointIteration
+- [ ] GaussSeidel
+
+**Chaos Maps (6):**
 - [ ] LogisticMap
-- [ ] LogisticMapVariant1
-- [ ] LogisticMapVariant2
-- [ ] BifurcationDiagram1
-- [ ] BifurcationDiagram2
-- [ ] BifurcationDiagram3
-- [ ] FeigenbaumDiagram
-- [ ] ChaosMap1
-- [ ] ChaosMap2
-- [ ] ChaosMap3
+- [ ] TentMap
+- [ ] BakerMap
+- [ ] ArnoldCatMap
+- [ ] StandardMap
+- [ ] ChirkovMap
 
-#### Historical/Obscure Fractals (30 fractals)
-- [ ] FatouSet1
-- [ ] FatouSet2
-- [ ] JuliaVariant1 through JuliaVariant10 (10 fractals)
-- [ ] MandelbrotVariant1 through MandelbrotVariant5 (5 fractals)
-- [ ] HistoricalFractal1 through HistoricalFractal13 (13 fractals)
+---
 
-#### Experimental/Custom Fractals (30 fractals)
-- [ ] Experimental1 through Experimental15 (15 fractals)
-- [ ] Custom1 through Custom15 (15 fractals)
+#### Priority 9-12: Remaining Families (38 fractals)
+**See `MIGRATION_RECONCILIATION.md` for detailed breakdown:**
+- Priority 9: Historical & Research (10 fractals)
+- Priority 10: Experimental Formulas (12 fractals)
+- Priority 11: Advanced Techniques (8 fractals)
+- Priority 12: Custom & Utility (8 fractals)
 
-**✅ PHASE 4 TARGET: 300/300 fractals (100%)**
+**✅ PHASE 4 TARGET: 279/279 fractals (100%)**
 
 ---
 
