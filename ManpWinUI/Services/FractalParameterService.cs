@@ -655,6 +655,34 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("Zubieta", () => CreateJuliaTemplate("Zubieta"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 5: Hybrids & Blends (18 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Fractals that combine multiple iteration formulas or alternate between them
+        // Source: FractalHybridsFamily.cpp and HybridFamily.cpp
+
+        // Hybrid Fractals Family (8 fractals from FractalHybridsFamily.cpp)
+        RegisterTemplate("BurningMandel", () => CreateJuliaTemplate("BurningMandel"));
+        RegisterTemplate("ExpMandelHybrid", () => CreateJuliaTemplate("ExpMandelHybrid"));
+        RegisterTemplate("MutantMandelbrot", () => CreateJuliaTemplate("MutantMandelbrot"));
+        RegisterTemplate("TrigMandelBlend", () => CreateJuliaTemplate("TrigMandelBlend"));
+        RegisterTemplate("SierpinskiMandel", () => CreateJuliaTemplate("SierpinskiMandel"));
+        RegisterTemplate("PerturbedNewton", () => CreateJuliaTemplate("PerturbedNewton"));
+        RegisterTemplate("BifurcationMandel", () => CreateJuliaTemplate("BifurcationMandel"));
+        RegisterTemplate("CelticMandelbrot", () => CreateJuliaTemplate("CelticMandelbrot"));
+
+        // Hybrid Family (10 fractals from HybridFamily.cpp)
+        RegisterTemplate("MandelBurningHybrid", () => CreateJuliaTemplate("MandelBurningHybrid"));
+        RegisterTemplate("MandelLambdaMix", () => CreateJuliaTemplate("MandelLambdaMix"));
+        RegisterTemplate("TricornPhoenixHybrid", () => CreateJuliaTemplate("TricornPhoenixHybrid"));
+        RegisterTemplate("NewtonMandelBlend", () => CreateJuliaTemplate("NewtonMandelBlend"));
+        RegisterTemplate("SineMandelHybrid", () => CreateJuliaTemplate("SineMandelHybrid"));
+        RegisterTemplate("ExpMandelBlend", () => CreateJuliaTemplate("ExpMandelBlend"));
+        RegisterTemplate("MultiPowerCycle", () => CreateJuliaTemplate("MultiPowerCycle"));
+        RegisterTemplate("MagnetMandelHybrid", () => CreateJuliaTemplate("MagnetMandelHybrid"));
+        RegisterTemplate("CollatzHybrid", () => CreateJuliaTemplate("CollatzHybrid"));
+        RegisterTemplate("CelticBurningHybrid", () => CreateJuliaTemplate("CelticBurningHybrid"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
