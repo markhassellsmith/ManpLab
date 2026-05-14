@@ -5,7 +5,7 @@
 **Project:** Complete the flexible parameter system for **279 fractals** (actual native count)  
 **Timeline:** May 14 - June 15, 2026 (3-4 weeks)  
 **Priority:** HIGH - Use AI budget while available  
-**Status:** 207/279 fractals complete (74%) - **PHASE 4 PRIORITY 5 COMPLETE** 🚀  
+**Status:** 219/279 fractals complete (78%) - **PHASE 4 PRIORITY 6 COMPLETE** 🚀  
 **Goal:** 100% coverage, eliminate dual parameter system
 
 **⚠️ DISCOVERY:** Native inventory scan revealed 279 unique fractals (not 300 as estimated).  
@@ -1167,30 +1167,24 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
 
 ---
 
-#### Priority 6: Orbital & Distance Estimators (20 fractals)
+#### Priority 6: Orbital & Distance Estimators (12/12 fractals) ✅ **COMPLETE - Commit: 974e8c6**
 **Orbital Fractals (8):**
-- [ ] OrbitTrapCross
-- [ ] OrbitTrapCircle
-- [ ] OrbitTrapPoint
-- [ ] OrbitTrapSquare
-- [ ] AverageDistance
-- [ ] MinimumDistance
-- [ ] MaximumDistance
-- [ ] AngleAverage
+- [x] OrbitTrapCross (center 0,0; zoom 1.0)
+- [x] OrbitTrapCircle (center 0,0; zoom 1.0)
+- [x] OrbitTrapPoint (center 0,0; zoom 1.0)
+- [x] OrbitTrapSquare (center 0,0; zoom 1.0)
+- [x] AverageDistance (center 0,0; zoom 1.0)
+- [x] MinimumDistance (center 0,0; zoom 1.0)
+- [x] MaximumDistance (center 0,0; zoom 1.0)
+- [x] AngleAverage (center 0,0; zoom 1.0)
 
-**Distance Estimators (12):**
-- [ ] MandelbrotDEM
-- [ ] JuliaDEM
-- [ ] BurningShipDEM
-- [ ] NewtonDEM
-- [ ] TricornDEM
-- [ ] PhoenixDEM
-- [ ] DEMVariant1
-- [ ] DEMVariant2
-- [ ] DEMVariant3
-- [ ] DEMVariant4
-- [ ] DEMVariant5
-- [ ] DEMVariant6
+**Distance Estimators (4):**
+- [x] MandelbrotDEM (center -0.5, 0; zoom 1.0) - viewport preserved
+- [x] JuliaDEM (Julia-enabled; center 0,0; zoom 1.5) - viewport preserved
+- [x] BurningShipDEM (center -0.5,-0.5; zoom 0.4) - viewport preserved
+- [x] TricornDEM (center 0,0; zoom 1.0)
+
+**Note:** Original tactical plan estimated 12 DEM variants (NewtonDEM, PhoenixDEM, DEMVariant1-6), but native discovery revealed only 4 DEM fractals exist in actual native code. Total Priority 6: 12 fractals (not 20).
 
 ---
 
@@ -1266,7 +1260,7 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
 
 ## Progress Summary
 
-**Current Status: 207/279 fractals complete (74%) - PHASE 4 PRIORITY 5 COMPLETE! 🚀**
+**Current Status: 219/279 fractals complete (78%) - PHASE 4 PRIORITY 6 COMPLETE! 🚀**
 
 **⚠️ ACTUAL NATIVE COUNT: 279 fractals** (discovered via comprehensive native inventory scan)  
 **Original estimate: 300 fractals** (overestimated by 21)  
@@ -1296,13 +1290,17 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
   - **Exotic Formulas (4 fractals): CelticMandel, PerpendicularMandel, QuasiPerpendicular, Zubieta** ✅ Commit: `0b59ca9`
 - ✅ **Phase 4 Priority 5:**
   - **Hybrids & Blends (18 fractals): BurningMandel, ExpMandelHybrid, MutantMandelbrot, TrigMandelBlend, SierpinskiMandel, PerturbedNewton, BifurcationMandel, CelticMandelbrot, MandelBurningHybrid, MandelLambdaMix, TricornPhoenixHybrid, NewtonMandelBlend, SineMandelHybrid, ExpMandelBlend, MultiPowerCycle, MagnetMandelHybrid, CollatzHybrid, CelticBurningHybrid** ✅ Commit: `2ea7f19`
+- ✅ **Phase 4 Priority 6:**
+  - **Orbital Fractals (8 fractals): OrbitTrapCross, OrbitTrapCircle, OrbitTrapPoint, OrbitTrapSquare, AverageDistance, MinimumDistance, MaximumDistance, AngleAverage** ✅ Commit: `974e8c6`
+  - **Distance Estimators (4 fractals): MandelbrotDEM, JuliaDEM, BurningShipDEM, TricornDEM** ✅ Commit: `974e8c6`
+  - **Viewport defaults preserved from native registrations**
 - ✅ Complex exponent (2 fractals): MarksMandel, MarksMandelpwr
 - ✅ Phoenix (1 fractal)
 - ✅ Lambda (1 fractal)
 - ✅ Hailstone (1 fractal)
 
-**Remaining: 72 fractals (26%)**  
-**See: `MIGRATION_RECONCILIATION.md` Priority 6-12 breakdown**
+**Remaining: 60 fractals (22%)**  
+**See: `MIGRATION_RECONCILIATION.md` Priority 7-12 breakdown**
 
 ### Completion Milestones
 - [x] **Phase 1 Complete: 59/279 (21%) - COMPLETED: May 14, 2026** ✅
@@ -1351,7 +1349,11 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
 - [x] **Phase 4 Priority 5 - Hybrids & Blends: 207/279 (74%) - COMPLETED: May 14, 2026** ✅
   - **Commit:** `2ea7f19` - Hybrids & Blends family complete (18 fractals)
   - **Pushed to:** `origin/development`
-- [ ] Phase 4: Remaining Coverage (72 fractals) - **IN PROGRESS** (see MIGRATION_RECONCILIATION.md)
+- [x] **Phase 4 Priority 6 - Orbital & Distance Estimators: 219/279 (78%) - COMPLETED: May 14, 2026** ✅
+  - **Commit:** `974e8c6` - Orbital & Distance Estimators complete (12 fractals)
+  - **Viewport defaults preserved:** MandelbrotDEM, JuliaDEM, BurningShipDEM
+  - **Pushed to:** `origin/development`
+- [ ] Phase 4: Remaining Coverage (60 fractals) - **IN PROGRESS** (see MIGRATION_RECONCILIATION.md)
 - [ ] Phase 5 Complete: Legacy system removed - Target: June 15, 2026
 
 ---
