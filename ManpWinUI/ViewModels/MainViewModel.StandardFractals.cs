@@ -1,14 +1,25 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Diagnostics;
 
 namespace ManpWinUI.ViewModels;
 
 /// <summary>
 /// MainViewModel partial class - Standard fractal parameters (Mandelbrot, Burning Ship, Tricorn, Phoenix).
 /// Includes coordinate system, zoom, iterations, and Julia mode parameters.
+/// 
+/// PHASE 5 NOTE: These properties are still required for UI bindings (MainPage.xaml toolbar controls).
+/// Legacy sync code has been removed - CurrentParameters is now the single source of truth.
+/// UI controls bind to these properties for display/input, but parameter values come from CurrentParameters.
 /// </summary>
 public partial class MainViewModel
 {
-    // Coordinate system parameters (used by all standard fractals)
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // COORDINATE SYSTEM PARAMETERS (UI-bound properties)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    // PHASE 5: These properties remain for UI binding only.
+    // Parameter values are managed through CurrentParameters, not these properties.
+
     [ObservableProperty]
     public partial double CenterX { get; set; } = -0.5;
 
@@ -18,7 +29,10 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial double Zoom { get; set; } = 1.0;
 
-    // Iteration control
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ITERATION CONTROL (UI-bound properties)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
     [ObservableProperty]
     public partial int MaxIterations { get; set; } = 512;
 
@@ -28,7 +42,10 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial string IterationSuggestion { get; set; } = string.Empty;
 
-    // Julia mode (applies to all standard fractal types)
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // JULIA MODE (UI-bound properties)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
     [ObservableProperty]
     public partial string SelectedIterationMode { get; set; } = "Standard";
 
@@ -40,6 +57,10 @@ public partial class MainViewModel
 
     [ObservableProperty]
     public partial double JuliaCY { get; set; } = 0.27015;
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // COMPUTED PROPERTIES (View dimensions and deep zoom indicators)
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     // Computed properties for current view dimensions in fractal coordinates
     public string CurrentViewWidth
@@ -78,7 +99,10 @@ public partial class MainViewModel
 
     public string DeepZoomIndicator => IsDeepZoomActive ? " - Deep Zoom mode" : string.Empty;
 
-    // Property change handlers
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // PROPERTY CHANGE HANDLERS (PHASE 5: Legacy sync code removed)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
     partial void OnMaxIterationsChanged(int value)
     {
         // Clamp max iterations to reasonable range
@@ -89,11 +113,8 @@ public partial class MainViewModel
         // Update iteration suggestion message when iterations change
         UpdateIterationSuggestion();
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
-        {
-            SetParameter("max_iterations", value);
-        }
+        // PHASE 5: Legacy parameter sync removed
+        Debug.WriteLine("[PHASE 5] OnMaxIterationsChanged: Legacy SetParameter() call removed");
     }
 
     partial void OnAutoScaleIterationsChanged(bool value)
@@ -101,11 +122,8 @@ public partial class MainViewModel
         // Update iteration suggestion message when auto-scale toggle changes
         UpdateIterationSuggestion();
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
-        {
-            SetParameter("auto_scale_iterations", value);
-        }
+        // PHASE 5: Legacy parameter sync removed
+        Debug.WriteLine("[PHASE 5] OnAutoScaleIterationsChanged: Legacy SetParameter() call removed");
     }
 
     partial void OnSelectedIterationModeChanged(string value)
@@ -126,11 +144,8 @@ public partial class MainViewModel
         // Ensure render command updates its CanExecute state
         RenderMandelbrotCommand.NotifyCanExecuteChanged();
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
-        {
-            SetParameter("julia_mode", value == "Julia");
-        }
+        // PHASE 5: Legacy parameter sync removed
+        Debug.WriteLine("[PHASE 5] OnSelectedIterationModeChanged: Legacy SetParameter() call removed");
     }
 
     partial void OnZoomChanged(double value)
@@ -147,48 +162,47 @@ public partial class MainViewModel
         // Update iteration suggestion when zoom changes (recommended iterations depend on zoom)
         UpdateIterationSuggestion();
 
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
+        Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
-        {
-            SetParameter("zoom", value);
-        }
+        // PHASE 5: Legacy parameter sync removed
+        Debug.WriteLine("[PHASE 5] OnZoomChanged: Legacy SetParameter() call removed");
     }
 
     partial void OnCenterXChanged(double value)
     {
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
+        Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
-        {
-            SetParameter("center_x", value);
-        }
+        // PHASE 5: Legacy parameter sync removed
+        Debug.WriteLine("[PHASE 5] OnCenterXChanged: Legacy SetParameter() call removed");
     }
 
     partial void OnCenterYChanged(double value)
     {
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
+        Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
-        {
-            SetParameter("center_y", value);
-        }
+        // PHASE 5: Legacy parameter sync removed
+        Debug.WriteLine("[PHASE 5] OnCenterYChanged: Legacy SetParameter() call removed");
     }
 
     partial void OnImageWidthChanged(int value)
     {
         OnPropertyChanged(nameof(TotalPixels));
         OnPropertyChanged(nameof(CurrentViewHeight));
+
+        // PHASE 5: Image dimensions handled by RenderParameters, not synced to CurrentParameters
     }
 
     partial void OnImageHeightChanged(int value)
     {
         OnPropertyChanged(nameof(TotalPixels));
         OnPropertyChanged(nameof(CurrentViewHeight));
+
+        // PHASE 5: Image dimensions handled by RenderParameters, not synced to CurrentParameters
     }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ITERATION RECOMMENDATION LOGIC (unchanged)
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
     /// Calculates recommended iteration count based on zoom level.
