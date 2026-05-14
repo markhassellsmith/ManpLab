@@ -392,6 +392,20 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("TrigXTrig", () => CreateJuliaTemplate("TrigXTrig"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // EXPONENTIAL/LOGARITHMIC FAMILY (exp, log, power functions)
+        // ═══════════════════════════════════════════════════════════════════════════
+        RegisterTemplate("Exponential", () => CreateJuliaTemplate("Exponential"));
+        RegisterTemplate("Logarithm", () => CreateJuliaTemplate("Logarithm"));
+        RegisterTemplate("Logarithmic", () => CreateJuliaTemplate("Logarithmic"));
+        RegisterTemplate("MandelExp", () => CreateJuliaTemplate("MandelExp"));
+        RegisterTemplate("LMandelExp", () => CreateJuliaTemplate("LMandelExp"));
+        RegisterTemplate("LLambdaExp", () => CreateJuliaTemplate("LLambdaExp"));
+        RegisterTemplate("PowerTower", () => CreateJuliaTemplate("PowerTower"));
+        RegisterTemplate("ZToTheZ", () => CreateJuliaTemplate("ZToTheZ"));
+        RegisterTemplate("ComplexPower", () => CreateJuliaTemplate("ComplexPower"));
+        RegisterTemplate("ExponentialJulia", () => CreateJuliaTemplate("ExponentialJulia"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
