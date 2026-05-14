@@ -1074,6 +1074,25 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("Hailstone2D", () => CreateStandardTemplate("Hailstone2D"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // FINAL RECONCILIATION: Last 3 fractals (279/279 complete)
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        // Multibrot-10: z¹⁰ + c decic polynomial (center 0,0; zoom 1.5)
+        // Tenth-order Mandelbrot variant with ten-fold rotational symmetry
+        // Formula: z(n+1) = z¹⁰ + c
+        RegisterTemplate("Multibrot-10", () => CreateJuliaTemplate("Multibrot-10"));
+
+        // JuliaSanMarco: Named Julia preset with fixed c (center 0,0; zoom 0.5)
+        // Pre-set Julia constant, no Julia toggle
+        // Formula: z² + c where c is fixed at classic value
+        RegisterTemplate("JuliaSanMarco", () => CreateStandardTemplate("JuliaSanMarco"));
+
+        // JuliaDouadyRabbit: Named Julia preset with fixed c (center 0,0; zoom 0.5)
+        // Pre-set Julia constant (Douady's rabbit), no Julia toggle
+        // Formula: z² + c where c is fixed at Douady rabbit value
+        RegisterTemplate("JuliaDouadyRabbit", () => CreateStandardTemplate("JuliaDouadyRabbit"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
