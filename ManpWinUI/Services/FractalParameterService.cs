@@ -475,6 +475,20 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("Arneodo", () => CreateStandardTemplate("Arneodo"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 3 STEP 3B: NEWTON/CONVERGENCE VARIANTS (3 fractals)
+        // Newton's method and related convergence methods for various functions
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        // Newton Sextic (z⁶ - 1 = 0) - 6 convergence basins
+        RegisterTemplate("NewtonSextic", () => CreateStandardTemplate("NewtonSextic"));
+
+        // Newton Cosh (cosh(z) - 1 = 0) - hyperbolic convergence
+        RegisterTemplate("NewtonCosh", () => CreateStandardTemplate("NewtonCosh"));
+
+        // Newton Basin (z³ - 1 with root coloring) - classic Newton basins visualization
+        RegisterTemplate("NewtonBasin", () => CreateStandardTemplate("NewtonBasin"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>

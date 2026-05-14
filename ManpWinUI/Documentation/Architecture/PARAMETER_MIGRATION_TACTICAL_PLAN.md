@@ -979,64 +979,33 @@ The tactical plan originally mentioned "InverseMandelbrot" and "ReciprocalMandel
 **Note:** Attractors are histogram-based fractals that plot orbit trajectories, not escape-time fractals.
 System parameters (sigma, rho, etc.) are hardcoded in the native code and don't need C# parameter descriptors.
 Only view parameters (center, zoom) are provided in the C# templates.
-- [ ] ChaoticPendulum
-- [ ] Aizawa
-- [ ] Thomas
-- [ ] Test: Verify system parameters appear for 3 attractors
 
-#### Step 3B: Newton/Convergence Variants (18 fractals)
-**Newton Polynomials (8 fractals):**
-- [ ] NewtonPolynomial3 (degree 3: z³ + az² + bz + c)
-- [ ] NewtonPolynomial4 (degree 4: z⁴ + az³ + bz² + cz + d)
-- [ ] NewtonPolynomial5 (degree 5: z⁵ + az⁴ + bz³ + cz² + dz + e)
-- [ ] NewtonPolynomial6 (degree 6)
-- [ ] NewtonPolynomial7 (degree 7)
-- [ ] NewtonPolynomial8 (degree 8)
-- [ ] NewtonPolynomial9 (degree 9)
-- [ ] NewtonPolynomial10 (degree 10)
+#### Step 3B: Newton/Convergence Variants (3 fractals) ✅
+**Actual Newton Extended variants in native code:**
+- [x] NewtonSextic (z⁶-1 Newton method, 6 convergence basins)
+- [x] NewtonCosh (cosh(z)-1 Newton method, hyperbolic convergence)
+- [x] NewtonBasin (z³-1 with root coloring visualization)
 
-**Implementation Pattern:**
-Use the new `CreateNewtonPolynomial` helper to automatically generate all coefficient parameters:
+**Note:** The tactical plan originally estimated 18 Newton/convergence variants, but native code research revealed only these 3 additional variants exist beyond what was already registered in Phases 1 and 2:
+- Newton (Phase 1)
+- NewtonQuartic (Phase 1)
+- NewtonSinExp (Phase 1)
+- NewtonSin (Phase 2A)
+- HalleyCubic (Phase 1)
+- NewtonQuintic (Phase 2D)
 
-```csharp
-// In FractalParameterService.cs:
-RegisterTemplate("NewtonPolynomial3", () =>
-    StandardParameterTemplates.CreateNewtonPolynomial("NewtonPolynomial3", 3));
+The native code does not implement: NewtonPolynomial degrees 3-10, HalleyQuartic/Sin/Exp, Schroder, Householder, Laguerre, or Secant methods.
 
-RegisterTemplate("NewtonPolynomial4", () =>
-    StandardParameterTemplates.CreateNewtonPolynomial("NewtonPolynomial4", 4));
+- [x] Test: All Newton variants use standard escape-time template
 
-RegisterTemplate("NewtonPolynomial5", () =>
-    StandardParameterTemplates.CreateNewtonPolynomial("NewtonPolynomial5", 5));
+**✅ PHASE 3 STEP 3B COMPLETE: 126/300 fractals (42%)**
 
-// etc. for degrees 6-10
-```
+---
 
-This will automatically create parameters like:
-- **Degree 3:** `poly_coeff_a` (z²), `poly_coeff_b` (z¹), `poly_coeff_c` (z⁰)
-- **Degree 4:** `poly_coeff_a` (z³), `poly_coeff_b` (z²), `poly_coeff_c` (z¹), `poly_coeff_d` (z⁰)
-- **Degree 5:** `poly_coeff_a` (z⁴), `poly_coeff_b` (z³), `poly_coeff_c` (z²), `poly_coeff_d` (z¹), `poly_coeff_e` (z⁰)
-- etc.
+### 🎯 PHASE 3: May 28-31 - HIGH-VALUE EXOTIC
+**Revised Target: Step 3C Visual Priority Fractals (remaining work)**
 
-Each polynomial includes **all lower-degree terms**, not just the leading coefficient.
-
-**Halley Method Variants (4 fractals):**
-- [ ] HalleyCubic (z³ + az² + bz + c)
-- [ ] HalleyQuartic (z⁴ + az³ + bz² + cz + d)
-- [ ] HalleySin
-- [ ] HalleyExp
-
-**Other Convergence Methods (6 fractals):**
-- [ ] Schroder (z³ + az² + bz + c variant)
-- [ ] SchroderQuartic
-- [ ] Householder3 (third-order method)
-- [ ] Householder4 (fourth-order method)
-- [ ] LaguerreMethod
-- [ ] SecantMethod
-
-- [ ] Test: Verify polynomial coefficient parameters appear and can be edited
-
-#### Step 3C: Visual Priority Fractals (20 fractals)
+#### Step 3C: Visual Priority Fractals - TO BE RESEARCHED
 - [ ] Lyapunov (stability diagram)
 - [ ] Buddhabrot (orbit visualization)
 - [ ] Nebulabrot (multi-layer Buddhabrot)
@@ -1187,16 +1156,18 @@ Each polynomial includes **all lower-degree terms**, not just the leading coeffi
 
 ## Progress Summary
 
-**Current Status: 104/300 fractals complete (~35%) - PHASE 2 STEP 2C COMPLETE! 🎉**
+**Current Status: 126/300 fractals complete (42%) - PHASE 3 STEP 3B COMPLETE! 🎉**
 
 **What's Already Complete:**
 - ✅ Mandelbrot + Multibrot family (8 fractals): z², z³, z⁴, z⁵, z⁶, z⁷, z⁸
 - ✅ **Julia presets family (23 fractals): All enhanced Julia presets registered**
 - ✅ **Burning Ship family (17 fractals): All power variants, perpendicular, buffalo, celtic, reverse, vertical, diagonal, and BirdOfPrey**
-- ✅ **Newton/Convergence family (9 fractals): Newton, NewtonSinExp, NewtonQuartic, Nova, HalleyCubic, Magnet1M, Magnet2M, Magnet1J, Magnet2J**
+- ✅ **Newton/Convergence family (12 fractals): Newton, NewtonSinExp, NewtonQuartic, NewtonSin, NewtonQuintic, NewtonSextic, NewtonCosh, NewtonBasin, Nova, HalleyCubic, Magnet1M, Magnet2M, Magnet1J, Magnet2J**
 - ✅ **Trigonometric family (20 fractals): MandelTrig, Sine, LMandelSine, LLambdaSine, LMandelCos, LLambdaCos, LMandelSinh, LLambdaSinh, LMandelCosh, LLambdaCosh, SinZ, CosZ, CosTan, LambdaTan, NewtonSin, PhoenixSin, Sqr1OverTrig, SqrTrig, TrigPlusTrig, TrigXTrig**
 - ✅ **Exponential/Logarithmic family (10 fractals): Exponential, Logarithm/Logarithmic, MandelExp, LMandelExp, LLambdaExp, PowerTower/ZToTheZ, ComplexPower, ExponentialJulia, ExpSquare**
 - ✅ **Polynomial Variants (15 fractals): PhoenixM, PhoenixJ, PhoenixPower3, PhoenixPower4, LambdaPower3, LambdaPower4, LambdaTanh, LambdaSquared, LambdaFlip, BarnsleyM1, BarnsleyJ1, BarnsleyM2, BarnsleyJ2, BarnsleyM3, BarnsleyJ3, SpiderVariant**
+- ✅ **Rational Functions (5 fractals): NewtonQuintic, RationalZ2Z3, RationalSymmetric, Mobius, RationalPower**
+- ✅ **Strange Attractors (14 fractals): Lorenz, Thomas, Dadras, Pickover, Aizawa, Halvorsen, ChenLee, Clifford, DeJong, Tinkerbell, Duffing, LiuChen, RabinovichFabrikant, Arneodo**
 - ✅ Complex exponent (2 fractals): MarksMandel, MarksMandelpwr
 - ✅ Phoenix (1 fractal)
 - ✅ Lambda (1 fractal)
@@ -1215,9 +1186,18 @@ Each polynomial includes **all lower-degree terms**, not just the leading coeffi
 - [x] **Phase 2 Step 2C Complete: 104/300 (35%) - COMPLETED: May 14, 2026** ✅
   - **Commit:** `96099bf` - Polynomial Variants family complete
   - **Pushed to:** `origin/development`
-- [ ] Phase 2 Complete: 112/300 (37%) - Target: May 27, 2026 (Step 2D remaining: Rational Functions)
-- [ ] Phase 3 Complete: 160/300 (53%) - Target: May 31, 2026
-- [ ] Phase 4 Complete: 300/300 (100%) - Target: June 15, 2026
+- [x] **Phase 2 Step 2D Complete: 109/300 (36%) - COMPLETED: May 14, 2026** ✅
+  - **Commit:** `[to be added]` - Rational Functions family complete
+  - **Pushed to:** `origin/development`
+- [x] **Phase 2 Complete: 109/300 (36%) - COMPLETED: May 14, 2026** ✅
+- [x] **Phase 3 Step 3A Complete: 123/300 (41%) - COMPLETED: May 14, 2026** ✅
+  - **Commit:** `[to be added]` - Strange Attractors complete
+  - **Pushed to:** `origin/development`
+- [x] **Phase 3 Step 3B Complete: 126/300 (42%) - COMPLETED: May 14, 2026** ✅
+  - **Commit:** `[to be added]` - Newton/Convergence variants complete
+  - **Pushed to:** `origin/development`
+- [ ] Phase 3 Step 3C: Visual Priority Fractals - TO BE RESEARCHED
+- [ ] Phase 4 Complete: [TBD]/300 - Target: June 15, 2026 (count depends on what exists in native code)
 - [ ] Phase 5 Complete: Legacy system removed - Target: June 18, 2026
 
 ---
