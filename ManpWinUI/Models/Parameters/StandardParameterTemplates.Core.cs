@@ -22,8 +22,12 @@ public static partial class StandardParameterTemplates
     /// <summary>
     /// Standard 2D view parameters: centerX, centerY, zoom.
     /// Used by all 2D escape-time fractals.
+    /// Accepts native defaults from FractalDescriptor.
     /// </summary>
-    public static IEnumerable<FractalParameterDescriptor> StandardView2D()
+    public static IEnumerable<FractalParameterDescriptor> StandardView2D(
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
         yield return new FractalParameterDescriptor
         {
@@ -31,7 +35,7 @@ public static partial class StandardParameterTemplates
             Name = "Center X",
             Type = ParameterType.Double,
             Category = ParameterCategory.View,
-            DefaultValue = 0.0,
+            DefaultValue = defaultCenterX,
             MinValue = -10.0,
             MaxValue = 10.0,
             StepSize = 0.01,
@@ -46,7 +50,7 @@ public static partial class StandardParameterTemplates
             Name = "Center Y",
             Type = ParameterType.Double,
             Category = ParameterCategory.View,
-            DefaultValue = 0.0,
+            DefaultValue = defaultCenterY,
             MinValue = -10.0,
             MaxValue = 10.0,
             StepSize = 0.01,
@@ -61,7 +65,7 @@ public static partial class StandardParameterTemplates
             Name = "Zoom",
             Type = ParameterType.Double,
             Category = ParameterCategory.View,
-            DefaultValue = 1.0,
+            DefaultValue = defaultZoom,
             MinValue = 0.001,
             MaxValue = 1e15,
             StepSize = 0.1,
@@ -293,31 +297,48 @@ public static partial class StandardParameterTemplates
     // CONVENIENCE BUILDERS
     // ═══════════════════════════════════════════════════════════════════════════════
 
-    public static FractalParameterSet CreateStandardEscapeTime(string fractalType)
+    public static FractalParameterSet CreateStandardEscapeTime(
+        string fractalType,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
         var paramSet = new FractalParameterSet(fractalType);
-        paramSet.AddParameters(StandardView2D().ToArray());
+        paramSet.AddParameters(StandardView2D(defaultCenterX, defaultCenterY, defaultZoom).ToArray());
         paramSet.AddParameters(StandardAlgorithm().ToArray());
         return paramSet;
     }
 
-    public static FractalParameterSet CreateWithJulia(string fractalType)
+    public static FractalParameterSet CreateWithJulia(
+        string fractalType,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
-        var paramSet = CreateStandardEscapeTime(fractalType);
+        var paramSet = CreateStandardEscapeTime(fractalType, defaultCenterX, defaultCenterY, defaultZoom);
         paramSet.AddParameters(JuliaMode().ToArray());
         return paramSet;
     }
 
-    public static FractalParameterSet CreateMultibrot(string fractalType, int defaultExponent)
+    public static FractalParameterSet CreateMultibrot(
+        string fractalType,
+        int defaultExponent,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
-        var paramSet = CreateWithJulia(fractalType);
+        var paramSet = CreateWithJulia(fractalType, defaultCenterX, defaultCenterY, defaultZoom);
         paramSet.AddParameter(IntegerExponent(defaultExponent));
         return paramSet;
     }
 
-    public static FractalParameterSet CreateNewton(string fractalType)
+    public static FractalParameterSet CreateNewton(
+        string fractalType,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
-        var paramSet = CreateStandardEscapeTime(fractalType);
+        var paramSet = CreateStandardEscapeTime(fractalType, defaultCenterX, defaultCenterY, defaultZoom);
         // Add Newton-specific parameters here if needed
         return paramSet;
     }
@@ -326,9 +347,14 @@ public static partial class StandardParameterTemplates
     /// Create a Newton polynomial fractal with all coefficient parameters.
     /// For example, degree 3 creates: z³ + az² + bz + c = 0
     /// </summary>
-    public static FractalParameterSet CreateNewtonPolynomial(string fractalType, int degree)
+    public static FractalParameterSet CreateNewtonPolynomial(
+        string fractalType,
+        int degree,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
-        var paramSet = CreateStandardEscapeTime(fractalType);
+        var paramSet = CreateStandardEscapeTime(fractalType, defaultCenterX, defaultCenterY, defaultZoom);
         paramSet.AddParameters(PolynomialCoefficients(degree).ToArray());
         return paramSet;
     }

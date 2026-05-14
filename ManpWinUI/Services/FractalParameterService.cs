@@ -20,6 +20,7 @@ public class FractalParameterService : IFractalParameterService
     // ═══════════════════════════════════════════════════════════════════════════════
 
     private readonly IAppSettingsService _settingsService;
+    private readonly IFractalMetadataService _metadataService;
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // STATE
@@ -45,9 +46,12 @@ public class FractalParameterService : IFractalParameterService
     // CONSTRUCTOR
     // ═══════════════════════════════════════════════════════════════════════════════
 
-    public FractalParameterService(IAppSettingsService settingsService)
+    public FractalParameterService(
+        IAppSettingsService settingsService,
+        IFractalMetadataService metadataService)
     {
         _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+        _metadataService = metadataService ?? throw new ArgumentNullException(nameof(metadataService));
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
@@ -89,6 +93,50 @@ public class FractalParameterService : IFractalParameterService
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // HELPER: Get native viewport defaults
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Gets viewport defaults from native FractalDescriptor, with fallbacks to (0, 0, 1.0).
+    /// </summary>
+    private (double centerX, double centerY, double zoom) GetNativeViewportDefaults(string fractalType)
+    {
+        var descriptor = _metadataService.GetFractal(fractalType);
+        if (descriptor != null)
+        {
+            return (descriptor.DefaultCenterX, descriptor.DefaultCenterY, descriptor.DefaultZoom);
+        }
+        return (0.0, 0.0, 1.0); // Fallback if fractal not found
+    }
+
+    /// <summary>
+    /// Helper: Create a standard escape-time template WITH native viewport defaults.
+    /// </summary>
+    private FractalParameterSet CreateStandardTemplate(string fractalType)
+    {
+        var (cx, cy, z) = GetNativeViewportDefaults(fractalType);
+        return StandardParameterTemplates.CreateStandardEscapeTime(fractalType, cx, cy, z);
+    }
+
+    /// <summary>
+    /// Helper: Create a Julia-enabled template WITH native viewport defaults.
+    /// </summary>
+    private FractalParameterSet CreateJuliaTemplate(string fractalType)
+    {
+        var (cx, cy, z) = GetNativeViewportDefaults(fractalType);
+        return StandardParameterTemplates.CreateWithJulia(fractalType, cx, cy, z);
+    }
+
+    /// <summary>
+    /// Helper: Create a Multibrot template WITH native viewport defaults.
+    /// </summary>
+    private FractalParameterSet CreateMultibrotTemplate(string fractalType, int exponent)
+    {
+        var (cx, cy, z) = GetNativeViewportDefaults(fractalType);
+        return StandardParameterTemplates.CreateMultibrot(fractalType, exponent, cx, cy, z);
+    }
+
     /// <summary>
     /// Register built-in parameter templates for known fractal families.
     /// This is the 80/20 solution: covers most fractals with standard templates.
@@ -98,22 +146,22 @@ public class FractalParameterService : IFractalParameterService
         // ═══════════════════════════════════════════════════════════════════════════
         // MANDELBROT FAMILY (Standard + Julia)
         // ═══════════════════════════════════════════════════════════════════════════
-        RegisterTemplate("Mandelbrot", () => StandardParameterTemplates.CreateWithJulia("Mandelbrot"));
-        RegisterTemplate("BurningShip", () => StandardParameterTemplates.CreateWithJulia("BurningShip"));
-        RegisterTemplate("Tricorn", () => StandardParameterTemplates.CreateWithJulia("Tricorn"));
-        RegisterTemplate("Celtic", () => StandardParameterTemplates.CreateWithJulia("Celtic"));
-        RegisterTemplate("Buffalo", () => StandardParameterTemplates.CreateWithJulia("Buffalo"));
-        RegisterTemplate("MandelbarCeltic", () => StandardParameterTemplates.CreateWithJulia("MandelbarCeltic"));
+        RegisterTemplate("Mandelbrot", () => CreateJuliaTemplate("Mandelbrot"));
+        RegisterTemplate("BurningShip", () => CreateJuliaTemplate("BurningShip"));
+        RegisterTemplate("Tricorn", () => CreateJuliaTemplate("Tricorn"));
+        RegisterTemplate("Celtic", () => CreateJuliaTemplate("Celtic"));
+        RegisterTemplate("Buffalo", () => CreateJuliaTemplate("Buffalo"));
+        RegisterTemplate("MandelbarCeltic", () => CreateJuliaTemplate("MandelbarCeltic"));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // MULTIBROT FAMILY (z^n + c with integer exponent)
         // ═══════════════════════════════════════════════════════════════════════════
-        RegisterTemplate("Multibrot", () => StandardParameterTemplates.CreateMultibrot("Multibrot", 3));
-        RegisterTemplate("z4", () => StandardParameterTemplates.CreateMultibrot("z4", 4));
-        RegisterTemplate("z5", () => StandardParameterTemplates.CreateMultibrot("z5", 5));
-        RegisterTemplate("z6", () => StandardParameterTemplates.CreateMultibrot("z6", 6));
-        RegisterTemplate("z7", () => StandardParameterTemplates.CreateMultibrot("z7", 7));
-        RegisterTemplate("z8", () => StandardParameterTemplates.CreateMultibrot("z8", 8));
+        RegisterTemplate("Multibrot", () => CreateMultibrotTemplate("Multibrot", 3));
+        RegisterTemplate("z4", () => CreateMultibrotTemplate("z4", 4));
+        RegisterTemplate("z5", () => CreateMultibrotTemplate("z5", 5));
+        RegisterTemplate("z6", () => CreateMultibrotTemplate("z6", 6));
+        RegisterTemplate("z7", () => CreateMultibrotTemplate("z7", 7));
+        RegisterTemplate("z8", () => CreateMultibrotTemplate("z8", 8));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // COMPLEX EXPONENT FAMILY
@@ -384,65 +432,26 @@ public class FractalParameterService : IFractalParameterService
         // TRIGONOMETRIC FAMILY (sine, cosine, tangent fractals)
         // ═══════════════════════════════════════════════════════════════════════════
 
-        RegisterTemplate("MandelTrig", () =>
-            StandardParameterTemplates.CreateWithJulia("MandelTrig"));
-
-        RegisterTemplate("Sine", () =>
-            StandardParameterTemplates.CreateWithJulia("Sine"));
-
-        RegisterTemplate("LMandelSine", () =>
-            StandardParameterTemplates.CreateWithJulia("LMandelSine"));
-
-        RegisterTemplate("LLambdaSine", () =>
-            StandardParameterTemplates.CreateWithJulia("LLambdaSine"));
-
-        RegisterTemplate("LMandelCos", () =>
-            StandardParameterTemplates.CreateWithJulia("LMandelCos"));
-
-        RegisterTemplate("LLambdaCos", () =>
-            StandardParameterTemplates.CreateWithJulia("LLambdaCos"));
-
-        RegisterTemplate("LMandelSinh", () =>
-            StandardParameterTemplates.CreateWithJulia("LMandelSinh"));
-
-        RegisterTemplate("LLambdaSinh", () =>
-            StandardParameterTemplates.CreateWithJulia("LLambdaSinh"));
-
-        RegisterTemplate("LMandelCosh", () =>
-            StandardParameterTemplates.CreateWithJulia("LMandelCosh"));
-
-        RegisterTemplate("LLambdaCosh", () =>
-            StandardParameterTemplates.CreateWithJulia("LLambdaCosh"));
-
-        RegisterTemplate("SinZ", () =>
-            StandardParameterTemplates.CreateWithJulia("SinZ"));
-
-        RegisterTemplate("CosZ", () =>
-            StandardParameterTemplates.CreateWithJulia("CosZ"));
-
-        RegisterTemplate("CosTan", () =>
-            StandardParameterTemplates.CreateWithJulia("CosTan"));
-
-        RegisterTemplate("LambdaTan", () =>
-            StandardParameterTemplates.CreateWithJulia("LambdaTan"));
-
-        RegisterTemplate("NewtonSin", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("NewtonSin"));
-
-        RegisterTemplate("PhoenixSin", () =>
-            StandardParameterTemplates.CreateWithJulia("PhoenixSin"));
-
-        RegisterTemplate("Sqr1OverTrig", () =>
-            StandardParameterTemplates.CreateWithJulia("Sqr1OverTrig"));
-
-        RegisterTemplate("SqrTrig", () =>
-            StandardParameterTemplates.CreateWithJulia("SqrTrig"));
-
-        RegisterTemplate("TrigPlusTrig", () =>
-            StandardParameterTemplates.CreateWithJulia("TrigPlusTrig"));
-
-        RegisterTemplate("TrigXTrig", () =>
-            StandardParameterTemplates.CreateWithJulia("TrigXTrig"));
+        RegisterTemplate("MandelTrig", () => CreateJuliaTemplate("MandelTrig"));
+        RegisterTemplate("Sine", () => CreateJuliaTemplate("Sine"));
+        RegisterTemplate("LMandelSine", () => CreateJuliaTemplate("LMandelSine"));
+        RegisterTemplate("LLambdaSine", () => CreateJuliaTemplate("LLambdaSine"));
+        RegisterTemplate("LMandelCos", () => CreateJuliaTemplate("LMandelCos"));
+        RegisterTemplate("LLambdaCos", () => CreateJuliaTemplate("LLambdaCos"));
+        RegisterTemplate("LMandelSinh", () => CreateJuliaTemplate("LMandelSinh"));
+        RegisterTemplate("LLambdaSinh", () => CreateJuliaTemplate("LLambdaSinh"));
+        RegisterTemplate("LMandelCosh", () => CreateJuliaTemplate("LMandelCosh"));
+        RegisterTemplate("LLambdaCosh", () => CreateJuliaTemplate("LLambdaCosh"));
+        RegisterTemplate("SinZ", () => CreateJuliaTemplate("SinZ"));
+        RegisterTemplate("CosZ", () => CreateJuliaTemplate("CosZ"));
+        RegisterTemplate("CosTan", () => CreateJuliaTemplate("CosTan"));
+        RegisterTemplate("LambdaTan", () => CreateJuliaTemplate("LambdaTan"));
+        RegisterTemplate("NewtonSin", () => CreateStandardTemplate("NewtonSin"));
+        RegisterTemplate("PhoenixSin", () => CreateJuliaTemplate("PhoenixSin"));
+        RegisterTemplate("Sqr1OverTrig", () => CreateJuliaTemplate("Sqr1OverTrig"));
+        RegisterTemplate("SqrTrig", () => CreateJuliaTemplate("SqrTrig"));
+        RegisterTemplate("TrigPlusTrig", () => CreateJuliaTemplate("TrigPlusTrig"));
+        RegisterTemplate("TrigXTrig", () => CreateJuliaTemplate("TrigXTrig"));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
