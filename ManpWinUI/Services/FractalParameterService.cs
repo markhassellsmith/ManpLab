@@ -827,6 +827,117 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("Biomorph", () => CreateStandardTemplate("Biomorph"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 11: CLASSIC ESCAPE-TIME & EXTENDED FAMILIES (17 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Remaining fractals from ClassicEscapeTimeFamily, StrangeAttractorsExtended, and ExtendedJulia
+        // These are established fractal types that complete core family coverage
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Classic Escape-Time Family (10 fractals)
+        // Source: ClassicEscapeTimeFamily.cpp
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // Manowar: z = z² + z_prev + c (center 0,0; zoom 1.0)
+        // Escape-time with memory of previous iteration, Julia-enabled
+        // Formula: z(n+1) = z(n)² + z(n-1) + c
+        RegisterTemplate("Manowar", () => CreateJuliaTemplate("Manowar"));
+
+        // Sierpinski: z = 2·z·(1-z) (center 0.5,0.5; zoom 1.5)
+        // Classic Sierpinski triangle using escape-time iteration
+        // Formula: z(n+1) = 2·z(n)·(1-z(n))
+        RegisterTemplate("Sierpinski", () => CreateStandardTemplate("Sierpinski"));
+
+        // Unity: z = z² + 1/c (center 0,0; zoom 1.0)
+        // Circle inversion fractal, no Julia support
+        // Formula: z(n+1) = z² + 1/c
+        RegisterTemplate("Unity", () => CreateStandardTemplate("Unity"));
+
+        // Spider: z = z² + c, c = c/2 + z (center 0,0; zoom 1.0)
+        // Evolving constant where c changes with each iteration, Julia-enabled
+        // Formula: z(n+1) = z² + c; c(n+1) = c(n)/2 + z(n+1)
+        RegisterTemplate("Spider", () => CreateJuliaTemplate("Spider"));
+
+        // Tetrate: z = c^z (center 0,0; zoom 1.0)
+        // Tetration (infinite power tower), Julia-enabled
+        // Formula: z(n+1) = c^z(n)
+        RegisterTemplate("Tetrate", () => CreateJuliaTemplate("Tetrate"));
+
+        // HeartMandelbrot: z² + c + sin(z) (center 0,0; zoom 1.5)
+        // Heart-shaped variation with sine term, Julia-enabled
+        // Formula: z(n+1) = z² + c + sin(z)
+        RegisterTemplate("HeartMandelbrot", () => CreateJuliaTemplate("HeartMandelbrot"));
+
+        // SharkFinMandelbrot: z² + c/z (center 0,0; zoom 1.5)
+        // Shark fin variation with division, Julia-enabled
+        // Formula: z(n+1) = z² + c/z
+        RegisterTemplate("SharkFinMandelbrot", () => CreateJuliaTemplate("SharkFinMandelbrot"));
+
+        // PartialBurningShip: re² + i·|im|² + c (center -0.25,0; zoom 0.75)
+        // Partial absolute value application, Julia-enabled
+        // Formula: z(n+1) = re² + i·|im|² + c
+        RegisterTemplate("PartialBurningShip", () => CreateJuliaTemplate("PartialBurningShip"));
+
+        // BirdOfPrey: |re|² + i·im² + c (center 0,0; zoom 1.5)
+        // Burning Ship variant with real abs only, Julia-enabled
+        // Formula: z(n+1) = |re|² + i·im² + c
+        // Note: Already registered earlier, but keeping for completeness
+
+        // CelticHeart: |re| + i·im, then z² + sin(z) + c (center 0,0; zoom 1.5)
+        // Celtic absolute value combined with heart formula, Julia-enabled
+        // Formula: z(n+1) = (|re| + i·im)² + sin(z) + c
+        RegisterTemplate("CelticHeart", () => CreateJuliaTemplate("CelticHeart"));
+
+        // WavyMandelbrot: z² + c + 0.1·sin(z) (center 0,0; zoom 1.5)
+        // Wavy variation with scaled sine term, Julia-enabled
+        // Formula: z(n+1) = z² + c + 0.1·sin(z)
+        RegisterTemplate("WavyMandelbrot", () => CreateJuliaTemplate("WavyMandelbrot"));
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Strange Attractors Extended Family (2 fractals)
+        // Source: StrangeAttractorsExtendedFamily.cpp
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // Svensson: Johnny Svensson attractor (center 0,0; zoom 1.0)
+        // 2D discrete map: x' = d·sin(a·x) - sin(b·y); y' = c·cos(a·x) + cos(b·y)
+        // Histogram-based rendering with intricate patterns
+        RegisterTemplate("Svensson", () => CreateStandardTemplate("Svensson"));
+
+        // Bedhead: Ivan Emathajuet Khatsanov attractor (center 0,0; zoom 1.0)
+        // 2D discrete map: x' = sin(x·y/b)·y + cos(a·x - y); y' = x + sin(y)/b
+        // Chaotic point cloud with unique structure
+        RegisterTemplate("Bedhead", () => CreateStandardTemplate("Bedhead"));
+
+        // ─────────────────────────────────────────────────────────────────────────────
+        // Extended Julia Family (5 fractals)
+        // Source: ExtendedJuliaFamily.cpp
+        // ─────────────────────────────────────────────────────────────────────────────
+
+        // JuliaSiegelDisk: Julia set at golden ratio point (center 0,0; zoom 1.0)
+        // Fixed c ≈ -0.390541 - 0.586788i (Siegel disk constant)
+        // Formula: z(n+1) = z² + c where c = e^(2πiφ)
+        RegisterTemplate("JuliaSiegelDisk", () => CreateStandardTemplate("JuliaSiegelDisk"));
+
+        // JuliaCustom: Julia set with user-defined c (center 0,0; zoom 1.0)
+        // Allows user customization of Julia constant, Julia-enabled
+        // Formula: z(n+1) = z² + c (c is user-specified)
+        RegisterTemplate("JuliaCustom", () => CreateJuliaTemplate("JuliaCustom"));
+
+        // LambdaJulia: Lambda Julia set (center 0,0; zoom 2.0)
+        // Julia set for lambda iteration, Julia-enabled
+        // Formula: z(n+1) = c·z·(1-z)
+        RegisterTemplate("LambdaJulia", () => CreateJuliaTemplate("LambdaJulia"));
+
+        // Multibrot3Julia: z³ + c Julia set (center 0,0; zoom 1.5)
+        // Cubic power Julia variant, Julia-enabled
+        // Formula: z(n+1) = z³ + c
+        RegisterTemplate("Multibrot3Julia", () => CreateJuliaTemplate("Multibrot3Julia"));
+
+        // Multibrot4Julia: z⁴ + c Julia set (center 0,0; zoom 1.5)
+        // Quartic power Julia variant, Julia-enabled
+        // Formula: z(n+1) = z⁴ + c
+        RegisterTemplate("Multibrot4Julia", () => CreateJuliaTemplate("Multibrot4Julia"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
