@@ -7,9 +7,10 @@ namespace ManpWinUI.ViewModels;
 /// MainViewModel partial class - Standard fractal parameters (Mandelbrot, Burning Ship, Tricorn, Phoenix).
 /// Includes coordinate system, zoom, iterations, and Julia mode parameters.
 /// 
-/// PHASE 5 NOTE: These properties are still required for UI bindings (MainPage.xaml toolbar controls).
-/// Legacy sync code has been removed - CurrentParameters is now the single source of truth.
-/// UI controls bind to these properties for display/input, but parameter values come from CurrentParameters.
+/// PHASE 5 Step 5.5: Toolbar properties sync to CurrentParameters.
+/// UI controls bind to these properties for display/input. When user changes a value in the toolbar,
+/// the property change handler writes to CurrentParameters (one-way sync: toolbar → parameters).
+/// This ensures toolbar changes affect the rendered fractal.
 /// </summary>
 public partial class MainViewModel
 {
@@ -17,8 +18,8 @@ public partial class MainViewModel
     // COORDINATE SYSTEM PARAMETERS (UI-bound properties)
     // ═══════════════════════════════════════════════════════════════════════════════
 
-    // PHASE 5: These properties remain for UI binding only.
-    // Parameter values are managed through CurrentParameters, not these properties.
+    // PHASE 5 Step 5.5: These properties are bound by toolbar controls.
+    // Change handlers sync toolbar changes to CurrentParameters (one-way: toolbar → parameters).
 
     [ObservableProperty]
     public partial double CenterX { get; set; } = -0.5;
@@ -113,8 +114,12 @@ public partial class MainViewModel
         // Update iteration suggestion message when iterations change
         UpdateIterationSuggestion();
 
-        // PHASE 5: Legacy parameter sync removed
-        Debug.WriteLine("[PHASE 5] OnMaxIterationsChanged: Legacy SetParameter() call removed");
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        // Toolbar controls need to update CurrentParameters for render to work
+        if (CurrentParameters != null)
+        {
+            SetParameter("max_iterations", value);
+        }
     }
 
     partial void OnAutoScaleIterationsChanged(bool value)
@@ -122,8 +127,11 @@ public partial class MainViewModel
         // Update iteration suggestion message when auto-scale toggle changes
         UpdateIterationSuggestion();
 
-        // PHASE 5: Legacy parameter sync removed
-        Debug.WriteLine("[PHASE 5] OnAutoScaleIterationsChanged: Legacy SetParameter() call removed");
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
+        {
+            SetParameter("auto_scale_iterations", value);
+        }
     }
 
     partial void OnSelectedIterationModeChanged(string value)
@@ -144,8 +152,11 @@ public partial class MainViewModel
         // Ensure render command updates its CanExecute state
         RenderMandelbrotCommand.NotifyCanExecuteChanged();
 
-        // PHASE 5: Legacy parameter sync removed
-        Debug.WriteLine("[PHASE 5] OnSelectedIterationModeChanged: Legacy SetParameter() call removed");
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
+        {
+            SetParameter("julia_mode", value == "Julia");
+        }
     }
 
     partial void OnZoomChanged(double value)
@@ -164,24 +175,33 @@ public partial class MainViewModel
 
         Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
 
-        // PHASE 5: Legacy parameter sync removed
-        Debug.WriteLine("[PHASE 5] OnZoomChanged: Legacy SetParameter() call removed");
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
+        {
+            SetParameter("zoom", value);
+        }
     }
 
     partial void OnCenterXChanged(double value)
     {
         Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
 
-        // PHASE 5: Legacy parameter sync removed
-        Debug.WriteLine("[PHASE 5] OnCenterXChanged: Legacy SetParameter() call removed");
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
+        {
+            SetParameter("center_x", value);
+        }
     }
 
     partial void OnCenterYChanged(double value)
     {
         Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
 
-        // PHASE 5: Legacy parameter sync removed
-        Debug.WriteLine("[PHASE 5] OnCenterYChanged: Legacy SetParameter() call removed");
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
+        {
+            SetParameter("center_y", value);
+        }
     }
 
     partial void OnImageWidthChanged(int value)
@@ -198,6 +218,26 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(CurrentViewHeight));
 
         // PHASE 5: Image dimensions handled by RenderParameters, not synced to CurrentParameters
+    }
+
+    partial void OnJuliaCXChanged(double value)
+    {
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync for Julia controls
+        if (CurrentParameters != null && IsJuliaMode)
+        {
+            SetParameter("julia_c_real", value);
+            StatusMessage = $"Julia Mode: c = ({value:F4}, {JuliaCY:F4}) - Click Render to generate";
+        }
+    }
+
+    partial void OnJuliaCYChanged(double value)
+    {
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync for Julia controls
+        if (CurrentParameters != null && IsJuliaMode)
+        {
+            SetParameter("julia_c_imag", value);
+            StatusMessage = $"Julia Mode: c = ({JuliaCX:F4}, {value:F4}) - Click Render to generate";
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════

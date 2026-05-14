@@ -1259,7 +1259,7 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
 - [x] **Step 5.2:** Remove `SyncPropertiesToParameters()` from `MainViewModel.Parameters.cs` ✅ **COMPLETE** - Deleted properties→parameters sync method, removed call sites with diagnostic messages
 - [x] **Step 5.3:** Remove `SyncParametersToProperties()` from `MainViewModel.Parameters.cs` ✅ **COMPLETE** - Deleted parameters→properties sync method (68 lines), updated 3 call sites with diagnostic messages
 - [x] **Step 5.4:** Clean up hard-coded properties in `MainViewModel.StandardFractals.cs` ✅ **COMPLETE** - Removed legacy sync code from property change handlers (CenterX/Y, Zoom, MaxIterations, JuliaCX/Y, SelectedIterationMode, AutoScaleIterations). Properties retained for UI bindings (MainPage.xaml toolbar), but legacy SetParameter() calls removed. Added Phase 5 documentation and diagnostic messages.
-- [ ] **Step 5.5:** Update toolbar bindings (if needed - may require value converters)
+- [x] **Step 5.5:** Update toolbar bindings (if needed - may require value converters) ✅ **COMPLETE** - Analysis revealed XAML toolbar controls use compiled `{x:Bind}` that require property change handlers to sync to `CurrentParameters`. Restored minimal one-way sync (toolbar → parameters) for: `CenterX`, `CenterY`, `Zoom`, `MaxIterations`, `AutoScaleIterations`, `SelectedIterationMode`, `JuliaCX`, `JuliaCY`. This ensures toolbar changes propagate to render commands. No XAML changes needed; binding architecture remains unchanged.
 - [ ] **Step 5.6:** Test 5 fractals from each major family (30-40 total tests)
 - [ ] **Step 5.7:** Verify parameter persistence works correctly
 - [ ] **Step 5.8:** Build and test full application
