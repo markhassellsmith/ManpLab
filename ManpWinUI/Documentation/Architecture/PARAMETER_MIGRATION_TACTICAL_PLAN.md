@@ -910,27 +910,27 @@ git push origin development
 ### 🎯 PHASE 2: May 21-27 - MATHEMATICAL FUNCTIONS (64 fractals)
 
 #### Step 2A: Trigonometric Family (20 fractals)
-- [ ] MandelSin (z = sin(z) + c)
-- [ ] MandelCos (z = cos(z) + c)
-- [ ] MandelTan (z = tan(z) + c)
-- [ ] MandelSinh (z = sinh(z) + c)
-- [ ] MandelCosh (z = cosh(z) + c)
-- [ ] MandelTanh (z = tanh(z) + c)
-- [ ] MandelSinZ (z = z·sin(z) + c)
-- [ ] MandelCosZ (z = z·cos(z) + c)
-- [ ] JuliaSin
-- [ ] JuliaCos
-- [ ] JuliaTan
-- [ ] JuliaSinh
-- [ ] JuliaCosh
-- [ ] JuliaTanh
-- [ ] ZSinZ (z = z·sin(z²))
-- [ ] ZCosZ
-- [ ] SinZSquared
-- [ ] CosZSquared
-- [ ] TrigHybrid1
-- [ ] TrigHybrid2
-- [ ] Test: Verify frequency parameter appears for 3 fractals
+- [x] MandelTrig (z² + sin(z) + c)
+- [x] Sine (sin(z) + c)
+- [x] LMandelSine (c·sin(z))
+- [x] LLambdaSine (c·z·sin(z))
+- [x] LMandelCos (c·cos(z))
+- [x] LLambdaCos (c·z·cos(z))
+- [x] LMandelSinh (c·sinh(z))
+- [x] LLambdaSinh (c·z·sinh(z))
+- [x] LMandelCosh (c·cosh(z))
+- [x] LLambdaCosh (c·z·cosh(z))
+- [x] SinZ (sin variation)
+- [x] CosZ (cos variation)
+- [x] CosTan (cos/tan hybrid)
+- [x] LambdaTan (lambda tan)
+- [x] NewtonSin (Newton with sine)
+- [x] PhoenixSin (Phoenix with sine)
+- [x] Sqr1OverTrig (z²/trig)
+- [x] SqrTrig (z²·trig)
+- [x] TrigPlusTrig (trig + trig)
+- [x] TrigXTrig (trig × trig)
+- [x] Test: All trig fractals use standard escape-time template with Julia support
 
 #### Step 2B: Exponential/Logarithmic (12 fractals)
 - [ ] MandelExp (z = e^z + c)
@@ -1219,13 +1219,14 @@ Each polynomial includes **all lower-degree terms**, not just the leading coeffi
 
 ## Progress Summary
 
-**Current Status: 59/300 fractals complete (~20%) - PHASE 1 COMPLETE! 🎉**
+**Current Status: 79/300 fractals complete (~26%) - PHASE 2 STEP 2A COMPLETE! 🎉**
 
 **What's Already Complete:**
 - ✅ Mandelbrot + Multibrot family (8 fractals): z², z³, z⁴, z⁵, z⁶, z⁷, z⁸
 - ✅ **Julia presets family (23 fractals): All enhanced Julia presets registered**
 - ✅ **Burning Ship family (17 fractals): All power variants, perpendicular, buffalo, celtic, reverse, vertical, diagonal, and BirdOfPrey**
 - ✅ **Newton/Convergence family (9 fractals): Newton, NewtonSinExp, NewtonQuartic, Nova, HalleyCubic, Magnet1M, Magnet2M, Magnet1J, Magnet2J**
+- ✅ **Trigonometric family (20 fractals): MandelTrig, Sine, LMandelSine, LLambdaSine, LMandelCos, LLambdaCos, LMandelSinh, LLambdaSinh, LMandelCosh, LLambdaCosh, SinZ, CosZ, CosTan, LambdaTan, NewtonSin, PhoenixSin, Sqr1OverTrig, SqrTrig, TrigPlusTrig, TrigXTrig**
 - ✅ Complex exponent (2 fractals): MarksMandel, MarksMandelpwr
 - ✅ Phoenix (1 fractal)
 - ✅ Lambda (1 fractal)
@@ -1236,6 +1237,7 @@ Each polynomial includes **all lower-degree terms**, not just the leading coeffi
 - [x] **Phase 1 Complete: 59/300 (20%) - COMPLETED: May 14, 2026** ✅
   - **Commit:** `9d7e1d1` - Phase 1 Complete + Polynomial Coefficient Infrastructure
   - **Pushed to:** `origin/development`
+- [ ] **Phase 2 Step 2A Complete: 79/300 (26%) - COMPLETED: May 14, 2026** ✅
 - [ ] Phase 2 Complete: 123/300 (41%) - Target: May 27, 2026
 - [ ] Phase 3 Complete: 171/300 (57%) - Target: May 31, 2026
 - [ ] Phase 4 Complete: 300/300 (100%) - Target: June 15, 2026

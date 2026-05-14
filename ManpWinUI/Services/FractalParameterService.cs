@@ -381,6 +381,70 @@ public class FractalParameterService : IFractalParameterService
             StandardParameterTemplates.CreateStandardEscapeTime("HalleyCubic"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // TRIGONOMETRIC FAMILY (sine, cosine, tangent fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        RegisterTemplate("MandelTrig", () =>
+            StandardParameterTemplates.CreateWithJulia("MandelTrig"));
+
+        RegisterTemplate("Sine", () =>
+            StandardParameterTemplates.CreateWithJulia("Sine"));
+
+        RegisterTemplate("LMandelSine", () =>
+            StandardParameterTemplates.CreateWithJulia("LMandelSine"));
+
+        RegisterTemplate("LLambdaSine", () =>
+            StandardParameterTemplates.CreateWithJulia("LLambdaSine"));
+
+        RegisterTemplate("LMandelCos", () =>
+            StandardParameterTemplates.CreateWithJulia("LMandelCos"));
+
+        RegisterTemplate("LLambdaCos", () =>
+            StandardParameterTemplates.CreateWithJulia("LLambdaCos"));
+
+        RegisterTemplate("LMandelSinh", () =>
+            StandardParameterTemplates.CreateWithJulia("LMandelSinh"));
+
+        RegisterTemplate("LLambdaSinh", () =>
+            StandardParameterTemplates.CreateWithJulia("LLambdaSinh"));
+
+        RegisterTemplate("LMandelCosh", () =>
+            StandardParameterTemplates.CreateWithJulia("LMandelCosh"));
+
+        RegisterTemplate("LLambdaCosh", () =>
+            StandardParameterTemplates.CreateWithJulia("LLambdaCosh"));
+
+        RegisterTemplate("SinZ", () =>
+            StandardParameterTemplates.CreateWithJulia("SinZ"));
+
+        RegisterTemplate("CosZ", () =>
+            StandardParameterTemplates.CreateWithJulia("CosZ"));
+
+        RegisterTemplate("CosTan", () =>
+            StandardParameterTemplates.CreateWithJulia("CosTan"));
+
+        RegisterTemplate("LambdaTan", () =>
+            StandardParameterTemplates.CreateWithJulia("LambdaTan"));
+
+        RegisterTemplate("NewtonSin", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("NewtonSin"));
+
+        RegisterTemplate("PhoenixSin", () =>
+            StandardParameterTemplates.CreateWithJulia("PhoenixSin"));
+
+        RegisterTemplate("Sqr1OverTrig", () =>
+            StandardParameterTemplates.CreateWithJulia("Sqr1OverTrig"));
+
+        RegisterTemplate("SqrTrig", () =>
+            StandardParameterTemplates.CreateWithJulia("SqrTrig"));
+
+        RegisterTemplate("TrigPlusTrig", () =>
+            StandardParameterTemplates.CreateWithJulia("TrigPlusTrig"));
+
+        RegisterTemplate("TrigXTrig", () =>
+            StandardParameterTemplates.CreateWithJulia("TrigXTrig"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
