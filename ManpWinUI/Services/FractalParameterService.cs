@@ -624,6 +624,37 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("TanhMandel", () => CreateStandardTemplate("TanhMandel"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 3: Complex Functions & Special (13 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        // Complex Functions (6): Hyperbolic variants and special shapes
+        RegisterTemplate("SinhMandelbrot", () => CreateJuliaTemplate("SinhMandelbrot"));
+        RegisterTemplate("CoshMandelbrot", () => CreateJuliaTemplate("CoshMandelbrot"));
+        RegisterTemplate("TanhMandelbrot", () => CreateJuliaTemplate("TanhMandelbrot"));
+        RegisterTemplate("HeartMandel", () => CreateJuliaTemplate("HeartMandel"));
+        RegisterTemplate("SharkFin", () => CreateJuliaTemplate("SharkFin"));
+        RegisterTemplate("Wavy", () => CreateJuliaTemplate("Wavy"));
+
+        // Special Functions (7): Advanced mathematical functions
+        RegisterTemplate("GammaFractal", () => CreateJuliaTemplate("GammaFractal"));
+        RegisterTemplate("ErrorFunctionFractal", () => CreateJuliaTemplate("ErrorFunctionFractal"));
+        RegisterTemplate("BesselLikeFractal", () => CreateJuliaTemplate("BesselLikeFractal"));
+        RegisterTemplate("ContinuedFraction", () => CreateJuliaTemplate("ContinuedFraction"));
+        RegisterTemplate("Tetration", () => CreateJuliaTemplate("Tetration"));
+        RegisterTemplate("LambertW", () => CreateStandardTemplate("LambertW"));
+        RegisterTemplate("HyperbolicCombo", () => CreateJuliaTemplate("HyperbolicCombo"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 4: Exotic Formulas (4 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Unusual and creative fractal formulas with absolute value operations
+
+        RegisterTemplate("CelticMandel", () => CreateJuliaTemplate("CelticMandel"));
+        RegisterTemplate("PerpendicularMandel", () => CreateJuliaTemplate("PerpendicularMandel"));
+        RegisterTemplate("QuasiPerpendicular", () => CreateJuliaTemplate("QuasiPerpendicular"));
+        RegisterTemplate("Zubieta", () => CreateJuliaTemplate("Zubieta"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
