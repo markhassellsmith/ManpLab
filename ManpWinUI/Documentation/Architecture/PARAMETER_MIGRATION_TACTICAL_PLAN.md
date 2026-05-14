@@ -5,7 +5,7 @@
 **Project:** Complete the flexible parameter system for 300 fractals  
 **Timeline:** May 14 - June 15, 2026 (3-4 weeks)  
 **Priority:** HIGH - Use AI budget while available  
-**Status:** 104/300 fractals complete (35%)  
+**Status:** 109/300 fractals complete (36%)  
 **Goal:** 100% coverage, eliminate dual parameter system
 
 ---
@@ -342,18 +342,19 @@ Collatz fractal is registered as "Hailstone" (interactive, no parameters).
 
 **Implementation:** All use standard Julia-enabled or escape-time templates.
 
-#### Step 2D: Rational Functions (2 hours) - 8 fractals
-- RationalZ3
-- RationalZ4
-- InverseMandelbrot
-- InverseJulia
-- ReciprocalMandelbrot
-- ReciprocalJulia
-- (... 2 more)
+#### Step 2D: Rational Functions (2 hours) - 5 fractals ✅
+- NewtonQuintic (z⁵-1 Newton method)
+- RationalZ2Z3 (z²/(z³+c))
+- RationalSymmetric ((z²+c)/(z²-c))
+- Mobius ((z+c)/(z-c) Möbius transformation)
+- RationalPower (z³/(z³+c))
 
-**Pattern:** Escape-time base + numerator/denominator exponents.
+**Note:** NewtonCubic, NewtonQuartic, and HalleyCubic were already registered in Phase 1.
+The tactical plan originally mentioned "InverseMandelbrot" and "ReciprocalMandelbrot" but these don't exist as separate fractals in the native code. The actual rational function fractals are the ones listed above.
 
-**📊 PHASE 2 COMPLETION: 114/300 fractals (38%)**
+**Implementation:** All use standard Julia-enabled or escape-time templates.
+
+**📊 PHASE 2 COMPLETION: 109/300 fractals (36%)**
 
 ---
 
@@ -973,18 +974,17 @@ git push origin development
 **Note:** Tricorn (base), Phoenix (base), and Lambda (base) were already registered in Phase 1.
 Hailstone (Collatz fractal) was already registered in Phase 1 as an interactive fractal with no parameters.
 
-#### Step 2D: Rational Functions (8 fractals)
-- [ ] RationalZ3 (z = (z³ + c)/(z² + c))
-- [ ] RationalZ4
-- [ ] InverseMandelbrot (z = 1/(z² + c))
-- [ ] InverseJulia
-- [ ] ReciprocalMandelbrot (z = c/(z² + 1))
-- [ ] ReciprocalJulia
-- [ ] RationalHybrid1
-- [ ] RationalHybrid2
-- [ ] Test: Verify numerator/denominator parameters for 2 fractals
+#### Step 2D: Rational Functions (5 fractals) ✅
+- [x] NewtonQuintic (z⁵-1 Newton method)
+- [x] RationalZ2Z3 (z²/(z³+c))
+- [x] RationalSymmetric ((z²+c)/(z²-c))
+- [x] Mobius ((z+c)/(z-c) Möbius transformation)
+- [x] RationalPower (z³/(z³+c))
 
-**✅ PHASE 2 TARGET: 114/300 fractals (38%)**
+**Note:** NewtonCubic, NewtonQuartic, and HalleyCubic were already registered in Phase 1.
+The tactical plan originally mentioned "InverseMandelbrot" and "ReciprocalMandelbrot" but these don't exist as separate fractals in the native code. The actual rational function fractals are the ones listed above.
+
+**✅ PHASE 2 TARGET: 109/300 fractals (36%)**
 
 ---
 

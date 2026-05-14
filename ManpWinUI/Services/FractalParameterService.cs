@@ -442,6 +442,16 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("SpiderVariant", () => CreateJuliaTemplate("SpiderVariant"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // RATIONAL FUNCTION FAMILY (ratios of polynomials)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Newton methods were registered earlier; these are additional rational forms
+        RegisterTemplate("NewtonQuintic", () => CreateStandardTemplate("NewtonQuintic"));
+        RegisterTemplate("RationalZ2Z3", () => CreateJuliaTemplate("RationalZ2Z3"));
+        RegisterTemplate("RationalSymmetric", () => CreateJuliaTemplate("RationalSymmetric"));
+        RegisterTemplate("Mobius", () => CreateJuliaTemplate("Mobius"));
+        RegisterTemplate("RationalPower", () => CreateJuliaTemplate("RationalPower"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
