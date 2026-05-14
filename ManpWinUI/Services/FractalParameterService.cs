@@ -709,6 +709,18 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("TricornDEM", () => CreateStandardTemplate("TricornDEM"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 7: IFS (Iterated Function Systems) - Additional (2 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Additional IFS fractals beyond Phase 3 Step 3C (BarnsleyFern, SierpinskiIFS, DragonCurveIFS)
+        // Source: IFSFamily.cpp
+
+        // PentagonIFS: Chaos game with 5 vertices (center 0,0; zoom 1.5)
+        RegisterTemplate("PentagonIFS", () => CreateStandardTemplate("PentagonIFS"));
+
+        // TreeIFS: Branching tree structure (center 0, 2; zoom 0.3)
+        RegisterTemplate("TreeIFS", () => CreateStandardTemplate("TreeIFS"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
