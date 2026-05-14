@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ManpWinUI.ViewModels.Properties
@@ -20,8 +21,31 @@ namespace ManpWinUI.ViewModels.Properties
         [Obsolete("Use LoadFromParameterSet with FractalParameterService instead")]
         public void LoadParametersForFractal(string fractalName)
         {
-            System.Diagnostics.Debug.WriteLine($"[ParameterEditorViewModel] LEGACY WARNING: LoadParametersForFractal called for '{fractalName}'. This is a no-op. Use flexible parameter system.");
-            // Intentionally empty - the flexible system handles parameter loading via MainViewModel.CurrentParameters
+            try
+            {
+                // Get caller information for diagnostics
+                var stackTrace = new StackTrace(true);
+                var callerFrame = stackTrace.GetFrame(1);
+                var callerMethod = callerFrame?.GetMethod();
+                var callerFile = callerFrame?.GetFileName();
+                var callerLine = callerFrame?.GetFileLineNumber();
+
+                Debug.WriteLine("╔════════════════════════════════════════════════════════════════");
+                Debug.WriteLine("║ [PHASE 5 DIAGNOSTIC] Legacy Method Call Detected");
+                Debug.WriteLine("╠════════════════════════════════════════════════════════════════");
+                Debug.WriteLine($"║ Method:      LoadParametersForFractal('{fractalName}')");
+                Debug.WriteLine($"║ Status:      NO-OP (flexible system handles parameter loading)");
+                Debug.WriteLine($"║ Called from: {callerMethod?.DeclaringType?.Name}.{callerMethod?.Name}()");
+                Debug.WriteLine($"║ Location:    {callerFile}:{callerLine}");
+                Debug.WriteLine($"║ Action:      Call site should use MainViewModel.CurrentParameters");
+                Debug.WriteLine("╚════════════════════════════════════════════════════════════════");
+
+                // Intentionally empty - the flexible system handles parameter loading via MainViewModel.CurrentParameters
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[PHASE 5 ERROR] Exception in LoadParametersForFractal diagnostic: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -30,15 +54,49 @@ namespace ManpWinUI.ViewModels.Properties
         /// </summary>
         public void ResetToDefaults()
         {
-            System.Diagnostics.Debug.WriteLine($"[ParameterEditorViewModel] Resetting parameters to defaults for {_currentFractalName}");
-
-            // Reset each parameter to its default value
-            foreach (var parameter in Parameters)
+            try
             {
-                if (!parameter.IsReadOnly && !string.IsNullOrEmpty(parameter.DefaultValue))
+                Debug.WriteLine("╔════════════════════════════════════════════════════════════════");
+                Debug.WriteLine("║ [PHASE 5 DIAGNOSTIC] ResetToDefaults Called");
+                Debug.WriteLine("╠════════════════════════════════════════════════════════════════");
+                Debug.WriteLine($"║ Fractal:     {_currentFractalName ?? "(none)"}");
+                Debug.WriteLine($"║ Parameters:  {Parameters.Count} total");
+
+                int resetCount = 0;
+                int skippedCount = 0;
+
+                // Reset each parameter to its default value
+                foreach (var parameter in Parameters)
                 {
-                    parameter.Value = parameter.DefaultValue;
+                    if (!parameter.IsReadOnly && !string.IsNullOrEmpty(parameter.DefaultValue))
+                    {
+                        var oldValue = parameter.Value;
+                        parameter.Value = parameter.DefaultValue;
+                        resetCount++;
+
+                        if (oldValue != parameter.DefaultValue)
+                        {
+                            Debug.WriteLine($"║   • {parameter.Name}: {oldValue} → {parameter.DefaultValue}");
+                        }
+                    }
+                    else
+                    {
+                        skippedCount++;
+                    }
                 }
+
+                Debug.WriteLine($"║ Result:      {resetCount} reset, {skippedCount} skipped (read-only/no default)");
+                Debug.WriteLine("╚════════════════════════════════════════════════════════════════");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("╔════════════════════════════════════════════════════════════════");
+                Debug.WriteLine("║ [PHASE 5 ERROR] Exception in ResetToDefaults");
+                Debug.WriteLine("╠════════════════════════════════════════════════════════════════");
+                Debug.WriteLine($"║ Error:       {ex.Message}");
+                Debug.WriteLine($"║ Stack trace: {ex.StackTrace}");
+                Debug.WriteLine("╚════════════════════════════════════════════════════════════════");
+                throw;
             }
         }
 
@@ -48,14 +106,43 @@ namespace ManpWinUI.ViewModels.Properties
         /// </summary>
         public void ReloadLastSaved()
         {
-            if (string.IsNullOrEmpty(_currentFractalName))
-                return;
+            try
+            {
+                if (string.IsNullOrEmpty(_currentFractalName))
+                {
+                    Debug.WriteLine("[PHASE 5 DIAGNOSTIC] ReloadLastSaved: No current fractal, ignoring");
+                    return;
+                }
 
-            System.Diagnostics.Debug.WriteLine($"[ParameterEditorViewModel] Reloading last saved parameters for {_currentFractalName}");
+                // Get caller information for diagnostics
+                var stackTrace = new StackTrace(true);
+                var callerFrame = stackTrace.GetFrame(1);
+                var callerMethod = callerFrame?.GetMethod();
+                var callerFile = callerFrame?.GetFileName();
+                var callerLine = callerFrame?.GetFileLineNumber();
 
-            // In the flexible system, the MainViewModel should reload CurrentParameters
-            // For now, this is a no-op stub - proper implementation would require MainViewModel coordination
-            System.Diagnostics.Debug.WriteLine($"[ParameterEditorViewModel] LEGACY WARNING: ReloadLastSaved is a stub. Flexible system handles persistence automatically.");
+                Debug.WriteLine("╔════════════════════════════════════════════════════════════════");
+                Debug.WriteLine("║ [PHASE 5 DIAGNOSTIC] ReloadLastSaved Called");
+                Debug.WriteLine("╠════════════════════════════════════════════════════════════════");
+                Debug.WriteLine($"║ Fractal:     {_currentFractalName}");
+                Debug.WriteLine($"║ Status:      STUB (flexible system auto-saves/restores)");
+                Debug.WriteLine($"║ Called from: {callerMethod?.DeclaringType?.Name}.{callerMethod?.Name}()");
+                Debug.WriteLine($"║ Location:    {callerFile}:{callerLine}");
+                Debug.WriteLine($"║ Action:      MainViewModel should reload CurrentParameters");
+                Debug.WriteLine("╚════════════════════════════════════════════════════════════════");
+
+                // In the flexible system, the MainViewModel should reload CurrentParameters
+                // For now, this is a no-op stub - proper implementation would require MainViewModel coordination
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("╔════════════════════════════════════════════════════════════════");
+                Debug.WriteLine("║ [PHASE 5 ERROR] Exception in ReloadLastSaved");
+                Debug.WriteLine("╠════════════════════════════════════════════════════════════════");
+                Debug.WriteLine($"║ Error:       {ex.Message}");
+                Debug.WriteLine($"║ Stack trace: {ex.StackTrace}");
+                Debug.WriteLine("╚════════════════════════════════════════════════════════════════");
+            }
         }
     }
 }
