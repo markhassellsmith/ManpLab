@@ -84,8 +84,9 @@ public partial class MainViewModel
             else
             {
                 Debug.WriteLine($"[MainViewModel.Parameters] No saved parameters found, using defaults for '{fractalType}'");
-                // Sync existing properties → parameters (backwards compatibility)
-                SyncPropertiesToParameters();
+
+                // PHASE 5: Legacy sync removed - flexible parameter system is now the single source of truth
+                Debug.WriteLine("[PHASE 5] SyncPropertiesToParameters() call removed - using parameter defaults");
             }
         }
         catch (System.Exception ex)
@@ -119,44 +120,14 @@ public partial class MainViewModel
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
-    // BACKWARDS COMPATIBILITY BRIDGE
+    // BACKWARDS COMPATIBILITY BRIDGE (PHASE 5: Partial removal)
     // ═══════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Sync existing hard-coded properties → flexible parameter system.
-    /// Called when old properties change (during migration period).
+    /// PHASE 5 REMOVED: SyncPropertiesToParameters() - No longer needed.
+    /// The flexible parameter system is now the single source of truth.
+    /// Legacy hard-coded properties are synced FROM parameters, not TO them.
     /// </summary>
-    private void SyncPropertiesToParameters()
-    {
-        if (CurrentParameters == null || !UseParameterSystem)
-            return;
-
-        try
-        {
-            // View parameters
-            CurrentParameters.SetValue("center_x", CenterX);
-            CurrentParameters.SetValue("center_y", CenterY);
-            CurrentParameters.SetValue("zoom", Zoom);
-
-            // Algorithm parameters
-            CurrentParameters.SetValue("max_iterations", MaxIterations);
-            CurrentParameters.SetValue("auto_scale_iterations", AutoScaleIterations);
-
-            // Julia parameters (if supported by this fractal)
-            if (CurrentParameters.GetDescriptor("julia_mode") != null)
-            {
-                CurrentParameters.SetValue("julia_mode", IsJuliaMode);
-                CurrentParameters.SetValue("julia_c_real", JuliaCX);
-                CurrentParameters.SetValue("julia_c_imag", JuliaCY);
-            }
-
-            Debug.WriteLine("[MainViewModel.Parameters] Synced properties → parameters");
-        }
-        catch (System.Exception ex)
-        {
-            Debug.WriteLine($"[MainViewModel.Parameters] Error syncing properties→parameters: {ex.Message}");
-        }
-    }
 
     /// <summary>
     /// Sync flexible parameter system → existing hard-coded properties.
