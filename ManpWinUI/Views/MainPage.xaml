@@ -1130,19 +1130,6 @@
                                    Margin="0,0,16,0"
                                    Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
 
-            <!-- Center: View dimensions in fractal coordinates -->
-            <TextBlock Grid.Column="2"
-                                   VerticalAlignment="Center"
-                                   Opacity="0.8"
-                                   FontSize="12">
-                            <Run Text="View: " />
-                            <Run Text="{x:Bind ViewModel.CurrentViewWidth, Mode=OneWay}" />
-                            <Run Text=" × " />
-                            <Run Text="{x:Bind ViewModel.CurrentViewHeight, Mode=OneWay}" />
-                            <Run Text=" (fractal units)" />
-                            <Run Text="{x:Bind ViewModel.DeepZoomIndicator, Mode=OneWay}" Foreground="#8B4513" FontWeight="Bold" />
-            </TextBlock>
-
             <!-- Right: Render time -->
             <TextBlock Grid.Column="3"
                                    VerticalAlignment="Center"

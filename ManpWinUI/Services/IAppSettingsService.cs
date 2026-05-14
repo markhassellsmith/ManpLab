@@ -150,6 +150,16 @@ public interface IAppSettingsService
     /// </summary>
     void SetUseDeepZoom(bool use);
 
+    /// <summary>
+    /// Gets whether smooth coloring (anti-banding) is enabled by default.
+    /// </summary>
+    bool GetUseSmoothColoring();
+
+    /// <summary>
+    /// Saves whether smooth coloring (anti-banding) should be enabled.
+    /// </summary>
+    void SetUseSmoothColoring(bool use);
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // ANIMATION SETTINGS
     // ═══════════════════════════════════════════════════════════════════════════════

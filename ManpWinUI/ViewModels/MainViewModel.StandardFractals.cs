@@ -100,6 +100,12 @@ public partial class MainViewModel
     {
         // Update iteration suggestion message when auto-scale toggle changes
         UpdateIterationSuggestion();
+
+        // TASK 5: Sync to parameter system
+        if (UseParameterSystem && CurrentParameters != null)
+        {
+            SetParameter("auto_scale_iterations", value);
+        }
     }
 
     partial void OnSelectedIterationModeChanged(string value)
@@ -222,7 +228,7 @@ public partial class MainViewModel
             // Manual mode: Show warning if current iterations are below recommended
             if (MaxIterations < recommendedIterations)
             {
-                IterationSuggestion = $"⚠️ Consider increasing iterations to ~{recommendedIterations} for better detail at zoom {Zoom:F2}x (currently {MaxIterations})";
+                IterationSuggestion = $"💡 Suggestion: Increase 'Max Iterations' to ~{recommendedIterations} for better detail at {Zoom:F2}x zoom (currently {MaxIterations})";
             }
             else
             {
@@ -233,7 +239,7 @@ public partial class MainViewModel
         else
         {
             // Auto-scale mode: Just show current status
-            IterationSuggestion = $"Using {MaxIterations} iterations at zoom {Zoom:F2}x";
+            IterationSuggestion = $"✓ Auto-scaling enabled: Using {MaxIterations} iterations at {Zoom:F2}x zoom";
         }
     }
 }

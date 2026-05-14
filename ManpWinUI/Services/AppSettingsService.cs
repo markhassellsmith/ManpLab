@@ -31,6 +31,7 @@ public class AppSettingsService : IAppSettingsService
     private const string UseSmoothColoringByDefaultKey = "UseSmoothColoringByDefault";
     private const string DefaultAntialiasingLevelKey = "DefaultAntialiasingLevel";
     private const string UseDeepZoomKey = "UseDeepZoom"; // Week 9: Perturbation-theory deep zoom
+    private const string UseSmoothColoringKey = "UseSmoothColoring"; // Anti-banding persistent setting
     private const string AnimationLastDirectoryKey = "AnimationLastDirectory"; // Last used animation export folder
 
     // Default values
@@ -305,6 +306,17 @@ public class AppSettingsService : IAppSettingsService
     public void SetUseDeepZoom(bool use)
     {
         SetValue(UseDeepZoomKey, use);
+    }
+
+    public bool GetUseSmoothColoring()
+    {
+        var value = GetValue(UseSmoothColoringKey);
+        return value is bool use ? use : true; // Default to enabled (anti-banding ON)
+    }
+
+    public void SetUseSmoothColoring(bool use)
+    {
+        SetValue(UseSmoothColoringKey, use);
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════

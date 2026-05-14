@@ -75,14 +75,14 @@ public partial class MainViewModel
                 _dispatcherQueue.TryEnqueue(() =>
                 {
                     MaxIterations = recommendedIterations;
-                    IterationSuggestion = $"Auto-increased iterations: {oldIterations} → {recommendedIterations} for zoom {Zoom:F2}x";
+                    IterationSuggestion = $"✓ Auto-increased 'Max Iterations': {oldIterations} → {recommendedIterations} for {Zoom:F2}x zoom";
                 });
             }
             else
             {
                 _dispatcherQueue.TryEnqueue(() =>
                 {
-                    IterationSuggestion = $"Using {MaxIterations} iterations at zoom {Zoom:F2}x";
+                    IterationSuggestion = $"✓ Auto-scaling: Using {MaxIterations} iterations at {Zoom:F2}x zoom";
                 });
             }
         }
@@ -94,7 +94,7 @@ public partial class MainViewModel
             {
                 _dispatcherQueue.TryEnqueue(() =>
                 {
-                    IterationSuggestion = $"⚠️ Consider increasing iterations to ~{recommendedIterations} for better detail at zoom {Zoom:F2}x (currently {MaxIterations})";
+                    IterationSuggestion = $"💡 Tip: Increase 'Max Iterations' to ~{recommendedIterations} for better detail at {Zoom:F2}x zoom (currently {MaxIterations})";
                 });
             }
             else
@@ -258,13 +258,29 @@ public partial class MainViewModel
             var renderTime = DateTime.Now - startTime;
             var escapePercent = result.EscapePercentage;
 
+            // Calculate view dimensions and zoom factor based on the specific fractal
+            double aspectRatio = (double)ImageWidth / ImageHeight;
+            double viewHeight = viewWidth / aspectRatio;
+
+            // Get the fractal's default zoom to calculate zoom factor
+            double defaultZoom = 1.0; // Fallback default
+            var fractalInfo = ManpCore.Native.FractalRegistryWrapper.GetFractalInfo(SelectedFractalType);
+            if (fractalInfo != null)
+            {
+                defaultZoom = fractalInfo.DefaultZoom;
+            }
+
+            // Zoom factor = current zoom / default zoom
+            // (Or equivalently: default view width / current view width, since viewWidth = defaultWidth / zoom)
+            double zoomFactor = Zoom / defaultZoom;
+
             // Update UI-bound properties on UI thread
             _dispatcherQueue.TryEnqueue(() =>
             {
                 LastRenderTime = renderTime;
 
-                // Build status message with optional Deep Zoom indicator
-                string deepZoomIndicator = shouldUseDeepZoom ? " | Deep Zoom mode" : "";
+                // Build viewport info that appears in all status messages
+                string viewInfo = $";  View = {viewWidth:E10} × {viewHeight:E10};  Zoom Factor = {zoomFactor:E10}";
 
                 // Generate context-aware status message based on fractal category
                 switch (result.Category)
@@ -272,7 +288,7 @@ public partial class MainViewModel
                     case FractalCategory.HistogramBased:
                         // Histogram/orbit accumulation fractals (attractors, flame fractals)
                         // Escape percentage is not meaningful - show render time only
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s | Orbit accumulation mode{deepZoomIndicator}";
+                        StatusMessage = $"{fractalName};  Rendered in {renderTime.TotalSeconds:F4} s (orbit accumulation){viewInfo}";
                         break;
 
                     case FractalCategory.EscapeTime2D:
@@ -280,36 +296,36 @@ public partial class MainViewModel
                         // Escape percentage is meaningful and helps guide exploration
                         if (escapePercent < 1.0)
                         {
-                            StatusMessage = $"⚠️ Only {escapePercent:F2}% escaped - Inside the set! Zoom to boundaries for detail{deepZoomIndicator}";
+                            StatusMessage = $"{fractalName};  Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F2}% escaped - Inside the set!){viewInfo}";
                         }
                         else if (escapePercent < 10.0)
                         {
-                            StatusMessage = $"Low detail: {escapePercent:F1}% escaped - Try zooming to colorful boundaries{deepZoomIndicator}";
+                            StatusMessage = $"{fractalName};  Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped - Low detail){viewInfo}";
                         }
                         else
                         {
-                            StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped){deepZoomIndicator}";
+                            StatusMessage = $"{fractalName};  Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped){viewInfo}";
                         }
                         break;
 
                     case FractalCategory.Sequence2D:
                         // Sequence-based fractals (Hailstone, bifurcation)
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s | Sequence visualization{deepZoomIndicator}";
+                        StatusMessage = $"{fractalName};  Rendered in {renderTime.TotalSeconds:F4} s (sequence){viewInfo}";
                         break;
 
                     case FractalCategory.AttractorBased3D:
                         // Legacy 3D attractor mode (deprecated)
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s | 3D attractor projection{deepZoomIndicator}";
+                        StatusMessage = $"{fractalName};  Rendered in {renderTime.TotalSeconds:F4} s (3D attractor){viewInfo}";
                         break;
 
                     case FractalCategory.Special:
                         // Special renderers (Buddhabrot, perturbation)
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s | Special renderer{deepZoomIndicator}";
+                        StatusMessage = $"{fractalName};  Rendered in {renderTime.TotalSeconds:F4} s (special renderer){viewInfo}";
                         break;
 
                     default:
                         // Fallback
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s{deepZoomIndicator}";
+                        StatusMessage = $"{fractalName};  Rendered in {renderTime.TotalSeconds:F4} s{viewInfo}";
                         break;
                 }
 
