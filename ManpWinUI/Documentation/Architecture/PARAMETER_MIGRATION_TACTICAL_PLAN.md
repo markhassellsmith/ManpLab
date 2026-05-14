@@ -521,6 +521,127 @@ dotnet build ManpWinUI\ManpWinUI.csproj
 
 ## Progress Tracking
 
+### Git Commit & Push Strategy 🔐
+
+**Critical: Regular commits ensure code integrity and allow rollback if needed**
+
+#### Commit Frequency Rules
+
+1. **After each family completion** (5-25 fractals)
+   - Commit message pattern: `[ParamMig] Add [Family] templates (X fractals)`
+   - Include progress count: `Progress: X/300 fractals (Y%)`
+   - Push to remote immediately
+
+2. **After each phase milestone** (Phase 1, 2, 3, 4)
+   - Commit message pattern: `[ParamMig] Phase N Complete (X/300 fractals, Y%)`
+   - Include detailed summary of all families in that phase
+   - Push to remote immediately
+
+3. **After infrastructure changes** (new helper methods, builders)
+   - Commit message pattern: `[ParamMig] Add [feature] infrastructure`
+   - Document what the change enables
+   - Push to remote immediately
+
+4. **Before risky refactoring** (Phase 5 legacy removal)
+   - Create safety commit: `[ParamMig] Pre-legacy-removal snapshot (300/300 complete)`
+   - Push to remote
+   - **Consider creating a backup branch:** `git checkout -b param-migration-backup`
+
+#### Commit Message Template
+
+```
+[ParamMig] [Action] [Family/Feature] ([X] fractals)
+
+- [What was added/changed]
+- [Any new helpers or infrastructure]
+- [Test results if applicable]
+
+Progress: X/300 fractals (Y%)
+[Phase status if milestone reached]
+```
+
+#### Example Commits
+
+**Family Completion:**
+```bash
+git add ManpWinUI/Services/FractalParameterService.cs
+git commit -m "[ParamMig] Add Trigonometric family templates (20 fractals)
+
+- MandelSin, MandelCos, MandelTan, MandelSinh, MandelCosh, MandelTanh
+- Julia trig variants: JuliaSin, JuliaCos, JuliaTan
+- Hybrid trig fractals: ZSinZ, ZCosZ, SinZSquared, CosZSquared
+- Added frequency parameter to all trig fractals
+- Tested with MandelSin - parameters load correctly
+
+Progress: 79/300 fractals (26%)"
+
+git push origin development
+```
+
+**Phase Milestone:**
+```bash
+git add ManpWinUI/Services/FractalParameterService.cs
+git add ManpWinUI/Documentation/Architecture/PARAMETER_MIGRATION_TACTICAL_PLAN.md
+git commit -m "[ParamMig] Phase 2 Complete (123/300 fractals, 41%)
+
+Phase 2 Summary:
+- Trigonometric family: 20 fractals ✅
+- Exponential/Logarithmic: 12 fractals ✅
+- Polynomial variants: 24 fractals ✅
+- Rational functions: 8 fractals ✅
+
+Infrastructure added:
+- TrigonometricParameters() helper
+- ExponentialBase() parameter
+- RationalFunctionCoefficients() helper
+
+All families tested, builds successful
+Ready for Phase 3 (High-Value Exotic fractals)"
+
+git push origin development
+```
+
+**Infrastructure Change:**
+```bash
+git add ManpWinUI/Models/Parameters/StandardParameterTemplates.Core.cs
+git commit -m "[ParamMig] Add AttractorBase infrastructure
+
+- Created AttractorBase() parameter set (iterations, step size, initial conditions)
+- Added SystemParameters(count) helper for attractor-specific params
+- Supports Lorenz, Rossler, Henon, Clifford, DeJong families
+
+Enables Phase 3A implementation (10 strange attractors)
+Progress: 123/300 fractals (41%)"
+
+git push origin development
+```
+
+#### Recovery Commands (If Needed)
+
+**View commit history:**
+```bash
+git log --oneline --grep="\[ParamMig\]" -20
+```
+
+**Rollback to previous commit:**
+```bash
+git reset --hard HEAD~1  # Undo last commit (DANGEROUS - only if not pushed)
+git revert HEAD          # Safe undo (creates new commit)
+```
+
+**Recover from remote if local corrupted:**
+```bash
+git fetch origin
+git reset --hard origin/development
+```
+
+**Check what changed since last commit:**
+```bash
+git diff HEAD
+```
+
+---
+
 ### Daily Checklist Template
 
 ```markdown
@@ -533,7 +654,14 @@ dotnet build ManpWinUI\ManpWinUI.csproj
 - [ ] Created base template (if needed)
 - [ ] Implemented fractals: [list]
 - [ ] Tested representatives: [list]
-- [ ] Committed changes
+- [ ] ✅ **COMMITTED & PUSHED** to development
+
+### Git:
+```bash
+git add [files]
+git commit -m "[ParamMig] Add [Family] templates (X fractals) - Progress: X/300 (Y%)"
+git push origin development
+```
 
 ### Notes:
 - [Any discoveries, issues, or decisions]
@@ -542,21 +670,64 @@ dotnet build ManpWinUI\ManpWinUI.csproj
 - [Next family/batch]
 ```
 
-### Commit Strategy
+---
 
-Commit after each family completion:
+### Commit Checklist Per Session
+
+Before ending each work session, ensure:
+
+- [ ] All changes compile successfully (`dotnet build`)
+- [ ] Representative fractals tested (2-3 per family)
+- [ ] Tactical plan checklist updated
+- [ ] Changes staged: `git add [modified files]`
+- [ ] Commit created with descriptive message
+- [ ] **Pushed to remote:** `git push origin development`
+- [ ] Verify push succeeded (check GitHub)
+
+**🚨 NEVER end a session without pushing to remote! 🚨**
+
+---
+
+### Backup Strategy
+
+#### Automatic Protection
+- Every push to `development` is backed up on GitHub
+- Commit history allows rollback to any point
+- Phase milestones create natural restore points
+
+#### Before Major Changes (Phase 5)
+Before deleting legacy code:
+
+```bash
+# Create safety branch
+git checkout -b param-migration-backup
+git push origin param-migration-backup
+
+# Return to development
+git checkout development
+
+# Now safe to delete legacy code
 ```
-[ParamMig] Add Mandelbrot family templates (8 fractals)
 
-- Created EscapeTimeFractalBase shared template
-- Added parameter sets for Mandelbrot variants
-- Tested with MandelbrotCubic - parameters load correctly
-- Progress: 50/300 fractals (17%)
+#### Emergency Recovery
+If something goes catastrophically wrong:
+
+```bash
+# Find the last good commit
+git log --oneline --grep="\[ParamMig\]" -10
+
+# Create recovery branch from that commit
+git checkout -b recovery-attempt [commit-hash]
+
+# If it's good, merge back to development
+git checkout development
+git merge recovery-attempt
+git push origin development
 ```
 
 ---
 
-## File Locations (Quick Reference)
+### Progress Summary
 
 ### Files You'll Edit:
 - **Primary:** `ManpWinUI\Services\Parameters\StandardParameterTemplates.Core.cs`
@@ -1062,9 +1233,11 @@ Each polynomial includes **all lower-degree terms**, not just the leading coeffi
 - ✅ Hailstone (1 fractal)
 
 ### Completion Milestones
-- [ ] Phase 1 Complete: 50/300 (17%) - Target: May 20, 2026
-- [ ] Phase 2 Complete: 114/300 (38%) - Target: May 27, 2026
-- [ ] Phase 3 Complete: 162/300 (54%) - Target: May 31, 2026
+- [x] **Phase 1 Complete: 59/300 (20%) - COMPLETED: May 14, 2026** ✅
+  - **Commit:** `9d7e1d1` - Phase 1 Complete + Polynomial Coefficient Infrastructure
+  - **Pushed to:** `origin/development`
+- [ ] Phase 2 Complete: 123/300 (41%) - Target: May 27, 2026
+- [ ] Phase 3 Complete: 171/300 (57%) - Target: May 31, 2026
 - [ ] Phase 4 Complete: 300/300 (100%) - Target: June 15, 2026
 - [ ] Phase 5 Complete: Legacy system removed - Target: June 18, 2026
 
