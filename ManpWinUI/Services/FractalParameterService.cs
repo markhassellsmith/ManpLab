@@ -721,6 +721,37 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("TreeIFS", () => CreateStandardTemplate("TreeIFS"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 8: CHAOTIC MAPS & BIFURCATION DIAGRAMS (7 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Chaotic dynamical systems and parameter space visualizations
+        // Source: ChaoticMapsFamily.cpp (1 fractal), BifurcationFamily.cpp (6 fractals)
+
+        // SprottB: Minimalist chaotic attractor with elegant simplicity (center 0,0; zoom 0.15625)
+        // Formula: dx/dt = yz, dy/dt = x - y, dz/dt = 1 - xy
+        RegisterTemplate("SprottB", () => CreateStandardTemplate("SprottB"));
+
+        // Bifurcation Diagrams & Parameter Space Visualizations
+        // These fractals visualize parameter stability and periodic behavior
+
+        // LogisticParameterSpace: Parameter space for logistic map xₙ₊₁ = r·xₙ·(1-xₙ) (center 2,0; zoom 0.697)
+        RegisterTemplate("LogisticParameterSpace", () => CreateStandardTemplate("LogisticParameterSpace"));
+
+        // LambdaParameterSpace: Complex lambda map z = λ·z·(1-z) parameter space (center 1,0; zoom 0.536203)
+        RegisterTemplate("LambdaParameterSpace", () => CreateStandardTemplate("LambdaParameterSpace"));
+
+        // MandelParameter: Mandelbrot parameter space showing periodicity for z² + c (center 0,0; zoom 1.0)
+        RegisterTemplate("MandelParameter", () => CreateStandardTemplate("MandelParameter"));
+
+        // HenonParameterSpace: Hénon map xₙ₊₁ = 1 - a·xₙ² + yₙ parameter space (center 0.75,-0.25; zoom 1.0)
+        RegisterTemplate("HenonParameterSpace", () => CreateStandardTemplate("HenonParameterSpace"));
+
+        // OrbitDiagram: Orbit trajectory visualization for z² + c (center 0,0; zoom 1.0)
+        RegisterTemplate("OrbitDiagram", () => CreateStandardTemplate("OrbitDiagram"));
+
+        // MayLyapunovRef: Lyapunov exponent visualization for May logistic map (center 2,0; zoom 0.3)
+        RegisterTemplate("MayLyapunovRef", () => CreateStandardTemplate("MayLyapunovRef"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
