@@ -406,6 +406,42 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("ExponentialJulia", () => CreateJuliaTemplate("ExponentialJulia"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // POLYNOMIAL VARIANTS - PHOENIX EXTENDED FAMILY
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Phoenix fractals with memory: z_new = f(z) + c + p * z_prev
+        RegisterTemplate("PhoenixM", () => CreateStandardTemplate("PhoenixM"));
+        RegisterTemplate("PhoenixJ", () => CreateJuliaTemplate("PhoenixJ"));
+        RegisterTemplate("PhoenixPower3", () => CreateJuliaTemplate("PhoenixPower3"));
+        RegisterTemplate("PhoenixPower4", () => CreateJuliaTemplate("PhoenixPower4"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // POLYNOMIAL VARIANTS - LAMBDA EXTENDED FAMILY
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Lambda variations: z = λ * f(z) with different functions
+        RegisterTemplate("LambdaPower3", () => CreateJuliaTemplate("LambdaPower3"));
+        RegisterTemplate("LambdaPower4", () => CreateJuliaTemplate("LambdaPower4"));
+        RegisterTemplate("LambdaTanh", () => CreateJuliaTemplate("LambdaTanh"));
+        RegisterTemplate("LambdaSquared", () => CreateJuliaTemplate("LambdaSquared"));
+        RegisterTemplate("LambdaFlip", () => CreateJuliaTemplate("LambdaFlip"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // POLYNOMIAL VARIANTS - BARNSLEY FAMILY
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Michael Barnsley's IFS-inspired escape-time fractals
+        RegisterTemplate("BarnsleyM1", () => CreateJuliaTemplate("BarnsleyM1"));
+        RegisterTemplate("BarnsleyJ1", () => CreateStandardTemplate("BarnsleyJ1"));
+        RegisterTemplate("BarnsleyM2", () => CreateJuliaTemplate("BarnsleyM2"));
+        RegisterTemplate("BarnsleyJ2", () => CreateStandardTemplate("BarnsleyJ2"));
+        RegisterTemplate("BarnsleyM3", () => CreateJuliaTemplate("BarnsleyM3"));
+        RegisterTemplate("BarnsleyJ3", () => CreateStandardTemplate("BarnsleyJ3"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // POLYNOMIAL VARIANTS - SPIDER FAMILY
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Spider fractal where the constant evolves with iteration
+        RegisterTemplate("SpiderVariant", () => CreateJuliaTemplate("SpiderVariant"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
