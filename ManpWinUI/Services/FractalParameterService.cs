@@ -752,6 +752,35 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("MayLyapunovRef", () => CreateStandardTemplate("MayLyapunovRef"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 9: HISTORICAL & RESEARCH FRACTALS (4 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Classic fractals from early fractal research and lesser-known discoveries
+        // Source: HistoricalFractalsFamily.cpp
+        // Note: Biomorphs, PickoverStalks already registered in Phase 3
+        // Note: CollatzFractal registered as "Hailstone" in Phase 1
+        // Note: DuffingMap registered as "Duffing" in Phase 3A attractors
+
+        // MartinMap: Barry Martin's hopalong variant with sqrt operations (center 0,0; zoom 0.5)
+        // Histogram-based discrete map creating organic flowing patterns
+        // Formula: x' = y - sgn(x)·√|bx - c|, y' = a - x
+        RegisterTemplate("MartinMap", () => CreateStandardTemplate("MartinMap"));
+
+        // ChipMap: Pickover's silicon chip-like patterns with modulo operation (center 0,0; zoom 0.3)
+        // Julia-enabled escape-time fractal with rectangular circuit board appearance
+        // Formula: z(n+1) = (z² + c) mod 2π
+        RegisterTemplate("ChipMap", () => CreateJuliaTemplate("ChipMap"));
+
+        // QuaternionJulia2D: 2D projection of 4D quaternion Julia set (center 0,0; zoom 0.6)
+        // Julia-enabled escape-time with quaternion multiplication creating 3D-like depth
+        // Formula: q(n+1) = q² + c (quaternion), project to (x,y)
+        RegisterTemplate("QuaternionJulia2D", () => CreateJuliaTemplate("QuaternionJulia2D"));
+
+        // SinusoidalFractal: Early transcendental fractal with sine iteration (center 0,0; zoom 0.2)
+        // Julia-enabled escape-time creating wavy bands from sine periodicity
+        // Formula: z(n+1) = c·sin(z)
+        RegisterTemplate("SinusoidalFractal", () => CreateJuliaTemplate("SinusoidalFractal"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
