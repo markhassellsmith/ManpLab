@@ -452,6 +452,29 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("RationalPower", () => CreateJuliaTemplate("RationalPower"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // STRANGE ATTRACTORS (histogram-based, minimal parameters)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Attractors are histogram-based fractals that plot orbit trajectories
+        // They don't use escape-time parameters (iterations, bailout, Julia mode)
+        // Native code has hardcoded system parameters (sigma, rho, beta, etc.)
+        // So we only provide view parameters here
+
+        RegisterTemplate("Lorenz", () => CreateStandardTemplate("Lorenz"));
+        RegisterTemplate("Thomas", () => CreateStandardTemplate("Thomas"));
+        RegisterTemplate("Dadras", () => CreateStandardTemplate("Dadras"));
+        RegisterTemplate("Pickover", () => CreateStandardTemplate("Pickover"));
+        RegisterTemplate("Aizawa", () => CreateStandardTemplate("Aizawa"));
+        RegisterTemplate("Halvorsen", () => CreateStandardTemplate("Halvorsen"));
+        RegisterTemplate("ChenLee", () => CreateStandardTemplate("ChenLee"));
+        RegisterTemplate("Clifford", () => CreateStandardTemplate("Clifford"));
+        RegisterTemplate("DeJong", () => CreateStandardTemplate("DeJong"));
+        RegisterTemplate("Tinkerbell", () => CreateStandardTemplate("Tinkerbell"));
+        RegisterTemplate("Duffing", () => CreateStandardTemplate("Duffing"));
+        RegisterTemplate("LiuChen", () => CreateStandardTemplate("LiuChen"));
+        RegisterTemplate("RabinovichFabrikant", () => CreateStandardTemplate("RabinovichFabrikant"));
+        RegisterTemplate("Arneodo", () => CreateStandardTemplate("Arneodo"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
