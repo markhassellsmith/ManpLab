@@ -781,6 +781,52 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("SinusoidalFractal", () => CreateJuliaTemplate("SinusoidalFractal"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 10: POLYNOMIAL VARIANTS FAMILY (8 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Polynomial-based fractal formulas with various powers and rational functions
+        // Source: PolynomialVariantsFamily.cpp
+
+        // CubicMandel: Mandelbrot with cubic iteration (center 0,0; zoom 1.2)
+        // Standard escape-time fractal, no Julia support, threefold rotational symmetry
+        // Formula: z(n+1) = z³ + c
+        RegisterTemplate("CubicMandel", () => CreateStandardTemplate("CubicMandel"));
+
+        // QuarticMandel: Mandelbrot with quartic iteration (center 0,0; zoom 1.3)
+        // Standard escape-time fractal, no Julia support, fourfold rotational symmetry
+        // Formula: z(n+1) = z⁴ + c
+        RegisterTemplate("QuarticMandel", () => CreateStandardTemplate("QuarticMandel"));
+
+        // QuinticMandel: Mandelbrot with quintic iteration (center 0,0; zoom 1.4)
+        // Standard escape-time fractal, no Julia support, fivefold rotational symmetry
+        // Formula: z(n+1) = z⁵ + c
+        RegisterTemplate("QuinticMandel", () => CreateStandardTemplate("QuinticMandel"));
+
+        // SexticMandel: Mandelbrot with sextic (6th power) iteration (center 0,0; zoom 1.5)
+        // Standard escape-time fractal, no Julia support, sixfold rotational symmetry
+        // Formula: z(n+1) = z⁶ + c
+        RegisterTemplate("SexticMandel", () => CreateStandardTemplate("SexticMandel"));
+
+        // RationalR1: Rational map (z²+c)/(z²+1) (center 0,0; zoom 1.5)
+        // Rational function fractal with poles, asymmetric behavior
+        // Formula: z(n+1) = (z²+c)/(z²+1)
+        RegisterTemplate("RationalR1", () => CreateStandardTemplate("RationalR1"));
+
+        // PolyZ3MinusZ: Polynomial z³-z+c (center 0,0; zoom 1.5)
+        // Mixed-degree polynomial creating hybrid escape dynamics
+        // Formula: z(n+1) = z³ - z + c
+        RegisterTemplate("PolyZ3MinusZ", () => CreateStandardTemplate("PolyZ3MinusZ"));
+
+        // PolyZ4PlusZ3: Polynomial z⁴+z³+c (center 0,0; zoom 1.5)
+        // Mixed-degree polynomial with combined cubic and quartic terms
+        // Formula: z(n+1) = z⁴ + z³ + c
+        RegisterTemplate("PolyZ4PlusZ3", () => CreateStandardTemplate("PolyZ4PlusZ3"));
+
+        // Biomorph: Organism-like fractal with special bailout (center 0,0; zoom 0.5)
+        // Modified Mandelbrot using component-wise bailout: |Re(z)| > B or |Im(z)| > B
+        // Formula: z(n+1) = z² + c (bailout = 10.0)
+        RegisterTemplate("Biomorph", () => CreateStandardTemplate("Biomorph"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
