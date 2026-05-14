@@ -933,19 +933,16 @@ git push origin development
 - [x] Test: All trig fractals use standard escape-time template with Julia support
 
 #### Step 2B: Exponential/Logarithmic (12 fractals)
-- [ ] MandelExp (z = e^z + c)
-- [ ] MandelLog (z = log(z) + c)
-- [ ] MandelExpZ (z = z·e^z + c)
-- [ ] MandelLogZ (z = z·log(z) + c)
-- [ ] JuliaExp
-- [ ] JuliaLog
-- [ ] ZPowerExp (z = z^e^z)
-- [ ] ExpZSquared (z = e^(z²))
-- [ ] LogZSquared (z = log(z²))
-- [ ] ExpLog (z = e^log(z))
-- [ ] LogExp (z = log(e^z))
-- [ ] ExponentialHybrid
-- [ ] Test: Verify exponential base parameter for 2-3 fractals
+- [x] Exponential (z = e^z + c)
+- [x] Logarithmic / Logarithm (z = log(z) + c)
+- [x] MandelExp (z = z² + e^z + c)
+- [x] LMandelExp (z = c * e^z)
+- [x] LLambdaExp (z = c * z * e^z)
+- [x] PowerTower / ZToTheZ (z = z^z + c)
+- [x] ComplexPower (z = z^c + c)
+- [x] ExponentialJulia (z = c*exp(z) + z)
+- [x] ExpSquare (z = e^(z²) + c) - already complete from Phase 1
+- [x] Test: All exponential/logarithmic fractals use Julia-enabled template
 
 #### Step 2C: Polynomial Variants (24 fractals)
 **Tricorn Family (5 fractals):**
@@ -1219,7 +1216,7 @@ Each polynomial includes **all lower-degree terms**, not just the leading coeffi
 
 ## Progress Summary
 
-**Current Status: 79/300 fractals complete (~26%) - PHASE 2 STEP 2A COMPLETE! 🎉**
+**Current Status: 89/300 fractals complete (~30%) - PHASE 2 STEP 2B COMPLETE! 🎉**
 
 **What's Already Complete:**
 - ✅ Mandelbrot + Multibrot family (8 fractals): z², z³, z⁴, z⁵, z⁶, z⁷, z⁸
@@ -1227,17 +1224,22 @@ Each polynomial includes **all lower-degree terms**, not just the leading coeffi
 - ✅ **Burning Ship family (17 fractals): All power variants, perpendicular, buffalo, celtic, reverse, vertical, diagonal, and BirdOfPrey**
 - ✅ **Newton/Convergence family (9 fractals): Newton, NewtonSinExp, NewtonQuartic, Nova, HalleyCubic, Magnet1M, Magnet2M, Magnet1J, Magnet2J**
 - ✅ **Trigonometric family (20 fractals): MandelTrig, Sine, LMandelSine, LLambdaSine, LMandelCos, LLambdaCos, LMandelSinh, LLambdaSinh, LMandelCosh, LLambdaCosh, SinZ, CosZ, CosTan, LambdaTan, NewtonSin, PhoenixSin, Sqr1OverTrig, SqrTrig, TrigPlusTrig, TrigXTrig**
+- ✅ **Exponential/Logarithmic family (10 fractals): Exponential, Logarithm/Logarithmic, MandelExp, LMandelExp, LLambdaExp, PowerTower/ZToTheZ, ComplexPower, ExponentialJulia, ExpSquare**
 - ✅ Complex exponent (2 fractals): MarksMandel, MarksMandelpwr
 - ✅ Phoenix (1 fractal)
 - ✅ Lambda (1 fractal)
-- ✅ ExpSquare (1 fractal)
 - ✅ Hailstone (1 fractal)
 
 ### Completion Milestones
 - [x] **Phase 1 Complete: 59/300 (20%) - COMPLETED: May 14, 2026** ✅
   - **Commit:** `9d7e1d1` - Phase 1 Complete + Polynomial Coefficient Infrastructure
   - **Pushed to:** `origin/development`
-- [ ] **Phase 2 Step 2A Complete: 79/300 (26%) - COMPLETED: May 14, 2026** ✅
+- [x] **Phase 2 Step 2A Complete: 79/300 (26%) - COMPLETED: May 14, 2026** ✅
+  - **Commit:** `116b11d` - Trigonometric family complete
+  - **Pushed to:** `origin/development`
+- [x] **Phase 2 Step 2B Complete: 89/300 (30%) - COMPLETED: May 14, 2026** ✅
+  - **Commit:** `a262b50` - Exponential/Logarithmic family complete
+  - **Pushed to:** `origin/development`
 - [ ] Phase 2 Complete: 123/300 (41%) - Target: May 27, 2026
 - [ ] Phase 3 Complete: 171/300 (57%) - Target: May 31, 2026
 - [ ] Phase 4 Complete: 300/300 (100%) - Target: June 15, 2026
