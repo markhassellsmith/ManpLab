@@ -99,6 +99,17 @@ public static partial class StandardParameterTemplates
 
         yield return new FractalParameterDescriptor
         {
+            Key = "auto_scale_iterations",
+            Name = "Auto-scale with Zoom",
+            Type = ParameterType.Boolean,
+            Category = ParameterCategory.Algorithm,
+            DefaultValue = true,
+            Description = "Automatically increase iterations based on zoom level for better detail",
+            DisplayOrder = 2
+        };
+
+        yield return new FractalParameterDescriptor
+        {
             Key = "bailout",
             Name = "Bailout Radius",
             Type = ParameterType.Double,
@@ -109,7 +120,7 @@ public static partial class StandardParameterTemplates
             StepSize = 1.0,
             FormatString = "F1",
             Description = "Escape radius threshold - higher values may show more detail but slower render",
-            DisplayOrder = 2,
+            DisplayOrder = 3,
             Unit = "radius"
         };
 
@@ -125,7 +136,7 @@ public static partial class StandardParameterTemplates
             StepSize = 0.1,
             FormatString = "F2",
             Description = "Radius at which a point is considered to have escaped",
-            DisplayOrder = 3
+            DisplayOrder = 4
         };
     }
 
@@ -240,6 +251,45 @@ public static partial class StandardParameterTemplates
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
+    // POLYNOMIAL COEFFICIENTS (Newton, Halley, convergence methods)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Generate polynomial coefficient parameters for Newton/Halley/convergence methods.
+    /// For a polynomial of degree n: z^n + a*z^(n-1) + b*z^(n-2) + ... + c*z + d = 0
+    /// This generates parameters for all lower-degree coefficients (a, b, c, d, ...).
+    /// </summary>
+    /// <param name="degree">Polynomial degree (e.g., 3 for cubic, 4 for quartic)</param>
+    /// <returns>Array of coefficient parameters</returns>
+    public static IEnumerable<FractalParameterDescriptor> PolynomialCoefficients(int degree)
+    {
+        // Coefficient names: a, b, c, d, e, f, g, h, i, j (supports up to degree 10)
+        string[] coeffNames = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+
+        // Generate parameters for each lower-degree term
+        for (int i = 0; i < degree; i++)
+        {
+            int exponent = degree - 1 - i; // z^(n-1), z^(n-2), ..., z^1, z^0
+            string coeffName = coeffNames[i];
+
+            yield return new FractalParameterDescriptor
+            {
+                Key = $"poly_coeff_{coeffName}",
+                Name = $"Coefficient {coeffName} (z^{exponent})",
+                Type = ParameterType.Double,
+                Category = ParameterCategory.FractalSpecific,
+                DefaultValue = 0.0,
+                MinValue = -10.0,
+                MaxValue = 10.0,
+                StepSize = 0.1,
+                FormatString = "F2",
+                Description = $"Coefficient for z^{exponent} term in polynomial",
+                DisplayOrder = 10 + i
+            };
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
     // CONVENIENCE BUILDERS
     // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -269,6 +319,17 @@ public static partial class StandardParameterTemplates
     {
         var paramSet = CreateStandardEscapeTime(fractalType);
         // Add Newton-specific parameters here if needed
+        return paramSet;
+    }
+
+    /// <summary>
+    /// Create a Newton polynomial fractal with all coefficient parameters.
+    /// For example, degree 3 creates: z³ + az² + bz + c = 0
+    /// </summary>
+    public static FractalParameterSet CreateNewtonPolynomial(string fractalType, int degree)
+    {
+        var paramSet = CreateStandardEscapeTime(fractalType);
+        paramSet.AddParameters(PolynomialCoefficients(degree).ToArray());
         return paramSet;
     }
 }

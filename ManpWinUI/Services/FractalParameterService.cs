@@ -255,6 +255,132 @@ public class FractalParameterService : IFractalParameterService
         });
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // JULIA PRESET FAMILY (23 named Julia sets with fixed C values)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Julia presets are NOT Julia mode fractals - they have hardcoded C values
+        // and only need standard view + algorithm parameters
+
+        RegisterTemplate("JuliaGoldenRatio", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaGoldenRatio"));
+
+        RegisterTemplate("JuliaDendrite", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaDendrite"));
+
+        RegisterTemplate("JuliaSpiral", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaSpiral"));
+
+        RegisterTemplate("JuliaDragon", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaDragon"));
+
+        RegisterTemplate("JuliaCauliflower", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaCauliflower"));
+
+        RegisterTemplate("JuliaSeahorse", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaSeahorse"));
+
+        RegisterTemplate("JuliaAirplane", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaAirplane"));
+
+        RegisterTemplate("JuliaLightning", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaLightning"));
+
+        RegisterTemplate("JuliaSnowflake", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaSnowflake"));
+
+        RegisterTemplate("JuliaFlower", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaFlower"));
+
+        RegisterTemplate("JuliaFeigenbaum", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaFeigenbaum"));
+
+        RegisterTemplate("JuliaTwistedCross", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaTwistedCross"));
+
+        RegisterTemplate("JuliaBackbone", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaBackbone"));
+
+        RegisterTemplate("JuliaSpiralGalaxy", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaSpiralGalaxy"));
+
+        RegisterTemplate("JuliaMedusa", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaMedusa"));
+
+        RegisterTemplate("JuliaCrystal", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaCrystal"));
+
+        RegisterTemplate("JuliaPaisley", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaPaisley"));
+
+        RegisterTemplate("JuliaFuzzyBlob", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaFuzzyBlob"));
+
+        RegisterTemplate("JuliaEye", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaEye"));
+
+        RegisterTemplate("JuliaTripleSpiral", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaTripleSpiral"));
+
+        RegisterTemplate("JuliaHeart", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaHeart"));
+
+        RegisterTemplate("JuliaNeurons", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaNeurons"));
+
+        RegisterTemplate("JuliaFractalTree", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("JuliaFractalTree"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // BURNING SHIP FAMILY POWER VARIANTS
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Higher power variations of the Burning Ship formula
+
+        RegisterTemplate("BurningShipCubic", () =>
+            StandardParameterTemplates.CreateWithJulia("BurningShipCubic"));
+
+        RegisterTemplate("BurningShipQuartic", () =>
+            StandardParameterTemplates.CreateWithJulia("BurningShipQuartic"));
+
+        RegisterTemplate("BurningShipQuintic", () =>
+            StandardParameterTemplates.CreateWithJulia("BurningShipQuintic"));
+
+        RegisterTemplate("PerpendicularBurningShip", () =>
+            StandardParameterTemplates.CreateWithJulia("PerpendicularBurningShip"));
+
+        RegisterTemplate("BuffaloBurningShip", () =>
+            StandardParameterTemplates.CreateWithJulia("BuffaloBurningShip"));
+
+        RegisterTemplate("SharkBurningShip", () =>
+            StandardParameterTemplates.CreateWithJulia("SharkBurningShip"));
+
+        RegisterTemplate("CelticBurningShip", () =>
+            StandardParameterTemplates.CreateWithJulia("CelticBurningShip"));
+
+        RegisterTemplate("ReverseBurningShip", () =>
+            StandardParameterTemplates.CreateWithJulia("ReverseBurningShip"));
+
+        RegisterTemplate("VerticalBurningShip", () =>
+            StandardParameterTemplates.CreateWithJulia("VerticalBurningShip"));
+
+        RegisterTemplate("DiagonalBurningShip", () =>
+            StandardParameterTemplates.CreateWithJulia("DiagonalBurningShip"));
+
+        RegisterTemplate("PerpendicularMandelbrot", () =>
+            StandardParameterTemplates.CreateWithJulia("PerpendicularMandelbrot"));
+
+        RegisterTemplate("BirdOfPrey", () =>
+            StandardParameterTemplates.CreateWithJulia("BirdOfPrey"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // NEWTON/CONVERGENCE FAMILY EXTENSIONS
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        RegisterTemplate("NewtonQuartic", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("NewtonQuartic"));
+
+        RegisterTemplate("HalleyCubic", () =>
+            StandardParameterTemplates.CreateStandardEscapeTime("HalleyCubic"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
