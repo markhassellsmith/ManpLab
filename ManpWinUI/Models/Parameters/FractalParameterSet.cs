@@ -430,25 +430,45 @@ public partial class FractalParameterSet : ObservableObject
     }
 
     /// <summary>
-    /// Loads parameter values from LocalSettings if they exist.
+    /// Loads parameter values from persistent storage if they exist.
+    /// Works for both MSIX (ApplicationData) and portable ZIP (JSON file) modes.
     /// Returns true if any values were restored, false otherwise.
     /// </summary>
     public bool LoadFromSettings()
     {
         try
         {
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
             var settingsKey = $"FractalParams_{FractalType}";
+            string? json = null;
 
-            if (!settings.Values.ContainsKey(settingsKey))
+            // Try MSIX mode first
+            try
+            {
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                json = settings.Values[settingsKey] as string;
+            }
+            catch
+            {
+                // Not packaged, try portable ZIP mode
+                var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var settingsFile = System.IO.Path.Combine(localAppData, "ManpLab", "settings.json");
+
+                if (System.IO.File.Exists(settingsFile))
+                {
+                    var fileContent = System.IO.File.ReadAllText(settingsFile);
+                    var allSettings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, System.Text.Json.JsonElement>>(fileContent);
+                    if (allSettings != null && allSettings.TryGetValue(settingsKey, out var value))
+                    {
+                        json = value.GetString();
+                    }
+                }
+            }
+
+            if (string.IsNullOrEmpty(json))
             {
                 System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] No saved parameters found for '{FractalType}'");
                 return false;
             }
-
-            var json = settings.Values[settingsKey] as string;
-            if (string.IsNullOrEmpty(json))
-                return false;
 
             // Deserialize from JSON
             var saved = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, System.Text.Json.JsonElement>>(json);
@@ -493,19 +513,44 @@ public partial class FractalParameterSet : ObservableObject
     }
 
     /// <summary>
-    /// Clears saved parameter values from LocalSettings for this fractal.
+    /// Clears saved parameter values from persistent storage for this fractal.
+    /// Works for both MSIX (ApplicationData) and portable ZIP (JSON file) modes.
     /// </summary>
     public void ClearSavedSettings()
     {
         try
         {
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
             var settingsKey = $"FractalParams_{FractalType}";
 
-            if (settings.Values.ContainsKey(settingsKey))
+            // Try MSIX mode first
+            try
             {
-                settings.Values.Remove(settingsKey);
-                System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Cleared saved parameters for '{FractalType}'");
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                if (settings.Values.ContainsKey(settingsKey))
+                {
+                    settings.Values.Remove(settingsKey);
+                    System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Cleared saved parameters for '{FractalType}' from MSIX storage");
+                    return;
+                }
+            }
+            catch
+            {
+                // Not packaged, try portable ZIP mode
+                var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var settingsFile = System.IO.Path.Combine(localAppData, "ManpLab", "settings.json");
+
+                if (System.IO.File.Exists(settingsFile))
+                {
+                    var fileContent = System.IO.File.ReadAllText(settingsFile);
+                    var allSettings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(fileContent);
+                    if (allSettings != null && allSettings.ContainsKey(settingsKey))
+                    {
+                        allSettings.Remove(settingsKey);
+                        var json = System.Text.Json.JsonSerializer.Serialize(allSettings, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+                        System.IO.File.WriteAllText(settingsFile, json);
+                        System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Cleared saved parameters for '{FractalType}' from portable storage");
+                    }
+                }
             }
         }
         catch (Exception ex)

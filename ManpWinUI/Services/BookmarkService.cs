@@ -13,11 +13,35 @@ namespace ManpWinUI.Services;
 /// <summary>
 /// Service for managing fractal bookmarks.
 /// Handles saving/loading bookmarks from local storage and provides famous presets.
+/// Works for both MSIX packages and portable ZIP distributions.
 /// </summary>
 public class BookmarkService : IBookmarkService
 {
     private const string BookmarksFileName = "bookmarks.json";
     private List<FractalBookmark> _bookmarks = new();
+
+    private readonly bool _isPackaged;
+    private readonly string? _bookmarksFilePath;
+
+    public BookmarkService()
+    {
+        // Detect if running as packaged (MSIX) or unpackaged (portable ZIP)
+        try
+        {
+            _ = ApplicationData.Current.LocalFolder;
+            _isPackaged = true;
+            System.Diagnostics.Debug.WriteLine("[BookmarkService] Running as packaged app (MSIX)");
+        }
+        catch (Exception)
+        {
+            _isPackaged = false;
+            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appFolder = Path.Combine(localAppData, "ManpLab");
+            Directory.CreateDirectory(appFolder);
+            _bookmarksFilePath = Path.Combine(appFolder, BookmarksFileName);
+            System.Diagnostics.Debug.WriteLine($"[BookmarkService] Running as unpackaged app (portable) - using: {_bookmarksFilePath}");
+        }
+    }
 
     /// <summary>
     /// Gets all bookmarks (user + presets).
@@ -31,23 +55,43 @@ public class BookmarkService : IBookmarkService
     {
         try
         {
-            var localFolder = ApplicationData.Current.LocalFolder;
-            var file = await localFolder.TryGetItemAsync(BookmarksFileName) as StorageFile;
-
-            if (file != null)
+            if (_isPackaged)
             {
-                var json = await FileIO.ReadTextAsync(file);
-                var loaded = JsonSerializer.Deserialize<List<FractalBookmark>>(json);
-                if (loaded != null)
+                // MSIX: Use Windows Storage API
+                var localFolder = ApplicationData.Current.LocalFolder;
+                var file = await localFolder.TryGetItemAsync(BookmarksFileName) as StorageFile;
+
+                if (file != null)
                 {
-                    _bookmarks = loaded;
-                    return;
+                    var json = await FileIO.ReadTextAsync(file);
+                    var loaded = JsonSerializer.Deserialize<List<FractalBookmark>>(json);
+                    if (loaded != null)
+                    {
+                        _bookmarks = loaded;
+                        System.Diagnostics.Debug.WriteLine($"[BookmarkService] Loaded {_bookmarks.Count} bookmarks from MSIX storage");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                // Portable ZIP: Use file system
+                if (!string.IsNullOrEmpty(_bookmarksFilePath) && File.Exists(_bookmarksFilePath))
+                {
+                    var json = File.ReadAllText(_bookmarksFilePath);
+                    var loaded = JsonSerializer.Deserialize<List<FractalBookmark>>(json);
+                    if (loaded != null)
+                    {
+                        _bookmarks = loaded;
+                        System.Diagnostics.Debug.WriteLine($"[BookmarkService] Loaded {_bookmarks.Count} bookmarks from file: {_bookmarksFilePath}");
+                        return;
+                    }
                 }
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error loading bookmarks: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"[BookmarkService] Error loading bookmarks: {ex.Message}");
         }
 
         // If no bookmarks file or error, initialize with famous presets
@@ -62,19 +106,32 @@ public class BookmarkService : IBookmarkService
     {
         try
         {
-            var localFolder = ApplicationData.Current.LocalFolder;
-            var file = await localFolder.CreateFileAsync(BookmarksFileName, CreationCollisionOption.ReplaceExisting);
-
             var json = JsonSerializer.Serialize(_bookmarks, new JsonSerializerOptions
             {
                 WriteIndented = true
             });
 
-            await FileIO.WriteTextAsync(file, json);
+            if (_isPackaged)
+            {
+                // MSIX: Use Windows Storage API
+                var localFolder = ApplicationData.Current.LocalFolder;
+                var file = await localFolder.CreateFileAsync(BookmarksFileName, CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteTextAsync(file, json);
+                System.Diagnostics.Debug.WriteLine($"[BookmarkService] Saved {_bookmarks.Count} bookmarks to MSIX storage");
+            }
+            else
+            {
+                // Portable ZIP: Use file system
+                if (!string.IsNullOrEmpty(_bookmarksFilePath))
+                {
+                    File.WriteAllText(_bookmarksFilePath, json);
+                    System.Diagnostics.Debug.WriteLine($"[BookmarkService] Saved {_bookmarks.Count} bookmarks to file: {_bookmarksFilePath}");
+                }
+            }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error saving bookmarks: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"[BookmarkService] Error saving bookmarks: {ex.Message}");
         }
     }
 

@@ -31,6 +31,7 @@ public class AppSettingsService : IAppSettingsService
     private const string UseSmoothColoringByDefaultKey = "UseSmoothColoringByDefault";
     private const string DefaultAntialiasingLevelKey = "DefaultAntialiasingLevel";
     private const string UseDeepZoomKey = "UseDeepZoom"; // Week 9: Perturbation-theory deep zoom
+    private const string AnimationLastDirectoryKey = "AnimationLastDirectory"; // Last used animation export folder
 
     // Default values
     private const double DefaultBrowserWidth = 250.0;
@@ -304,6 +305,21 @@ public class AppSettingsService : IAppSettingsService
     public void SetUseDeepZoom(bool use)
     {
         SetValue(UseDeepZoomKey, use);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ANIMATION SETTINGS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    public string? GetAnimationLastDirectory()
+    {
+        var value = GetValue(AnimationLastDirectoryKey);
+        return value as string;
+    }
+
+    public void SetAnimationLastDirectory(string directory)
+    {
+        SetValue(AnimationLastDirectoryKey, directory);
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════

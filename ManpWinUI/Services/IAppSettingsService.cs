@@ -151,6 +151,20 @@ public interface IAppSettingsService
     void SetUseDeepZoom(bool use);
 
     // ═══════════════════════════════════════════════════════════════════════════════
+    // ANIMATION SETTINGS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Gets the last used directory for animation exports, or null if none saved.
+    /// </summary>
+    string? GetAnimationLastDirectory();
+
+    /// <summary>
+    /// Saves the last used directory for animation exports.
+    /// </summary>
+    void SetAnimationLastDirectory(string directory);
+
+    // ═══════════════════════════════════════════════════════════════════════════════
     // USER NOTES
     // ═══════════════════════════════════════════════════════════════════════════════
 

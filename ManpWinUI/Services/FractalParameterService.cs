@@ -561,14 +561,13 @@ public class FractalParameterService : IFractalParameterService
     {
         try
         {
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var settingsKey = "FractalParams_ExpSquare";
+            // Use the settings service which works for both MSIX and portable modes
+            var savedParams = _settingsService.GetFractalParameters("ExpSquare");
 
-            // Check if there's a saved version
-            if (settings.Values.ContainsKey(settingsKey))
+            if (!string.IsNullOrEmpty(savedParams))
             {
                 Debug.WriteLine("[FractalParameterService] Found saved ExpSquare parameters - clearing to apply new 1000 default");
-                settings.Values.Remove(settingsKey);
+                _settingsService.SetFractalParameters("ExpSquare", null!); // Clear the setting
             }
         }
         catch (Exception ex)

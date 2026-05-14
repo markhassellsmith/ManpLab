@@ -1,6 +1,7 @@
 using ManpWinUI.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace ManpWinUI.Services;
 /// <summary>
 /// Service for managing navigation history (undo/redo).
 /// Maintains a stack of fractal view states for back/forward navigation.
+/// Works for both MSIX packages and portable ZIP distributions.
 /// </summary>
 public class NavigationHistoryService : INavigationHistoryService
 {
@@ -19,6 +21,29 @@ public class NavigationHistoryService : INavigationHistoryService
 
     private readonly List<NavigationHistoryEntry> _history = new();
     private int _currentPosition = -1;
+
+    private readonly bool _isPackaged;
+    private readonly string? _historyFilePath;
+
+    public NavigationHistoryService()
+    {
+        // Detect if running as packaged (MSIX) or unpackaged (portable ZIP)
+        try
+        {
+            _ = ApplicationData.Current.LocalFolder;
+            _isPackaged = true;
+            System.Diagnostics.Debug.WriteLine("[NavigationHistoryService] Running as packaged app (MSIX)");
+        }
+        catch (Exception)
+        {
+            _isPackaged = false;
+            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appFolder = Path.Combine(localAppData, "ManpLab");
+            Directory.CreateDirectory(appFolder);
+            _historyFilePath = Path.Combine(appFolder, HistoryFileName);
+            System.Diagnostics.Debug.WriteLine($"[NavigationHistoryService] Running as unpackaged app (portable) - using: {_historyFilePath}");
+        }
+    }
 
     /// <summary>
     /// Gets all history entries (read-only).
@@ -166,22 +191,45 @@ public class NavigationHistoryService : INavigationHistoryService
         /*
         try
         {
-            var localFolder = ApplicationData.Current.LocalFolder;
-            var file = await localFolder.TryGetItemAsync(HistoryFileName) as StorageFile;
-
-            if (file != null)
+            if (_isPackaged)
             {
-                var json = await FileIO.ReadTextAsync(file);
-                var data = JsonSerializer.Deserialize<HistoryData>(json);
+                // MSIX: Use Windows Storage API
+                var localFolder = ApplicationData.Current.LocalFolder;
+                var file = await localFolder.TryGetItemAsync(HistoryFileName) as StorageFile;
 
-                if (data != null && data.Entries != null)
+                if (file != null)
                 {
-                    _history.Clear();
-                    _history.AddRange(data.Entries);
-                    _currentPosition = _history.Count - 1; // Start at end for new session
+                    var json = await FileIO.ReadTextAsync(file);
+                    var data = JsonSerializer.Deserialize<HistoryData>(json);
 
-                    System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Loaded {_history.Count} entries from previous session");
-                    return;
+                    if (data != null && data.Entries != null)
+                    {
+                        _history.Clear();
+                        _history.AddRange(data.Entries);
+                        _currentPosition = _history.Count - 1; // Start at end for new session
+
+                        System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Loaded {_history.Count} entries from MSIX storage");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                // Portable ZIP: Use file system
+                if (!string.IsNullOrEmpty(_historyFilePath) && File.Exists(_historyFilePath))
+                {
+                    var json = File.ReadAllText(_historyFilePath);
+                    var data = JsonSerializer.Deserialize<HistoryData>(json);
+
+                    if (data != null && data.Entries != null)
+                    {
+                        _history.Clear();
+                        _history.AddRange(data.Entries);
+                        _currentPosition = _history.Count - 1; // Start at end for new session
+
+                        System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Loaded {_history.Count} entries from file: {_historyFilePath}");
+                        return;
+                    }
                 }
             }
         }
@@ -201,9 +249,6 @@ public class NavigationHistoryService : INavigationHistoryService
     {
         try
         {
-            var localFolder = ApplicationData.Current.LocalFolder;
-            var file = await localFolder.CreateFileAsync(HistoryFileName, CreationCollisionOption.ReplaceExisting);
-
             var data = new HistoryData
             {
                 Entries = _history,
@@ -215,12 +260,27 @@ public class NavigationHistoryService : INavigationHistoryService
                 WriteIndented = true
             });
 
-            await FileIO.WriteTextAsync(file, json);
-            System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Saved {_history.Count} entries");
+            if (_isPackaged)
+            {
+                // MSIX: Use Windows Storage API
+                var localFolder = ApplicationData.Current.LocalFolder;
+                var file = await localFolder.CreateFileAsync(HistoryFileName, CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteTextAsync(file, json);
+                System.Diagnostics.Debug.WriteLine($"[NavigationHistoryService] Saved {_history.Count} entries to MSIX storage");
+            }
+            else
+            {
+                // Portable ZIP: Use file system
+                if (!string.IsNullOrEmpty(_historyFilePath))
+                {
+                    File.WriteAllText(_historyFilePath, json);
+                    System.Diagnostics.Debug.WriteLine($"[NavigationHistoryService] Saved {_history.Count} entries to file: {_historyFilePath}");
+                }
+            }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[NavigationHistory] Error saving history: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"[NavigationHistoryService] Error saving history: {ex.Message}");
         }
     }
 
