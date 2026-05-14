@@ -565,6 +565,28 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("Multibrot5", () => CreateMultibrotTemplate("Multibrot5", 5));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 1: POWER VARIANTS (9 fractals)
+        // Higher-power variations of Mandelbrot, Julia, Burning Ship, and Tricorn
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        // Multibrot6, 7, 8: z⁶ + c, z⁷ + c, z⁸ + c (separate from z6/z7/z8 aliases)
+        RegisterTemplate("Multibrot6", () => CreateMultibrotTemplate("Multibrot6", 6));
+        RegisterTemplate("Multibrot7", () => CreateMultibrotTemplate("Multibrot7", 7));
+        RegisterTemplate("Multibrot8", () => CreateMultibrotTemplate("Multibrot8", 8));
+
+        // Julia5, Julia6: z⁵ + c and z⁶ + c Julia preset fractals
+        RegisterTemplate("Julia5", () => CreateStandardTemplate("Julia5"));
+        RegisterTemplate("Julia6", () => CreateStandardTemplate("Julia6"));
+
+        // BurningShip3, BurningShip4: Burning Ship with cubic and quartic powers
+        RegisterTemplate("BurningShip3", () => CreateJuliaTemplate("BurningShip3"));
+        RegisterTemplate("BurningShip4", () => CreateJuliaTemplate("BurningShip4"));
+
+        // Tricorn3, Tricorn4: Tricorn (conjugate) with cubic and quartic powers
+        RegisterTemplate("Tricorn3", () => CreateJuliaTemplate("Tricorn3"));
+        RegisterTemplate("Tricorn4", () => CreateJuliaTemplate("Tricorn4"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
