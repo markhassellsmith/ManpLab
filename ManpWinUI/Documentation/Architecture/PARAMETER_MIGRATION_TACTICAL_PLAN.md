@@ -5,7 +5,7 @@
 **Project:** Complete the flexible parameter system for **279 fractals** (actual native count)  
 **Timeline:** May 14 - June 15, 2026 (3-4 weeks)  
 **Priority:** HIGH - Use AI budget while available  
-**Status:** 228/279 fractals complete (82%) - **PHASE 4 PRIORITY 8 COMPLETE** 🚀  
+**Status:** 232/279 fractals complete (83%) - **PHASE 4 PRIORITY 9 COMPLETE** 🚀  
 **Goal:** 100% coverage, eliminate dual parameter system
 
 **⚠️ DISCOVERY:** Native inventory scan revealed 279 unique fractals (not 300 as estimated).  
@@ -1251,7 +1251,7 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
 
 ## Progress Summary
 
-**Current Status: 228/279 fractals complete (82%) - PHASE 4 PRIORITY 8 COMPLETE! 🚀**
+**Current Status: 232/279 fractals complete (83%) - PHASE 4 PRIORITY 9 COMPLETE! 🚀**
 
 **⚠️ ACTUAL NATIVE COUNT: 279 fractals** (discovered via comprehensive native inventory scan)  
 **Original estimate: 300 fractals** (overestimated by 21)  
@@ -1292,13 +1292,16 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
   - **Chaotic Maps (1 fractal): SprottB** ✅ Commit: `38ced1d`
   - **Bifurcation Diagrams (6 fractals): LogisticParameterSpace, LambdaParameterSpace, MandelParameter, HenonParameterSpace, OrbitDiagram, MayLyapunovRef** ✅ Commit: `38ced1d`
   - **Note:** LiuChen, RabinovichFabrikant, Arneodo already registered in Phase 3A
+- ✅ **Phase 4 Priority 9:**
+  - **Historical & Research Fractals (4 fractals): MartinMap, ChipMap, QuaternionJulia2D, SinusoidalFractal** ✅ Commit: `01dbef0`
+  - **Note:** Biomorphs, PickoverStalks already registered in Phase 3; CollatzFractal as "Hailstone" in Phase 1; DuffingMap as "Duffing" in Phase 3A
 - ✅ Complex exponent (2 fractals): MarksMandel, MarksMandelpwr
 - ✅ Phoenix (1 fractal)
 - ✅ Lambda (1 fractal)
 - ✅ Hailstone (1 fractal)
 
-**Remaining: 51 fractals (18%)**  
-**See: `MIGRATION_RECONCILIATION.md` Priority 9-12 breakdown**
+**Remaining: 47 fractals (17%)**  
+**See: `MIGRATION_RECONCILIATION.md` Priority 10-12 breakdown**
 
 ### Completion Milestones
 - [x] **Phase 1 Complete: 59/279 (21%) - COMPLETED: May 14, 2026** ✅
@@ -1360,7 +1363,12 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
   - **SprottB** (1 chaotic map) + **6 bifurcation diagrams** (LogisticParameterSpace, LambdaParameterSpace, MandelParameter, HenonParameterSpace, OrbitDiagram, MayLyapunovRef)
   - **Note:** LiuChen, RabinovichFabrikant, Arneodo already registered in Phase 3A; no convergence methods exist in modern registry
   - **Pushed to:** `origin/development`
-- [ ] Phase 4: Remaining Coverage (51 fractals) - **IN PROGRESS** (see MIGRATION_RECONCILIATION.md)
+- [x] **Phase 4 Priority 9 - Historical & Research Fractals: 232/279 (83%) - COMPLETED: May 14, 2026** ✅
+  - **Commit:** `01dbef0` - Historical & Research fractals complete (4 fractals)
+  - **MartinMap** (Barry Martin 1986), **ChipMap** (Pickover 1987), **QuaternionJulia2D** (John C. Hart 1989), **SinusoidalFractal** (1985)
+  - **Note:** Biomorphs, PickoverStalks already registered in Phase 3; CollatzFractal as "Hailstone" in Phase 1; DuffingMap as "Duffing" in Phase 3A
+  - **Pushed to:** `origin/development`
+- [ ] Phase 4: Remaining Coverage (47 fractals) - **IN PROGRESS** (see MIGRATION_RECONCILIATION.md)
 - [ ] Phase 5 Complete: Legacy system removed - Target: June 15, 2026
 
 ---
@@ -1374,15 +1382,14 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
 - **`MIGRATION_RECONCILIATION.md`** - Detailed reconciliation, priorities, and Phase 4 breakdown
 
 ### Summary by Completion Status:
-- **Completed:** 228 fractals (82%)
-- **Remaining:** 51 fractals (18%)
+- **Completed:** 232 fractals (83%)
+- **Remaining:** 47 fractals (17%)
 
-### Highest Priority Remaining (Priority 9-12):
-- Priority 9: Historical & Research (10 fractals)
+### Highest Priority Remaining (Priority 10-12):
 - Priority 10: Experimental Formulas (12 fractals)
 - Priority 11: Advanced Techniques (8 fractals)
 - Priority 12: Custom & Utility (8 fractals)
-- Plus: 13 additional fractals from reconciliation
+- Plus: 19 additional fractals from remaining families
 
 **For detailed Phase 4 implementation strategy, see `MIGRATION_RECONCILIATION.md`**
 
