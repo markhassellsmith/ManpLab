@@ -508,6 +508,35 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("DragonCurveIFS", () => CreateStandardTemplate("DragonCurveIFS"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 1: JULIA CORE VARIANTS (8 fractals)
+        // Core Julia set variations with different formulas and parameters
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        // Julia Classic: Standard z² + c Julia set
+        RegisterTemplate("JuliaClassic", () => CreateJuliaTemplate("JuliaClassic"));
+
+        // Julia Cubic: z³ + c cubic Julia variation
+        RegisterTemplate("JuliaCubic", () => CreateJuliaTemplate("JuliaCubic"));
+
+        // Julia Burning Ship: Julia set with absolute value (Burning Ship formula)
+        RegisterTemplate("JuliaBurningShip", () => CreateJuliaTemplate("JuliaBurningShip"));
+
+        // Julia Phoenix: z² + c + p·z_prev (uses previous iteration)
+        RegisterTemplate("JuliaPhoenix", () => CreateJuliaTemplate("JuliaPhoenix"));
+
+        // Julia Lambda: λ·z·(1-z) logistic map variant
+        RegisterTemplate("JuliaLambda", () => CreateJuliaTemplate("JuliaLambda"));
+
+        // Julia Sine: sin(z) + c trigonometric variant
+        RegisterTemplate("JuliaSine", () => CreateJuliaTemplate("JuliaSine"));
+
+        // Julia Exponential: e^z + c exponential variant
+        RegisterTemplate("JuliaExp", () => CreateJuliaTemplate("JuliaExp"));
+
+        // Julia Magnet: Magnet 1 formula in Julia form
+        RegisterTemplate("JuliaMagnet", () => CreateJuliaTemplate("JuliaMagnet"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
