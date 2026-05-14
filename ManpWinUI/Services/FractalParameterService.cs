@@ -610,6 +610,20 @@ public class FractalParameterService : IFractalParameterService
         });
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 2: Extended Trigonometric Family (8 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Tangent-based Mandelbrot variants with extended trigonometric functions
+
+        RegisterTemplate("TanMandel", () => CreateStandardTemplate("TanMandel"));
+        RegisterTemplate("CotMandel", () => CreateStandardTemplate("CotMandel"));
+        RegisterTemplate("SecMandel", () => CreateStandardTemplate("SecMandel"));
+        RegisterTemplate("CscMandel", () => CreateStandardTemplate("CscMandel"));
+        RegisterTemplate("ArcSinMandel", () => CreateStandardTemplate("ArcSinMandel"));
+        RegisterTemplate("ArcCosMandel", () => CreateStandardTemplate("ArcCosMandel"));
+        RegisterTemplate("ArcTanMandel", () => CreateStandardTemplate("ArcTanMandel"));
+        RegisterTemplate("TanhMandel", () => CreateStandardTemplate("TanhMandel"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
