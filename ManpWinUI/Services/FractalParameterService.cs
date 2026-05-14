@@ -489,6 +489,25 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("NewtonBasin", () => CreateStandardTemplate("NewtonBasin"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 3 STEP 3C: VISUAL PRIORITY FRACTALS (8 fractals)
+        // Visually distinctive fractals with unique rendering characteristics
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        // Special rendering fractals
+        RegisterTemplate("Buddhabrot", () => CreateStandardTemplate("Buddhabrot"));
+        RegisterTemplate("Lyapunov", () => CreateStandardTemplate("Lyapunov"));
+        RegisterTemplate("NumFractal", () => CreateJuliaTemplate("NumFractal"));
+
+        // Historical biomorphs
+        RegisterTemplate("Biomorphs", () => CreateJuliaTemplate("Biomorphs"));
+        RegisterTemplate("PickoverStalks", () => CreateJuliaTemplate("PickoverStalks"));
+
+        // IFS (Iterated Function Systems)
+        RegisterTemplate("BarnsleyFern", () => CreateStandardTemplate("BarnsleyFern"));
+        RegisterTemplate("SierpinskiIFS", () => CreateStandardTemplate("SierpinskiIFS"));
+        RegisterTemplate("DragonCurveIFS", () => CreateStandardTemplate("DragonCurveIFS"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // SPECIAL: HAILSTONE (custom UI, no parameters)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Hailstone", () =>
