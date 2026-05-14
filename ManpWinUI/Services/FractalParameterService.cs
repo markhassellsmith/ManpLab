@@ -683,6 +683,32 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("CelticBurningHybrid", () => CreateJuliaTemplate("CelticBurningHybrid"));
 
         // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 4 PRIORITY 6: Orbital & Distance Estimators (12 fractals)
+        // ═══════════════════════════════════════════════════════════════════════════
+        // Fractals with orbit modifications and distance estimation techniques
+        // Source: OrbitalFractalsFamily.cpp and DistanceEstimatorFamily.cpp
+
+        // Orbital Fractals (8 fractals) - Mandelbrot with orbit trapping and modifications
+        RegisterTemplate("OrbitTrapCross", () => CreateStandardTemplate("OrbitTrapCross"));
+        RegisterTemplate("OrbitTrapCircle", () => CreateStandardTemplate("OrbitTrapCircle"));
+        RegisterTemplate("OrbitTrapPoint", () => CreateStandardTemplate("OrbitTrapPoint"));
+        RegisterTemplate("OrbitTrapSquare", () => CreateStandardTemplate("OrbitTrapSquare"));
+        RegisterTemplate("AverageDistance", () => CreateStandardTemplate("AverageDistance"));
+        RegisterTemplate("MinimumDistance", () => CreateStandardTemplate("MinimumDistance"));
+        RegisterTemplate("MaximumDistance", () => CreateStandardTemplate("MaximumDistance"));
+        RegisterTemplate("AngleAverage", () => CreateStandardTemplate("AngleAverage"));
+
+        // Distance Estimators (4 fractals) - Precise boundary visualization with derivative tracking
+        // MandelbrotDEM: center=-0.5, zoom=1.0
+        // JuliaDEM: center=0.0, zoom=1.5, supports Julia mode
+        // BurningShipDEM: center=-0.5,-0.5, zoom=0.4
+        // TricornDEM: center=0.0, zoom=1.0
+        RegisterTemplate("MandelbrotDEM", () => CreateStandardTemplate("MandelbrotDEM"));
+        RegisterTemplate("JuliaDEM", () => CreateJuliaTemplate("JuliaDEM"));
+        RegisterTemplate("BurningShipDEM", () => CreateStandardTemplate("BurningShipDEM"));
+        RegisterTemplate("TricornDEM", () => CreateStandardTemplate("TricornDEM"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
         // ═══════════════════════════════════════════════════════════════════════════
         // Any fractal not explicitly registered will use this as a fallback
