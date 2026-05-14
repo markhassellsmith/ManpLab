@@ -1257,7 +1257,7 @@ CelticHeart needs investigation (may not exist as separate fractal in native cod
 
 - [x] **Step 5.1:** Delete `ParameterEditorViewModel.Legacy.cs` ✅ **COMPLETE** - Created LegacyBridge.cs with compatibility shims for ResetToDefaults(), ReloadLastSaved(), and LoadParametersForFractal()
 - [x] **Step 5.2:** Remove `SyncPropertiesToParameters()` from `MainViewModel.Parameters.cs` ✅ **COMPLETE** - Deleted properties→parameters sync method, removed call sites with diagnostic messages
-- [ ] **Step 5.3:** Remove `SyncParametersToProperties()` from `MainViewModel.Parameters.cs`
+- [x] **Step 5.3:** Remove `SyncParametersToProperties()` from `MainViewModel.Parameters.cs` ✅ **COMPLETE** - Deleted parameters→properties sync method (68 lines), updated 3 call sites with diagnostic messages
 - [ ] **Step 5.4:** Clean up hard-coded properties in `MainViewModel.StandardFractals.cs`
 - [ ] **Step 5.5:** Update toolbar bindings (if needed - may require value converters)
 - [ ] **Step 5.6:** Test 5 fractals from each major family (30-40 total tests)

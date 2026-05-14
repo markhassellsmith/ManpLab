@@ -78,8 +78,9 @@ public partial class MainViewModel
             if (restored)
             {
                 Debug.WriteLine($"[MainViewModel.Parameters] Restored saved parameter values for '{fractalType}'");
-                // Sync restored parameters → properties
-                SyncParametersToProperties();
+
+                // PHASE 5: SyncParametersToProperties() removed - legacy properties no longer needed
+                Debug.WriteLine("[PHASE 5] Legacy property sync removed - UI binds directly to CurrentParameters");
             }
             else
             {
@@ -105,8 +106,8 @@ public partial class MainViewModel
     {
         Debug.WriteLine($"[MainViewModel.Parameters] Parameter '{e.ParameterKey}' changed: {e.OldValue} → {e.NewValue}");
 
-        // Sync parameters → existing properties (backwards compatibility)
-        SyncParametersToProperties();
+        // PHASE 5: Legacy property sync removed - UI components bind directly to CurrentParameters
+        Debug.WriteLine("[PHASE 5] SyncParametersToProperties() call removed - parameter changes propagate via INotifyPropertyChanged");
 
         // TASK 6: Auto-save parameters to LocalSettings
         // Only save if not currently syncing (to avoid save loops during initialization)
@@ -120,75 +121,20 @@ public partial class MainViewModel
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
-    // BACKWARDS COMPATIBILITY BRIDGE (PHASE 5: Partial removal)
+    // PHASE 5: BACKWARDS COMPATIBILITY BRIDGE REMOVED
     // ═══════════════════════════════════════════════════════════════════════════════
-
-    /// <summary>
-    /// PHASE 5 REMOVED: SyncPropertiesToParameters() - No longer needed.
-    /// The flexible parameter system is now the single source of truth.
-    /// Legacy hard-coded properties are synced FROM parameters, not TO them.
-    /// </summary>
-
-    /// <summary>
-    /// Sync flexible parameter system → existing hard-coded properties.
-    /// Called when parameters change via new API (during migration period).
-    /// </summary>
-    private void SyncParametersToProperties()
-    {
-        if (CurrentParameters == null || !UseParameterSystem)
-            return;
-
-        try
-        {
-            // Temporarily disable sync to prevent infinite loop
-            var wasEnabled = UseParameterSystem;
-            UseParameterSystem = false;
-
-            // View parameters
-            var centerX = CurrentParameters.GetValue<double>("center_x");
-            if (centerX != default && centerX != CenterX)
-                CenterX = centerX;
-
-            var centerY = CurrentParameters.GetValue<double>("center_y");
-            if (centerY != default && centerY != CenterY)
-                CenterY = centerY;
-
-            var zoom = CurrentParameters.GetValue<double>("zoom");
-            if (zoom != default && zoom != Zoom)
-                Zoom = zoom;
-
-            // Algorithm parameters
-            var maxIter = CurrentParameters.GetValue<int>("max_iterations");
-            if (maxIter != default && maxIter != MaxIterations)
-                MaxIterations = maxIter;
-
-            var autoScale = CurrentParameters.GetValue<bool>("auto_scale_iterations");
-            if (autoScale != AutoScaleIterations)
-                AutoScaleIterations = autoScale;
-
-            // Julia parameters
-            var juliaMode = CurrentParameters.GetValue<bool>("julia_mode");
-            var expectedMode = juliaMode ? "Julia" : "Standard";
-            if (SelectedIterationMode != expectedMode)
-                SelectedIterationMode = expectedMode;
-
-            var juliaCX = CurrentParameters.GetValue<double>("julia_c_real");
-            if (juliaCX != default && juliaCX != JuliaCX)
-                JuliaCX = juliaCX;
-
-            var juliaCY = CurrentParameters.GetValue<double>("julia_c_imag");
-            if (juliaCY != default && juliaCY != JuliaCY)
-                JuliaCY = juliaCY;
-
-            UseParameterSystem = wasEnabled;
-            Debug.WriteLine("[MainViewModel.Parameters] Synced parameters → properties");
-        }
-        catch (System.Exception ex)
-        {
-            Debug.WriteLine($"[MainViewModel.Parameters] Error syncing parameters→properties: {ex.Message}");
-            UseParameterSystem = true; // Re-enable on error
-        }
-    }
+    //
+    // REMOVED: SyncPropertiesToParameters() - Step 5.2 ✅
+    //   - No longer needed; flexible parameter system is single source of truth
+    //   - Parameter defaults come from FractalParameterService templates
+    //
+    // REMOVED: SyncParametersToProperties() - Step 5.3 ✅
+    //   - No longer needed; UI binds directly to CurrentParameters
+    //   - Legacy hard-coded properties will be removed in Step 5.4
+    //   - Parameter changes propagate via INotifyPropertyChanged on FractalParameterSet
+    //
+    // Migration complete: All parameter access goes through CurrentParameters property.
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     // ═══════════════════════════════════════════════════════════════════════════════
     // MIGRATION HELPERS
@@ -264,8 +210,8 @@ public partial class MainViewModel
             }
         }
 
-        // Sync to properties
-        SyncParametersToProperties();
+        // PHASE 5: Legacy property sync removed - parameter changes propagate automatically
+        Debug.WriteLine("[PHASE 5] SyncParametersToProperties() call removed - defaults applied directly to CurrentParameters");
 
         Debug.WriteLine($"[MainViewModel.Parameters] Parameters reset to defaults");
     }
