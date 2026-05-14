@@ -168,14 +168,14 @@ public class FractalParameterService : IFractalParameterService
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("MarksMandel", () =>
         {
-            var paramSet = StandardParameterTemplates.CreateWithJulia("MarksMandel");
+            var paramSet = CreateJuliaTemplate("MarksMandel");
             paramSet.AddParameters(StandardParameterTemplates.ComplexExponent().ToArray());
             return paramSet;
         });
 
         RegisterTemplate("MarksMandelpwr", () =>
         {
-            var paramSet = StandardParameterTemplates.CreateWithJulia("MarksMandelpwr");
+            var paramSet = CreateJuliaTemplate("MarksMandelpwr");
             paramSet.AddParameters(StandardParameterTemplates.ComplexExponent().ToArray());
             return paramSet;
         });
@@ -185,7 +185,7 @@ public class FractalParameterService : IFractalParameterService
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Phoenix", () =>
         {
-            var paramSet = StandardParameterTemplates.CreateStandardEscapeTime("Phoenix");
+            var paramSet = CreateStandardTemplate("Phoenix");
 
             // Phoenix-specific parameters
             paramSet.AddParameter(new FractalParameterDescriptor
@@ -224,15 +224,24 @@ public class FractalParameterService : IFractalParameterService
         // ═══════════════════════════════════════════════════════════════════════════
         // NEWTON METHOD FAMILY
         // ═══════════════════════════════════════════════════════════════════════════
-        RegisterTemplate("Newton", () => StandardParameterTemplates.CreateNewton("Newton"));
-        RegisterTemplate("NewtonSinExp", () => StandardParameterTemplates.CreateNewton("NewtonSinExp"));
+        RegisterTemplate("Newton", () =>
+        {
+            var (cx, cy, z) = GetNativeViewportDefaults("Newton");
+            return StandardParameterTemplates.CreateNewton("Newton", cx, cy, z);
+        });
+        RegisterTemplate("NewtonSinExp", () =>
+        {
+            var (cx, cy, z) = GetNativeViewportDefaults("NewtonSinExp");
+            return StandardParameterTemplates.CreateNewton("NewtonSinExp", cx, cy, z);
+        });
 
         // ═══════════════════════════════════════════════════════════════════════════
         // NOVA FAMILY (Newton + Julia hybrid)
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Nova", () =>
         {
-            var paramSet = StandardParameterTemplates.CreateNewton("Nova");
+            var (cx, cy, z) = GetNativeViewportDefaults("Nova");
+            var paramSet = StandardParameterTemplates.CreateNewton("Nova", cx, cy, z);
             paramSet.AddParameters(StandardParameterTemplates.JuliaMode().ToArray());
             return paramSet;
         });
@@ -240,17 +249,17 @@ public class FractalParameterService : IFractalParameterService
         // ═══════════════════════════════════════════════════════════════════════════
         // MAGNET FAMILY
         // ═══════════════════════════════════════════════════════════════════════════
-        RegisterTemplate("Magnet1M", () => StandardParameterTemplates.CreateWithJulia("Magnet1M"));
-        RegisterTemplate("Magnet2M", () => StandardParameterTemplates.CreateWithJulia("Magnet2M"));
-        RegisterTemplate("Magnet1J", () => StandardParameterTemplates.CreateWithJulia("Magnet1J"));
-        RegisterTemplate("Magnet2J", () => StandardParameterTemplates.CreateWithJulia("Magnet2J"));
+        RegisterTemplate("Magnet1M", () => CreateJuliaTemplate("Magnet1M"));
+        RegisterTemplate("Magnet2M", () => CreateJuliaTemplate("Magnet2M"));
+        RegisterTemplate("Magnet1J", () => CreateJuliaTemplate("Magnet1J"));
+        RegisterTemplate("Magnet2J", () => CreateJuliaTemplate("Magnet2J"));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // LAMBDA FAMILY (λ * z^p * (1-z))
         // ═══════════════════════════════════════════════════════════════════════════
         RegisterTemplate("Lambda", () =>
         {
-            var paramSet = StandardParameterTemplates.CreateStandardEscapeTime("Lambda");
+            var paramSet = CreateStandardTemplate("Lambda");
 
             paramSet.AddParameter(new FractalParameterDescriptor
             {
@@ -293,7 +302,7 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("ExpSquare", () =>
         {
             // Create standard template first
-            var paramSet = StandardParameterTemplates.CreateWithJulia("ExpSquare");
+            var paramSet = CreateJuliaTemplate("ExpSquare");
 
             // Set MaxIterations to 1000 (override any saved setting by creating a fresh parameter set)
             // This fractal was accidentally saved with 5000 which is too high for general use
@@ -308,125 +317,54 @@ public class FractalParameterService : IFractalParameterService
         // Julia presets are NOT Julia mode fractals - they have hardcoded C values
         // and only need standard view + algorithm parameters
 
-        RegisterTemplate("JuliaGoldenRatio", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaGoldenRatio"));
-
-        RegisterTemplate("JuliaDendrite", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaDendrite"));
-
-        RegisterTemplate("JuliaSpiral", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaSpiral"));
-
-        RegisterTemplate("JuliaDragon", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaDragon"));
-
-        RegisterTemplate("JuliaCauliflower", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaCauliflower"));
-
-        RegisterTemplate("JuliaSeahorse", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaSeahorse"));
-
-        RegisterTemplate("JuliaAirplane", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaAirplane"));
-
-        RegisterTemplate("JuliaLightning", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaLightning"));
-
-        RegisterTemplate("JuliaSnowflake", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaSnowflake"));
-
-        RegisterTemplate("JuliaFlower", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaFlower"));
-
-        RegisterTemplate("JuliaFeigenbaum", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaFeigenbaum"));
-
-        RegisterTemplate("JuliaTwistedCross", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaTwistedCross"));
-
-        RegisterTemplate("JuliaBackbone", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaBackbone"));
-
-        RegisterTemplate("JuliaSpiralGalaxy", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaSpiralGalaxy"));
-
-        RegisterTemplate("JuliaMedusa", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaMedusa"));
-
-        RegisterTemplate("JuliaCrystal", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaCrystal"));
-
-        RegisterTemplate("JuliaPaisley", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaPaisley"));
-
-        RegisterTemplate("JuliaFuzzyBlob", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaFuzzyBlob"));
-
-        RegisterTemplate("JuliaEye", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaEye"));
-
-        RegisterTemplate("JuliaTripleSpiral", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaTripleSpiral"));
-
-        RegisterTemplate("JuliaHeart", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaHeart"));
-
-        RegisterTemplate("JuliaNeurons", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaNeurons"));
-
-        RegisterTemplate("JuliaFractalTree", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("JuliaFractalTree"));
+        RegisterTemplate("JuliaGoldenRatio", () => CreateStandardTemplate("JuliaGoldenRatio"));
+        RegisterTemplate("JuliaDendrite", () => CreateStandardTemplate("JuliaDendrite"));
+        RegisterTemplate("JuliaSpiral", () => CreateStandardTemplate("JuliaSpiral"));
+        RegisterTemplate("JuliaDragon", () => CreateStandardTemplate("JuliaDragon"));
+        RegisterTemplate("JuliaCauliflower", () => CreateStandardTemplate("JuliaCauliflower"));
+        RegisterTemplate("JuliaSeahorse", () => CreateStandardTemplate("JuliaSeahorse"));
+        RegisterTemplate("JuliaAirplane", () => CreateStandardTemplate("JuliaAirplane"));
+        RegisterTemplate("JuliaLightning", () => CreateStandardTemplate("JuliaLightning"));
+        RegisterTemplate("JuliaSnowflake", () => CreateStandardTemplate("JuliaSnowflake"));
+        RegisterTemplate("JuliaFlower", () => CreateStandardTemplate("JuliaFlower"));
+        RegisterTemplate("JuliaFeigenbaum", () => CreateStandardTemplate("JuliaFeigenbaum"));
+        RegisterTemplate("JuliaTwistedCross", () => CreateStandardTemplate("JuliaTwistedCross"));
+        RegisterTemplate("JuliaBackbone", () => CreateStandardTemplate("JuliaBackbone"));
+        RegisterTemplate("JuliaSpiralGalaxy", () => CreateStandardTemplate("JuliaSpiralGalaxy"));
+        RegisterTemplate("JuliaMedusa", () => CreateStandardTemplate("JuliaMedusa"));
+        RegisterTemplate("JuliaCrystal", () => CreateStandardTemplate("JuliaCrystal"));
+        RegisterTemplate("JuliaPaisley", () => CreateStandardTemplate("JuliaPaisley"));
+        RegisterTemplate("JuliaFuzzyBlob", () => CreateStandardTemplate("JuliaFuzzyBlob"));
+        RegisterTemplate("JuliaEye", () => CreateStandardTemplate("JuliaEye"));
+        RegisterTemplate("JuliaTripleSpiral", () => CreateStandardTemplate("JuliaTripleSpiral"));
+        RegisterTemplate("JuliaHeart", () => CreateStandardTemplate("JuliaHeart"));
+        RegisterTemplate("JuliaNeurons", () => CreateStandardTemplate("JuliaNeurons"));
+        RegisterTemplate("JuliaFractalTree", () => CreateStandardTemplate("JuliaFractalTree"));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // BURNING SHIP FAMILY POWER VARIANTS
         // ═══════════════════════════════════════════════════════════════════════════
         // Higher power variations of the Burning Ship formula
 
-        RegisterTemplate("BurningShipCubic", () =>
-            StandardParameterTemplates.CreateWithJulia("BurningShipCubic"));
-
-        RegisterTemplate("BurningShipQuartic", () =>
-            StandardParameterTemplates.CreateWithJulia("BurningShipQuartic"));
-
-        RegisterTemplate("BurningShipQuintic", () =>
-            StandardParameterTemplates.CreateWithJulia("BurningShipQuintic"));
-
-        RegisterTemplate("PerpendicularBurningShip", () =>
-            StandardParameterTemplates.CreateWithJulia("PerpendicularBurningShip"));
-
-        RegisterTemplate("BuffaloBurningShip", () =>
-            StandardParameterTemplates.CreateWithJulia("BuffaloBurningShip"));
-
-        RegisterTemplate("SharkBurningShip", () =>
-            StandardParameterTemplates.CreateWithJulia("SharkBurningShip"));
-
-        RegisterTemplate("CelticBurningShip", () =>
-            StandardParameterTemplates.CreateWithJulia("CelticBurningShip"));
-
-        RegisterTemplate("ReverseBurningShip", () =>
-            StandardParameterTemplates.CreateWithJulia("ReverseBurningShip"));
-
-        RegisterTemplate("VerticalBurningShip", () =>
-            StandardParameterTemplates.CreateWithJulia("VerticalBurningShip"));
-
-        RegisterTemplate("DiagonalBurningShip", () =>
-            StandardParameterTemplates.CreateWithJulia("DiagonalBurningShip"));
-
-        RegisterTemplate("PerpendicularMandelbrot", () =>
-            StandardParameterTemplates.CreateWithJulia("PerpendicularMandelbrot"));
-
-        RegisterTemplate("BirdOfPrey", () =>
-            StandardParameterTemplates.CreateWithJulia("BirdOfPrey"));
+        RegisterTemplate("BurningShipCubic", () => CreateJuliaTemplate("BurningShipCubic"));
+        RegisterTemplate("BurningShipQuartic", () => CreateJuliaTemplate("BurningShipQuartic"));
+        RegisterTemplate("BurningShipQuintic", () => CreateJuliaTemplate("BurningShipQuintic"));
+        RegisterTemplate("PerpendicularBurningShip", () => CreateJuliaTemplate("PerpendicularBurningShip"));
+        RegisterTemplate("BuffaloBurningShip", () => CreateJuliaTemplate("BuffaloBurningShip"));
+        RegisterTemplate("SharkBurningShip", () => CreateJuliaTemplate("SharkBurningShip"));
+        RegisterTemplate("CelticBurningShip", () => CreateJuliaTemplate("CelticBurningShip"));
+        RegisterTemplate("ReverseBurningShip", () => CreateJuliaTemplate("ReverseBurningShip"));
+        RegisterTemplate("VerticalBurningShip", () => CreateJuliaTemplate("VerticalBurningShip"));
+        RegisterTemplate("DiagonalBurningShip", () => CreateJuliaTemplate("DiagonalBurningShip"));
+        RegisterTemplate("PerpendicularMandelbrot", () => CreateJuliaTemplate("PerpendicularMandelbrot"));
+        RegisterTemplate("BirdOfPrey", () => CreateJuliaTemplate("BirdOfPrey"));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // NEWTON/CONVERGENCE FAMILY EXTENSIONS
         // ═══════════════════════════════════════════════════════════════════════════
 
-        RegisterTemplate("NewtonQuartic", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("NewtonQuartic"));
-
-        RegisterTemplate("HalleyCubic", () =>
-            StandardParameterTemplates.CreateStandardEscapeTime("HalleyCubic"));
+        RegisterTemplate("NewtonQuartic", () => CreateStandardTemplate("NewtonQuartic"));
+        RegisterTemplate("HalleyCubic", () => CreateStandardTemplate("HalleyCubic"));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // TRIGONOMETRIC FAMILY (sine, cosine, tangent fractals)
