@@ -201,9 +201,9 @@ namespace Native
             spec.discoveryYear = 1995;
             spec.computationalNotes = "z^z = exp(z*ln(z)); computationally intensive";
 
-            spec.defaultCenterX = 0.0;
+            spec.defaultCenterX = 0.75;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.0;
+            spec.defaultZoom = 1.532567;  // Viewport tuning: X scale 2.61, Y scale 1.47
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -269,9 +269,9 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "z^c = exp(c*ln(z)); parameter-dependent structure";
 
-            spec.defaultCenterX = 0.0;
+            spec.defaultCenterX = 0.5;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.0;
+            spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0, Y scale 1.69
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
