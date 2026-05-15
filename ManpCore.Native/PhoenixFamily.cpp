@@ -24,9 +24,9 @@ void RegisterPhoenixFamily()
 
     spec.supportsJulia = true;
 
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.6;
+    spec.defaultZoom = 0.938967;  // Viewport tuning: X scale 4.26, Y scale 2.40
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
