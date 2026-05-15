@@ -147,19 +147,19 @@ namespace Native
             spec.displayName = "Mutant Mandelbrot (Power Evolution)";
             spec.category = "Hybrid Fractals";
             spec.type = FractalCategory::EscapeTime2D;
-            spec.description = "Power varies with iteration: z(n+1) = z^(2+sin(n/10)) + c. Creates evolving fractal structure.";
-            spec.formula = "z(n+1) = z^(2+sin(n/10)) + c";
-            spec.formulaLatex = R"(z_{n+1} = z_n^{2+\sin(n/10)} + c)";
+            spec.description = "Power varies with iteration: z(n+1) = z^(2+sin(n/20)) + c. Power oscillates between 1.0 and 3.0, creating slowly morphing fractal structure.";
+            spec.formula = "z(n+1) = z^(2+sin(n/20)) + c";
+            spec.formulaLatex = R"(z_{n+1} = z_n^{2+\sin(n/20)} + c)";
             spec.supportsJulia = true;
 
-            spec.visualCharacteristics = "Morphing structure, oscillating detail levels";
+            spec.visualCharacteristics = "Slowly morphing structure, smooth power transitions between cubic and linear behavior";
             spec.discoveredBy = "Time-varying power experiments";
             spec.discoveryYear = 2003;
-            spec.computationalNotes = "Power oscillates slowly creating dynamic appearance";
+            spec.computationalNotes = "Power oscillates between 1.0 and 3.0 with period of ~126 iterations for smooth morphing";
 
-            spec.defaultCenterX = 0.0;
+            spec.defaultCenterX = -0.5;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.7;
+            spec.defaultZoom = 1.0;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -170,30 +170,26 @@ namespace Native
 
                 for (int i = 0; i < maxIter; ++i)
                 {
-                    double power = 2.0 + 0.5 * std::sin(i / 10.0);
+                    // Power varies between 1.0 and 3.0 with slower oscillation for smoother morphing
+                    double power = 2.0 + std::sin(i / 20.0);
 
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                    double mag2 = z.real * z.real + z.imag * z.imag;
 
-                    if (mag < 1e-10)
+                    // Standard escape check
+                    if (mag2 > 256.0)
                     {
                         return static_cast<double>(i);
                     }
 
+                    double mag = std::sqrt(mag2);
                     double angle = std::atan2(z.imag, z.real);
 
-                    // z^power
+                    // z^power using polar form
                     double newMag = std::pow(mag, power);
                     double newAngle = angle * power;
 
                     z.real = newMag * std::cos(newAngle) + constant.real;
                     z.imag = newMag * std::sin(newAngle) + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
-                    {
-                        return static_cast<double>(i);
-                    }
                 }
 
                 return static_cast<double>(maxIter);
