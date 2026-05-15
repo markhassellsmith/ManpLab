@@ -49,9 +49,9 @@ namespace Native
             spec.discoveryYear = 2004;
             spec.computationalNotes = "Multi-wing attractor with a=10, b=40, c=2.5, requires small dt=0.001";
 
-            spec.defaultCenterX = -0.33;
-            spec.defaultCenterY = -0.69;
-            spec.defaultZoom = 0.059540;  // Viewport of approximately 50.386327 by 28.342309
+            spec.defaultCenterX = 0.0;
+            spec.defaultCenterY = 0.0;
+            spec.defaultZoom = 0.025974;  // Viewport tuning: X scale 154, Y scale 86.8
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -148,9 +148,9 @@ namespace Native
             spec.discoveryYear = 1981;
             spec.computationalNotes = "Third-order differential equation system";
 
-            spec.defaultCenterX = 0.04;
-            spec.defaultCenterY = -0.04;
-            spec.defaultZoom = 4.15;  // Optimal for range [-0.22 to 0.30, -0.45 to 0.36, -0.74 to 0.70]
+            spec.defaultCenterX = 0.0;
+            spec.defaultCenterY = 0.0;
+            spec.defaultZoom = 2.758621;  // Viewport tuning: X scale 1.45, Y scale 0.813
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
