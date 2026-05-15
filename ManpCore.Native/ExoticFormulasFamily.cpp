@@ -46,9 +46,9 @@ void RegisterExoticFormulasFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0, Y scale 1.69
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -128,9 +128,9 @@ void RegisterExoticFormulasFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.4;
+    spec.defaultCenterY = -0.3;
+    spec.defaultZoom = 1.219512;  // Viewport tuning: X scale 3.28, Y scale 1.84
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -170,9 +170,9 @@ void RegisterExoticFormulasFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.6;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.961538;  // Viewport tuning: X scale 4.16, Y scale 2.34
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -211,9 +211,9 @@ void RegisterExoticFormulasFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.8;
+    spec.defaultCenterY = -0.5;
+    spec.defaultZoom = 0.966184;  // Viewport tuning: X scale 4.14, Y scale 2.33
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -251,9 +251,9 @@ void RegisterExoticFormulasFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 1.532567;  // Viewport tuning: X scale 2.61, Y scale 1.47
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -304,7 +304,7 @@ void RegisterExoticFormulasFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 7.8125;  // Viewport tuning: X scale 0.512, Y scale 0.288
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
