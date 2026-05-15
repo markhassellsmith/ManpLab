@@ -31,7 +31,7 @@ void RegisterClassicEscapeTimeFamily()
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         // Lambda iteration: z_n+1 = λ * z_n * (1 - z_n)
         // Lambda uses smaller bailout (4.0) than Mandelbrot
-        ComplexD z(0, 0);
+        ComplexD z(0.5, 0.0);  // Lambda requires non-zero starting point (standard is 0.5)
         ComplexD lambda = isJulia ? juliaC : c;
 
         for (int iter = 0; iter < maxIter; ++iter) {
@@ -359,9 +359,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -1.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0, Y scale 1.69
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
