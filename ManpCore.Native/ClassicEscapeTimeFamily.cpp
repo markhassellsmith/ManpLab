@@ -44,9 +44,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;   // Lambda main body view
+    spec.defaultCenterX = 1.0;    // Viewport tuning: optimal view for twin Mandelbrots
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;       // Standard Mandelbrot-like zoom to show full set
+    spec.defaultZoom = 0.333333;  // Viewport tuning: X scale 6.0, Y scale 3.375
     spec.defaultBailout = 4.0;    // Lambda uses bailout of 4.0
     spec.hasSymmetry = false;
 

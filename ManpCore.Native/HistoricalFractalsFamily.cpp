@@ -83,9 +83,9 @@ namespace Native
             spec.discoveryYear = 1988;
             spec.computationalNotes = "Combines trigonometric and polynomial terms";
 
-            spec.defaultCenterX = 0.0;
+            spec.defaultCenterX = -0.75;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.3;
+            spec.defaultZoom = 0.509244;  // Viewport tuning: X scale 3.93, Y scale 2.21
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -146,7 +146,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            spec.defaultZoom = 0.004518;  // Viewport tuning: X scale 442.66, Y scale 248.99
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -398,7 +398,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 5.0;
+            spec.defaultZoom = 0.295501;  // Viewport tuning: X scale 6.77, Y scale 3.81
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
