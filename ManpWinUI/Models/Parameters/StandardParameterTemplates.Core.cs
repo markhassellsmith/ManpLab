@@ -22,8 +22,12 @@ public static partial class StandardParameterTemplates
     /// <summary>
     /// Standard 2D view parameters: centerX, centerY, zoom.
     /// Used by all 2D escape-time fractals.
+    /// Accepts native defaults from FractalDescriptor.
     /// </summary>
-    public static IEnumerable<FractalParameterDescriptor> StandardView2D()
+    public static IEnumerable<FractalParameterDescriptor> StandardView2D(
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
         yield return new FractalParameterDescriptor
         {
@@ -31,7 +35,7 @@ public static partial class StandardParameterTemplates
             Name = "Center X",
             Type = ParameterType.Double,
             Category = ParameterCategory.View,
-            DefaultValue = 0.0,
+            DefaultValue = defaultCenterX,
             MinValue = -10.0,
             MaxValue = 10.0,
             StepSize = 0.01,
@@ -46,7 +50,7 @@ public static partial class StandardParameterTemplates
             Name = "Center Y",
             Type = ParameterType.Double,
             Category = ParameterCategory.View,
-            DefaultValue = 0.0,
+            DefaultValue = defaultCenterY,
             MinValue = -10.0,
             MaxValue = 10.0,
             StepSize = 0.01,
@@ -61,7 +65,7 @@ public static partial class StandardParameterTemplates
             Name = "Zoom",
             Type = ParameterType.Double,
             Category = ParameterCategory.View,
-            DefaultValue = 1.0,
+            DefaultValue = defaultZoom,
             MinValue = 0.001,
             MaxValue = 1e15,
             StepSize = 0.1,
@@ -99,6 +103,17 @@ public static partial class StandardParameterTemplates
 
         yield return new FractalParameterDescriptor
         {
+            Key = "auto_scale_iterations",
+            Name = "Auto-scale with Zoom",
+            Type = ParameterType.Boolean,
+            Category = ParameterCategory.Algorithm,
+            DefaultValue = true,
+            Description = "Automatically increase iterations based on zoom level for better detail",
+            DisplayOrder = 2
+        };
+
+        yield return new FractalParameterDescriptor
+        {
             Key = "bailout",
             Name = "Bailout Radius",
             Type = ParameterType.Double,
@@ -109,7 +124,7 @@ public static partial class StandardParameterTemplates
             StepSize = 1.0,
             FormatString = "F1",
             Description = "Escape radius threshold - higher values may show more detail but slower render",
-            DisplayOrder = 2,
+            DisplayOrder = 3,
             Unit = "radius"
         };
 
@@ -125,7 +140,7 @@ public static partial class StandardParameterTemplates
             StepSize = 0.1,
             FormatString = "F2",
             Description = "Radius at which a point is considered to have escaped",
-            DisplayOrder = 3
+            DisplayOrder = 4
         };
     }
 
@@ -240,35 +255,107 @@ public static partial class StandardParameterTemplates
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
+    // POLYNOMIAL COEFFICIENTS (Newton, Halley, convergence methods)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Generate polynomial coefficient parameters for Newton/Halley/convergence methods.
+    /// For a polynomial of degree n: z^n + a*z^(n-1) + b*z^(n-2) + ... + c*z + d = 0
+    /// This generates parameters for all lower-degree coefficients (a, b, c, d, ...).
+    /// </summary>
+    /// <param name="degree">Polynomial degree (e.g., 3 for cubic, 4 for quartic)</param>
+    /// <returns>Array of coefficient parameters</returns>
+    public static IEnumerable<FractalParameterDescriptor> PolynomialCoefficients(int degree)
+    {
+        // Coefficient names: a, b, c, d, e, f, g, h, i, j (supports up to degree 10)
+        string[] coeffNames = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+
+        // Generate parameters for each lower-degree term
+        for (int i = 0; i < degree; i++)
+        {
+            int exponent = degree - 1 - i; // z^(n-1), z^(n-2), ..., z^1, z^0
+            string coeffName = coeffNames[i];
+
+            yield return new FractalParameterDescriptor
+            {
+                Key = $"poly_coeff_{coeffName}",
+                Name = $"Coefficient {coeffName} (z^{exponent})",
+                Type = ParameterType.Double,
+                Category = ParameterCategory.FractalSpecific,
+                DefaultValue = 0.0,
+                MinValue = -10.0,
+                MaxValue = 10.0,
+                StepSize = 0.1,
+                FormatString = "F2",
+                Description = $"Coefficient for z^{exponent} term in polynomial",
+                DisplayOrder = 10 + i
+            };
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
     // CONVENIENCE BUILDERS
     // ═══════════════════════════════════════════════════════════════════════════════
 
-    public static FractalParameterSet CreateStandardEscapeTime(string fractalType)
+    public static FractalParameterSet CreateStandardEscapeTime(
+        string fractalType,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
         var paramSet = new FractalParameterSet(fractalType);
-        paramSet.AddParameters(StandardView2D().ToArray());
+        paramSet.AddParameters(StandardView2D(defaultCenterX, defaultCenterY, defaultZoom).ToArray());
         paramSet.AddParameters(StandardAlgorithm().ToArray());
         return paramSet;
     }
 
-    public static FractalParameterSet CreateWithJulia(string fractalType)
+    public static FractalParameterSet CreateWithJulia(
+        string fractalType,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
-        var paramSet = CreateStandardEscapeTime(fractalType);
+        var paramSet = CreateStandardEscapeTime(fractalType, defaultCenterX, defaultCenterY, defaultZoom);
         paramSet.AddParameters(JuliaMode().ToArray());
         return paramSet;
     }
 
-    public static FractalParameterSet CreateMultibrot(string fractalType, int defaultExponent)
+    public static FractalParameterSet CreateMultibrot(
+        string fractalType,
+        int defaultExponent,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
-        var paramSet = CreateWithJulia(fractalType);
+        var paramSet = CreateWithJulia(fractalType, defaultCenterX, defaultCenterY, defaultZoom);
         paramSet.AddParameter(IntegerExponent(defaultExponent));
         return paramSet;
     }
 
-    public static FractalParameterSet CreateNewton(string fractalType)
+    public static FractalParameterSet CreateNewton(
+        string fractalType,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
     {
-        var paramSet = CreateStandardEscapeTime(fractalType);
+        var paramSet = CreateStandardEscapeTime(fractalType, defaultCenterX, defaultCenterY, defaultZoom);
         // Add Newton-specific parameters here if needed
+        return paramSet;
+    }
+
+    /// <summary>
+    /// Create a Newton polynomial fractal with all coefficient parameters.
+    /// For example, degree 3 creates: z³ + az² + bz + c = 0
+    /// </summary>
+    public static FractalParameterSet CreateNewtonPolynomial(
+        string fractalType,
+        int degree,
+        double defaultCenterX = 0.0,
+        double defaultCenterY = 0.0,
+        double defaultZoom = 1.0)
+    {
+        var paramSet = CreateStandardEscapeTime(fractalType, defaultCenterX, defaultCenterY, defaultZoom);
+        paramSet.AddParameters(PolynomialCoefficients(degree).ToArray());
         return paramSet;
     }
 }

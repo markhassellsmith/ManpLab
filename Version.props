@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup>
+    <!-- ManpLab Version Configuration -->
+    <!-- This is the single source of truth for version numbers -->
+
+    <!-- Version format: Major.Minor.Patch -->
+    <VersionPrefix>1.4.0</VersionPrefix>
+
+    <!-- VersionSuffix: Leave empty for releases, or use "beta", "rc1", etc. -->
+    <VersionSuffix></VersionSuffix>
+
+    <!-- Build/Revision number - auto-increments on each build -->
+    <!-- Format: MSIX requires 4-part version: Major.Minor.Patch.Build -->
+    <FileVersion>$(VersionPrefix).0</FileVersion>
+
+    <!-- Informational version shown in About dialog -->
+    <InformationalVersion Condition="'$(VersionSuffix)' == ''">$(VersionPrefix)</InformationalVersion>
+    <InformationalVersion Condition="'$(VersionSuffix)' != ''">$(VersionPrefix)-$(VersionSuffix)</InformationalVersion>
+  </PropertyGroup>
+</Project>

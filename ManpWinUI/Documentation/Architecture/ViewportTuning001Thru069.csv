@@ -1,0 +1,74 @@
+Index,Group Name,Fractal Name,Pass/Fail,Notes,Center X,Center Y,X Scale Width,Y Scale Width
+1,Attractors,Aizawa Attractor,Pass,,,,,
+2,Attractors,Chen-Lee Attractor,Pass,,,,,
+3,Attractors,Dadras Attractor,Pass,,,,,
+4,Attractors,Halvorsen Attractor,Pass,,,,,
+5,Attractors,Lorenz Attractor,Pass,,,,,
+6,Attractors,Pickover Attractor,Pass,,,,,
+7,Attractors,Thomas Attractor,Pass,,,,,
+8,Barnsley,Barnsley J1,Pass,,,,,
+9,Barnsley,Barnsley J2,Pass,,,,,
+10,Barnsley,Barnsley J3,Pass,,,,,
+11,Barnsley,Barnsley M1,Pass,,,,,
+12,Barnsley,Barnsley M2,Pass,,,,,
+13,Barnsley,Barnsley M3,Pass,,,,,
+14,Bifurcation,Henon Parameter Space,Pass,,,,,
+15,Bifurcation,Lambda Parameter Space,Pass,,,,,
+16,Bifurcation,Logistic Parameter Space,Pass,Vertical bands?,,,,
+17,Bifurcation,Mandelbrot Parameter Space,Pass,,,,,
+18,Bifurcation,May-Lyapunov Reference,Pass,Vertical bands?,,,,
+19,Bifurcation,Orbit Diagram,Pass,,,,,
+20,Burning Ship Family,Burning Ship (Power 3),Pass,,,,,
+21,Burning Ship Family,Burning Ship (Power 3),Pass,,,,,
+22,Burning Ship Variants,Bird Of Prey,Pass,,,,,
+23,Burning Ship Variants,Buffalo Burning Ship,Pass,,,,,
+24,Burning Ship Variants,Burning Ship Cubic,Pass,,,,,
+25,Burning Ship Variants,Burning Ship Quartic,Pass,,,,,
+26,Burning Ship Variants,Burning Ship Quintic,Pass,,,,,
+27,Burning Ship Variants,Celtic Burning Ship,Pass,,,,,
+28,Burning Ship Variants,Diagonal Burning Ship,Pass,,,,,
+29,Burning Ship Variants,Partial Burning Ship,Pass,,,,,
+30,Burning Ship Variants,Perpendicular Burning Ship,Pass,,,,,
+31,Burning Ship Variants,Reverse Burning Ship,Pass,,,,,
+32,Burning Ship Variants,Shark Burning Ship,Pass,,,,,
+33,Burning Ship Variants,Vertical Burning Ship,Pass,looks almost exactly like Bird Of Prey,,,,
+34,Chaotic Maps,Arneodo,Pass,,0,0,1.45E+00,8.13E-01
+35,Chaotic Maps,LiuChen,Pass,,0,0,1.54E+02,8.68E+01
+36,Chaotic Maps,RabinovichFabrikant,Pass,,,,,
+37,Chaotic Maps,Sprott B Attractor,Pass,,,,,
+38,Classic Fractals,Lambda,Fail,black screen,,,,
+39,Classic Fractals,Mandelbrot,Pass,,,,,
+40,Classic Fractals,Tetrate,Pass,,-1.5,0,3.00E+00,1.69E+00
+41,Classic Fractals,Unity,Pass,,,,,
+42,Complex Functions,1/sin(z)^2,Pass,,,,,
+43,Complex Functions,cos(z)/tan(z),Pass,,,,,
+44,Complex Functions,Square + Trig,Pass,,,,,
+45,Complex Functions,Trig + Trig,Pass,,,,,
+46,Complex Functions,Trig Squared,Pass,,,,,
+47,Complex Functions,Trig x Trig,Pass,,,,,
+48,Complex Functions,z*sin(z) + z,Pass,,,,,
+45,Distance Estimator,Burning Ship (Distance Estimator),Pass,,,,,
+46,Distance Estimator,Julia (Distance Estimator),Pass,,,,,
+47,Distance Estimator,Mandelbrot (Distance Estimator),Pass,,,,,
+48,Distance Estimator,Tricorn  (Distance Estimator),Pass,,,,,
+49,Exotic,Celtic Mandelbrot,Pass,,-0.5,0,3.00E+00,1.69E+00
+50,Exotic,Heart Mandelbrot,Pass,,-0.6,0,4.16E+00,2.34E+00
+51,Exotic,Perpendicular Mandelbrot,Pass,,-0.4,-0.3,3.28E+00,1.84E+00
+52,Exotic,Quasi-Perpendicular,Pass,,-0.8,-0.5,4.14E+00,2.33E+00
+53,Exotic,Shark Fin,Pass,,-0.5,0,2.61E+00,1.47E+00
+54,Exotic,Wavy,Pass,looks like a plain Mandelbrot,,,,
+55,Exotic,Zubieta,Pass,,0,0,5.12E-01,2.88E-01
+56,Exotic Fractals,Magnet I,Pass,,-0.5,0,2.61E+00,1.47E+00
+57,Exotic Fractals,Magnet II,Pass,,,,,
+58,Exotic Fractals,Phoenix Fractal,Pass,,-0.5,0,4.26E+00,2.40E+00
+59,Exponential Fractals,Complex Power,Pass,,0.5,0,3.00E+00,1.69E+00
+60,Exponential Fractals,Exponential Julia,Pass,,,,,
+61,Exponential Fractals,Exponential Mandelbrot,Pass,,-1,0,2.00E+01,1.13E+01
+62,Exponential Fractals,Exponential Square,Pass,,,,,
+63,Exponential Fractals,Lambda Lambda Esponential,Pass,,-2.5,0,1.20E+01,6.75E+00
+64,Exponential Fractals,Lambda Mandel Exponential,Pass,,0,0,3.74E+01,2.10E+01
+65,Exponential Fractals,Logarithm Fractal,Fail,", zoomed out nothing",,,,
+66,Exponential Fractals,Logarithmic Mandelbrot,Fail,", zoomed out nothing",,,,
+67,Exponential Fractals,Mandelbrot Exponential,Pass,,-1.75,0,3.00E+00,1.69E+00
+68,Exponential Fractals,Power Tower (z^z),Pass,,0.75,0,2.61E+00,1.47E+00
+69,Exponential Fractals,z^z + c,Pass,,0.5,0,1.50E+00,8.44E-01

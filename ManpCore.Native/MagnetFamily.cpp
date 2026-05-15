@@ -168,9 +168,9 @@ void RegisterMagnetFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.6;
+    spec.defaultZoom = 1.532567;  // Viewport tuning: X scale 2.61, Y scale 1.47
     spec.defaultBailout = 1000.0;
     spec.hasSymmetry = false;
     spec.parameters = {};

@@ -14,18 +14,18 @@ void RegisterBifurcationFamily()
     FractalSpec spec;
 
     //=========================================================================
-    // Logistic Map Bifurcation
+    // Logistic Parameter Space
     //=========================================================================
-    spec.name = "LogisticBifurcation";
-    spec.displayName = "Logistic Bifurcation";
+    spec.name = "LogisticParameterSpace";
+    spec.displayName = "Logistic Parameter Space";
     spec.category = "Bifurcation";
     spec.type = FractalCategory::Sequence2D;
-    spec.description = "Bifurcation diagram for the logistic map: xₙ₊₁ = r·xₙ·(1-xₙ)";
+    spec.description = "Parameter space visualization for the logistic map: xₙ₊₁ = r·xₙ·(1-xₙ). Shows averaged attractor behavior across parameter space. (Note: bifurcation diagrams require specialized rendering)";
     spec.formula = "x = r·x·(1-x)";
     spec.formulaLatex = R"(x_{n+1} = r \cdot x_n \cdot (1 - x_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // For bifurcation: c.real = parameter r, c.imag = initial value
+        // For parameter space: c.real = parameter r, c.imag = secondary parameter
         double r = c.real;
         double x = 0.5;  // Standard initial value
         const int transient = 200;  // Skip transient behavior
@@ -50,22 +50,22 @@ void RegisterBifurcationFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 3.0;  // Interesting range: 2.8 to 4.0
-    spec.defaultCenterY = 0.5;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = 2.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 0.697;  // Viewport of approximately 4.303873 by 2.420929
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // Lambda Bifurcation
+    // Lambda Parameter Space
     //=========================================================================
-    spec.name = "LambdaBifurcation";
-    spec.displayName = "Lambda Bifurcation";
+    spec.name = "LambdaParameterSpace";
+    spec.displayName = "Lambda Parameter Space";
     spec.category = "Bifurcation";
     spec.type = FractalCategory::Sequence2D;
-    spec.description = "Bifurcation diagram for the complex lambda map";
+    spec.description = "Parameter space visualization for the complex lambda map: z = λ·z·(1-z). Shows averaged attractor behavior across parameter space. (Note: bifurcation diagrams require specialized rendering)";
     spec.formula = "z = λ·z·(1-z)";
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot z_n \cdot (1 - z_n))";
 
@@ -99,9 +99,9 @@ void RegisterBifurcationFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = 1.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.536203;  // Viewport of approximately 5.596998 by 3.148312
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -114,7 +114,7 @@ void RegisterBifurcationFamily()
     spec.displayName = "Mandelbrot Parameter Space";
     spec.category = "Bifurcation";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Parameter space visualization showing periodicity and stability";
+    spec.description = "Parameter space visualization showing periodicity and stability for z = z² + c";
     spec.formula = "z = z² + c, showing parameter stability";
     spec.formulaLatex = R"(z_{n+1} = z_n^2 + c)";
 
@@ -159,13 +159,13 @@ void RegisterBifurcationFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // Henon Map (2D discrete dynamical system)
+    // Henon Map Parameter Space (2D discrete dynamical system)
     //=========================================================================
-    spec.name = "HenonBifurcation";
-    spec.displayName = "Henon Map Bifurcation";
+    spec.name = "HenonParameterSpace";
+    spec.displayName = "Henon Parameter Space";
     spec.category = "Bifurcation";
     spec.type = FractalCategory::Sequence2D;
-    spec.description = "Bifurcation diagram for the Henon map";
+    spec.description = "Parameter space visualization for the Hénon map: xₙ₊₁ = 1 - a·xₙ² + yₙ; yₙ₊₁ = b·xₙ. Shows averaged attractor behavior across parameter space. (Note: bifurcation diagrams require specialized rendering)";
     spec.formula = "xₙ₊₁ = 1 - a·xₙ² + yₙ; yₙ₊₁ = b·xₙ";
     spec.formulaLatex = R"(x_{n+1} = 1 - a \cdot x_n^2 + y_n, \; y_{n+1} = b \cdot x_n)";
 
@@ -200,9 +200,9 @@ void RegisterBifurcationFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 1.4;
-    spec.defaultCenterY = 0.3;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = 0.75;
+    spec.defaultCenterY = -0.25;
+    spec.defaultZoom = 1.0;  // Viewport of exactly 3.0000 by 1.6875
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -215,7 +215,7 @@ void RegisterBifurcationFamily()
     spec.displayName = "Orbit Diagram";
     spec.category = "Bifurcation";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Orbit visualization showing the trajectory of points";
+    spec.description = "Orbit visualization showing the trajectory of points for z = z² + c";
     spec.formula = "z = z² + c, showing orbit paths";
     spec.formulaLatex = R"(z_{n+1} = z_n^2 + c)";
 
@@ -260,7 +260,7 @@ void RegisterBifurcationFamily()
     spec.displayName = "May-Lyapunov Reference";
     spec.category = "Bifurcation";
     spec.type = FractalCategory::Sequence2D;
-    spec.description = "Lyapunov exponent for the May logistic map";
+    spec.description = "Lyapunov exponent visualization for the May logistic map: xₙ₊₁ = r·xₙ·(1-xₙ). Maps stability across parameter space via Lyapunov exponent calculation.";
     spec.formula = "xₙ₊₁ = r·xₙ·(1-xₙ), showing stability via Lyapunov exponent";
     spec.formulaLatex = R"(x_{n+1} = r \cdot x_n \cdot (1 - x_n))";
 
@@ -296,9 +296,9 @@ void RegisterBifurcationFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 3.0;
-    spec.defaultCenterY = 0.5;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = 2.0;  // Center of interesting parameter range
+    spec.defaultCenterY = 0.0;  // Centered vertically
+    spec.defaultZoom = 0.3;     // Viewport: 10.000 × 5.625
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 

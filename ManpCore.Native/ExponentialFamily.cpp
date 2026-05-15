@@ -44,9 +44,9 @@ void RegisterExponentialFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -1.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.2;  // Viewport tuning: X scale 20, Y scale 11.3
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -83,9 +83,9 @@ void RegisterExponentialFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -1.75;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0, Y scale 1.69
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -124,7 +124,7 @@ void RegisterExponentialFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.106952;  // Viewport tuning: X scale 37.4, Y scale 21.0
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -161,9 +161,9 @@ void RegisterExponentialFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -2.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.333333;  // Viewport tuning: X scale 12, Y scale 6.75
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -208,9 +208,9 @@ void RegisterExponentialFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = 0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 2.666667;  // Viewport tuning: X scale 1.5, Y scale 0.844
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);

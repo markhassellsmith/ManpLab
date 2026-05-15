@@ -111,6 +111,7 @@ namespace ManpWinUI.ViewModels.Properties
                 if (_useSmoothColoring != value)
                 {
                     _useSmoothColoring = value;
+                    _settingsService?.SetUseSmoothColoring(value); // Persist immediately
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseSmoothColoring)));
                     RenderSettingsChanged?.Invoke(this, EventArgs.Empty);
                 }
@@ -159,11 +160,12 @@ namespace ManpWinUI.ViewModels.Properties
         {
             _settingsService = settingsService;
 
-            // Restore persisted deep zoom setting
+            // Restore persisted settings
             if (_settingsService != null)
             {
                 _useDeepZoom = _settingsService.GetUseDeepZoom();
-                System.Diagnostics.Debug.WriteLine($"[RenderSettingsViewModel] Restored UseDeepZoom: {_useDeepZoom}");
+                _useSmoothColoring = _settingsService.GetUseSmoothColoring();
+                System.Diagnostics.Debug.WriteLine($"[RenderSettingsViewModel] Restored UseDeepZoom: {_useDeepZoom}, UseSmoothColoring: {_useSmoothColoring}");
             }
             else
             {

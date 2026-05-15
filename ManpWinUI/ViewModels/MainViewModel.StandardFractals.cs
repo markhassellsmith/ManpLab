@@ -1,14 +1,26 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Diagnostics;
 
 namespace ManpWinUI.ViewModels;
 
 /// <summary>
 /// MainViewModel partial class - Standard fractal parameters (Mandelbrot, Burning Ship, Tricorn, Phoenix).
 /// Includes coordinate system, zoom, iterations, and Julia mode parameters.
+/// 
+/// PHASE 5 Step 5.5: Toolbar properties sync to CurrentParameters.
+/// UI controls bind to these properties for display/input. When user changes a value in the toolbar,
+/// the property change handler writes to CurrentParameters (one-way sync: toolbar → parameters).
+/// This ensures toolbar changes affect the rendered fractal.
 /// </summary>
 public partial class MainViewModel
 {
-    // Coordinate system parameters (used by all standard fractals)
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // COORDINATE SYSTEM PARAMETERS (UI-bound properties)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    // PHASE 5 Step 5.5: These properties are bound by toolbar controls.
+    // Change handlers sync toolbar changes to CurrentParameters (one-way: toolbar → parameters).
+
     [ObservableProperty]
     public partial double CenterX { get; set; } = -0.5;
 
@@ -18,7 +30,10 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial double Zoom { get; set; } = 1.0;
 
-    // Iteration control
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ITERATION CONTROL (UI-bound properties)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
     [ObservableProperty]
     public partial int MaxIterations { get; set; } = 512;
 
@@ -28,7 +43,10 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial string IterationSuggestion { get; set; } = string.Empty;
 
-    // Julia mode (applies to all standard fractal types)
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // JULIA MODE (UI-bound properties)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
     [ObservableProperty]
     public partial string SelectedIterationMode { get; set; } = "Standard";
 
@@ -40,6 +58,10 @@ public partial class MainViewModel
 
     [ObservableProperty]
     public partial double JuliaCY { get; set; } = 0.27015;
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // COMPUTED PROPERTIES (View dimensions and deep zoom indicators)
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     // Computed properties for current view dimensions in fractal coordinates
     public string CurrentViewWidth
@@ -78,7 +100,10 @@ public partial class MainViewModel
 
     public string DeepZoomIndicator => IsDeepZoomActive ? " - Deep Zoom mode" : string.Empty;
 
-    // Property change handlers
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // PROPERTY CHANGE HANDLERS (PHASE 5: Legacy sync code removed)
+    // ═══════════════════════════════════════════════════════════════════════════════
+
     partial void OnMaxIterationsChanged(int value)
     {
         // Clamp max iterations to reasonable range
@@ -89,8 +114,9 @@ public partial class MainViewModel
         // Update iteration suggestion message when iterations change
         UpdateIterationSuggestion();
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        // Toolbar controls need to update CurrentParameters for render to work
+        if (CurrentParameters != null)
         {
             SetParameter("max_iterations", value);
         }
@@ -100,6 +126,12 @@ public partial class MainViewModel
     {
         // Update iteration suggestion message when auto-scale toggle changes
         UpdateIterationSuggestion();
+
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
+        {
+            SetParameter("auto_scale_iterations", value);
+        }
     }
 
     partial void OnSelectedIterationModeChanged(string value)
@@ -120,8 +152,8 @@ public partial class MainViewModel
         // Ensure render command updates its CanExecute state
         RenderMandelbrotCommand.NotifyCanExecuteChanged();
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
         {
             SetParameter("julia_mode", value == "Julia");
         }
@@ -141,10 +173,10 @@ public partial class MainViewModel
         // Update iteration suggestion when zoom changes (recommended iterations depend on zoom)
         UpdateIterationSuggestion();
 
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
+        Debug.WriteLine($"[ViewModel] Zoom changed to: {value:F10}");
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
         {
             SetParameter("zoom", value);
         }
@@ -152,10 +184,10 @@ public partial class MainViewModel
 
     partial void OnCenterXChanged(double value)
     {
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
+        Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
         {
             SetParameter("center_x", value);
         }
@@ -163,10 +195,10 @@ public partial class MainViewModel
 
     partial void OnCenterYChanged(double value)
     {
-        System.Diagnostics.Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
+        Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
 
-        // TASK 5: Sync to parameter system
-        if (UseParameterSystem && CurrentParameters != null)
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync
+        if (CurrentParameters != null)
         {
             SetParameter("center_y", value);
         }
@@ -176,13 +208,41 @@ public partial class MainViewModel
     {
         OnPropertyChanged(nameof(TotalPixels));
         OnPropertyChanged(nameof(CurrentViewHeight));
+
+        // PHASE 5: Image dimensions handled by RenderParameters, not synced to CurrentParameters
     }
 
     partial void OnImageHeightChanged(int value)
     {
         OnPropertyChanged(nameof(TotalPixels));
         OnPropertyChanged(nameof(CurrentViewHeight));
+
+        // PHASE 5: Image dimensions handled by RenderParameters, not synced to CurrentParameters
     }
+
+    partial void OnJuliaCXChanged(double value)
+    {
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync for Julia controls
+        if (CurrentParameters != null && IsJuliaMode)
+        {
+            SetParameter("julia_c_real", value);
+            StatusMessage = $"Julia Mode: c = ({value:F4}, {JuliaCY:F4}) - Click Render to generate";
+        }
+    }
+
+    partial void OnJuliaCYChanged(double value)
+    {
+        // PHASE 5 Step 5.5: Restore toolbar → parameters sync for Julia controls
+        if (CurrentParameters != null && IsJuliaMode)
+        {
+            SetParameter("julia_c_imag", value);
+            StatusMessage = $"Julia Mode: c = ({JuliaCX:F4}, {value:F4}) - Click Render to generate";
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ITERATION RECOMMENDATION LOGIC (unchanged)
+    // ═══════════════════════════════════════════════════════════════════════════════
 
     /// <summary>
     /// Calculates recommended iteration count based on zoom level.
@@ -222,7 +282,7 @@ public partial class MainViewModel
             // Manual mode: Show warning if current iterations are below recommended
             if (MaxIterations < recommendedIterations)
             {
-                IterationSuggestion = $"⚠️ Consider increasing iterations to ~{recommendedIterations} for better detail at zoom {Zoom:F2}x (currently {MaxIterations})";
+                IterationSuggestion = $"💡 Suggestion: Increase 'Max Iterations' to ~{recommendedIterations} for better detail at {Zoom:F2}x zoom (currently {MaxIterations})";
             }
             else
             {
@@ -233,7 +293,7 @@ public partial class MainViewModel
         else
         {
             // Auto-scale mode: Just show current status
-            IterationSuggestion = $"Using {MaxIterations} iterations at zoom {Zoom:F2}x";
+            IterationSuggestion = $"✓ Auto-scaling enabled: Using {MaxIterations} iterations at {Zoom:F2}x zoom";
         }
     }
 }

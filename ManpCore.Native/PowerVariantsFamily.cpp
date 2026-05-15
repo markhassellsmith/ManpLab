@@ -232,9 +232,9 @@ void RegisterPowerVariantsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 1.2;
+    spec.defaultCenterX = 0.0;  // Center at origin
+    spec.defaultCenterY = 0.0;  // Center at origin
+    spec.defaultZoom = 0.6164;  // Viewport: 4.866875 × 2.737617
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -267,9 +267,9 @@ void RegisterPowerVariantsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 1.2;
+    spec.defaultCenterX = 0.0;  // Center at origin
+    spec.defaultCenterY = 0.0;  // Center at origin
+    spec.defaultZoom = 0.6;     // Viewport: 5.0000 × 2.8125
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);

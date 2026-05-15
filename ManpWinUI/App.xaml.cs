@@ -156,7 +156,7 @@ namespace ManpWinUI
             services.AddSingleton<Services.Animation.Export.IAnimationExporter, Services.Animation.Export.Mp4Exporter>();
 
             // ViewModels
-            services.AddTransient<MainViewModel>();
+            services.AddSingleton<MainViewModel>(); // Must be singleton to preserve app state
             services.AddSingleton<ViewModels.Browser.FractalBrowserViewModel>(); // Task 2: Fix DI pattern
             services.AddSingleton<ViewModels.Properties.RenderSettingsViewModel>(); // Week 9 Task 2: Deep zoom toggle
             services.AddSingleton<ViewModels.Properties.ColorEditorViewModel>(); // Color palette with persistence

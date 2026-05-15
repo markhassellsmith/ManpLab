@@ -67,9 +67,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = 0.0;  // Center at origin
+    spec.defaultCenterY = 0.0;  // Center at origin
+    spec.defaultZoom = 0.6;     // Viewport: 5.0000 × 2.8125
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -103,9 +103,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = 0.0;  // Center at origin
+    spec.defaultCenterY = 0.0;  // Center at origin
+    spec.defaultZoom = 0.6;     // Viewport: 5.0000 × 2.8125
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -140,9 +140,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.5;
+    spec.defaultCenterX = 0.0;  // Center at origin
+    spec.defaultCenterY = 0.0;  // Center at origin
+    spec.defaultZoom = 0.6435;  // Viewport: 4.662204 × 2.662490
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -172,9 +172,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = -0.4;  // Center at (-0.4, 0.5)
+    spec.defaultCenterY = 0.5;   // Center at (-0.4, 0.5)
+    spec.defaultZoom = 0.6821;   // Viewport: 4.397398 × 2.473536
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -204,9 +204,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = 0.3;  // Center at (0.3, 0.6)
+    spec.defaultCenterY = 0.6;  // Center at (0.3, 0.6)
+    spec.defaultZoom = 0.8;     // Viewport: 3.750000 × 2.109375
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -242,9 +242,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = 0.0;   // Center at origin
+    spec.defaultCenterY = 0.0;   // Center at origin
+    spec.defaultZoom = 5.8203;   // Viewport: 0.515444 × 0.29937
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -274,9 +274,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = -0.75;  // Center at (-0.75, 0.00)
+    spec.defaultCenterY = 0.0;    // Center at (-0.75, 0.00)
+    spec.defaultZoom = 0.4854;    // Viewport: 6.180277 × 3.476406
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -306,9 +306,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = 0.0;   // Center at origin
+    spec.defaultCenterY = 0.0;   // Center at origin
+    spec.defaultZoom = 0.6709;   // Viewport: 4.471218 × 2.515060
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -338,9 +338,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = 0.0;   // Center at origin
+    spec.defaultCenterY = 0.0;   // Center at origin
+    spec.defaultZoom = 1.2015;   // Viewport: 2.497043 × 1.404587
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -372,9 +372,9 @@ void RegisterBurningShipFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = 0.0;   // Center at (0.00, -0.20)
+    spec.defaultCenterY = -0.2;  // Center at (0.00, -0.20)
+    spec.defaultZoom = 1.2059;   // Viewport: 2.487729 × 1.399347
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};

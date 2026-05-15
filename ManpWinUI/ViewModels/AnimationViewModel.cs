@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ManpWinUI.Models.Animation;
 using ManpWinUI.Models.Parameters;
+using ManpWinUI.Services;
 using ManpWinUI.Services.Animation;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,6 +20,7 @@ namespace ManpWinUI.ViewModels;
 public partial class AnimationViewModel : ObservableObject
 {
     private readonly AnimationService _animationService;
+    private readonly IAppSettingsService _settingsService;
     private readonly ILogger<AnimationViewModel> _logger;
     private MainViewModel? _mainViewModel; // Access to current fractal view (can be updated)
     private CancellationTokenSource? _cancellationTokenSource;
@@ -32,9 +34,11 @@ public partial class AnimationViewModel : ObservableObject
 
     public AnimationViewModel(
         AnimationService animationService,
+        IAppSettingsService settingsService,
         ILogger<AnimationViewModel> logger)
     {
         _animationService = animationService;
+        _settingsService = settingsService;
         _logger = logger;
 
         // Load last used directory from app settings, or use Documents folder as default
@@ -136,15 +140,13 @@ public partial class AnimationViewModel : ObservableObject
     {
         try
         {
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            if (settings.Values.TryGetValue("AnimationLastDirectory", out var value) && value is string lastDir)
+            var lastDir = _settingsService.GetAnimationLastDirectory();
+
+            // Verify directory still exists
+            if (!string.IsNullOrEmpty(lastDir) && System.IO.Directory.Exists(lastDir))
             {
-                // Verify directory still exists
-                if (System.IO.Directory.Exists(lastDir))
-                {
-                    _logger.LogDebug("Loaded last used directory: {Directory}", lastDir);
-                    return lastDir;
-                }
+                _logger.LogDebug("Loaded last used directory: {Directory}", lastDir);
+                return lastDir;
             }
         }
         catch (Exception ex)
@@ -166,8 +168,7 @@ public partial class AnimationViewModel : ObservableObject
             var directory = System.IO.Path.GetDirectoryName(filePath);
             if (!string.IsNullOrEmpty(directory) && System.IO.Directory.Exists(directory))
             {
-                var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                settings.Values["AnimationLastDirectory"] = directory;
+                _settingsService.SetAnimationLastDirectory(directory);
                 _logger.LogDebug("Saved last used directory: {Directory}", directory);
             }
         }

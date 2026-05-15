@@ -150,6 +150,30 @@ public interface IAppSettingsService
     /// </summary>
     void SetUseDeepZoom(bool use);
 
+    /// <summary>
+    /// Gets whether smooth coloring (anti-banding) is enabled by default.
+    /// </summary>
+    bool GetUseSmoothColoring();
+
+    /// <summary>
+    /// Saves whether smooth coloring (anti-banding) should be enabled.
+    /// </summary>
+    void SetUseSmoothColoring(bool use);
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ANIMATION SETTINGS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Gets the last used directory for animation exports, or null if none saved.
+    /// </summary>
+    string? GetAnimationLastDirectory();
+
+    /// <summary>
+    /// Saves the last used directory for animation exports.
+    /// </summary>
+    void SetAnimationLastDirectory(string directory);
+
     // ═══════════════════════════════════════════════════════════════════════════════
     // USER NOTES
     // ═══════════════════════════════════════════════════════════════════════════════

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+    <!-- Import centralized version configuration -->
+    <Import Project="..\Version.props" />
+
     <PropertyGroup>
         <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
         <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
@@ -14,6 +17,15 @@
         <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
         <AppxBundle>Never</AppxBundle>
         <DefaultLanguage>en-US</DefaultLanguage>
+
+        <!-- Automatic Versioning -->
+        <!-- Version is managed in Version.props at solution root -->
+        <Version>$(VersionPrefix)</Version>
+        <AssemblyVersion>$(FileVersion)</AssemblyVersion>
+        <FileVersion>$(FileVersion)</FileVersion>
+        <ApplicationVersion>$(FileVersion)</ApplicationVersion>
+        <!-- MSIX requires 4-part version -->
+        <AppxPackageVersion>$(FileVersion)</AppxPackageVersion>
 
         <!-- Force deployment in debug mode -->
         <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
@@ -49,9 +61,14 @@
         <UseRidGraph>true</UseRidGraph>
         <Platforms>x86;x64;ARM64</Platforms>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+        <ApplicationIcon>Assets\ManpLab.ico</ApplicationIcon>
         <PublishProfile>win-$(Platform).pubxml</PublishProfile>
         <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &gt;= 8">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
         <RuntimeIdentifiers Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; 8">win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+
+        <!-- Default to x64 for MSIX packaging -->
+        <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
+        <PlatformTarget Condition="'$(PlatformTarget)' == ''">x64</PlatformTarget>
     </PropertyGroup>
     <ItemGroup>
       <Content Remove="Assets\FractalKnowledge\fractals_sample.json" />
@@ -61,6 +78,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <!-- Application Icon (for unpackaged/portable builds) -->
+      <Content Include="Assets\ManpLab.ico">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+
       <!-- ManpLab Custom Icon Assets - Core (Required) -->
       <Content Include="Assets\ManpLab-SplashScreen.scale-100.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

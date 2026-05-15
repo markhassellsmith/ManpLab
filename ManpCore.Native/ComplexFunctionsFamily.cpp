@@ -48,9 +48,9 @@ void RegisterComplexFunctionsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.8;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.5;  // Viewport of 2.0 by 1.125
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -92,7 +92,7 @@ void RegisterComplexFunctionsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.75;  // Viewport of 4.0 by 2.25
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -138,7 +138,7 @@ void RegisterComplexFunctionsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.75;  // Viewport of 4.0 by 2.25
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -182,9 +182,9 @@ void RegisterComplexFunctionsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -1.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.75;  // Viewport of 4.0 by 2.25
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -202,9 +202,11 @@ void RegisterComplexFunctionsFamily()
     spec.formulaLatex = R"(z_{n+1} = \frac{1}{\sin^2(z_n)} + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+        // Special handling: For Mandelbrot mode, start with z=c instead of z=0
+        // because sin(0)=0 would cause immediate division by zero
+        ComplexD z = isJulia ? c : c;  // Start with c for both modes
         ComplexD constant = isJulia ? juliaC : c;
-        const double bailout = 100.0;
+        const double bailout = 1000.0;  // Higher bailout needed for this function
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -234,8 +236,8 @@ void RegisterComplexFunctionsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
-    spec.defaultBailout = 100.0;
+    spec.defaultZoom = 0.4;  // Viewport of 7.5 by 4.21875
+    spec.defaultBailout = 1000.0;  // Needs higher bailout for this function
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -274,9 +276,9 @@ void RegisterComplexFunctionsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = 1.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 1.0;  // Viewport of 3.0 by 1.6875
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -328,7 +330,7 @@ void RegisterComplexFunctionsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.2;  // Viewport of 15.0 by 8.4375
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -346,9 +348,11 @@ void RegisterComplexFunctionsFamily()
     spec.formulaLatex = R"(z_{n+1} = \frac{\cos(z_n)}{\tan(z_n)} + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+        // Special handling: For Mandelbrot mode, start with z=c instead of z=0
+        // because tan(0)=0 would cause immediate division by zero
+        ComplexD z = isJulia ? c : c;  // Start with c for both modes
         ComplexD constant = isJulia ? juliaC : c;
-        const double bailout = 100.0;
+        const double bailout = 1000.0;  // Higher bailout needed
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -382,8 +386,8 @@ void RegisterComplexFunctionsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
-    spec.defaultBailout = 100.0;
+    spec.defaultZoom = 0.75;  // Viewport of 4.0 by 2.25
+    spec.defaultBailout = 1000.0;  // Needs higher bailout for this function
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);

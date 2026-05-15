@@ -54,6 +54,13 @@ namespace Native {
             // Normalize iteration to 0.0 - 1.0
             double t = iteration / maxIter;
 
+            // Apply contrast enhancement for better color distribution
+            // Use a power function to stretch the lower iteration values
+            // This makes sparse fractals (like Barnsley J) much more visible
+            // Power of 0.33 (cube root) provides strong "pop" for low-contrast fractals
+            // Lower powers = more aggressive stretching (0.25 = fourth root for extreme contrast)
+            t = pow(t, 0.33);
+
             // Apply color offset (rotation)
             // Convert offset from degrees (0-360) to normalized value (0.0-1.0)
             double offsetNormalized = (colorOffset % 360) / 360.0;

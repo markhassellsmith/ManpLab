@@ -41,34 +41,34 @@ namespace Native
             spec.category = "Chaotic Maps";
             spec.type = FractalCategory::HistogramBased;
             spec.description = "Liu-Chen: Four-wing butterfly structure with intricate detail";
-            spec.formula = "dx/dt = ay + bx + cyz, dy/dt = dy - xz, dz/dt = ez + fxy";
+            spec.formula = "dx/dt = a(y-x), dy/dt = bx - xz, dz/dt = -cz + xy";
             spec.supportsJulia = false;
 
             spec.visualCharacteristics = "Four-wing structure with complex orbit patterns";
             spec.discoveredBy = "Liu & Chen";
             spec.discoveryYear = 2004;
-            spec.computationalNotes = "Multi-wing attractor, extends Lorenz system";
+            spec.computationalNotes = "Multi-wing attractor with a=10, b=40, c=2.5, requires small dt=0.001";
 
-            spec.defaultCenterX = 2.65;
-            spec.defaultCenterY = 2.65;
-            spec.defaultZoom = 15.0;
+            spec.defaultCenterX = 0.0;
+            spec.defaultCenterY = 0.0;
+            spec.defaultZoom = 0.025974;  // Viewport tuning: X scale 154, Y scale 86.8
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = nullptr;  // Not used for histogram rendering
 
             spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
-                // Liu-Chen: dx/dt = a(y-x), dy/dt = bx - xz, dz/dt = xy - cz
-                // Diagnostic confirmed: a=2.5, b=4.0, c=4.0, dt=0.01 is stable
-                const double a = 2.5;
-                const double b = 4.0;
-                const double c = 4.0;
-                const double dt = 0.01;
+                // Liu-Chen: dx/dt = a(y-x), dy/dt = bx - xz, dz/dt = -cz + xy
+                // Corrected parameters for proper four-wing butterfly structure
+                const double a = 10.0;
+                const double b = 40.0;
+                const double c = 2.5;
+                const double dt = 0.001;  // Smaller timestep for stability
 
                 // RK2 (midpoint method)
                 double dx1 = a * (y - x);
                 double dy1 = b * x - x * z;
-                double dz1 = x * y - c * z;
+                double dz1 = -c * z + x * y;
 
                 double xmid = x + 0.5 * dx1 * dt;
                 double ymid = y + 0.5 * dy1 * dt;
@@ -76,7 +76,7 @@ namespace Native
 
                 double dx2 = a * (ymid - xmid);
                 double dy2 = b * xmid - xmid * zmid;
-                double dz2 = xmid * ymid - c * zmid;
+                double dz2 = -c * zmid + xmid * ymid;
 
                 x += dx2 * dt;
                 y += dy2 * dt;
@@ -106,7 +106,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 3.0;
+            spec.defaultZoom = 0.268393;  // Viewport of 11.177639 by 6.287422
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -148,9 +148,9 @@ namespace Native
             spec.discoveryYear = 1981;
             spec.computationalNotes = "Third-order differential equation system";
 
-            spec.defaultCenterX = 0.04;
-            spec.defaultCenterY = -0.04;
-            spec.defaultZoom = 4.15;  // Optimal for range [-0.22 to 0.30, -0.45 to 0.36, -0.74 to 0.70]
+            spec.defaultCenterX = 0.0;
+            spec.defaultCenterY = 0.0;
+            spec.defaultZoom = 2.758621;  // Viewport tuning: X scale 1.45, Y scale 0.813
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -206,7 +206,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 2.5;
+            spec.defaultZoom = 0.15625;  // Viewport of 19.2 by 10.8
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 

@@ -225,9 +225,9 @@ public partial class MainViewModel
         }
 
         // ═══════════════════════════════════════════════════════════════════════════
-        // TASK 5: After defaults are set, sync them to the parameter system
+        // PHASE 5: Legacy sync removed - parameter system is now single source of truth
         // ═══════════════════════════════════════════════════════════════════════════
-        SyncPropertiesToParameters();
+        System.Diagnostics.Debug.WriteLine("[PHASE 5] SyncPropertiesToParameters() call removed - parameter defaults used directly");
     }
 
     /// <summary>
