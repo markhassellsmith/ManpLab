@@ -543,4 +543,75 @@ public partial class MainViewModel
     /// Determines whether stop can be executed (rendering is active).
     /// </summary>
     private bool CanStopRender() => IsRendering;
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // STATUS INFORMATION COPY
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Copies all status bar information to the clipboard.
+    /// Includes fractal name, coordinates, zoom, resolution, render time, and iteration info.
+    /// </summary>
+    [RelayCommand]
+    private void CopyStatusInfo()
+    {
+        try
+        {
+            var info = new System.Text.StringBuilder();
+
+            // Fractal information
+            info.AppendLine($"Fractal: {CurrentVisualizationName ?? SelectedFractalType}");
+
+            if (!IsHailstoneMode)
+            {
+                // Coordinate and zoom information
+                info.AppendLine($"Center: ({CenterX:G17}, {CenterY:G17})");
+                info.AppendLine($"Zoom: {Zoom:G17}");
+                info.AppendLine($"View Width: {CurrentViewWidth}");
+                info.AppendLine($"View Height: {CurrentViewHeight}");
+
+                // Julia mode info
+                if (IsJuliaMode)
+                {
+                    info.AppendLine($"Julia C: ({JuliaCX:G17}, {JuliaCY:G17})");
+                }
+
+                // Iteration information
+                info.AppendLine($"Max Iterations: {MaxIterations}");
+                info.AppendLine($"Auto-scale Iterations: {AutoScaleIterations}");
+            }
+
+            // Resolution and render time
+            info.AppendLine($"Resolution: {ImageWidth} × {ImageHeight} ({TotalPixels} MP)");
+            info.AppendLine($"Render Time: {LastRenderTime}");
+
+            // Color settings
+            info.AppendLine($"Palette: {SelectedPalette}");
+
+            // Status message
+            if (!string.IsNullOrWhiteSpace(StatusMessage))
+            {
+                info.AppendLine($"Status: {StatusMessage}");
+            }
+
+            // Copy to clipboard
+            var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
+            dataPackage.SetText(info.ToString());
+            Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
+
+            // Brief feedback
+            var previousStatus = StatusMessage;
+            StatusMessage = "Status info copied to clipboard";
+
+            // Restore previous status after a brief delay
+            _ = Task.Delay(4000).ContinueWith(_ =>
+            {
+                _dispatcherQueue.TryEnqueue(() => StatusMessage = previousStatus);
+            });
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Copy failed: {ex.Message}";
+        }
+    }
 }
