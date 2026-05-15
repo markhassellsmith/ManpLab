@@ -229,27 +229,40 @@ void RegisterExponentialFamily()
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z = isJulia ? c : ComplexD(1.0, 0.0);
         ComplexD constant = isJulia ? juliaC : c;
+        ComplexD zPrev = z;
 
         for (int i = 0; i < maxIter; ++i)
         {
             // Complex logarithm: log(a+bi) = ln(|z|) + i*arg(z)
             double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
-            if (mag < 1e-10) break;
+            if (mag < 1e-10) 
+                return static_cast<double>(i);  // Converged to zero
 
             double arg = std::atan2(z.imag, z.real);
             z = ComplexD(std::log(mag), arg) + constant;
 
+            // Check for escape (rare but possible)
             double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > 256.0)
-                return i + 1.0 - std::log(std::log(std::sqrt(magSq))) / std::log(2.0);
+            if (magSq > 100.0)
+                return static_cast<double>(i);
+
+            // Check for convergence (primary exit condition for logarithmic fractals)
+            double dx = z.real - zPrev.real;
+            double dy = z.imag - zPrev.imag;
+            double delta = dx * dx + dy * dy;
+
+            if (delta < 1e-8)
+                return static_cast<double>(maxIter - i);  // Converged: return inverse iteration count for coloring
+
+            zPrev = z;
         }
         return static_cast<double>(maxIter);
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = 0.88;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 5.333333;  // Viewport tuning: X scale 0.375, Y scale 0.211 (green meteor)
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
