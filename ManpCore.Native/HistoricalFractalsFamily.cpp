@@ -232,16 +232,17 @@ namespace Native
                     z.real = x * x - y * y + constant.real;
                     z.imag = 2.0 * x * y + constant.imag;
 
-                    // Apply modulo 2π to create periodic boundaries
-                    z.real = std::fmod(z.real, TWO_PI);
-                    z.imag = std::fmod(z.imag, TWO_PI);
-
+                    // Check for escape BEFORE applying modulo
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
                     if (mag2 > 256.0)
                     {
                         return static_cast<double>(i);
                     }
+
+                    // Apply modulo 2π to create periodic boundaries
+                    z.real = std::fmod(z.real, TWO_PI);
+                    z.imag = std::fmod(z.imag, TWO_PI);
                 }
 
                 return static_cast<double>(maxIter);
