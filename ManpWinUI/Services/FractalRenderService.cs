@@ -479,6 +479,7 @@ public class FractalRenderService : IFractalRenderService
             "Afterimage" => ColorPalette.Afterimage,
             "Psychedelic" => ColorPalette.Psychedelic,
             "Spectrum" => ColorPalette.Spectrum,
+            "Neon" => ColorPalette.Neon,
             _ => ColorPalette.Classic // Default fallback
         };
     }

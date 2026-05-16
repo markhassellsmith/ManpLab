@@ -56,7 +56,10 @@ namespace Native {
         Psychedelic = 5,
 
         /// <summary>Pure HSV color wheel at 100% saturation - smooth progression through all hues</summary>
-        Spectrum = 6
+        Spectrum = 6,
+
+        /// <summary>Electric neon colors with rapid cycling for maximum detail revelation</summary>
+        Neon = 7
     };
 
     /// <summary>
