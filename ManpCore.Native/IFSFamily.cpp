@@ -20,51 +20,49 @@ void RegisterIFSFamily()
     spec.name = "BarnsleyFern";
     spec.displayName = "Barnsley Fern (IFS)";
     spec.category = "IFS";
-    spec.type = FractalCategory::Special;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Classic Barnsley fern generated using an iterated function system";
     spec.formula = "IFS with 4 transformations and weighted probabilities";
     spec.formulaLatex = R"(x_{n+1}, y_{n+1} = f_i(x_n, y_n) \text{ where } i \text{ is chosen by probability})";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Map pixel coordinates to IFS iteration starting point
-        double x = c.real;
-        double y = c.imag;
+    // Orbit iterator for histogram-based rendering
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Static seed that evolves but resets each render via z parameter
+        static unsigned int seed = 12345u;
 
-        // Run IFS iterations
-        for (int i = 0; i < maxIter; ++i)
-        {
-            // Use deterministic function selection based on position
-            double selector = std::fmod(x * y * 1000.0, 1.0);
-
-            double newX, newY;
-            if (selector < 0.01)  // Stem (1%)
-            {
-                newX = 0.0;
-                newY = 0.16 * y;
-            }
-            else if (selector < 0.86)  // Smaller leaflets (85%)
-            {
-                newX = 0.85 * x + 0.04 * y;
-                newY = -0.04 * x + 0.85 * y + 1.6;
-            }
-            else if (selector < 0.93)  // Largest left leaflet (7%)
-            {
-                newX = 0.2 * x - 0.26 * y;
-                newY = 0.23 * x + 0.22 * y + 1.6;
-            }
-            else  // Largest right leaflet (7%)
-            {
-                newX = -0.15 * x + 0.28 * y;
-                newY = 0.26 * x + 0.24 * y + 0.44;
-            }
-
-            x = newX;
-            y = newY;
+        // Reset seed at start of render (when z is very small, like iteration 0-1)
+        if (z < 2.0) {
+            seed = 12345u;
         }
 
-        // Return distance from final point to pixel
-        double dist = std::sqrt((x - c.real) * (x - c.real) + (y - c.imag) * (y - c.imag));
-        return maxIter * (1.0 - std::min(1.0, dist));
+        seed = (seed * 1103515245u + 12345u) & 0x7fffffffu;
+        double selector = static_cast<double>(seed) / 2147483648.0;
+
+        double newX, newY;
+        if (selector < 0.01)  // Stem (1%)
+        {
+            newX = 0.0;
+            newY = 0.16 * y;
+        }
+        else if (selector < 0.86)  // Successively smaller leaflets (85%)
+        {
+            newX = 0.85 * x + 0.04 * y;
+            newY = -0.04 * x + 0.85 * y + 1.6;
+        }
+        else if (selector < 0.93)  // Largest left-hand leaflet (7%)
+        {
+            newX = 0.2 * x - 0.26 * y;
+            newY = 0.23 * x + 0.22 * y + 1.6;
+        }
+        else  // Largest right-hand leaflet (7%)
+        {
+            newX = -0.15 * x + 0.28 * y;
+            newY = 0.26 * x + 0.24 * y + 0.44;
+        }
+
+        x = newX;
+        y = newY;
+        // z used for seed reset detection
     };
 
     spec.supportsJulia = false;
@@ -82,46 +80,43 @@ void RegisterIFSFamily()
     spec.name = "SierpinskiIFS";
     spec.displayName = "Sierpinski Triangle (IFS)";
     spec.category = "IFS";
-    spec.type = FractalCategory::Special;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Sierpinski triangle generated using chaos game IFS method";
     spec.formula = "IFS: pick random vertex, move halfway to it, plot point";
     spec.formulaLatex = R"(p_{n+1} = \frac{p_n + v_i}{2} \text{ where } v_i \text{ is a random vertex})";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
         // Three vertices of equilateral triangle
-        double v1x = 0.0, v1y = 0.0;
-        double v2x = 1.0, v2y = 0.0;
-        double v3x = 0.5, v3y = 0.866025;  // sqrt(3)/2
+        const double v1x = 0.0, v1y = 0.0;
+        const double v2x = 1.0, v2y = 0.0;
+        const double v3x = 0.5, v3y = 0.866025;  // sqrt(3)/2
 
-        double x = c.real;
-        double y = c.imag;
+        static unsigned int seed = 54321u;
 
-        // Run chaos game iterations
-        for (int i = 0; i < maxIter; ++i)
-        {
-            // Choose vertex deterministically based on current position
-            double selector = std::fmod(x * y * 12345.67, 3.0);
-
-            if (selector < 1.0)
-            {
-                x = (x + v1x) * 0.5;
-                y = (y + v1y) * 0.5;
-            }
-            else if (selector < 2.0)
-            {
-                x = (x + v2x) * 0.5;
-                y = (y + v2y) * 0.5;
-            }
-            else
-            {
-                x = (x + v3x) * 0.5;
-                y = (y + v3y) * 0.5;
-            }
+        // Reset seed at start of render
+        if (z < 2.0) {
+            seed = 54321u;
         }
 
-        // Return distance from final point to pixel
-        double dist = std::sqrt((x - c.real) * (x - c.real) + (y - c.imag) * (y - c.imag));
-        return maxIter * (1.0 - std::min(1.0, dist * 10.0));
+        seed = (seed * 1103515245u + 12345u) & 0x7fffffffu;
+        double selector = static_cast<double>(seed) / 2147483648.0 * 3.0;
+
+        if (selector < 1.0)
+        {
+            x = (x + v1x) * 0.5;
+            y = (y + v1y) * 0.5;
+        }
+        else if (selector < 2.0)
+        {
+            x = (x + v2x) * 0.5;
+            y = (y + v2y) * 0.5;
+        }
+        else
+        {
+            x = (x + v3x) * 0.5;
+            y = (y + v3y) * 0.5;
+        }
+        // z used for seed reset detection
     };
 
     spec.supportsJulia = false;
@@ -139,46 +134,51 @@ void RegisterIFSFamily()
     spec.name = "DragonCurveIFS";
     spec.displayName = "Dragon Curve (IFS)";
     spec.category = "IFS";
-    spec.type = FractalCategory::Special;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Heighway dragon curve generated using IFS";
     spec.formula = "IFS with two transformations creating self-similar dragon pattern";
     spec.formulaLatex = R"(f_1(x,y) = \frac{1}{\sqrt{2}}(x - y, x + y), \; f_2(x,y) = \frac{1}{\sqrt{2}}(y - x + 1, -x - y + 1))";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        double x = c.real;
-        double y = c.imag;
-        const double scale = 1.0 / 1.414213562;  // 1/sqrt(2)
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
+        // Heighway Dragon IFS - Alternative formulation with 1/(√2)² = 0.5 coefficients
+        // This creates the characteristic dragon fold pattern
 
-        for (int i = 0; i < maxIter; ++i)
-        {
-            double selector = std::fmod(x * y * 54321.0, 2.0);
+        static unsigned int seed = 98765u;
 
-            double newX, newY;
-            if (selector < 1.0)
-            {
-                // First transformation
-                newX = scale * (x - y);
-                newY = scale * (x + y);
-            }
-            else
-            {
-                // Second transformation
-                newX = scale * (y - x) + 1.0;
-                newY = scale * (-x - y) + 1.0;
-            }
-
-            x = newX;
-            y = newY;
+        // Reset seed at start of render
+        if (z < 2.0) {
+            seed = 98765u;
         }
 
-        double dist = std::sqrt((x - c.real) * (x - c.real) + (y - c.imag) * (y - c.imag));
-        return maxIter * (1.0 - std::min(1.0, dist * 5.0));
+        seed = (seed * 1103515245u + 12345u) & 0x7fffffffu;
+        double selector = static_cast<double>(seed) / 2147483648.0;
+
+        double newX, newY;
+        if (selector < 0.5)
+        {
+            // f1: contracts and rotates 45°
+            // Matrix form: scale * [ cos(π/4) -sin(π/4) ]  = [ 0.5  -0.5 ]
+            //                      [ sin(π/4)  cos(π/4) ]    [ 0.5   0.5 ]
+            newX = 0.5 * (x - y);
+            newY = 0.5 * (x + y);
+        }
+        else
+        {
+            // f2: contracts, rotates -135°, and translates by (1,0)
+            // This creates the reflection/fold
+            newX = 0.5 * (-x - y) + 1.0;
+            newY = 0.5 * (x - y);
+        }
+
+        x = newX;
+        y = newY;
+        // z used for seed reset detection
     };
 
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.5;
-    spec.defaultCenterY = 0.5;
-    spec.defaultZoom = 1.2;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 2.0;
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -190,34 +190,42 @@ void RegisterIFSFamily()
     spec.name = "PentagonIFS";
     spec.displayName = "Pentagon (IFS)";
     spec.category = "IFS";
-    spec.type = FractalCategory::Special;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Pentagonal fractal generated using chaos game with 5 vertices";
     spec.formula = "IFS: choose random pentagon vertex, move 5/8 toward it";
     spec.formulaLatex = R"(p_{n+1} = \frac{3p_n + 5v_i}{8})";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
         // Five vertices of regular pentagon
-        const double pi = 3.14159265358979323846;
-        std::vector<double> vx(5), vy(5);
-        for (int i = 0; i < 5; ++i)
-        {
-            double angle = 2.0 * pi * i / 5.0 - pi / 2.0;
-            vx[i] = std::cos(angle);
-            vy[i] = std::sin(angle);
+        static const double pi = 3.14159265358979323846;
+        static const double vx[5] = {
+            std::cos(2.0 * pi * 0 / 5.0 - pi / 2.0),
+            std::cos(2.0 * pi * 1 / 5.0 - pi / 2.0),
+            std::cos(2.0 * pi * 2 / 5.0 - pi / 2.0),
+            std::cos(2.0 * pi * 3 / 5.0 - pi / 2.0),
+            std::cos(2.0 * pi * 4 / 5.0 - pi / 2.0)
+        };
+        static const double vy[5] = {
+            std::sin(2.0 * pi * 0 / 5.0 - pi / 2.0),
+            std::sin(2.0 * pi * 1 / 5.0 - pi / 2.0),
+            std::sin(2.0 * pi * 2 / 5.0 - pi / 2.0),
+            std::sin(2.0 * pi * 3 / 5.0 - pi / 2.0),
+            std::sin(2.0 * pi * 4 / 5.0 - pi / 2.0)
+        };
+
+        static unsigned int seed = 11111u;
+
+        // Reset seed at start of render
+        if (z < 2.0) {
+            seed = 11111u;
         }
 
-        double x = c.real;
-        double y = c.imag;
+        seed = (seed * 1103515245u + 12345u) & 0x7fffffffu;
+        int vertexIdx = (int)((seed / 2147483648.0) * 5.0) % 5;
 
-        for (int i = 0; i < maxIter; ++i)
-        {
-            int vertexIdx = (int)std::fmod(std::abs(x * y * 99999.0), 5.0);
-            x = (3.0 * x + 5.0 * vx[vertexIdx]) / 8.0;
-            y = (3.0 * y + 5.0 * vy[vertexIdx]) / 8.0;
-        }
-
-        double dist = std::sqrt((x - c.real) * (x - c.real) + (y - c.imag) * (y - c.imag));
-        return maxIter * (1.0 - std::min(1.0, dist * 8.0));
+        x = (3.0 * x + 5.0 * vx[vertexIdx]) / 8.0;
+        y = (3.0 * y + 5.0 * vy[vertexIdx]) / 8.0;
+        // z unused
     };
 
     spec.supportsJulia = false;
@@ -235,41 +243,42 @@ void RegisterIFSFamily()
     spec.name = "TreeIFS";
     spec.displayName = "Tree (IFS)";
     spec.category = "IFS";
-    spec.type = FractalCategory::Special;
+    spec.type = FractalCategory::HistogramBased;
     spec.description = "Fractal tree generated using branching IFS";
     spec.formula = "IFS with branching transformations creating tree structure";
     spec.formulaLatex = R"(\text{Branch left/right with rotation and scaling})";
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        double x = c.real;
-        double y = c.imag;
+    spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
         const double angle = 0.4;  // Branch angle
         const double scale = 0.65;  // Branch scale factor
 
-        for (int i = 0; i < maxIter; ++i)
-        {
-            double selector = std::fmod(x * y * 77777.0, 2.0);
+        static unsigned int seed = 22222u;
 
-            double newX, newY;
-            if (selector < 1.0)
-            {
-                // Left branch
-                newX = scale * (x * std::cos(angle) - y * std::sin(angle));
-                newY = scale * (x * std::sin(angle) + y * std::cos(angle)) + 0.5;
-            }
-            else
-            {
-                // Right branch
-                newX = scale * (x * std::cos(-angle) - y * std::sin(-angle));
-                newY = scale * (x * std::sin(-angle) + y * std::cos(-angle)) + 0.5;
-            }
-
-            x = newX;
-            y = newY;
+        // Reset seed at start of render
+        if (z < 2.0) {
+            seed = 22222u;
         }
 
-        double dist = std::sqrt((x - c.real) * (x - c.real) + (y - c.imag) * (y - c.imag));
-        return maxIter * (1.0 - std::min(1.0, dist * 3.0));
+        seed = (seed * 1103515245u + 12345u) & 0x7fffffffu;
+        double selector = static_cast<double>(seed) / 2147483648.0;
+
+        double newX, newY;
+        if (selector < 0.5)
+        {
+            // Left branch
+            newX = scale * (x * std::cos(angle) - y * std::sin(angle));
+            newY = scale * (x * std::sin(angle) + y * std::cos(angle)) + 0.5;
+        }
+        else
+        {
+            // Right branch
+            newX = scale * (x * std::cos(-angle) - y * std::sin(-angle));
+            newY = scale * (x * std::sin(-angle) + y * std::cos(-angle)) + 0.5;
+        }
+
+        x = newX;
+        y = newY;
+        // z unused
     };
 
     spec.supportsJulia = false;
