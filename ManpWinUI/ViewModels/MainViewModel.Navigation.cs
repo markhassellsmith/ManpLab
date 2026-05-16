@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ManpWinUI.Models;
+using System;
 using System.Collections.ObjectModel;
 
 namespace ManpWinUI.ViewModels;
@@ -263,6 +264,104 @@ public partial class MainViewModel
         StatusMessage = $"Zooming out to {Zoom:F2}x...";
 
         // Auto-render after zoom on UI thread
+        await Task.Delay(10); // Small delay to ensure UI updates
+        _dispatcherQueue.TryEnqueue(async () =>
+        {
+            if (!IsRendering && RenderCommand.CanExecute(null))
+            {
+                await RenderCommand.ExecuteAsync(null);
+            }
+        });
+        // Note: RecordNavigationState() is called by render completion
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ZOOM FINE-TUNING
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Fine-tune adjustment for zoom (range: -0.5 to +0.5 zoom steps).
+    /// Slider value of 0 = no adjustment (center position)
+    /// Slider value of -0.5 = zoom in by sqrt(2) ≈ 1.414x (left - increases zoom)
+    /// Slider value of +0.5 = zoom out by sqrt(2) ≈ 0.707x (right - decreases zoom)
+    /// </summary>
+    [ObservableProperty]
+    private double _zoomFineTune = 0.0;
+
+    partial void OnZoomFineTuneChanged(double value)
+    {
+        if (IsHailstoneMode || IsRendering)
+        {
+            // Reset slider to center if not applicable
+            if (value != 0.0)
+            {
+                ZoomFineTune = 0.0;
+            }
+            return;
+        }
+
+        // Only apply adjustment if value is non-zero
+        if (Math.Abs(value) > 0.001)
+        {
+            // Negate the value so that:
+            // - Negative slider value (left) becomes positive exponent = zoom in (increase zoom)
+            // - Positive slider value (right) becomes negative exponent = zoom out (decrease zoom)
+            // At value = -0.5, factor = 2^0.5 = sqrt(2) ≈ 1.414 (zoom in - increases zoom factor)
+            // At value = +0.5, factor = 2^-0.5 = 1/sqrt(2) ≈ 0.707 (zoom out - decreases zoom factor)
+            double adjustmentFactor = Math.Pow(2.0, -value);
+
+            // Apply the adjustment
+            Zoom *= adjustmentFactor;
+
+            StatusMessage = value < 0 
+                ? $"Fine zoom in to {Zoom:F2}x..." 
+                : $"Fine zoom out to {Zoom:F2}x...";
+
+            // Reset slider to center for next adjustment
+            ZoomFineTune = 0.0;
+
+            // Auto-render after adjustment on UI thread
+            _dispatcherQueue.TryEnqueue(async () =>
+            {
+                await Task.Delay(10); // Small delay to ensure UI updates
+                if (!IsRendering && RenderCommand.CanExecute(null))
+                {
+                    await RenderCommand.ExecuteAsync(null);
+                }
+            });
+            // Note: RecordNavigationState() is called by render completion
+        }
+    }
+
+    /// <summary>
+    /// Applies a discrete zoom step adjustment.
+    /// Step is 1/10th of the full range (-0.5 to +0.5), so each click is 0.1 zoom step.
+    /// Zoom in (left) increases zoom factor, zoom out (right) decreases it.
+    /// </summary>
+    [RelayCommand]
+    private async Task ZoomFineTuneStepAsync(string direction)
+    {
+        if (IsHailstoneMode || IsRendering)
+        {
+            return;
+        }
+
+        // Each discrete step is 0.1 (1/10th of the full -0.5 to +0.5 range)
+        double stepSize = 0.1;
+        // Zoom IN increases zoom value (positive exponent), zoom OUT decreases it (negative exponent)
+        double adjustmentValue = direction == "in" ? stepSize : -stepSize;
+
+        // Calculate adjustment factor: 2^value
+        double adjustmentFactor = Math.Pow(2.0, adjustmentValue);
+
+        // Apply the adjustment
+        Zoom *= adjustmentFactor;
+
+        StatusMessage = direction == "in"
+            ? $"Fine zoom in to {Zoom:F2}x..."
+            : $"Fine zoom out to {Zoom:F2}x...";
+
+        // Auto-render after adjustment on UI thread
         await Task.Delay(10); // Small delay to ensure UI updates
         _dispatcherQueue.TryEnqueue(async () =>
         {
