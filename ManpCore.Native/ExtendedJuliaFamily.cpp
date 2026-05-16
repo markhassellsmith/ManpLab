@@ -136,7 +136,7 @@ void RegisterExtendedJuliaFamily()
     // Lambda Julia
     //=========================================================================
     spec.name = "LambdaJulia";
-    spec.displayName = "Lambda Julia";
+    spec.displayName = "Julia - Lambda (Alt)";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set for lambda iteration z = c*z*(1-z)";
@@ -172,7 +172,7 @@ void RegisterExtendedJuliaFamily()
     // Multibrot Julia (Power 3)
     //=========================================================================
     spec.name = "Multibrot3Julia";
-    spec.displayName = "Multibrot 3 Julia";
+    spec.displayName = "Julia - Multibrot 3";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set for z³ + c";
@@ -209,7 +209,7 @@ void RegisterExtendedJuliaFamily()
     // Multibrot Julia (Power 4)
     //=========================================================================
     spec.name = "Multibrot4Julia";
-    spec.displayName = "Multibrot 4 Julia";
+    spec.displayName = "Julia - Multibrot 4";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set for z⁴ + c";

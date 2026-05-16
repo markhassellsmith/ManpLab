@@ -19,7 +19,7 @@ void RegisterIFSFamily()
     //=========================================================================
     spec.name = "BarnsleyFern";
     spec.displayName = "Barnsley Fern (IFS)";
-    spec.category = "IFS";
+    spec.category = "Iterated Function Systems";
     spec.type = FractalCategory::HistogramBased;
     spec.description = "Classic Barnsley fern generated using an iterated function system";
     spec.formula = "IFS with 4 transformations and weighted probabilities";
@@ -79,7 +79,7 @@ void RegisterIFSFamily()
     //=========================================================================
     spec.name = "SierpinskiIFS";
     spec.displayName = "Sierpinski Triangle (IFS)";
-    spec.category = "IFS";
+    spec.category = "Iterated Function Systems";
     spec.type = FractalCategory::HistogramBased;
     spec.description = "Sierpinski triangle generated using chaos game IFS method";
     spec.formula = "IFS: pick random vertex, move halfway to it, plot point";
@@ -133,7 +133,7 @@ void RegisterIFSFamily()
     //=========================================================================
     spec.name = "DragonCurveIFS";
     spec.displayName = "Dragon Curve (IFS)";
-    spec.category = "IFS";
+    spec.category = "Iterated Function Systems";
     spec.type = FractalCategory::HistogramBased;
     spec.description = "Heighway dragon curve generated using IFS";
     spec.formula = "IFS with two transformations creating self-similar dragon pattern";
@@ -189,7 +189,7 @@ void RegisterIFSFamily()
     //=========================================================================
     spec.name = "PentagonIFS";
     spec.displayName = "Pentagon (IFS)";
-    spec.category = "IFS";
+    spec.category = "Iterated Function Systems";
     spec.type = FractalCategory::HistogramBased;
     spec.description = "Pentagonal fractal generated using chaos game with 5 vertices";
     spec.formula = "IFS: choose random pentagon vertex, move 5/8 toward it";
@@ -242,7 +242,7 @@ void RegisterIFSFamily()
     //=========================================================================
     spec.name = "TreeIFS";
     spec.displayName = "Tree (IFS)";
-    spec.category = "IFS";
+    spec.category = "Iterated Function Systems";
     spec.type = FractalCategory::HistogramBased;
     spec.description = "Fractal tree generated using branching IFS";
     spec.formula = "IFS with branching transformations creating tree structure";

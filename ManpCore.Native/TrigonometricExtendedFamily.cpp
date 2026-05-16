@@ -337,7 +337,7 @@ void RegisterTrigonometricExtendedFamily()
     // Hyperbolic Tangent
     //=========================================================================
     spec.name = "TanhMandel";
-    spec.displayName = "Tanh Mandelbrot";
+    spec.displayName = "Tanh Mandelbrot (Linear)";
     spec.category = "Trigonometric";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot with hyperbolic tangent: z = tanh(z) + c";

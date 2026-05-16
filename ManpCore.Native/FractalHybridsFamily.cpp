@@ -468,7 +468,7 @@ namespace Native
         {
             FractalSpec spec;
             spec.name = "CelticMandelbrot";
-            spec.displayName = "Celtic Mandelbrot";
+            spec.displayName = "Celtic Mandelbrot (Hybrid)";
             spec.category = "Hybrid Fractals";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Uses absolute value of real part: z(n+1) = (|Re(z²)| + iIm(z²)) + c. Creates Celtic knot-like patterns.";

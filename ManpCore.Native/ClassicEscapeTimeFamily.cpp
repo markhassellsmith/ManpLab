@@ -100,7 +100,7 @@ void RegisterClassicEscapeTimeFamily()
     //=========================================================================
     // MANDELTRIGFP (8) / LAMBDASINE (obsolete)
     //=========================================================================
-    spec.name = "MandelTrig";
+    spec.name = "MandelTrigClassic";
     spec.displayName = "Mandel Trig";
     spec.category = "Trigonometric";
     spec.type = FractalCategory::EscapeTime2D;
@@ -229,7 +229,7 @@ void RegisterClassicEscapeTimeFamily()
     //=========================================================================
     // MANDELLAMBDA (20) - Mandelbrot-Lambda hybrid
     //=========================================================================
-    spec.name = "MandelLambda";
+    spec.name = "MandelLambdaClassic";
     spec.displayName = "Mandel-Lambda";
     spec.category = "Classic Fractals";
     spec.type = FractalCategory::EscapeTime2D;
@@ -265,13 +265,13 @@ void RegisterClassicEscapeTimeFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // MARKSMANDEL (21) - Marks Mandelbrot variant
+    // MARKSMANDEL_PLACEHOLDER (21) - Marks Mandelbrot variant (placeholder)
     //=========================================================================
-    spec.name = "MarksMandel";
-    spec.displayName = "Marks Mandelbrot";
+    spec.name = "MarksMandelPlaceholder";
+    spec.displayName = "Marks Mandelbrot (Classic)";
     spec.category = "Mandelbrot Variants";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mark's variation of the Mandelbrot set";
+    spec.description = "Mark's variation of the Mandelbrot set (classic implementation)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         // Placeholder - will implement full Marks algorithm
@@ -376,7 +376,7 @@ void RegisterClassicEscapeTimeFamily()
     // Perpendicular Mandelbrot
     //=========================================================================
     spec.name = "PerpendicularMandelbrot";
-    spec.displayName = "Perpendicular Mandelbrot";
+    spec.displayName = "Perpendicular Mandelbrot (Abs First)";
     spec.category = "Mandelbrot Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Perpendicular Mandelbrot: abs(re) - i*abs(im), then z^2 + c";
@@ -410,7 +410,7 @@ void RegisterClassicEscapeTimeFamily()
     // Heart Mandelbrot
     //=========================================================================
     spec.name = "HeartMandelbrot";
-    spec.displayName = "Heart Mandelbrot";
+    spec.displayName = "Heart Mandelbrot (Sine)";
     spec.category = "Mandelbrot Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Heart-shaped variation: z^2 + c + sin(z)";

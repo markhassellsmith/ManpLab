@@ -11,7 +11,7 @@ namespace Native
     void RegisterOrbitalModificationsFamily()
     {
         // ═══════════════════════════════════════════════════════════════════════════════
-        // ORBITAL MODIFICATIONS & TRAP VARIANTS
+        // ORBITAL ADVANCED TECHNIQUES
         // Advanced orbital techniques: orbit traps, path modifications, conditional logic
         // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -22,7 +22,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "CircularOrbitTrap";
             spec.displayName = "Circular Orbit Trap";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Standard Mandelbrot with circular orbit trap at origin. Colors based on minimum distance to trap circle during iteration.";
             spec.formula = "z(n+1) = z² + c, track min(|z - trap_center|)";
@@ -82,7 +82,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "CrossOrbitTrap";
             spec.displayName = "Cross Orbit Trap";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Orbit trap using distance to coordinate axes (cross shape). Creates cruciform patterns.";
             spec.formula = "z(n+1) = z² + c, trap on x=0 or y=0";
@@ -142,7 +142,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "StalksConditional";
             spec.displayName = "Stalks (Conditional)";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Mandelbrot with conditional modification: if |z| < threshold, apply different formula. Creates stalk-like protrusions.";
             spec.formula = "If |z| < r: z = z² + c, else: z = z³ + c";
@@ -210,7 +210,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "SmoothedOrbit";
             spec.displayName = "Smoothed Orbit (Running Average)";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Applies running average smoothing to orbit: z_avg = 0.9*z_avg + 0.1*z. Creates softer, blurred versions.";
             spec.formula = "z' = 0.9*z_smooth + 0.1*z_new";
@@ -270,7 +270,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "OrbitAngleAccum";
             spec.displayName = "Orbit Angle Accumulation";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Tracks cumulative angle change during orbit. Reveals winding number and rotation patterns.";
             spec.formula = "z(n+1) = z² + c, accumulate Σ angle(z)";
@@ -327,7 +327,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "TriangleOrbitTrap";
             spec.displayName = "Triangle Orbit Trap";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Orbit trap using equilateral triangle shape. Creates threefold symmetric patterns.";
             spec.formula = "z(n+1) = z² + c, trap to triangle boundary";
@@ -396,7 +396,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "StripeAverage";
             spec.displayName = "Stripe Average Coloring";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Averages sin(angle) during orbit to create stripe patterns. Reveals orbital flow directions.";
             spec.formula = "z(n+1) = z² + c, average sin(arg(z))";
@@ -457,7 +457,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "CurvatureTracking";
             spec.displayName = "Orbital Curvature Tracking";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Tracks curvature of orbital path by measuring angle changes. High curvature = tight spirals.";
             spec.formula = "z(n+1) = z² + c, track |Δangle|";
@@ -525,7 +525,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "DeltaMagnitude";
             spec.displayName = "Delta Magnitude Tracking";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Tracks changes in magnitude between iterations: Δ|z| = ||z(n+1)| - |z(n)||. Shows acceleration/deceleration.";
             spec.formula = "z(n+1) = z² + c, track ||z(n+1)| - |z(n)||";
@@ -590,7 +590,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "PointLineOrbitTrap";
             spec.displayName = "Point-Line Orbit Trap";
-            spec.category = "Orbital Modifications";
+            spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Orbit trap using both a point and a line. Creates combined geometric patterns.";
             spec.formula = "z(n+1) = z² + c, trap to point and line";

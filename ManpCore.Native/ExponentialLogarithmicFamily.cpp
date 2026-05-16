@@ -19,7 +19,7 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "Exponential";
+            spec.name = "ExponentialLogarithmic";
             spec.displayName = "Exponential Mandelbrot";
             spec.category = "Exponential Fractals";
             spec.type = FractalCategory::EscapeTime2D;

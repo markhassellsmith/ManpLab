@@ -201,7 +201,7 @@ void RegisterOrbitalFractalsFamily()
     //=========================================================================
     spec.name = "AverageDistance";
     spec.displayName = "Average Distance";
-    spec.category = "Orbit Modification";
+    spec.category = "Orbit Statistics";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot colored by average orbit distance";
     spec.formula = "z = z² + c, color by average |z|";
@@ -244,7 +244,7 @@ void RegisterOrbitalFractalsFamily()
     //=========================================================================
     spec.name = "MinimumDistance";
     spec.displayName = "Minimum Distance";
-    spec.category = "Orbit Modification";
+    spec.category = "Orbit Statistics";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot colored by minimum orbit distance from origin";
     spec.formula = "z = z² + c, color by min(|z|)";
@@ -287,7 +287,7 @@ void RegisterOrbitalFractalsFamily()
     //=========================================================================
     spec.name = "MaximumDistance";
     spec.displayName = "Maximum Distance";
-    spec.category = "Orbit Modification";
+    spec.category = "Orbit Statistics";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot colored by maximum orbit distance before escape";
     spec.formula = "z = z² + c, color by max(|z|)";
@@ -330,7 +330,7 @@ void RegisterOrbitalFractalsFamily()
     //=========================================================================
     spec.name = "AngleAverage";
     spec.displayName = "Angle Average";
-    spec.category = "Orbit Modification";
+    spec.category = "Orbit Statistics";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot colored by average orbit angle";
     spec.formula = "z = z² + c, color by average arg(z)";

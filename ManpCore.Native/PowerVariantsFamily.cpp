@@ -137,7 +137,7 @@ void RegisterPowerVariantsFamily()
     // Julia Power 5
     //=========================================================================
     spec.name = "Julia5";
-    spec.displayName = "Julia (Power 5)";
+    spec.displayName = "Julia - Power 5";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with power 5: z⁵ + c";
@@ -171,7 +171,7 @@ void RegisterPowerVariantsFamily()
     // Julia Power 6
     //=========================================================================
     spec.name = "Julia6";
-    spec.displayName = "Julia (Power 6)";
+    spec.displayName = "Julia - Power 6";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with power 6: z⁶ + c";

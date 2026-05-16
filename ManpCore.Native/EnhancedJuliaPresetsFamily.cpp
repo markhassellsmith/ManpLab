@@ -76,8 +76,8 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "JuliaDendrite";
-            spec.displayName = "Julia - Dendrite";
+            spec.name = "JuliaDendritePreset";
+            spec.displayName = "Julia - Dendrite (Preset)";
             spec.category = "Julia Presets";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Famous dendrite Julia set with c = i. Creates tree-like branching patterns along imaginary axis.";
@@ -109,8 +109,8 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "JuliaSpiral";
-            spec.displayName = "Julia - Spiral";
+            spec.name = "JuliaSpiralPreset";
+            spec.displayName = "Julia - Spiral (Preset)";
             spec.category = "Julia Presets";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Creates tight spiral arms. c = 0.4 + 0.6i produces beautiful logarithmic spiral structure.";
@@ -142,8 +142,8 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "JuliaDragon";
-            spec.displayName = "Julia - Dragon";
+            spec.name = "JuliaDragonPreset";
+            spec.displayName = "Julia - Dragon (Preset)";
             spec.category = "Julia Presets";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Dragon-shaped Julia set. c = -0.8 + 0.156i creates distinctive dragon silhouette.";
