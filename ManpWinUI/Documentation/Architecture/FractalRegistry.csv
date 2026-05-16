@@ -1,0 +1,295 @@
+﻿Group Name,Fractal Label
+Attractors,Aizawa Attractor
+Attractors,Chen-Lee Attractor
+Attractors,Dadras Attractor
+Attractors,Halvorsen Attractor
+Attractors,Lorenz Attractor
+Attractors,Pickover Attractor
+Attractors,Thomas Attractor
+Barnsley,Barnsley J1
+Barnsley,Barnsley J2
+Barnsley,Barnsley J3
+Barnsley,Barnsley M1
+Barnsley,Barnsley M2
+Barnsley,Barnsley M3
+Bifurcation,Henon Parameter Space
+Bifurcation,Lambda Parameter Space
+Bifurcation,Logistic Parameter Space
+Bifurcation,Mandelbrot Parameter Space
+Bifurcation,May-Lyapunov Reference
+Bifurcation,Orbit Diagram
+Burning Ship Family,Burning Ship (Power 3)
+Burning Ship Family,Burning Ship (Power 4)
+Burning Ship Variants,Bird of Prey
+Burning Ship Variants,Buffalo Burning Ship
+Burning Ship Variants,Burning Ship Cubic
+Burning Ship Variants,Burning Ship Quartic
+Burning Ship Variants,Burning Ship Quintic
+Burning Ship Variants,Celtic Burning Ship
+Burning Ship Variants,Diagonal Burning Ship
+Burning Ship Variants,Partial Burning Ship
+Burning Ship Variants,Perpendicular Burning Ship
+Burning Ship Variants,Reverse Burning Ship
+Burning Ship Variants,Shark Burning Ship
+Burning Ship Variants,Vertical Burning Ship
+Chaotic Maps,Arneodo Attractor
+Chaotic Maps,Liu-Chen Attractor
+Chaotic Maps,Rabinovich-Fabrikant Attractor
+Chaotic Maps,Sprott B Attractor
+Classic Fractals,Lambda
+Classic Fractals,Mandelbrot Set
+Classic Fractals,Mandel-Lambda
+Classic Fractals,Tetrate
+Classic Fractals,Unity
+Complex Functions,1/sin(z)²
+Complex Functions,cos(z)/tan(z)
+Complex Functions,Square + Trig
+Complex Functions,Tetration (z^z)
+Complex Functions,Trig + Trig
+Complex Functions,Trig × Trig
+Complex Functions,Trig Squared
+Complex Functions,z·sin(z) + z
+Distance Estimator,Burning Ship (Distance Estimator)
+Distance Estimator,Julia (Distance Estimator)
+Distance Estimator,Mandelbrot (Distance Estimator)
+Distance Estimator,Tricorn (Distance Estimator)
+Exotic,Buffalo Fractal
+Exotic,Celtic Mandelbrot
+Exotic,Heart Mandelbrot
+Exotic,Perpendicular Mandelbrot
+Exotic,Quasi-Perpendicular
+Exotic,Shark Fin
+Exotic,Wavy
+Exotic,Zubieta
+Exotic Fractals,Magnet I
+Exotic Fractals,Magnet II
+Exotic Fractals,Phoenix Fractal
+Exponential Fractals,Complex Power
+Exponential Fractals,Exponential Fractal
+Exponential Fractals,Exponential Julia
+Exponential Fractals,Exponential Mandelbrot
+Exponential Fractals,Exponential Square
+Exponential Fractals,Lambda Lambda Exponential
+Exponential Fractals,Lambda Mandel Exponential
+Exponential Fractals,Logarithm Fractal
+Exponential Fractals,Logarithmic Mandelbrot
+Exponential Fractals,Mandelbrot Exponential
+Exponential Fractals,Power Tower (z^z)
+Exponential Fractals,z^z + c
+Historical Fractals,Chip Map
+Historical Fractals,Collatz Fractal
+Historical Fractals,Duffing Map
+Historical Fractals,Martin Map
+Historical Fractals,Pickover Biomorphs
+Historical Fractals,Pickover Stalks
+Historical Fractals,Quaternion Julia (2D slice)
+Historical Fractals,Sinusoidal Fractal
+Hybrid Fractals,Bifurcation-Mandelbrot
+Hybrid Fractals,Burning Mandelbrot Hybrid
+Hybrid Fractals,Celtic Mandelbrot (Hybrid)
+Hybrid Fractals,Celtic-Burning Ship Hybrid
+Hybrid Fractals,Collatz-Style Hybrid
+Hybrid Fractals,Exponential-Mandelbrot Blend
+Hybrid Fractals,Exponential-Mandelbrot Hybrid
+Hybrid Fractals,Magnet-Mandelbrot Hybrid
+Hybrid Fractals,Mandelbrot-Burning Ship Hybrid
+Hybrid Fractals,Mandelbrot-Lambda Mix
+Hybrid Fractals,Multi-Power Cycle
+Hybrid Fractals,Mutant Mandelbrot (Power Evolution)
+Hybrid Fractals,Newton-Mandelbrot Blend
+Hybrid Fractals,Perturbed Newton
+Hybrid Fractals,Sierpinski-Mandelbrot Cross
+Hybrid Fractals,Sine-Mandelbrot Hybrid
+Hybrid Fractals,Tricorn-Phoenix Hybrid
+Hybrid Fractals,Trig-Mandelbrot Blend
+Iterated Function Systems,Barnsley Fern (IFS)
+Iterated Function Systems,Dragon Curve (IFS)
+Iterated Function Systems,Pentagon (IFS)
+Iterated Function Systems,Sierpinski Triangle (IFS)
+Iterated Function Systems,Tree (IFS)
+Julia Presets,Julia - Airplane
+Julia Presets,Julia - Backbone
+Julia Presets,Julia - Cauliflower
+Julia Presets,Julia - Crystal
+Julia Presets,Julia - Dendrite (Preset)
+Julia Presets,Julia - Dragon (Preset)
+Julia Presets,Julia - Eye
+Julia Presets,Julia - Feigenbaum Point
+Julia Presets,Julia - Flower
+Julia Presets,Julia - Fractal Tree
+Julia Presets,Julia - Fuzzy Blob
+Julia Presets,Julia - Golden Ratio
+Julia Presets,Julia - Heart
+Julia Presets,Julia - Lightning
+Julia Presets,Julia - Medusa
+Julia Presets,Julia - Neurons
+Julia Presets,Julia - Paisley
+Julia Presets,Julia - Seahorse Valley
+Julia Presets,Julia - Snowflake
+Julia Presets,Julia - Spiral (Preset)
+Julia Presets,Julia - Spiral Galaxy
+Julia Presets,Julia - Triple Spiral
+Julia Presets,Julia - Twisted Cross
+Julia Sets,Julia - Burning Ship
+Julia Sets,Julia - Classic
+Julia Sets,Julia - Cubic
+Julia Sets,Julia - Custom
+Julia Sets,Julia - Dendrite
+Julia Sets,Julia - Douady Rabbit
+Julia Sets,Julia - Dragon
+Julia Sets,Julia - Exponential
+Julia Sets,Julia - Lambda
+Julia Sets,Julia - Lambda (Alt)
+Julia Sets,Julia - Magnet
+Julia Sets,Julia - Multibrot 3
+Julia Sets,Julia - Multibrot 4
+Julia Sets,Julia - Phoenix
+Julia Sets,Julia - Power 5
+Julia Sets,Julia - Power 6
+Julia Sets,Julia - San Marco
+Julia Sets,Julia - Siegel Disk
+Julia Sets,Julia - Siegel Disk (Alt)
+Julia Sets,Julia - Sine
+Julia Sets,Julia - Spiral
+Lambda Fractals,Lambda Flip
+Lambda Fractals,Lambda Modified
+Lambda Fractals,Lambda Phoenix
+Lambda Fractals,Lambda Power 3
+Lambda Fractals,Lambda Power 4
+Lambda Fractals,Lambda Squared
+Lambda Fractals,Lambda Tan
+Lambda Fractals,Lambda Tanh
+Magnet Fractals,Magnet I Cubic
+Magnet Fractals,Magnet I Julia
+Magnet Fractals,Magnet II Cubic
+Magnet Fractals,Magnet II Julia
+Mandelbrot Variants,Burning Ship
+Mandelbrot Variants,Celtic Heart
+Mandelbrot Variants,Heart Mandelbrot (Sine)
+Mandelbrot Variants,Julia Power 4
+Mandelbrot Variants,Mandelbar
+Mandelbrot Variants,Mandelbar (Conjugate)
+Mandelbrot Variants,Mandelbrot Power 4
+Mandelbrot Variants,Mandelbrot-Lambda
+Mandelbrot Variants,Manowar
+Mandelbrot Variants,Marks Julia
+Mandelbrot Variants,Marks Mandelbrot
+Mandelbrot Variants,Marks Mandelbrot (Classic)
+Mandelbrot Variants,Multibrot (Power 6)
+Mandelbrot Variants,Multibrot (Power 7)
+Mandelbrot Variants,Multibrot (Power 8)
+Mandelbrot Variants,Multibrot³ (Cubic)
+Mandelbrot Variants,Multibrot⁴ (Quartic)
+Mandelbrot Variants,Multibrot⁵ (Quintic)
+Mandelbrot Variants,Perpendicular Mandelbrot (Abs First)
+Mandelbrot Variants,Shark Fin Mandelbrot
+Mandelbrot Variants,Spider
+Mandelbrot Variants,Spider Variant
+Mandelbrot Variants,Thorn
+Mandelbrot Variants,Thorn (Classic)
+Mandelbrot Variants,Tricorn (Mandelbar)
+Mandelbrot Variants,Wavy Mandelbrot
+Multibrot Powers,Buffalo (Polynomial)
+Multibrot Powers,Multibrot-10 (Decic)
+Multibrot Powers,Multibrot-3 (Cubic)
+Multibrot Powers,Multibrot-4 (Quartic)
+Multibrot Powers,Multibrot-5 (Quintic)
+Multibrot Powers,Multibrot-6 (Sextic)
+Multibrot Powers,Multibrot-8 (Octic)
+Multibrot Powers,Tricorn (Polynomial)
+Newton's Method,Newton (z³-1)
+Newton's Method,Newton Basin (z³-1)
+Newton's Method,Newton Cosh
+Newton's Method,Newton Quartic (z⁴-1)
+Newton's Method,Newton Quintic (z⁵-1)
+Newton's Method,Newton Sextic (z⁶-1)
+Newton's Method,Newton Sine
+Newton's Method,Nova
+Orbit Statistics,Angle Average
+Orbit Statistics,Average Distance
+Orbit Statistics,Maximum Distance
+Orbit Statistics,Minimum Distance
+Orbit Trap,Orbit Trap (Circle)
+Orbit Trap,Orbit Trap (Cross)
+Orbit Trap,Orbit Trap (Point)
+Orbit Trap,Orbit Trap (Square)
+Orbital Advanced,Circular Orbit Trap
+Orbital Advanced,Cross Orbit Trap
+Orbital Advanced,Delta Magnitude Tracking
+Orbital Advanced,Orbit Angle Accumulation
+Orbital Advanced,Orbital Curvature Tracking
+Orbital Advanced,Point-Line Orbit Trap
+Orbital Advanced,Smoothed Orbit (Running Average)
+Orbital Advanced,Stalks (Conditional)
+Orbital Advanced,Stripe Average Coloring
+Orbital Advanced,Triangle Orbit Trap
+Phoenix Fractals,Phoenix Complex Feedback
+Phoenix Fractals,Phoenix Cosh
+Phoenix Fractals,Phoenix Cubic
+Phoenix Fractals,Phoenix Julia
+Phoenix Fractals,Phoenix Lambda
+Phoenix Fractals,Phoenix Mandelbrot
+Phoenix Fractals,Phoenix Quartic
+Phoenix Fractals,Phoenix Sine
+Polynomial Variants,Biomorph
+Polynomial Variants,Cubic Mandelbrot
+Polynomial Variants,Polynomial z³-z+c
+Polynomial Variants,Polynomial z⁴+z³+c
+Polynomial Variants,Quartic Mandelbrot
+Polynomial Variants,Quintic Mandelbrot
+Polynomial Variants,Rational R1
+Polynomial Variants,Sextic Mandelbrot
+Rational Function Fractals,Halley's Method z³-1
+Rational Function Fractals,Möbius Fractal
+Rational Function Fractals,Newton z³-1
+Rational Function Fractals,Newton z⁴-1
+Rational Function Fractals,Newton z⁵-1
+Rational Function Fractals,Rational (z²+c)/(z²-c)
+Rational Function Fractals,Rational z²/(z³+c)
+Rational Function Fractals,Rational z³/(z³+c)
+Special,2-D Hailstone Trajectory
+Special,Buddhabrot
+Special,Hailstone Sequence
+Special,Lyapunov
+Special,NumFractal
+Special,Sierpinski Triangle
+Special,Tetration (Classic)
+Special Function Fractals,Bessel-like Oscillatory
+Special Function Fractals,Continued Fraction Fractal
+Special Function Fractals,Error Function (erf) Fractal
+Special Function Fractals,Gamma Function Fractal
+Special Function Fractals,Hyperbolic Combination
+Special Function Fractals,Lambert W Function
+Special Function Fractals,Tetration (Power Tower)
+Strange Attractors,Bedhead Attractor
+Strange Attractors,Clifford Attractor
+Strange Attractors,De Jong Attractor
+Strange Attractors,Duffing Attractor
+Strange Attractors,Svensson Attractor
+Strange Attractors,Tinkerbell Attractor
+Tricorn Family,Tricorn (Power 3)
+Tricorn Family,Tricorn (Power 4)
+Trigonometric,ArcCos Mandelbrot
+Trigonometric,ArcSin Mandelbrot
+Trigonometric,ArcTan Mandelbrot
+Trigonometric,Cosecant Mandelbrot
+Trigonometric,Cosh Mandelbrot
+Trigonometric,Cotangent Mandelbrot
+Trigonometric,Mandel Trig
+Trigonometric,Secant Mandelbrot
+Trigonometric,Sinh Mandelbrot
+Trigonometric,Tangent Mandelbrot
+Trigonometric,Tanh Mandelbrot
+Trigonometric,Tanh Mandelbrot (Linear)
+Trigonometric Fractals,Cos(z) + c
+Trigonometric Fractals,Lambda Lambda Cosh
+Trigonometric Fractals,Lambda Lambda Cosine
+Trigonometric Fractals,Lambda Lambda Sine
+Trigonometric Fractals,Lambda Lambda Sinh
+Trigonometric Fractals,Lambda Mandel Cosh
+Trigonometric Fractals,Lambda Mandel Cosine
+Trigonometric Fractals,Lambda Mandel Sine
+Trigonometric Fractals,Lambda Mandel Sinh
+Trigonometric Fractals,Mandelbrot Trig
+Trigonometric Fractals,Sin(z) + c
+Trigonometric Fractals,Sine Fractal

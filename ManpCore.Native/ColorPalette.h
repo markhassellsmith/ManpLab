@@ -28,7 +28,8 @@ namespace Native {
         Ocean,          // Cool colors: deep blue -> cyan -> white
         Afterimage,     // Inverted complementary colors (negative spectrum)
         Psychedelic,    // Vibrant, high-contrast colors
-        Spectrum        // Pure HSV spectrum at full saturation (S=100%, L=50%)
+        Spectrum,       // Pure HSV spectrum at full saturation (S=100%, L=50%)
+        Neon            // Electric neon colors with rapid hue cycling for detail revelation
     };
 
     /// <summary>
@@ -88,6 +89,9 @@ namespace Native {
 
             case PaletteType::Spectrum:
                 return GetSpectrumColor(t);
+
+            case PaletteType::Neon:
+                return GetNeonColor(t);
 
             default:
                 return GetGrayscaleColor(t);
@@ -164,33 +168,45 @@ namespace Native {
             }
         }
 
-        // Ocean palette (deep blue -> cyan -> white)
+        // Ocean palette (deep blue-green -> teal -> turquoise -> cyan -> white foam)
         static ColorRGB GetOceanColor(double t)
         {
-            t = t * 3.0;
+            t = t * 4.0;
 
             if (t < 1.0)
             {
-                // Deep blue to medium blue
+                // Deep ocean blue-green (dark depths)
                 int r = 0;
-                int g = (int)(t * 128);
-                int b = (int)(128 + t * 127);
+                int g = (int)(20 + t * 60);    // 20 to 80
+                int b = (int)(60 + t * 100);   // 60 to 160
                 return ColorRGB(r, g, b);
             }
             else if (t < 2.0)
             {
-                // Medium blue to cyan
+                // Teal/turquoise (shallow tropical water)
                 t = t - 1.0;
-                int g = (int)(128 + t * 127);
-                return ColorRGB(0, g, 255);
+                int r = (int)(t * 30);         // 0 to 30
+                int g = (int)(80 + t * 100);   // 80 to 180
+                int b = (int)(160 + t * 80);   // 160 to 240
+                return ColorRGB(r, g, b);
+            }
+            else if (t < 3.0)
+            {
+                // Bright turquoise to cyan (surf)
+                t = t - 2.0;
+                int r = (int)(30 + t * 30);    // 30 to 60
+                int g = (int)(180 + t * 75);   // 180 to 255
+                int b = (int)(240 + t * 15);   // 240 to 255
+                return ColorRGB(r, g, b);
             }
             else
             {
-                // Cyan to white
-                t = t - 2.0;
-                int r = (int)(t * 255);
-                int b = (int)(255 - t * 128);
-                return ColorRGB(r, 255, b);
+                // Cyan to white (foam and spray)
+                t = t - 3.0;
+                int r = (int)(60 + t * 195);   // 60 to 255
+                int g = 255;
+                int b = 255;
+                return ColorRGB(r, g, b);
             }
         }
 
@@ -225,6 +241,37 @@ namespace Native {
             // Using HSV with fixed S=1.0 (100% saturation), V=1.0 (50% lightness equivalent)
             double hue = t * 360.0;
             return HSVtoRGB(hue, 1.0, 1.0);
+        }
+
+        // Neon palette (electric colors with rapid cycling for detail revelation)
+        // Uses high-frequency sine waves with complementary color shifts for maximum contrast
+        static ColorRGB GetNeonColor(double t)
+        {
+            // Use rapid cycling sine waves like Psychedelic, but with electric neon colors
+            // Higher frequencies (16, 19, 23) reveal more fine detail than Psychedelic's (8, 11, 13)
+            // Phase offsets create complementary color shifts for visual "pop"
+
+            // Cycle through electric neon hues rapidly
+            double r = (sin(t * 16.0 * 3.14159) + 1.0) * 127.5;
+            double g = (sin(t * 19.0 * 3.14159 + 1.5) + 1.0) * 127.5;
+            double b = (sin(t * 23.0 * 3.14159 + 3.0) + 1.0) * 127.5;
+
+            // Boost intensity for electric neon effect (ensure at least one channel is bright)
+            double maxChannel = fmax(fmax(r, g), b);
+            if (maxChannel < 128.0)
+            {
+                double boost = 200.0 / maxChannel;
+                r *= boost;
+                g *= boost;
+                b *= boost;
+            }
+
+            // Clamp to valid range
+            r = fmin(r, 255.0);
+            g = fmin(g, 255.0);
+            b = fmin(b, 255.0);
+
+            return ColorRGB((unsigned char)r, (unsigned char)g, (unsigned char)b);
         }
 
         // HSV to RGB conversion helper

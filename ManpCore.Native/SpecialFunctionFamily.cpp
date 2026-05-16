@@ -304,7 +304,7 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "Tetration";
+            spec.name = "TetrationPowerTower";
             spec.displayName = "Tetration (Power Tower)";
             spec.category = "Special Function Fractals";
             spec.type = FractalCategory::EscapeTime2D;

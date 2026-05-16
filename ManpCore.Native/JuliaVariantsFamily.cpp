@@ -17,7 +17,7 @@ void RegisterJuliaVariantsFamily()
     // Julia Set - Classic
     //=========================================================================
     spec.name = "JuliaClassic";
-    spec.displayName = "Julia Classic";
+    spec.displayName = "Julia - Classic";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Classic Julia set with standard Mandelbrot iteration";
@@ -56,7 +56,7 @@ void RegisterJuliaVariantsFamily()
     // Julia Cubic
     //=========================================================================
     spec.name = "JuliaCubic";
-    spec.displayName = "Julia Cubic";
+    spec.displayName = "Julia - Cubic";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with cubic iteration";
@@ -100,7 +100,7 @@ void RegisterJuliaVariantsFamily()
     // Julia Burning Ship
     //=========================================================================
     spec.name = "JuliaBurningShip";
-    spec.displayName = "Julia Burning Ship";
+    spec.displayName = "Julia - Burning Ship";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with Burning Ship formula";
@@ -141,7 +141,7 @@ void RegisterJuliaVariantsFamily()
     // Julia Phoenix
     //=========================================================================
     spec.name = "JuliaPhoenix";
-    spec.displayName = "Julia Phoenix";
+    spec.displayName = "Julia - Phoenix";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with Phoenix formula: uses previous iteration";
@@ -188,7 +188,7 @@ void RegisterJuliaVariantsFamily()
     // Julia Lambda
     //=========================================================================
     spec.name = "JuliaLambda";
-    spec.displayName = "Julia Lambda";
+    spec.displayName = "Julia - Lambda";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with Lambda formula";
@@ -236,7 +236,7 @@ void RegisterJuliaVariantsFamily()
     // Julia Sine
     //=========================================================================
     spec.name = "JuliaSine";
-    spec.displayName = "Julia Sine";
+    spec.displayName = "Julia - Sine";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with sine function";
@@ -278,7 +278,7 @@ void RegisterJuliaVariantsFamily()
     // Julia Exponential
     //=========================================================================
     spec.name = "JuliaExp";
-    spec.displayName = "Julia Exponential";
+    spec.displayName = "Julia - Exponential";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with exponential function";
@@ -321,7 +321,7 @@ void RegisterJuliaVariantsFamily()
     // Julia Magnet
     //=========================================================================
     spec.name = "JuliaMagnet";
-    spec.displayName = "Julia Magnet";
+    spec.displayName = "Julia - Magnet";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with Magnet 1 formula";

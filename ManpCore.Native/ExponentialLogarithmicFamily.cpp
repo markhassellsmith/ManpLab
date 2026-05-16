@@ -19,7 +19,7 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "Exponential";
+            spec.name = "ExponentialLogarithmic";
             spec.displayName = "Exponential Mandelbrot";
             spec.category = "Exponential Fractals";
             spec.type = FractalCategory::EscapeTime2D;
@@ -84,9 +84,9 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "log(z) = log|z| + i*arg(z); requires magnitude check to avoid log(0)";
 
-            spec.defaultCenterX = 1.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            spec.defaultCenterX = 0.24;
+            spec.defaultCenterY = -0.3;
+            spec.defaultZoom = 1.033557;  // Viewport tuning: X scale 1.935, Y scale 1.088 (green earthworm)
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -94,6 +94,7 @@ namespace Native
             {
                 ComplexD z = isJulia ? c : ComplexD(0.1, 0.1);
                 ComplexD constant = isJulia ? juliaC : c;
+                ComplexD zPrev = z;
 
                 for (int i = 0; i < maxIter; ++i)
                 {
@@ -101,7 +102,7 @@ namespace Native
 
                     if (mag < 1e-10)
                     {
-                        return static_cast<double>(maxIter);
+                        return static_cast<double>(i);  // Converged to zero
                     }
 
                     // log(z) = log|z| + i*arg(z)
@@ -113,10 +114,21 @@ namespace Native
 
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
+                    // Check for escape (rare but possible)
                     if (mag2 > 100.0)
                     {
                         return static_cast<double>(i);
                     }
+
+                    // Check for convergence (primary exit condition for logarithmic fractals)
+                    double dx = z.real - zPrev.real;
+                    double dy = z.imag - zPrev.imag;
+                    double delta = dx * dx + dy * dy;
+
+                    if (delta < 1e-8)
+                        return static_cast<double>(maxIter - i);  // Converged: return inverse iteration count for coloring
+
+                    zPrev = z;
                 }
 
                 return static_cast<double>(maxIter);

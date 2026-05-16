@@ -287,7 +287,7 @@ void RegisterComplexFunctionsFamily()
     //=========================================================================
     // Tetration (z^z + c)
     //=========================================================================
-    spec.name = "Tetration";
+    spec.name = "TetrationZtoZ";
     spec.displayName = "Tetration (z^z)";
     spec.category = "Complex Functions";
     spec.type = FractalCategory::EscapeTime2D;

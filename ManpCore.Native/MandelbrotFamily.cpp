@@ -91,8 +91,8 @@ void RegisterMandelbrotFamily()
     //=========================================================================
     // Julia - Siegel Disk
     //=========================================================================
-    spec.name = "JuliaSiegelDisk";
-    spec.displayName = "Julia - Siegel Disk";
+    spec.name = "JuliaSiegelDiskAlt";
+    spec.displayName = "Julia - Siegel Disk (Alt)";
     spec.category = "Julia Sets";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Julia set with c = -0.390541 - 0.586788i (Siegel disk)";

@@ -88,7 +88,7 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "NewtonQuartic";
+            spec.name = "NewtonQuarticRational";
             spec.displayName = "Newton z⁴-1";
             spec.category = "Rational Function Fractals";
             spec.type = FractalCategory::EscapeTime2D;
@@ -160,7 +160,7 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "NewtonQuintic";
+            spec.name = "NewtonQuinticRational";
             spec.displayName = "Newton z⁵-1";
             spec.category = "Rational Function Fractals";
             spec.type = FractalCategory::EscapeTime2D;

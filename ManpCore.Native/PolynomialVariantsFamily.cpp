@@ -5,8 +5,8 @@
 namespace Native {
 
 //=============================================================================
-// Polynomial Variants Family
-// Various polynomial-based fractal formulas
+// POLYNOMIAL VARIANTS FAMILY
+// Mixed polynomial formulas and experimental combinations
 //=============================================================================
 
 // Helper: Complex power function
@@ -32,7 +32,7 @@ void RegisterPolynomialVariantsFamily()
     //=========================================================================
     spec.name = "CubicMandel";
     spec.displayName = "Cubic Mandelbrot";
-    spec.category = "Polynomial";
+    spec.category = "Polynomial Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot with cubic iteration";
     spec.formula = "z = z³ + c";
@@ -75,7 +75,7 @@ void RegisterPolynomialVariantsFamily()
     //=========================================================================
     spec.name = "QuarticMandel";
     spec.displayName = "Quartic Mandelbrot";
-    spec.category = "Polynomial";
+    spec.category = "Polynomial Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot with quartic iteration";
     spec.formula = "z = z⁴ + c";
@@ -117,7 +117,7 @@ void RegisterPolynomialVariantsFamily()
     //=========================================================================
     spec.name = "QuinticMandel";
     spec.displayName = "Quintic Mandelbrot";
-    spec.category = "Polynomial";
+    spec.category = "Polynomial Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot with quintic iteration";
     spec.formula = "z = z⁵ + c";
@@ -155,7 +155,7 @@ void RegisterPolynomialVariantsFamily()
     //=========================================================================
     spec.name = "SexticMandel";
     spec.displayName = "Sextic Mandelbrot";
-    spec.category = "Polynomial";
+    spec.category = "Polynomial Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Mandelbrot with sextic (6th power) iteration";
     spec.formula = "z = z⁶ + c";
@@ -201,7 +201,7 @@ void RegisterPolynomialVariantsFamily()
     //=========================================================================
     spec.name = "RationalR1";
     spec.displayName = "Rational R1";
-    spec.category = "Polynomial";
+    spec.category = "Polynomial Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Rational map: (z²+c)/(z²+1)";
     spec.formula = "z = (z²+c)/(z²+1)";
@@ -253,7 +253,7 @@ void RegisterPolynomialVariantsFamily()
     //=========================================================================
     spec.name = "PolyZ3MinusZ";
     spec.displayName = "Polynomial z³-z+c";
-    spec.category = "Polynomial";
+    spec.category = "Polynomial Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Polynomial fractal: z³ - z + c";
     spec.formula = "z = z³ - z + c";
@@ -301,7 +301,7 @@ void RegisterPolynomialVariantsFamily()
     //=========================================================================
     spec.name = "PolyZ4PlusZ3";
     spec.displayName = "Polynomial z⁴+z³+c";
-    spec.category = "Polynomial";
+    spec.category = "Polynomial Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Polynomial fractal: z⁴ + z³ + c";
     spec.formula = "z = z⁴ + z³ + c";
@@ -353,7 +353,7 @@ void RegisterPolynomialVariantsFamily()
     //=========================================================================
     spec.name = "Biomorph";
     spec.displayName = "Biomorph";
-    spec.category = "Polynomial";
+    spec.category = "Polynomial Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Biomorph fractal with organism-like shapes";
     spec.formula = "z = z² + c, special bailout condition";

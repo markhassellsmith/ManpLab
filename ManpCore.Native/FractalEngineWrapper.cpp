@@ -310,6 +310,9 @@ static void RenderHistogramFractal(
     // Phase 1: Iterate to find actual attractor bounds
     for (int iter = 0; iter < orbitCount; ++iter)
     {
+        // For IFS fractals, pass iteration counter through z for deterministic randomness
+        z = static_cast<double>(iter);
+
         // Call the fractal's orbit iterator to update (x, y, z)
         spec->orbitIterator(x, y, z, customParams);
 
@@ -347,6 +350,9 @@ static void RenderHistogramFractal(
 
     for (int iter = 0; iter < orbitCount; ++iter)
     {
+        // For IFS fractals, pass iteration counter through z for deterministic randomness
+        z = static_cast<double>(iter);
+
         // Call the fractal's orbit iterator to update (x, y, z)
         spec->orbitIterator(x, y, z, customParams);
 

@@ -83,9 +83,9 @@ namespace Native
             spec.discoveryYear = 1988;
             spec.computationalNotes = "Combines trigonometric and polynomial terms";
 
-            spec.defaultCenterX = 0.0;
+            spec.defaultCenterX = -0.75;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.3;
+            spec.defaultZoom = 0.509244;  // Viewport tuning: X scale 3.93, Y scale 2.21
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -146,7 +146,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            spec.defaultZoom = 0.004518;  // Viewport tuning: X scale 442.66, Y scale 248.99
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -232,16 +232,17 @@ namespace Native
                     z.real = x * x - y * y + constant.real;
                     z.imag = 2.0 * x * y + constant.imag;
 
-                    // Apply modulo 2π to create periodic boundaries
-                    z.real = std::fmod(z.real, TWO_PI);
-                    z.imag = std::fmod(z.imag, TWO_PI);
-
+                    // Check for escape BEFORE applying modulo
                     double mag2 = z.real * z.real + z.imag * z.imag;
 
                     if (mag2 > 256.0)
                     {
                         return static_cast<double>(i);
                     }
+
+                    // Apply modulo 2π to create periodic boundaries
+                    z.real = std::fmod(z.real, TWO_PI);
+                    z.imag = std::fmod(z.imag, TWO_PI);
                 }
 
                 return static_cast<double>(maxIter);
@@ -397,7 +398,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 5.0;
+            spec.defaultZoom = 0.295501;  // Viewport tuning: X scale 6.77, Y scale 3.81
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 

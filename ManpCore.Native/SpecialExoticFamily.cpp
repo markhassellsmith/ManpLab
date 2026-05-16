@@ -189,7 +189,7 @@ void RegisterSpecialExoticFamily()
     //=========================================================================
     // MANDELBAR (231) - Mandelbar (Tricorn without conjugate in z²)
     //=========================================================================
-    spec.name = "Mandelbar";
+    spec.name = "MandelbarExotic";
     spec.displayName = "Mandelbar";
     spec.category = "Mandelbrot Variants";
     spec.type = FractalCategory::EscapeTime2D;
@@ -223,10 +223,10 @@ void RegisterSpecialExoticFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // THORN (227) - Thorn fractal
+    // THORN (227) - Thorn fractal (classic variant)
     //=========================================================================
-    spec.name = "Thorn";
-    spec.displayName = "Thorn";
+    spec.name = "ThornClassic";
+    spec.displayName = "Thorn (Classic)";
     spec.category = "Mandelbrot Variants";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Thorn fractal: z = z²/c + c";
@@ -265,8 +265,8 @@ void RegisterSpecialExoticFamily()
     //=========================================================================
     // TETRATION (236) - Infinite tower: z^z^z^...
     //=========================================================================
-    spec.name = "Tetration";
-    spec.displayName = "Tetration";
+    spec.name = "TetrationClassic";
+    spec.displayName = "Tetration (Classic)";
     spec.category = "Special";
     spec.type = FractalCategory::EscapeTime2D;
     spec.description = "Infinite power tower: z^z^z^z...";

@@ -20,7 +20,8 @@ namespace ManpWinUI.ViewModels.Properties
         Ocean,          // Deep blue to turquoise
         Afterimage,     // Inverted complementary colors (negative spectrum)
         Psychedelic,    // Vibrant, high-contrast colors
-        Spectrum        // Pure HSV color wheel (S=100%, L=50%)
+        Spectrum,       // Pure HSV color wheel (S=100%, L=50%)
+        Neon            // Electric neon colors with rapid cycling for detail revelation
     }
 
     /// <summary>
@@ -185,19 +186,20 @@ namespace ManpWinUI.ViewModels.Properties
         {
             Palettes.Clear();
 
-            // Grayscale palette
-            var grayscale = new PaletteItem
+            // Afterimage palette (inverted/complementary colors)
+            var afterimage = new PaletteItem
             {
-                Name = "Grayscale",
-                Type = PaletteType.Grayscale,
-                Description = "Black to white monochrome"
+                Name = "Afterimage",
+                Type = PaletteType.Afterimage,
+                Description = "Inverted complementary colors (negative effect)"
             };
-            grayscale.PreviewColors.Add("#000000"); // Black
-            grayscale.PreviewColors.Add("#404040"); // Dark gray
-            grayscale.PreviewColors.Add("#808080"); // Gray
-            grayscale.PreviewColors.Add("#C0C0C0"); // Light gray
-            grayscale.PreviewColors.Add("#FFFFFF"); // White
-            Palettes.Add(grayscale);
+            afterimage.PreviewColors.Add("#00FFFF"); // Cyan (inverted red)
+            afterimage.PreviewColors.Add("#00FF00"); // Green (inverted magenta)
+            afterimage.PreviewColors.Add("#0080FF"); // Sky blue (inverted orange)
+            afterimage.PreviewColors.Add("#FF00FF"); // Magenta (inverted green)
+            afterimage.PreviewColors.Add("#FFFF00"); // Yellow (inverted blue)
+            afterimage.PreviewColors.Add("#FF0080"); // Pink (inverted cyan)
+            Palettes.Add(afterimage);
 
             // Classic fractal palette (default)
             var classic = new PaletteItem
@@ -230,6 +232,35 @@ namespace ManpWinUI.ViewModels.Properties
             fire.PreviewColors.Add("#FFFFFF"); // White
             Palettes.Add(fire);
 
+            // Grayscale palette
+            var grayscale = new PaletteItem
+            {
+                Name = "Grayscale",
+                Type = PaletteType.Grayscale,
+                Description = "Black to white monochrome"
+            };
+            grayscale.PreviewColors.Add("#000000"); // Black
+            grayscale.PreviewColors.Add("#404040"); // Dark gray
+            grayscale.PreviewColors.Add("#808080"); // Gray
+            grayscale.PreviewColors.Add("#C0C0C0"); // Light gray
+            grayscale.PreviewColors.Add("#FFFFFF"); // White
+            Palettes.Add(grayscale);
+
+            // Neon palette (electric colors with rapid cycling)
+            var neon = new PaletteItem
+            {
+                Name = "Neon",
+                Type = PaletteType.Neon,
+                Description = "Electric neon colors revealing fine details"
+            };
+            neon.PreviewColors.Add("#FF00FF"); // Magenta
+            neon.PreviewColors.Add("#00FF88"); // Spring green
+            neon.PreviewColors.Add("#FF8800"); // Orange
+            neon.PreviewColors.Add("#00FFFF"); // Cyan
+            neon.PreviewColors.Add("#FF0088"); // Hot pink
+            neon.PreviewColors.Add("#88FF00"); // Electric lime
+            Palettes.Add(neon);
+
             // Ocean palette
             var ocean = new PaletteItem
             {
@@ -244,21 +275,6 @@ namespace ManpWinUI.ViewModels.Properties
             ocean.PreviewColors.Add("#7FFFD4"); // Aquamarine
             ocean.PreviewColors.Add("#E0FFFF"); // Light cyan
             Palettes.Add(ocean);
-
-            // Afterimage palette (inverted/complementary colors)
-            var afterimage = new PaletteItem
-            {
-                Name = "Afterimage",
-                Type = PaletteType.Afterimage,
-                Description = "Inverted complementary colors (negative effect)"
-            };
-            afterimage.PreviewColors.Add("#00FFFF"); // Cyan (inverted red)
-            afterimage.PreviewColors.Add("#00FF00"); // Green (inverted magenta)
-            afterimage.PreviewColors.Add("#0080FF"); // Sky blue (inverted orange)
-            afterimage.PreviewColors.Add("#FF00FF"); // Magenta (inverted green)
-            afterimage.PreviewColors.Add("#FFFF00"); // Yellow (inverted blue)
-            afterimage.PreviewColors.Add("#FF0080"); // Pink (inverted cyan)
-            Palettes.Add(afterimage);
 
             // Psychedelic palette
             var psychedelic = new PaletteItem
