@@ -7,7 +7,7 @@ namespace Native
     void RegisterPolynomialFamily()
     {
         // ═══════════════════════════════════════════════════════════════════════════════
-        // MULTIBROT FAMILY - Polynomial generalizations of Mandelbrot set
+        // MULTIBROT POWERS - Pure polynomial generalizations z^n + c
         // ═══════════════════════════════════════════════════════════════════════════════
 
         // ───────────────────────────────────────────────────────────────────────────────
@@ -17,7 +17,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "Multibrot-3";
             spec.displayName = "Multibrot-3 (Cubic)";
-            spec.category = "Polynomial Fractals";
+            spec.category = "Multibrot Powers";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Third-order polynomial fractal using z³+c iteration. Features three-fold rotational symmetry and produces distinctive triple-spiral arms.";
             spec.formula = "z(n+1) = z(n)³ + c";
@@ -74,7 +74,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "Multibrot-4";
             spec.displayName = "Multibrot-4 (Quartic)";
-            spec.category = "Polynomial Fractals";
+            spec.category = "Multibrot Powers";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Fourth-order polynomial fractal using z⁴+c iteration. Exhibits four-fold rotational symmetry with square-like main body.";
             spec.formula = "z(n+1) = z(n)⁴ + c";
@@ -132,7 +132,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "Multibrot-5";
             spec.displayName = "Multibrot-5 (Quintic)";
-            spec.category = "Polynomial Fractals";
+            spec.category = "Multibrot Powers";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Fifth-order polynomial fractal using z⁵+c iteration. Shows five-fold rotational symmetry with pentagonal structure.";
             spec.formula = "z(n+1) = z(n)⁵ + c";
@@ -193,7 +193,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "Multibrot-6";
             spec.displayName = "Multibrot-6 (Sextic)";
-            spec.category = "Polynomial Fractals";
+            spec.category = "Multibrot Powers";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Sixth-order polynomial fractal using z⁶+c iteration. Features six-fold rotational symmetry with hexagonal main structure.";
             spec.formula = "z(n+1) = z(n)⁶ + c";
@@ -253,7 +253,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "Multibrot-8";
             spec.displayName = "Multibrot-8 (Octic)";
-            spec.category = "Polynomial Fractals";
+            spec.category = "Multibrot Powers";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Eighth-order polynomial fractal using z⁸+c iteration. Exhibits eight-fold rotational symmetry with octagonal structure.";
             spec.formula = "z(n+1) = z(n)⁸ + c";
@@ -314,7 +314,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "Multibrot-10";
             spec.displayName = "Multibrot-10 (Decic)";
-            spec.category = "Polynomial Fractals";
+            spec.category = "Multibrot Powers";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Tenth-order polynomial fractal using z¹⁰+c iteration. Shows ten-fold rotational symmetry with decagonal structure.";
             spec.formula = "z(n+1) = z(n)¹⁰ + c";
@@ -378,7 +378,7 @@ namespace Native
             FractalSpec spec;
             spec.name = "Tricorn-Poly";
             spec.displayName = "Tricorn (Polynomial)";
-            spec.category = "Polynomial Fractals";
+            spec.category = "Multibrot Powers";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Uses conjugate iteration z̄²+c instead of z²+c. Features distinctive three-pointed structure with reflection symmetry.";
             spec.formula = "z(n+1) = conjugate(z(n))² + c";
@@ -431,9 +431,9 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
-            spec.name = "Buffalo";
-            spec.displayName = "Buffalo Fractal";
-            spec.category = "Polynomial Fractals";
+            spec.name = "BuffaloPolynomial";
+            spec.displayName = "Buffalo (Polynomial)";
+            spec.category = "Multibrot Powers";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Variant using |Re(z)| + i*|Im(z)| before squaring. Creates distinctive buffalo-head shape with bilateral symmetry.";
             spec.formula = "z(n+1) = (|Re(z)| + i*|Im(z)|)² + c";
