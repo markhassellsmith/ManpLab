@@ -59,6 +59,108 @@
                     <ToolTip Content="Zoom in 2x (+)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
+
+            <!-- Fine-Tune Zoom Slider -->
+            <AppBarElementContainer VerticalContentAlignment="Center">
+                <Grid MinWidth="360" MaxWidth="600" Margin="8,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Slider -->
+                    <Slider 
+                        Grid.Row="0"
+                        Value="{x:Bind ViewModel.ZoomFineTune, Mode=TwoWay}"
+                        Minimum="-0.5"
+                        Maximum="0.5"
+                        StepFrequency="0.01"
+                        TickFrequency="0.5"
+                        TickPlacement="BottomRight"
+                        IsEnabled="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
+                        VerticalAlignment="Center"
+                        Margin="0,4,0,0">
+                        <ToolTipService.ToolTip>
+                            <ToolTip Content="Fine-tune zoom: drag left to zoom in, right to zoom out" />
+                        </ToolTipService.ToolTip>
+                    </Slider>
+
+                    <!-- Labels -->
+                    <Grid Grid.Row="1" Margin="0,-4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Zoom In Button (Left) -->
+                        <RepeatButton 
+                            Grid.Column="0"
+                            Content="◀"
+                            FontSize="12"
+                            FontWeight="Bold"
+                            Padding="4,2"
+                            MinWidth="0"
+                            MinHeight="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind ViewModel.ZoomFineTuneStepCommand}"
+                            CommandParameter="in"
+                            Delay="500"
+                            Interval="250"
+                            ToolTipService.ToolTip="Click to zoom in by 0.1 step (hold to repeat)">
+                        </RepeatButton>
+
+                        <TextBlock 
+                            Grid.Column="1" 
+                            Text="In" 
+                            FontSize="10" 
+                            Opacity="0.7"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="2,0,0,0"/>
+
+                        <TextBlock 
+                            Grid.Column="2" 
+                            Text="0" 
+                            FontSize="10" 
+                            Opacity="0.7"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Margin="4,0"/>
+
+                        <TextBlock 
+                            Grid.Column="3" 
+                            Text="Out" 
+                            FontSize="10" 
+                            Opacity="0.7"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,2,0"/>
+
+                        <!-- Zoom Out Button (Right) -->
+                        <RepeatButton 
+                            Grid.Column="4"
+                            Content="▶"
+                            FontSize="12"
+                            FontWeight="Bold"
+                            Padding="4,2"
+                            MinWidth="0"
+                            MinHeight="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind ViewModel.ZoomFineTuneStepCommand}"
+                            CommandParameter="out"
+                            Delay="500"
+                            Interval="250"
+                            ToolTipService.ToolTip="Click to zoom out by 0.1 step (hold to repeat)">
+                        </RepeatButton>
+                    </Grid>
+                </Grid>
+            </AppBarElementContainer>
+
             <AppBarButton
                 Icon="ZoomOut"
                 Label="Zoom Out"
