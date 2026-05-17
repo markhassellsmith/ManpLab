@@ -451,5 +451,53 @@ namespace ManpWinUI.Views
                 }
             }
         }
+
+        /// <summary>
+        /// Handles pointer pressed on zoom fine-tune slider.
+        /// Sets dragging flag to prevent rendering during slider manipulation.
+        /// </summary>
+        private void ZoomSlider_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            ViewModel.IsZoomSliderDragging = true;
+        }
+
+        /// <summary>
+        /// Handles manipulation starting on zoom fine-tune slider.
+        /// Ensures dragging flag is set when manipulation begins.
+        /// </summary>
+        private void ZoomSlider_ManipulationStarting(object sender, Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs e)
+        {
+            ViewModel.IsZoomSliderDragging = true;
+        }
+
+        /// <summary>
+        /// Handles manipulation started on zoom fine-tune slider.
+        /// Ensures dragging flag remains set during manipulation.
+        /// </summary>
+        private void ZoomSlider_ManipulationStarted(object sender, Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs e)
+        {
+            ViewModel.IsZoomSliderDragging = true;
+        }
+
+        /// <summary>
+        /// Handles pointer released on zoom fine-tune slider.
+        /// Triggers single render with final zoom value.
+        /// </summary>
+        private async void ZoomSlider_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            ViewModel.IsZoomSliderDragging = false;
+            await ViewModel.ApplyZoomFineTuneAsync();
+        }
+
+        /// <summary>
+        /// Handles manipulation completed on zoom fine-tune slider.
+        /// Triggers single render with final zoom value.
+        /// </summary>
+        private async void ZoomSlider_ManipulationCompleted(object sender, Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs e)
+        {
+            ViewModel.IsZoomSliderDragging = false;
+            await ViewModel.ApplyZoomFineTuneAsync();
+        }
     }
 }
+

@@ -70,6 +70,7 @@
 
                     <!-- Slider -->
                     <Slider 
+                        x:Name="ZoomFineTuneSlider"
                         Grid.Row="0"
                         Value="{x:Bind ViewModel.ZoomFineTune, Mode=TwoWay}"
                         Minimum="-0.5"
@@ -79,9 +80,15 @@
                         TickPlacement="BottomRight"
                         IsEnabled="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
                         VerticalAlignment="Center"
-                        Margin="0,4,0,0">
+                        Margin="0,4,0,0"
+                        ManipulationMode="TranslateX"
+                        ManipulationStarting="ZoomSlider_ManipulationStarting"
+                        ManipulationStarted="ZoomSlider_ManipulationStarted"
+                        ManipulationCompleted="ZoomSlider_ManipulationCompleted"
+                        PointerPressed="ZoomSlider_PointerPressed"
+                        PointerReleased="ZoomSlider_PointerReleased">
                         <ToolTipService.ToolTip>
-                            <ToolTip Content="Fine-tune zoom: drag left to zoom in, right to zoom out" />
+                            <ToolTip Content="Fine-tune zoom: drag left to zoom in, right to zoom out (release to render)" />
                         </ToolTipService.ToolTip>
                     </Slider>
 
