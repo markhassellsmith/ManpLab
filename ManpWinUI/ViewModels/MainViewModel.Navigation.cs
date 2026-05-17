@@ -288,6 +288,12 @@ public partial class MainViewModel
     [ObservableProperty]
     private double _zoomFineTune = 0.0;
 
+    /// <summary>
+    /// Flag to suppress immediate rendering during slider drag.
+    /// When true, the slider value changes update the zoom but don't trigger render.
+    /// </summary>
+    public bool IsZoomSliderDragging { get; set; }
+
     partial void OnZoomFineTuneChanged(double value)
     {
         if (IsHailstoneMode || IsRendering)
@@ -320,17 +326,43 @@ public partial class MainViewModel
             // Reset slider to center for next adjustment
             ZoomFineTune = 0.0;
 
-            // Auto-render after adjustment on UI thread
-            _dispatcherQueue.TryEnqueue(async () =>
+            // Only auto-render if NOT currently dragging the slider
+            if (!IsZoomSliderDragging)
             {
-                await Task.Delay(10); // Small delay to ensure UI updates
-                if (!IsRendering && RenderCommand.CanExecute(null))
+                // Auto-render after adjustment on UI thread
+                _dispatcherQueue.TryEnqueue(async () =>
                 {
-                    await RenderCommand.ExecuteAsync(null);
-                }
-            });
+                    await Task.Delay(10); // Small delay to ensure UI updates
+                    if (!IsRendering && RenderCommand.CanExecute(null))
+                    {
+                        await RenderCommand.ExecuteAsync(null);
+                    }
+                });
+            }
             // Note: RecordNavigationState() is called by render completion
         }
+    }
+
+    /// <summary>
+    /// Called when the zoom fine-tune slider drag is completed.
+    /// Triggers the render with the accumulated zoom changes.
+    /// </summary>
+    public async Task ApplyZoomFineTuneAsync()
+    {
+        if (IsHailstoneMode || IsRendering)
+        {
+            return;
+        }
+
+        // Render with the current zoom value
+        _dispatcherQueue.TryEnqueue(async () =>
+        {
+            await Task.Delay(10); // Small delay to ensure UI updates
+            if (!IsRendering && RenderCommand.CanExecute(null))
+            {
+                await RenderCommand.ExecuteAsync(null);
+            }
+        });
     }
 
     /// <summary>
