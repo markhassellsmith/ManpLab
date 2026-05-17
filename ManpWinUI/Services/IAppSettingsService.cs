@@ -192,4 +192,48 @@ public interface IAppSettingsService
     /// <param name="fractalName">Name of the fractal</param>
     /// <param name="notes">User notes text</param>
     void SetFractalNotes(string fractalName, string? notes);
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // WINDOW LAYOUT & POSITION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Gets the saved window width in pixels, or null if not previously saved.
+    /// </summary>
+    int? GetWindowWidth();
+
+    /// <summary>
+    /// Saves the window width in pixels.
+    /// </summary>
+    void SetWindowWidth(int width);
+
+    /// <summary>
+    /// Gets the saved window height in pixels, or null if not previously saved.
+    /// </summary>
+    int? GetWindowHeight();
+
+    /// <summary>
+    /// Saves the window height in pixels.
+    /// </summary>
+    void SetWindowHeight(int height);
+
+    /// <summary>
+    /// Gets the saved window X position in pixels, or null if not previously saved.
+    /// </summary>
+    int? GetWindowX();
+
+    /// <summary>
+    /// Saves the window X position in pixels.
+    /// </summary>
+    void SetWindowX(int x);
+
+    /// <summary>
+    /// Gets the saved window Y position in pixels, or null if not previously saved.
+    /// </summary>
+    int? GetWindowY();
+
+    /// <summary>
+    /// Saves the window Y position in pixels.
+    /// </summary>
+    void SetWindowY(int y);
 }

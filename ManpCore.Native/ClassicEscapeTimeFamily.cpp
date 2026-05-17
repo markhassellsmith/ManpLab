@@ -159,20 +159,28 @@ void RegisterClassicEscapeTimeFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // SIERPINSKI (12) - Sierpinski triangle
+    // SIERPINSKI (12) - Celtic Buffalo: Mandelbrot with abs() on both components
     //=========================================================================
-    spec.name = "Sierpinski";
-    spec.displayName = "Sierpinski Triangle";
-    spec.category = "Special";
+    spec.name = "CelticBuffalo";
+    spec.displayName = "Celtic Buffalo";
+    spec.category = "Mandelbrot Variants";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Classic Sierpinski triangle fractal";
+    spec.description = "Celtic Buffalo: abs(re) + i*abs(im), then z² + c. Mandelbrot-style variant with four-fold symmetry.";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Sierpinski iteration: z = 2*z*(1-z)
+        // Celtic Buffalo: z_n+1 = (|Re(z_n)| + i|Im(z_n)|)² + c
+        // Mandelbrot-style (+ c) with abs() on both components
         ComplexD z = c;
 
         for (int iter = 0; iter < maxIter; ++iter) {
-            z = ComplexD(2.0, 0) * z * (ComplexD(1.0, 0) - z);
+            // Take absolute values of real and imaginary parts
+            double x = std::abs(z.real);
+            double y = std::abs(z.imag);
+
+            // Square the result
+            z.real = x * x - y * y + c.real;
+            z.imag = 2.0 * x * y + c.imag;
+
             double modulus = z.real * z.real + z.imag * z.imag;
             if (modulus > 256.0)
                 return iter + 1.0 - log(log(modulus)) / log(2.0);
@@ -181,9 +189,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.5;
-    spec.defaultCenterY = 0.5;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = 0.0;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 2.0;
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
     spec.parameters = {};

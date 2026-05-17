@@ -34,6 +34,12 @@ public class AppSettingsService : IAppSettingsService
     private const string UseSmoothColoringKey = "UseSmoothColoring"; // Anti-banding persistent setting
     private const string AnimationLastDirectoryKey = "AnimationLastDirectory"; // Last used animation export folder
 
+    // Window Layout & Position Keys
+    private const string WindowWidthKey = "WindowWidth";
+    private const string WindowHeightKey = "WindowHeight";
+    private const string WindowXKey = "WindowX";
+    private const string WindowYKey = "WindowY";
+
     // Default values
     private const double DefaultBrowserWidth = 250.0;
     private const double DefaultPropertiesWidth = 300.0;
@@ -349,5 +355,53 @@ public class AppSettingsService : IAppSettingsService
     {
         var key = FractalNotesKeyPrefix + fractalName;
         SetValue(key, notes);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // WINDOW LAYOUT & POSITION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    public int? GetWindowWidth()
+    {
+        var value = GetValue(WindowWidthKey);
+        return value is int width ? width : null;
+    }
+
+    public void SetWindowWidth(int width)
+    {
+        SetValue(WindowWidthKey, width);
+    }
+
+    public int? GetWindowHeight()
+    {
+        var value = GetValue(WindowHeightKey);
+        return value is int height ? height : null;
+    }
+
+    public void SetWindowHeight(int height)
+    {
+        SetValue(WindowHeightKey, height);
+    }
+
+    public int? GetWindowX()
+    {
+        var value = GetValue(WindowXKey);
+        return value is int x ? x : null;
+    }
+
+    public void SetWindowX(int x)
+    {
+        SetValue(WindowXKey, x);
+    }
+
+    public int? GetWindowY()
+    {
+        var value = GetValue(WindowYKey);
+        return value is int y ? y : null;
+    }
+
+    public void SetWindowY(int y)
+    {
+        SetValue(WindowYKey, y);
     }
 }

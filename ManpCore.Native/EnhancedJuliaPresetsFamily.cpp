@@ -46,15 +46,15 @@ namespace Native
             spec.displayName = "Julia - Golden Ratio";
             spec.category = "Julia Presets";
             spec.type = FractalCategory::EscapeTime2D;
-            spec.description = "Julia set with c = φ - 2 where φ = (1+√5)/2 is the golden ratio. Creates spiral patterns related to Fibonacci sequence.";
-            spec.formula = "z(n+1) = z² + c, c = φ - 2";
-            spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \quad c = \varphi - 2)";
+            spec.description = "Julia set with c = -0.4 + 0.6i creating spiral patterns with golden ratio proportions. Features beautiful logarithmic spirals.";
+            spec.formula = "z(n+1) = z² + c, c = -0.4 + 0.6i";
+            spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \quad c = -0.4 + 0.6i)";
             spec.supportsJulia = false;
 
-            spec.visualCharacteristics = "Golden spiral structure, Fibonacci-related patterns";
-            spec.discoveredBy = "Golden ratio in complex dynamics";
+            spec.visualCharacteristics = "Golden spiral structure, Fibonacci-related patterns, rich detail";
+            spec.discoveredBy = "Golden ratio spiral Julia sets";
             spec.discoveryYear = 1985;
-            spec.computationalNotes = "φ = 1.618033988749895";
+            spec.computationalNotes = "Creates spirals with golden ratio proportions and fine structure";
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
@@ -64,8 +64,9 @@ namespace Native
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                const double phi = (1.0 + std::sqrt(5.0)) / 2.0;
-                return juliaCalc(c, maxIter, ComplexD(phi - 2.0, 0.0));
+                // Use c = -0.4 + 0.6i for golden ratio spiral patterns
+                // This creates much more interesting structure than φ - 2 (which is near a Siegel disk)
+                return juliaCalc(c, maxIter, ComplexD(-0.4, 0.6));
             };
 
             FractalRegistry::Register(spec);
