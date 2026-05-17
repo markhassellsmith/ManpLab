@@ -207,6 +207,9 @@ namespace ManpWinUI
             // Set title bar icon (WinUI 3 requires explicit API call)
             SetTitleBarIcon(window);
 
+            // Restore window size and position from settings
+            RestoreWindowBounds(window, settingsService);
+
             // Subscribe to window close event to save navigation history
             window.Closed += OnWindowClosed;
 
@@ -256,6 +259,13 @@ namespace ManpWinUI
         {
             try
             {
+                // Save window bounds before closing
+                var settingsService = _serviceProvider.GetService<IAppSettingsService>();
+                if (settingsService != null && window != null)
+                {
+                    SaveWindowBounds(window, settingsService);
+                }
+
                 var historyService = _serviceProvider.GetService<INavigationHistoryService>();
                 if (historyService != null)
                 {
@@ -445,6 +455,82 @@ namespace ManpWinUI
             var windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(window);
             var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(windowHandle);
             return Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+        }
+
+        /// <summary>
+        /// Restores window size and position from saved settings.
+        /// Applies default size (1200x800) if no saved state exists.
+        /// </summary>
+        private static void RestoreWindowBounds(Window window, IAppSettingsService settingsService)
+        {
+            try
+            {
+                var appWindow = GetAppWindowForWindow(window);
+                if (appWindow == null)
+                {
+                    Log.Warning("Could not get AppWindow for window bounds restoration");
+                    return;
+                }
+
+                // Get saved bounds or use defaults
+                const int defaultWidth = 1200;
+                const int defaultHeight = 800;
+
+                var width = settingsService.GetWindowWidth() ?? defaultWidth;
+                var height = settingsService.GetWindowHeight() ?? defaultHeight;
+                var x = settingsService.GetWindowX();
+                var y = settingsService.GetWindowY();
+
+                // Apply size
+                appWindow.Resize(new Windows.Graphics.SizeInt32 { Width = width, Height = height });
+
+                // Apply position if saved (only if both x and y are available)
+                if (x.HasValue && y.HasValue)
+                {
+                    appWindow.Move(new Windows.Graphics.PointInt32 { X = x.Value, Y = y.Value });
+                    Log.Information("Restored window bounds: {Width}x{Height} at ({X}, {Y})", width, height, x.Value, y.Value);
+                }
+                else
+                {
+                    Log.Information("Restored window size: {Width}x{Height} (position not saved, using default)", width, height);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to restore window bounds");
+            }
+        }
+
+        /// <summary>
+        /// Saves current window size and position to settings.
+        /// </summary>
+        private static void SaveWindowBounds(Window window, IAppSettingsService settingsService)
+        {
+            try
+            {
+                var appWindow = GetAppWindowForWindow(window);
+                if (appWindow == null)
+                {
+                    Log.Warning("Could not get AppWindow for saving window bounds");
+                    return;
+                }
+
+                // Save current size
+                settingsService.SetWindowWidth(appWindow.Size.Width);
+                settingsService.SetWindowHeight(appWindow.Size.Height);
+
+                // Save current position
+                settingsService.SetWindowX(appWindow.Position.X);
+                settingsService.SetWindowY(appWindow.Position.Y);
+
+                Log.Information("Saved window bounds: {Width}x{Height} at ({X}, {Y})",
+                    appWindow.Size.Width, appWindow.Size.Height,
+                    appWindow.Position.X, appWindow.Position.Y);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to save window bounds");
+            }
         }
     }
 }
