@@ -281,7 +281,9 @@ public partial class MainViewModel
                 LastRenderTime = renderTime;
 
                 // Build viewport info that appears in all status messages
-                string viewInfo = $";  View = {viewWidth:E10} × {viewHeight:E10};  Zoom Factor = {zoomFactor:E10}";
+                // Include deep zoom indicator when arbitrary precision calculations were actually used
+                string deepZoomIndicator = shouldUseDeepZoom ? " - Deep Zoom mode" : "";
+                string viewInfo = $";  View = {viewWidth:E10} × {viewHeight:E10};  Zoom Factor = {zoomFactor:E10}{deepZoomIndicator}";
 
                 // Generate context-aware status message based on fractal category
                 switch (result.Category)
