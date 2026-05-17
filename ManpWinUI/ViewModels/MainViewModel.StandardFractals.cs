@@ -293,7 +293,7 @@ public partial class MainViewModel
         else
         {
             // Auto-scale mode: Just show current status
-            IterationSuggestion = $"✓ Auto-scaling enabled: Using {MaxIterations} iterations at {Zoom:F2}x zoom";
+            IterationSuggestion = $"✓ Auto-scaling enabled: Using {MaxIterations:N0} iterations at {Zoom:E9}x zoom";
         }
     }
 }

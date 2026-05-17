@@ -67,8 +67,8 @@ void RegisterIFSFamily()
 
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 5.0;
-    spec.defaultZoom = 0.1;
+    spec.defaultCenterY = 5.75;
+    spec.defaultZoom = 0.204008;  // Viewport tuning: X scale 19.61, Y scale 11.03
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -121,8 +121,8 @@ void RegisterIFSFamily()
 
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.5;
-    spec.defaultCenterY = 0.433;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterY = 0.43;
+    spec.defaultZoom = 2.0;  // Viewport tuning: X scale 2.0, Y scale 1.125
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -176,9 +176,9 @@ void RegisterIFSFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.5;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = 0.46;
+    spec.defaultCenterY = 0.18;
+    spec.defaultZoom = 1.969844;  // Viewport tuning: X scale 2.03, Y scale 1.14
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -231,7 +231,7 @@ void RegisterIFSFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.0;  // Viewport tuning: X scale 4.0, Y scale 2.25
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -282,9 +282,9 @@ void RegisterIFSFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 2.0;
-    spec.defaultZoom = 0.3;
+    spec.defaultCenterX = -0.01;
+    spec.defaultCenterY = 1.03;
+    spec.defaultZoom = 2.712939;  // Viewport tuning: X scale 1.47, Y scale 0.829
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 

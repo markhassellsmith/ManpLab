@@ -38,7 +38,7 @@ namespace ManpWinUI.ViewModels.Properties
         private readonly ManpWinUI.Services.IAppSettingsService? _settingsService;
         private RenderMode _selectedRenderMode = RenderMode.EscapeTime;
         private AntialiasingLevel _antialiasingLevel = AntialiasingLevel.None;
-        private bool _useDeepZoom = false;
+        private bool _useDeepZoom = true;  // Default to enabled for automatic high-precision at extreme zoom
         private bool _useSmoothColoring = true;  // Default to anti-banding ON (smooth)
 
         /// <summary>
@@ -52,8 +52,10 @@ namespace ManpWinUI.ViewModels.Properties
             {
                 if (_selectedRenderMode != value)
                 {
+                    System.Diagnostics.Debug.WriteLine($"[RenderSettingsViewModel] SelectedRenderMode changing from {_selectedRenderMode} to {value}");
                     _selectedRenderMode = value;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedRenderMode)));
+                    System.Diagnostics.Debug.WriteLine($"[RenderSettingsViewModel] Raising RenderModeChanged event");
                     RenderModeChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -179,7 +181,7 @@ namespace ManpWinUI.ViewModels.Properties
         {
             SelectedRenderMode = RenderMode.EscapeTime;
             AntialiasingLevel = AntialiasingLevel.None;
-            UseDeepZoom = false;
+            UseDeepZoom = true;  // Enable deep zoom by default for automatic precision
             UseSmoothColoring = false;
 
             System.Diagnostics.Debug.WriteLine("[RenderSettingsViewModel] Reset to default settings");

@@ -262,7 +262,7 @@ void RegisterExponentialFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.88;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 5.333333;  // Viewport tuning: X scale 0.375, Y scale 0.211 (green meteor)
+    spec.defaultZoom = 10.666667;  // Viewport tuning: X scale 0.375, Y scale 0.211
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
