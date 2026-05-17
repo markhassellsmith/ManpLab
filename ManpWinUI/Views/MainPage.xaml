@@ -1240,21 +1240,6 @@
                                    Margin="0,0,16,0"
                                    Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}" />
 
-            <!-- Center: View dimensions and deep zoom indicator -->
-            <TextBlock Grid.Column="2"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Right"
-                                   Margin="0,0,16,0"
-                                   FontSize="12"
-                                   Opacity="0.8">
-                            <Run Text="{x:Bind ViewModel.CurrentViewWidth, Mode=OneWay}" />
-                            <Run Text=" × " />
-                            <Run Text="{x:Bind ViewModel.CurrentViewHeight, Mode=OneWay}" />
-                            <Run Text="{x:Bind ViewModel.DeepZoomIndicator, Mode=OneWay}"
-                                 Foreground="SaddleBrown"
-                                 FontWeight="SemiBold" />
-            </TextBlock>
-
             <!-- Right: Render time -->
             <TextBlock Grid.Column="3"
                                    VerticalAlignment="Center"
