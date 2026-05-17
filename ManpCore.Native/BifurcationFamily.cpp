@@ -25,28 +25,37 @@ void RegisterBifurcationFamily()
     spec.formulaLatex = R"(x_{n+1} = r \cdot x_n \cdot (1 - x_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // For parameter space: c.real = parameter r, c.imag = secondary parameter
-        double r = c.real;
-        double x = 0.5;  // Standard initial value
-        const int transient = 200;  // Skip transient behavior
+        // Sub-pixel sampling to reduce banding artifacts
+        double result = 0.0;
+        const int subsamples = 3;
+        const double delta = 0.001;  // Small offset for sub-sampling
 
-        // Run transient iterations
-        for (int i = 0; i < transient; ++i)
+        for (int s = 0; s < subsamples; ++s)
         {
-            x = r * x * (1.0 - x);
+            double r = c.real + (s - 1) * delta;
+            double x = 0.5;  // Standard initial value
+            const int transient = 200;  // Skip transient behavior
+
+            // Run transient iterations
+            for (int i = 0; i < transient; ++i)
+            {
+                x = r * x * (1.0 - x);
+            }
+
+            // Sample final behavior
+            double sum = 0.0;
+            int samples = maxIter < 50 ? maxIter : 50;
+            for (int i = 0; i < samples; ++i)
+            {
+                x = r * x * (1.0 - x);
+                sum += x;
+            }
+
+            result += sum / samples * maxIter;
         }
 
-        // Sample final behavior
-        double sum = 0.0;
-        int samples = maxIter < 50 ? maxIter : 50;
-        for (int i = 0; i < samples; ++i)
-        {
-            x = r * x * (1.0 - x);
-            sum += x;
-        }
-
-        // Return average to show attractors
-        return sum / samples * maxIter;
+        // Return average to reduce banding
+        return result / subsamples;
     };
 
     spec.supportsJulia = false;
@@ -265,34 +274,44 @@ void RegisterBifurcationFamily()
     spec.formulaLatex = R"(x_{n+1} = r \cdot x_n \cdot (1 - x_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        double r = c.real;
-        double x = 0.5;
-        const int transient = 200;
+        // Sub-pixel sampling to reduce banding artifacts
+        double result = 0.0;
+        const int subsamples = 3;
+        const double delta = 0.001;
 
-        // Run transient
-        for (int i = 0; i < transient; ++i)
+        for (int s = 0; s < subsamples; ++s)
         {
-            x = r * x * (1.0 - x);
-            if (x < 0.0 || x > 1.0) return 0.0;
+            double r = c.real + (s - 1) * delta;
+            double x = 0.5;
+            const int transient = 200;
+
+            // Run transient
+            for (int i = 0; i < transient; ++i)
+            {
+                x = r * x * (1.0 - x);
+                if (x < 0.0 || x > 1.0) { result += 0.0; continue; }
+            }
+
+            // Calculate Lyapunov exponent
+            double lyapunov = 0.0;
+            int samples = maxIter < 100 ? maxIter : 100;
+            for (int i = 0; i < samples; ++i)
+            {
+                x = r * x * (1.0 - x);
+                if (x < 1e-10 || x > 1.0) break;
+
+                double derivative = r * (1.0 - 2.0 * x);
+                if (std::abs(derivative) > 1e-10)
+                    lyapunov += std::log(std::abs(derivative));
+            }
+
+            lyapunov /= samples;
+
+            // Map to visualization range
+            result += (lyapunov + 1.0) * maxIter * 0.5;
         }
 
-        // Calculate Lyapunov exponent
-        double lyapunov = 0.0;
-        int samples = maxIter < 100 ? maxIter : 100;
-        for (int i = 0; i < samples; ++i)
-        {
-            x = r * x * (1.0 - x);
-            if (x < 1e-10 || x > 1.0) break;
-
-            double derivative = r * (1.0 - 2.0 * x);
-            if (std::abs(derivative) > 1e-10)
-                lyapunov += std::log(std::abs(derivative));
-        }
-
-        lyapunov /= samples;
-
-        // Map to visualization range
-        return (lyapunov + 1.0) * maxIter * 0.5;
+        return result / subsamples;
     };
 
     spec.supportsJulia = false;

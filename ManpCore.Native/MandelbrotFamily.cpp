@@ -98,13 +98,15 @@ void RegisterMandelbrotFamily()
     spec.description = "Julia set with c = -0.390541 - 0.586788i (Siegel disk)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, true, ComplexD(-0.390541, -0.586788));
+        // Use different quasi-periodic point for distinct appearance
+        ComplexD actualC = isJulia ? juliaC : ComplexD(-0.624, 0.418);
+        return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, true, actualC);
     };
 
-    spec.supportsJulia = false;
+    spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.5;
+    spec.defaultZoom = 1.082778;
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};

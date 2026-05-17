@@ -96,9 +96,9 @@ void RegisterHybridFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.75;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.480942;  // Viewport tuning: X scale 8.32, Y scale 4.68
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -149,9 +149,9 @@ void RegisterHybridFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.58;
+    spec.defaultCenterY = -0.11;
+    spec.defaultZoom = 2.206981;  // Viewport tuning: X scale 1.81, Y scale 1.02
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 

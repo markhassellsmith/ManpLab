@@ -328,9 +328,9 @@ void RegisterComplexFunctionsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.2;  // Viewport of 15.0 by 8.4375
+    spec.defaultCenterX = -1.12;
+    spec.defaultCenterY = 0.18;
+    spec.defaultZoom = 0.105361;  // Viewport tuning: X scale 37.969, Y scale 21.357
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 

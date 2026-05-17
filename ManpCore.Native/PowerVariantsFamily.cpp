@@ -145,8 +145,9 @@ void RegisterPowerVariantsFamily()
     spec.formulaLatex = R"(z_{n+1} = z_n^5 + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z = c;  // Always Julia
-        ComplexD constant = ComplexD(0.4, 0.3);  // Interesting c value
+        // Pure Julia set with c = 0.356 + 0.356i (5-fold star/flower symmetry)
+        ComplexD z = c;
+        ComplexD constant = ComplexD(0.356, 0.356);
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -159,10 +160,10 @@ void RegisterPowerVariantsFamily()
         return static_cast<double>(maxIter);
     };
 
-    spec.supportsJulia = false;  // Fixed Julia mode
+    spec.supportsJulia = false;  // Pure Julia set, not toggleable
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.3;
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -180,7 +181,7 @@ void RegisterPowerVariantsFamily()
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z = c;
-        ComplexD constant = ComplexD(0.3, 0.4);
+        ComplexD constant = isJulia ? juliaC : ComplexD(-0.2, 0.74);
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -193,10 +194,10 @@ void RegisterPowerVariantsFamily()
         return static_cast<double>(maxIter);
     };
 
-    spec.supportsJulia = false;
+    spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 0.674747;
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
