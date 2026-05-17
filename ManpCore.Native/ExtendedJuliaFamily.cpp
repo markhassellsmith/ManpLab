@@ -144,8 +144,9 @@ void RegisterExtendedJuliaFamily()
     spec.formulaLatex = R"(z_{n+1} = c \cdot z_n \cdot (1 - z_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z = c;  // Always Julia mode for lambda
-        ComplexD lambda = isJulia ? juliaC : ComplexD(0.5, 0.5);
+        // Pure Julia set with lambda = 2.8 + 0.9i (fractal tendrils and loops)
+        ComplexD z = c;
+        ComplexD lambda = ComplexD(2.8, 0.9);
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -160,10 +161,10 @@ void RegisterExtendedJuliaFamily()
         return static_cast<double>(maxIter);
     };
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.supportsJulia = false;  // Pure Julia set, not toggleable
+    spec.defaultCenterX = 0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 3.0;
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -217,8 +218,9 @@ void RegisterExtendedJuliaFamily()
     spec.formulaLatex = R"(z_{n+1} = z_n^4 + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        // Pure Julia set with c = 0.484 + 0.467i (intricate quatrefoil/4-fold structure)
         ComplexD z = c;
-        ComplexD constant = isJulia ? juliaC : ComplexD(0.3, 0.5);
+        ComplexD constant = ComplexD(0.484, 0.467);
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -233,10 +235,10 @@ void RegisterExtendedJuliaFamily()
         return static_cast<double>(maxIter);
     };
 
-    spec.supportsJulia = true;
+    spec.supportsJulia = false;  // Pure Julia set, not toggleable
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.2;
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);

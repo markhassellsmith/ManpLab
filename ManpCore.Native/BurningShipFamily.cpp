@@ -327,7 +327,9 @@ void RegisterBurningShipFamily()
         ComplexD constant = isJulia ? juliaC : c;
 
         for (int iter = 0; iter < maxIter; ++iter) {
-            z = ComplexD(abs(z.real), z.imag);
+            // Apply abs to both components, then scale for more dramatic effect
+            // This creates stronger vertical streaking than Bird of Prey
+            z = ComplexD(abs(z.real) * 1.5, abs(z.imag));
             z = z * z + constant;
 
             double modulus = z.real * z.real + z.imag * z.imag;

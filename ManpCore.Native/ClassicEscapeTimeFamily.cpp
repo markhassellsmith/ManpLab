@@ -46,7 +46,7 @@ void RegisterClassicEscapeTimeFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 1.0;    // Viewport tuning: optimal view for twin Mandelbrots
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.333333;  // Viewport tuning: X scale 6.0, Y scale 3.375
+    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0, Y scale 3.375
     spec.defaultBailout = 4.0;    // Lambda uses bailout of 4.0
     spec.hasSymmetry = false;
 
@@ -263,9 +263,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = 0.86;
+    spec.defaultCenterY = -0.03;
+    spec.defaultZoom = 0.714496;  // Viewport tuning: X scale 5.5982, Y scale 5.5982
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
