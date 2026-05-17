@@ -89,7 +89,7 @@ void RegisterExoticFormulasFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0, Y scale 3.375
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -341,8 +341,13 @@ void RegisterExoticFormulasFamily()
             double sin_real = std::sin(z.real) * std::cosh(z.imag);
             double sin_imag = std::cos(z.real) * std::sinh(z.imag);
 
-            z.real = z_squared.real + param.real + sin_real * 0.1;
-            z.imag = z_squared.imag + param.imag + sin_imag * 0.1;
+            // Stronger wave perturbation (0.5 instead of 0.1) plus phase variation
+            // Add cos component for richer texture
+            double cos_real = std::cos(z.real * 2.0) * 0.3;
+            double cos_imag = std::sin(z.imag * 2.0) * 0.3;
+
+            z.real = z_squared.real + param.real + sin_real * 0.5 + cos_real;
+            z.imag = z_squared.imag + param.imag + sin_imag * 0.5 + cos_imag;
         }
 
         return static_cast<double>(maxIter);

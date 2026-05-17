@@ -51,10 +51,21 @@ namespace Native
                     z.real = x * x - y * y + constant.real;
                     z.imag = 2.0 * x * y + constant.imag;
 
+                    // Add sinh/cosh perturbation for more biological complexity
+                    // This creates tendrils and appendages
+                    double sinh_factor = std::sinh(z.real * 0.5) * 0.1;
+                    double cosh_factor = std::cosh(z.imag * 0.5) * 0.1;
+                    z.real += sinh_factor;
+                    z.imag += cosh_factor;
+
                     // Biomorph escape condition: either component exceeds threshold
                     if (std::abs(z.real) > threshold || std::abs(z.imag) > threshold)
                     {
-                        return static_cast<double>(i);
+                        // Add smooth coloring based on which axis escaped
+                        double re_dist = std::abs(z.real) - threshold;
+                        double im_dist = std::abs(z.imag) - threshold;
+                        double fraction = re_dist / (re_dist + im_dist + 1e-10);
+                        return static_cast<double>(i) + fraction;
                     }
                 }
 
@@ -85,7 +96,7 @@ namespace Native
 
             spec.defaultCenterX = -0.75;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.509244;  // Viewport tuning: X scale 3.93, Y scale 2.21
+            spec.defaultZoom = 1.018523;  // Viewport tuning: X scale 3.93, Y scale 2.21
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -146,7 +157,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.004518;  // Viewport tuning: X scale 442.66, Y scale 248.99
+            spec.defaultZoom = 0.009036;  // Viewport tuning: X scale 442.66, Y scale 248.99
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -398,7 +409,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.295501;  // Viewport tuning: X scale 6.77, Y scale 3.81
+            spec.defaultZoom = 0.591042;  // Viewport tuning: X scale 6.77, Y scale 3.81
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 

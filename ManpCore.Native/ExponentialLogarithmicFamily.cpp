@@ -33,9 +33,9 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "exp(x+iy) = exp(x)(cos(y) + i*sin(y)); periodic in y with period 2π";
 
-            spec.defaultCenterX = -0.5;
+            spec.defaultCenterX = -1.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.15;
+            spec.defaultZoom = 0.2;  // Viewport tuning: X scale 20, Y scale 11.25
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -86,7 +86,7 @@ namespace Native
 
             spec.defaultCenterX = 0.24;
             spec.defaultCenterY = -0.3;
-            spec.defaultZoom = 1.033557;  // Viewport tuning: X scale 1.935, Y scale 1.088 (green earthworm)
+            spec.defaultZoom = 2.067161;  // Viewport tuning: X scale 1.935, Y scale 1.088
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 

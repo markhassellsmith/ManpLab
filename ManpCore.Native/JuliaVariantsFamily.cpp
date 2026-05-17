@@ -196,37 +196,29 @@ void RegisterJuliaVariantsFamily()
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot z_n \cdot (1 - z_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+        // Pure Julia set with lambda = 3.8 + 0.1i (edge of chaos, dendrite-like structure)
         ComplexD z = c;
-        ComplexD lambda(0.5, 0.5);
+        ComplexD lambda = ComplexD(3.8, 0.1);
         const double bailout = 100.0;
 
         for (int i = 0; i < maxIter; ++i)
         {
             double magSq = z.real * z.real + z.imag * z.imag;
             if (magSq > bailout)
-                return i + 1.0;
+                return i + 1.0 - std::log(std::log(std::sqrt(magSq))) / std::log(2.0);
 
-            ComplexD one_minus_z;
-            one_minus_z.real = 1.0 - z.real;
-            one_minus_z.imag = -z.imag;
-
-            // lambda * z
-            ComplexD lambda_z;
-            lambda_z.real = lambda.real * z.real - lambda.imag * z.imag;
-            lambda_z.imag = lambda.real * z.imag + lambda.imag * z.real;
-
-            // (lambda * z) * (1 - z)
-            z.real = lambda_z.real * one_minus_z.real - lambda_z.imag * one_minus_z.imag;
-            z.imag = lambda_z.real * one_minus_z.imag + lambda_z.imag * one_minus_z.real;
+            // z = lambda * z * (1 - z)
+            ComplexD one_minus_z(1.0 - z.real, -z.imag);
+            z = lambda * z * one_minus_z;
         }
 
         return static_cast<double>(maxIter);
     };
 
-    spec.supportsJulia = true;
+    spec.supportsJulia = false;  // Pure Julia set, not toggleable
     spec.defaultCenterX = 0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 2.5;
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
@@ -245,14 +237,14 @@ void RegisterJuliaVariantsFamily()
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z = c;
-        ComplexD param(1.0, 0.1);
+        ComplexD param = isJulia ? juliaC : ComplexD(1.0, 0.1);
         const double bailout = 100.0;
 
         for (int i = 0; i < maxIter; ++i)
         {
             double magSq = z.real * z.real + z.imag * z.imag;
             if (magSq > bailout)
-                return i + 1.0;
+                return i + 1.0 - std::log(std::log(std::sqrt(magSq))) / std::log(2.0);
 
             // sin(z) = sin(a)cosh(b) + i*cos(a)sinh(b)
             double sin_real = std::sin(z.real) * std::cosh(z.imag);
@@ -268,7 +260,7 @@ void RegisterJuliaVariantsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.178451;
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
