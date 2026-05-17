@@ -75,14 +75,14 @@ public partial class MainViewModel
                 _dispatcherQueue.TryEnqueue(() =>
                 {
                     MaxIterations = recommendedIterations;
-                    IterationSuggestion = $"✓ Auto-increased 'Max Iterations': {oldIterations} → {recommendedIterations} for {Zoom:F2}x zoom";
+                    IterationSuggestion = $"✓ Auto-increased 'Max Iterations': {oldIterations:N0} → {recommendedIterations:N0} for {Zoom:E9}x zoom";
                 });
             }
             else
             {
                 _dispatcherQueue.TryEnqueue(() =>
                 {
-                    IterationSuggestion = $"✓ Auto-scaling: Using {MaxIterations} iterations at {Zoom:F2}x zoom";
+                    IterationSuggestion = $"✓ Auto-scaling: Using {MaxIterations:N0} iterations at {Zoom:E9}x zoom";
                 });
             }
         }
@@ -94,7 +94,7 @@ public partial class MainViewModel
             {
                 _dispatcherQueue.TryEnqueue(() =>
                 {
-                    IterationSuggestion = $"💡 Tip: Increase 'Max Iterations' to ~{recommendedIterations} for better detail at {Zoom:F2}x zoom (currently {MaxIterations})";
+                    IterationSuggestion = $"💡 Tip: Increase 'Max Iterations' to ~{recommendedIterations:N0} for better detail at {Zoom:E9}x zoom (currently {MaxIterations:N0})";
                 });
             }
             else
