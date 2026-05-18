@@ -28,6 +28,9 @@ namespace ManpWinUI.Views
         private bool _doubleClickHandled; // Track if double-click recenter was handled
         private DateTime _lastClickTime = DateTime.MinValue; // Track timing for double-click detection
 
+        // Zoom slider dynamic tooltip (using Popup for better visibility)
+        private bool _isZoomSliderDragging;
+
         public MainPage()
         {
             this.InitializeComponent();

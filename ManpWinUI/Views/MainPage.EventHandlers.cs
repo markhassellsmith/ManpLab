@@ -459,6 +459,24 @@ namespace ManpWinUI.Views
         private void ZoomSlider_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             ViewModel.IsZoomSliderDragging = true;
+            _isZoomSliderDragging = true;
+
+            // Show popup with initial value
+            UpdateZoomSliderPopup();
+        }
+
+        /// <summary>
+        /// Handles value changes on zoom fine-tune slider.
+        /// Updates the dynamic popup during dragging.
+        /// </summary>
+        private void ZoomSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            // Always update the popup when value changes during dragging
+            if (_isZoomSliderDragging)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ZoomSlider] Value changed to: {e.NewValue:F2}");
+                UpdateZoomSliderPopup();
+            }
         }
 
         /// <summary>
@@ -468,6 +486,8 @@ namespace ManpWinUI.Views
         private void ZoomSlider_ManipulationStarting(object sender, Microsoft.UI.Xaml.Input.ManipulationStartingRoutedEventArgs e)
         {
             ViewModel.IsZoomSliderDragging = true;
+            _isZoomSliderDragging = true;
+            UpdateZoomSliderPopup();
         }
 
         /// <summary>
@@ -477,6 +497,8 @@ namespace ManpWinUI.Views
         private void ZoomSlider_ManipulationStarted(object sender, Microsoft.UI.Xaml.Input.ManipulationStartedRoutedEventArgs e)
         {
             ViewModel.IsZoomSliderDragging = true;
+            _isZoomSliderDragging = true;
+            UpdateZoomSliderPopup();
         }
 
         /// <summary>
@@ -485,7 +507,19 @@ namespace ManpWinUI.Views
         /// </summary>
         private async void ZoomSlider_PointerReleased(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[ZoomSlider] PointerReleased - Final value: {ZoomFineTuneSlider.Value:F2}");
+
+            // Hide popup first
+            if (ZoomSliderPopup != null)
+            {
+                ZoomSliderPopup.IsOpen = false;
+            }
+
+            // Clear the dragging flag BEFORE applying zoom so the property change handler knows we're done
             ViewModel.IsZoomSliderDragging = false;
+            _isZoomSliderDragging = false;
+
+            // Apply the zoom adjustment and render
             await ViewModel.ApplyZoomFineTuneAsync();
         }
 
@@ -495,8 +529,49 @@ namespace ManpWinUI.Views
         /// </summary>
         private async void ZoomSlider_ManipulationCompleted(object sender, Microsoft.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine($"[ZoomSlider] ManipulationCompleted - Final value: {ZoomFineTuneSlider.Value:F2}");
+
+            // Hide popup first
+            if (ZoomSliderPopup != null)
+            {
+                ZoomSliderPopup.IsOpen = false;
+            }
+
+            // Clear the dragging flag BEFORE applying zoom so the property change handler knows we're done
             ViewModel.IsZoomSliderDragging = false;
+            _isZoomSliderDragging = false;
+
+            // Apply the zoom adjustment and render
             await ViewModel.ApplyZoomFineTuneAsync();
+        }
+
+        /// <summary>
+        /// Updates the zoom slider popup with the current click increment value.
+        /// Formats as +0.1, +0.2, etc. or -0.1, -0.2, etc.
+        /// Shows the raw slider value: left (negative) = zoom out, right (positive) = zoom in
+        /// This matches a standard coordinate axis where positive = more zoom.
+        /// </summary>
+        private void UpdateZoomSliderPopup()
+        {
+            if (ZoomSliderPopup == null || ZoomSliderPopupText == null || ZoomFineTuneSlider == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[ZoomSlider] Popup controls not initialized");
+                return;
+            }
+
+            // Use the raw slider value (no negation)
+            // Left (negative) = zoom out, Right (positive) = zoom in
+            var displayValue = ZoomFineTuneSlider.Value;
+            var sign = displayValue >= 0 ? "+" : "";
+            var formattedValue = $"{sign}{displayValue:F1}";
+
+            System.Diagnostics.Debug.WriteLine($"[ZoomSlider] Slider value: {ZoomFineTuneSlider.Value:F2}, Display: {formattedValue}");
+            ZoomSliderPopupText.Text = formattedValue;
+
+            if (!ZoomSliderPopup.IsOpen)
+            {
+                ZoomSliderPopup.IsOpen = true;
+            }
         }
     }
 }
