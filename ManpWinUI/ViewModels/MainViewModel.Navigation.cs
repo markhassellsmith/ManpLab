@@ -114,6 +114,9 @@ public partial class MainViewModel
                 JuliaCY = entry.JuliaC.Imaginary;
             }
 
+            // Reset tracked center point since we explicitly changed the center
+            ResetTrackedCenterPoint();
+
             StatusMessage = $"Navigated to: {entry.Description}";
 
             // Auto-render on UI thread
@@ -201,6 +204,10 @@ public partial class MainViewModel
             CenterY = 0.0;
             Zoom = 1.0;
             MaxIterations = 512;
+
+            // Reset tracked center point since we explicitly changed the center
+            ResetTrackedCenterPoint();
+
             StatusMessage = "Resetting to full Mandelbrot view...";
         }
 
@@ -232,7 +239,8 @@ public partial class MainViewModel
             return;
         }
 
-        Zoom *= 2.0;
+        // Apply zoom correction to prevent center drift due to discrete pixel grid
+        ApplyZoomCorrection(2.0);
         StatusMessage = $"Zooming in to {Zoom:F2}x...";
 
         // Auto-render after zoom on UI thread
@@ -260,7 +268,8 @@ public partial class MainViewModel
             return;
         }
 
-        Zoom /= 2.0;
+        // Apply zoom correction to prevent center drift due to discrete pixel grid
+        ApplyZoomCorrection(0.5);
         StatusMessage = $"Zooming out to {Zoom:F2}x...";
 
         // Auto-render after zoom on UI thread
@@ -316,8 +325,8 @@ public partial class MainViewModel
             // At value = +0.5, factor = 2^-0.5 = 1/sqrt(2) ≈ 0.707 (zoom out - decreases zoom factor)
             double adjustmentFactor = Math.Pow(2.0, -value);
 
-            // Apply the adjustment
-            Zoom *= adjustmentFactor;
+            // Apply zoom correction to prevent center drift due to discrete pixel grid
+            ApplyZoomCorrection(adjustmentFactor);
 
             StatusMessage = value < 0 
                 ? $"Fine zoom in to {Zoom:F2}x..." 
@@ -386,8 +395,8 @@ public partial class MainViewModel
         // Calculate adjustment factor: 2^value
         double adjustmentFactor = Math.Pow(2.0, adjustmentValue);
 
-        // Apply the adjustment
-        Zoom *= adjustmentFactor;
+        // Apply zoom correction to prevent center drift due to discrete pixel grid
+        ApplyZoomCorrection(adjustmentFactor);
 
         StatusMessage = direction == "in"
             ? $"Fine zoom in to {Zoom:F2}x..."
@@ -456,5 +465,50 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(Is2KResolution));
         OnPropertyChanged(nameof(Is4KResolution));
         OnPropertyChanged(nameof(Is4KPlusResolution));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ZOOM CENTER CORRECTION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// The CenterX/CenterY values to maintain during zoom operations.
+    /// Null means no locked center (will use current CenterX/CenterY and lock it on first zoom).
+    /// </summary>
+    private (double x, double y)? _lockedCenter = null;
+
+    /// <summary>
+    /// Applies zoom factor while keeping the center coordinates locked.
+    /// </summary>
+    /// <param name="zoomMultiplier">Factor to multiply zoom by (e.g., 2.0 for zoom in, 0.5 for zoom out)</param>
+    /// <remarks>
+    /// <para>Simplified approach: The user has positioned something at the visual center (via pan/preset/box-zoom).
+    /// We simply keep CenterX/CenterY at exactly those values during subsequent button/wheel zoom operations.</para>
+    /// 
+    /// <para>The discrete pixel grid offset exists but is CONSTANT for a given resolution. By keeping
+    /// CenterX/CenterY locked, the SAME complex coordinate stays near the viewport center across all zooms.</para>
+    /// </remarks>
+    public void ApplyZoomCorrection(double zoomMultiplier)
+    {
+        // If we don't have a locked center, lock the current values
+        if (_lockedCenter == null)
+        {
+            _lockedCenter = (CenterX, CenterY);
+        }
+
+        // Apply zoom
+        Zoom *= zoomMultiplier;
+
+        // Keep center exactly at the locked values
+        CenterX = _lockedCenter.Value.x;
+        CenterY = _lockedCenter.Value.y;
+    }
+
+    /// <summary>
+    /// Unlocks the center (call when user explicitly changes center, e.g., via panning or box zoom).
+    /// </summary>
+    public void ResetTrackedCenterPoint()
+    {
+        _lockedCenter = null;
     }
 }
