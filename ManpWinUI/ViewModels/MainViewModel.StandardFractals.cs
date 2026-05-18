@@ -186,6 +186,13 @@ public partial class MainViewModel
     {
         Debug.WriteLine($"[ViewModel] CenterX changed to: {value:F10}");
 
+        // Reset locked center when user explicitly changes center
+        // (but not when ApplyZoomCorrection is updating to maintain the lock)
+        if (!_isApplyingZoomCorrection)
+        {
+            ResetTrackedCenterPoint();
+        }
+
         // PHASE 5 Step 5.5: Restore toolbar → parameters sync
         if (CurrentParameters != null)
         {
@@ -196,6 +203,13 @@ public partial class MainViewModel
     partial void OnCenterYChanged(double value)
     {
         Debug.WriteLine($"[ViewModel] CenterY changed to: {value:F10}");
+
+        // Reset locked center when user explicitly changes center
+        // (but not when ApplyZoomCorrection is updating to maintain the lock)
+        if (!_isApplyingZoomCorrection)
+        {
+            ResetTrackedCenterPoint();
+        }
 
         // PHASE 5 Step 5.5: Restore toolbar → parameters sync
         if (CurrentParameters != null)

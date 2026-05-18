@@ -114,6 +114,9 @@ public partial class MainViewModel
                 JuliaCY = entry.JuliaC.Imaginary;
             }
 
+            // Reset tracked center point since we explicitly changed the center
+            ResetTrackedCenterPoint();
+
             StatusMessage = $"Navigated to: {entry.Description}";
 
             // Auto-render on UI thread
@@ -201,6 +204,10 @@ public partial class MainViewModel
             CenterY = 0.0;
             Zoom = 1.0;
             MaxIterations = 512;
+
+            // Reset tracked center point since we explicitly changed the center
+            ResetTrackedCenterPoint();
+
             StatusMessage = "Resetting to full Mandelbrot view...";
         }
 
@@ -232,7 +239,8 @@ public partial class MainViewModel
             return;
         }
 
-        Zoom *= 2.0;
+        // Apply zoom correction to prevent center drift due to discrete pixel grid
+        ApplyZoomCorrection(2.0);
         StatusMessage = $"Zooming in to {Zoom:F2}x...";
 
         // Auto-render after zoom on UI thread
@@ -260,7 +268,8 @@ public partial class MainViewModel
             return;
         }
 
-        Zoom /= 2.0;
+        // Apply zoom correction to prevent center drift due to discrete pixel grid
+        ApplyZoomCorrection(0.5);
         StatusMessage = $"Zooming out to {Zoom:F2}x...";
 
         // Auto-render after zoom on UI thread
@@ -306,7 +315,14 @@ public partial class MainViewModel
             return;
         }
 
-        // Only apply adjustment if value is non-zero
+        // During dragging, don't apply zoom yet - just update the visual feedback
+        if (IsZoomSliderDragging)
+        {
+            // The slider value will be applied when dragging completes
+            return;
+        }
+
+        // Only apply adjustment if value is non-zero AND not dragging
         if (Math.Abs(value) > 0.001)
         {
             // Negate the value so that:
@@ -316,8 +332,8 @@ public partial class MainViewModel
             // At value = +0.5, factor = 2^-0.5 = 1/sqrt(2) ≈ 0.707 (zoom out - decreases zoom factor)
             double adjustmentFactor = Math.Pow(2.0, -value);
 
-            // Apply the adjustment
-            Zoom *= adjustmentFactor;
+            // Apply zoom correction to prevent center drift due to discrete pixel grid
+            ApplyZoomCorrection(adjustmentFactor);
 
             StatusMessage = value < 0 
                 ? $"Fine zoom in to {Zoom:F2}x..." 
@@ -326,19 +342,16 @@ public partial class MainViewModel
             // Reset slider to center for next adjustment
             ZoomFineTune = 0.0;
 
-            // Only auto-render if NOT currently dragging the slider
-            if (!IsZoomSliderDragging)
+            // Auto-render after adjustment on UI thread
+            _dispatcherQueue.TryEnqueue(async () =>
             {
-                // Auto-render after adjustment on UI thread
-                _dispatcherQueue.TryEnqueue(async () =>
+                await Task.Delay(10); // Small delay to ensure UI updates
+                if (!IsRendering && RenderCommand.CanExecute(null))
                 {
-                    await Task.Delay(10); // Small delay to ensure UI updates
-                    if (!IsRendering && RenderCommand.CanExecute(null))
-                    {
-                        await RenderCommand.ExecuteAsync(null);
-                    }
-                });
-            }
+                    await RenderCommand.ExecuteAsync(null);
+                }
+            });
+
             // Note: RecordNavigationState() is called by render completion
         }
     }
@@ -354,15 +367,37 @@ public partial class MainViewModel
             return;
         }
 
-        // Render with the current zoom value
-        _dispatcherQueue.TryEnqueue(async () =>
+        // Get the final slider value before resetting
+        double finalValue = ZoomFineTune;
+
+        // Only apply if the value is non-zero
+        if (Math.Abs(finalValue) > 0.001)
         {
-            await Task.Delay(10); // Small delay to ensure UI updates
-            if (!IsRendering && RenderCommand.CanExecute(null))
+            // Calculate the zoom adjustment factor
+            // Positive slider value = zoom in (higher magnification)
+            // Negative slider value = zoom out (lower magnification)
+            double adjustmentFactor = Math.Pow(2.0, finalValue);
+
+            // Apply zoom correction to prevent center drift
+            ApplyZoomCorrection(adjustmentFactor);
+
+            StatusMessage = finalValue > 0 
+                ? $"Fine zoom in to {Zoom:F2}x..." 
+                : $"Fine zoom out to {Zoom:F2}x...";
+
+            // Reset slider to center
+            ZoomFineTune = 0.0;
+
+            // Render with the new zoom value
+            _dispatcherQueue.TryEnqueue(async () =>
             {
-                await RenderCommand.ExecuteAsync(null);
-            }
-        });
+                await Task.Delay(10); // Small delay to ensure UI updates
+                if (!IsRendering && RenderCommand.CanExecute(null))
+                {
+                    await RenderCommand.ExecuteAsync(null);
+                }
+            });
+        }
     }
 
     /// <summary>
@@ -386,8 +421,8 @@ public partial class MainViewModel
         // Calculate adjustment factor: 2^value
         double adjustmentFactor = Math.Pow(2.0, adjustmentValue);
 
-        // Apply the adjustment
-        Zoom *= adjustmentFactor;
+        // Apply zoom correction to prevent center drift due to discrete pixel grid
+        ApplyZoomCorrection(adjustmentFactor);
 
         StatusMessage = direction == "in"
             ? $"Fine zoom in to {Zoom:F2}x..."
@@ -456,5 +491,64 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(Is2KResolution));
         OnPropertyChanged(nameof(Is4KResolution));
         OnPropertyChanged(nameof(Is4KPlusResolution));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
+    // ZOOM CENTER CORRECTION
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// The CenterX/CenterY values to maintain during zoom operations.
+    /// Null means no locked center (will use current CenterX/CenterY and lock it on first zoom).
+    /// </summary>
+    private (double x, double y)? _lockedCenter = null;
+
+    /// <summary>
+    /// Flag to prevent resetting the locked center when ApplyZoomCorrection updates CenterX/CenterY.
+    /// </summary>
+    private bool _isApplyingZoomCorrection = false;
+
+    /// <summary>
+    /// Applies zoom factor while keeping the center coordinates locked.
+    /// </summary>
+    /// <param name="zoomMultiplier">Factor to multiply zoom by (e.g., 2.0 for zoom in, 0.5 for zoom out)</param>
+    /// <remarks>
+    /// <para>Simplified approach: The user has positioned something at the visual center (via pan/preset/box-zoom).
+    /// We simply keep CenterX/CenterY at exactly those values during subsequent button/wheel zoom operations.</para>
+    /// 
+    /// <para>The discrete pixel grid offset exists but is CONSTANT for a given resolution. By keeping
+    /// CenterX/CenterY locked, the SAME complex coordinate stays near the viewport center across all zooms.</para>
+    /// </remarks>
+    public void ApplyZoomCorrection(double zoomMultiplier)
+    {
+        // If we don't have a locked center, lock the current values
+        if (_lockedCenter == null)
+        {
+            _lockedCenter = (CenterX, CenterY);
+        }
+
+        // Apply zoom
+        Zoom *= zoomMultiplier;
+
+        // Keep center exactly at the locked values
+        // Set flag to prevent OnCenterXChanged/OnCenterYChanged from resetting the lock
+        _isApplyingZoomCorrection = true;
+        try
+        {
+            CenterX = _lockedCenter.Value.x;
+            CenterY = _lockedCenter.Value.y;
+        }
+        finally
+        {
+            _isApplyingZoomCorrection = false;
+        }
+    }
+
+    /// <summary>
+    /// Unlocks the center (call when user explicitly changes center, e.g., via panning or box zoom).
+    /// </summary>
+    public void ResetTrackedCenterPoint()
+    {
+        _lockedCenter = null;
     }
 }
