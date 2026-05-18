@@ -25,6 +25,11 @@ namespace ManpWinUI.Views
         private Windows.Foundation.Point _dragStartPoint;
         private System.Threading.Timer? _zoomTimer;
         private Grid? _fractalGrid; // Reference to the main fractal display grid
+        private bool _doubleClickHandled; // Track if double-click recenter was handled
+        private DateTime _lastClickTime = DateTime.MinValue; // Track timing for double-click detection
+
+        // Zoom slider dynamic tooltip (using Popup for better visibility)
+        private bool _isZoomSliderDragging;
 
         public MainPage()
         {
