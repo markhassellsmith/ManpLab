@@ -315,7 +315,14 @@ public partial class MainViewModel
             return;
         }
 
-        // Only apply adjustment if value is non-zero
+        // During dragging, don't apply zoom yet - just update the visual feedback
+        if (IsZoomSliderDragging)
+        {
+            // The slider value will be applied when dragging completes
+            return;
+        }
+
+        // Only apply adjustment if value is non-zero AND not dragging
         if (Math.Abs(value) > 0.001)
         {
             // Negate the value so that:
@@ -335,19 +342,16 @@ public partial class MainViewModel
             // Reset slider to center for next adjustment
             ZoomFineTune = 0.0;
 
-            // Only auto-render if NOT currently dragging the slider
-            if (!IsZoomSliderDragging)
+            // Auto-render after adjustment on UI thread
+            _dispatcherQueue.TryEnqueue(async () =>
             {
-                // Auto-render after adjustment on UI thread
-                _dispatcherQueue.TryEnqueue(async () =>
+                await Task.Delay(10); // Small delay to ensure UI updates
+                if (!IsRendering && RenderCommand.CanExecute(null))
                 {
-                    await Task.Delay(10); // Small delay to ensure UI updates
-                    if (!IsRendering && RenderCommand.CanExecute(null))
-                    {
-                        await RenderCommand.ExecuteAsync(null);
-                    }
-                });
-            }
+                    await RenderCommand.ExecuteAsync(null);
+                }
+            });
+
             // Note: RecordNavigationState() is called by render completion
         }
     }
@@ -363,15 +367,37 @@ public partial class MainViewModel
             return;
         }
 
-        // Render with the current zoom value
-        _dispatcherQueue.TryEnqueue(async () =>
+        // Get the final slider value before resetting
+        double finalValue = ZoomFineTune;
+
+        // Only apply if the value is non-zero
+        if (Math.Abs(finalValue) > 0.001)
         {
-            await Task.Delay(10); // Small delay to ensure UI updates
-            if (!IsRendering && RenderCommand.CanExecute(null))
+            // Calculate the zoom adjustment factor
+            // Positive slider value = zoom in (higher magnification)
+            // Negative slider value = zoom out (lower magnification)
+            double adjustmentFactor = Math.Pow(2.0, finalValue);
+
+            // Apply zoom correction to prevent center drift
+            ApplyZoomCorrection(adjustmentFactor);
+
+            StatusMessage = finalValue > 0 
+                ? $"Fine zoom in to {Zoom:F2}x..." 
+                : $"Fine zoom out to {Zoom:F2}x...";
+
+            // Reset slider to center
+            ZoomFineTune = 0.0;
+
+            // Render with the new zoom value
+            _dispatcherQueue.TryEnqueue(async () =>
             {
-                await RenderCommand.ExecuteAsync(null);
-            }
-        });
+                await Task.Delay(10); // Small delay to ensure UI updates
+                if (!IsRendering && RenderCommand.CanExecute(null))
+                {
+                    await RenderCommand.ExecuteAsync(null);
+                }
+            });
+        }
     }
 
     /// <summary>
@@ -478,6 +504,11 @@ public partial class MainViewModel
     private (double x, double y)? _lockedCenter = null;
 
     /// <summary>
+    /// Flag to prevent resetting the locked center when ApplyZoomCorrection updates CenterX/CenterY.
+    /// </summary>
+    private bool _isApplyingZoomCorrection = false;
+
+    /// <summary>
     /// Applies zoom factor while keeping the center coordinates locked.
     /// </summary>
     /// <param name="zoomMultiplier">Factor to multiply zoom by (e.g., 2.0 for zoom in, 0.5 for zoom out)</param>
@@ -500,8 +531,17 @@ public partial class MainViewModel
         Zoom *= zoomMultiplier;
 
         // Keep center exactly at the locked values
-        CenterX = _lockedCenter.Value.x;
-        CenterY = _lockedCenter.Value.y;
+        // Set flag to prevent OnCenterXChanged/OnCenterYChanged from resetting the lock
+        _isApplyingZoomCorrection = true;
+        try
+        {
+            CenterX = _lockedCenter.Value.x;
+            CenterY = _lockedCenter.Value.y;
+        }
+        finally
+        {
+            _isApplyingZoomCorrection = false;
+        }
     }
 
     /// <summary>
