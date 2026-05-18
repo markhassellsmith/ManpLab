@@ -52,11 +52,11 @@
             </AppBarButton>
             <AppBarSeparator />
             <AppBarButton
-                Icon="ZoomIn"
-                Label="Zoom In"
-                Command="{x:Bind ViewModel.ZoomInCommand}">
+                Icon="ZoomOut"
+                Label="Zoom Out"
+                Command="{x:Bind ViewModel.ZoomOutCommand}">
                 <ToolTipService.ToolTip>
-                    <ToolTip Content="Zoom in 2x (+)" />
+                    <ToolTip Content="Zoom out 2x (-)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
 
@@ -76,7 +76,7 @@
                         Minimum="-0.5"
                         Maximum="0.5"
                         StepFrequency="0.01"
-                        TickFrequency="0.5"
+                        TickFrequency="0.1"
                         TickPlacement="BottomRight"
                         IsEnabled="{x:Bind ViewModel.IsRendering, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}"
                         VerticalAlignment="Center"
@@ -86,11 +86,33 @@
                         ManipulationStarted="ZoomSlider_ManipulationStarted"
                         ManipulationCompleted="ZoomSlider_ManipulationCompleted"
                         PointerPressed="ZoomSlider_PointerPressed"
-                        PointerReleased="ZoomSlider_PointerReleased">
+                        PointerReleased="ZoomSlider_PointerReleased"
+                        ValueChanged="ZoomSlider_ValueChanged">
                         <ToolTipService.ToolTip>
                             <ToolTip Content="Fine-tune zoom: drag left to zoom in, right to zoom out (release to render)" />
                         </ToolTipService.ToolTip>
                     </Slider>
+
+                    <!-- Custom Popup Tooltip for Slider -->
+                    <Popup x:Name="ZoomSliderPopup"
+                           Grid.Row="0"
+                           IsOpen="False"
+                           IsLightDismissEnabled="False"
+                           PlacementTarget="{x:Bind ZoomFineTuneSlider}"
+                           HorizontalOffset="0"
+                           VerticalOffset="-50">
+                        <Border Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="8,4">
+                            <TextBlock x:Name="ZoomSliderPopupText"
+                                       Text="+0.0"
+                                       FontWeight="SemiBold"
+                                       Foreground="White"
+                                       FontSize="14" />
+                        </Border>
+                    </Popup>
 
                     <!-- Labels -->
                     <Grid Grid.Row="1" Margin="0,-4,0,0">
@@ -102,7 +124,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Zoom In Button (Left) -->
+                        <!-- Zoom Out Button (Left) - negative x direction -->
                         <RepeatButton 
                             Grid.Column="0"
                             Content="◀"
@@ -114,15 +136,15 @@
                             Background="Transparent"
                             BorderThickness="0"
                             Command="{x:Bind ViewModel.ZoomFineTuneStepCommand}"
-                            CommandParameter="in"
+                            CommandParameter="out"
                             Delay="500"
                             Interval="250"
-                            ToolTipService.ToolTip="Click to zoom in by 0.1 step (hold to repeat)">
+                            ToolTipService.ToolTip="Click to zoom out by 0.1 step (hold to repeat)">
                         </RepeatButton>
 
                         <TextBlock 
                             Grid.Column="1" 
-                            Text="In" 
+                            Text="Out" 
                             FontSize="10" 
                             Opacity="0.7"
                             HorizontalAlignment="Left"
@@ -140,14 +162,14 @@
 
                         <TextBlock 
                             Grid.Column="3" 
-                            Text="Out" 
+                            Text="In" 
                             FontSize="10" 
                             Opacity="0.7"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             Margin="0,0,2,0"/>
 
-                        <!-- Zoom Out Button (Right) -->
+                        <!-- Zoom In Button (Right) - positive x direction -->
                         <RepeatButton 
                             Grid.Column="4"
                             Content="▶"
@@ -159,21 +181,21 @@
                             Background="Transparent"
                             BorderThickness="0"
                             Command="{x:Bind ViewModel.ZoomFineTuneStepCommand}"
-                            CommandParameter="out"
+                            CommandParameter="in"
                             Delay="500"
                             Interval="250"
-                            ToolTipService.ToolTip="Click to zoom out by 0.1 step (hold to repeat)">
+                            ToolTipService.ToolTip="Click to zoom in by 0.1 step (hold to repeat)">
                         </RepeatButton>
                     </Grid>
                 </Grid>
             </AppBarElementContainer>
 
             <AppBarButton
-                Icon="ZoomOut"
-                Label="Zoom Out"
-                Command="{x:Bind ViewModel.ZoomOutCommand}">
+                Icon="ZoomIn"
+                Label="Zoom In"
+                Command="{x:Bind ViewModel.ZoomInCommand}">
                 <ToolTipService.ToolTip>
-                    <ToolTip Content="Zoom out 2x (-)" />
+                    <ToolTip Content="Zoom in 2x (+)" />
                 </ToolTipService.ToolTip>
             </AppBarButton>
             <AppBarButton Label="Pan">
