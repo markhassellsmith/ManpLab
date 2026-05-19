@@ -1,0 +1,83 @@
+GroupName,PropertyName (PNG),PropertyName (JPEG),Description,Special Notes,PNG Support,JPEG Support
+"Basic Identification","/tEXt/Title","/app1/ifd/{ushort=270}","Image title or name","JPEG uses TIFF IFD tag 270 (ImageDescription)",Yes,Yes
+"Basic Identification","/tEXt/Author","/app1/ifd/{ushort=315}","Creator or author of the image","JPEG uses TIFF IFD tag 315 (Artist)",Yes,Yes
+"Basic Identification","/tEXt/Description","/app1/ifd/{ushort=270}","Detailed description of image content","Same as Title in JPEG; can use XMP for separate description",Yes,Yes
+"Basic Identification","/tEXt/Copyright","/app1/ifd/{ushort=33432}","Copyright notice","JPEG uses TIFF IFD tag 33432 (Copyright)",Yes,Yes
+"Basic Identification","/tEXt/Software","/app1/ifd/{ushort=305}","Software used to create/modify image","RECOMMENDED: Use 'ManpLab v1.0.0' format for version tracking",Yes,Yes
+"Basic Identification","/tEXt/Source","/app1/ifd/{ushort=270}","Source code repository or origin URL","RECOMMENDED: Use 'https://github.com/markhassellsmith/ManpLab' for attribution",Yes,Yes
+"Basic Identification","/tEXt/Comment","/app13/irb/8bimiptc/iptc/caption abstract","General comment or caption","PNG uses tEXt chunk; JPEG can use IPTC or EXIF UserComment; can include attribution",Yes,Yes
+"Basic Identification","/tEXt/UserNotes","/app1/ifd/exif/{ushort=37510}","User's personal notes for tagging/organization","RECOMMENDED: Multi-line text from Properties panel 'Personal Notes'; 500+ chars; tag files for special projects",Yes,Yes
+"Date and Time","/tEXt/Creation Time","/app1/ifd/exif/{ushort=36868}","Date and time of original creation","Format: YYYY:MM:DD HH:MM:SS for EXIF; flexible for PNG",Yes,Yes
+"Date and Time","N/A","/app1/ifd/exif/{ushort=36867}","Date and time when photo was taken (EXIF DateTimeOriginal)","JPEG-specific for photographs",No,Yes
+"Date and Time","N/A","/app1/ifd/{ushort=306}","Date and time of last modification","JPEG uses TIFF IFD tag 306 (DateTime)",No,Yes
+"Fractal Parameters","/tEXt/FractalFamily","N/A","Fractal family/category grouping (e.g., 'Classic Escape-Time', 'Newton Method')","RECOMMENDED: Browser folder name for user recognition; use 'Fractal Family' (with space) in UI",Yes,Partial
+"Fractal Parameters","/tEXt/FractalName","N/A","Display name of specific fractal (e.g., 'Mandelbrot Set', 'Burning Ship')","RECOMMENDED: User-friendly fractal name as shown in browser",Yes,Partial
+"Fractal Parameters","/tEXt/FractalType","N/A","Internal fractal identifier (e.g., 'Mandelbrot', 'BurningShip')","Technical identifier matching internal registry key",Yes,Partial
+"Fractal Parameters","/tEXt/CenterX","N/A","X coordinate (real part) of fractal center in complex plane","Custom application-specific metadata; stored with 15-17 digit precision",Yes,Partial
+"Fractal Parameters","/tEXt/CenterY","N/A","Y coordinate (imaginary part) of fractal center in complex plane","Custom application-specific metadata; stored with 15-17 digit precision",Yes,Partial
+"Fractal Parameters","/tEXt/ZoomFactor","N/A","Zoom level or magnification factor","JSON: 'ZoomFactor'; UI: 'Zoom:'; replaces older 'Zoom' property name",Yes,Partial
+"Fractal Parameters","/tEXt/ViewWidth","N/A","Width of visible complex plane region","Calculated from resolution and zoom; provides mathematical scale reference",Yes,Partial
+"Fractal Parameters","/tEXt/ViewHeight","N/A","Height of visible complex plane region","Calculated from resolution and zoom; provides mathematical scale reference",Yes,Partial
+"Fractal Parameters","/tEXt/MaxIterations","N/A","Maximum iteration count for escape-time algorithm","Custom application-specific metadata",Yes,Partial
+"Fractal Parameters","/tEXt/AutoScaleIterations","N/A","Whether max iterations auto-adjust with zoom (true/false)","Indicates if MaxIterations is user-set or dynamically calculated",Yes,Partial
+"Rendering Parameters","/tEXt/PaletteName","N/A","Color palette/scheme name (e.g., 'Classic', 'Neon', 'Rainbow')","JSON: 'PaletteName'; UI: 'Palette:'; replaces older 'ColorPalette'",Yes,Partial
+"Rendering Parameters","/tEXt/IterationMode","N/A","Algorithm variant (e.g., 'Standard', 'Julia', 'Hailstone')","Identifies which iteration algorithm was used",Yes,Partial
+"Rendering Parameters","/tEXt/ResolutionWidth","N/A","Image width in pixels","JSON: 'ResolutionWidth'; replaces 'ImageWidth' for clarity",Yes,Partial
+"Rendering Parameters","/tEXt/ResolutionHeight","N/A","Image height in pixels","JSON: 'ResolutionHeight'; replaces 'ImageHeight' for clarity",Yes,Partial
+"Render Statistics","/tEXt/ResolutionMegapixels","N/A","Resolution in megapixels (Width × Height / 1,000,000)","Derived metric for quick resolution reference and filtering",Yes,Partial
+"Render Statistics","/tEXt/RenderTimeSeconds","N/A","Render duration in seconds","Converted from ComputeTimeMs; useful for performance analysis",Yes,Partial
+"Render Statistics","/tEXt/EscapePercentage","N/A","Percentage of pixels that escaped iteration threshold","Indicates visual complexity; lower % = more detail/structure",Yes,Partial
+"Fractal Parameters","/tEXt/JuliaConstant","N/A","Julia set constant (c value) if applicable","Custom application-specific metadata",Yes,Partial
+"Application Metadata","/tEXt/ManpLabMetadata","N/A","Complete JSON metadata block for ManpLab","CRITICAL: Single consolidated property containing all parameters for reproduction",Yes,Partial
+"Application Metadata","/tEXt/Source","/app1/ifd/{ushort=270}","Source code repository URL","RECOMMENDED: 'https://github.com/markhassellsmith/ManpLab' for open-source attribution",Yes,Yes
+"Application Metadata","/tEXt/License","N/A","Software license type","Optional: 'MIT', 'GPL-3.0', etc. for license clarity",Yes,Partial
+"Keywords and Tags","/tEXt/Keyword","/app13/irb/8bimiptc/iptc/keywords","Keywords or tags for searching","Multiple keywords typically semicolon-separated",Yes,Yes
+"Keywords and Tags","N/A","/xmp/dc:subject","Dublin Core subject keywords (XMP)","JPEG XMP metadata for rich tagging",No,Yes
+"Color and Display","/gAMA","N/A","Gamma correction value","PNG chunk specifies display gamma; typically 2.2",Yes,No
+"Color and Display","/cHRM","N/A","Chromaticity coordinates for color primaries","PNG chunk for precise color reproduction",Yes,No
+"Color and Display","/sRGB","N/A","sRGB color space indicator","PNG chunk; renders other color chunks optional",Yes,No
+"Color and Display","/iCCP","N/A","Embedded ICC color profile","PNG chunk for device-independent color",Yes,Yes
+"Color and Display","N/A","/app1/ifd/exif/iop/{ushort=1}","JPEG color space (sRGB, AdobeRGB, etc.)","JPEG uses EXIF ColorSpace tag",No,Yes
+"Color and Display","N/A","/app2/icc","Embedded ICC color profile in JPEG","JPEG APP2 marker for ICC profile",No,Yes
+"Image Quality","N/A","/app1/ifd/{ushort=282}","X resolution (DPI)","JPEG uses TIFF IFD tag 282; PNG typically uses pHYs chunk",Partial,Yes
+"Image Quality","N/A","/app1/ifd/{ushort=283}","Y resolution (DPI)","JPEG uses TIFF IFD tag 283; PNG typically uses pHYs chunk",Partial,Yes
+"Image Quality","/pHYs","N/A","Physical pixel dimensions (pixels per unit)","PNG chunk specifying aspect ratio and resolution",Yes,No
+"Image Quality","N/A","Quality (encoder setting)","JPEG compression quality percentage","Not stored in file; encoder parameter only",No,N/A
+"Technical Details","/tEXt/Disclaimer","N/A","Legal disclaimer text","PNG tEXt chunk for legal notices",Yes,Partial
+"Technical Details","/tEXt/Warning","N/A","Warning or caution text","PNG tEXt chunk for important notices",Yes,Partial
+"Technical Details","N/A","/app1/ifd/exif/{ushort=37500}","EXIF MakerNote","Manufacturer-specific technical data",No,Yes
+"Technical Details","N/A","/app1/ifd/exif/{ushort=37510}","EXIF UserComment","User comment supporting character codes","JPEG EXIF field with encoding info",No,Yes
+"Camera Metadata","N/A","/app1/ifd/exif/{ushort=37386}","Focal length","Photography-specific; not applicable to fractals",No,Yes
+"Camera Metadata","N/A","/app1/ifd/exif/{ushort=33434}","Exposure time (shutter speed)","Photography-specific; not applicable to fractals",No,Yes
+"Camera Metadata","N/A","/app1/ifd/exif/{ushort=33437}","F-number (aperture)","Photography-specific; not applicable to fractals",No,Yes
+"Camera Metadata","N/A","/app1/ifd/exif/{ushort=34855}","ISO speed rating","Photography-specific; not applicable to fractals",No,Yes
+"Camera Metadata","N/A","/app1/ifd/{ushort=271}","Camera make/manufacturer","Photography-specific; not applicable to fractals",No,Yes
+"Camera Metadata","N/A","/app1/ifd/{ushort=272}","Camera model","Photography-specific; not applicable to fractals",No,Yes
+"GPS Location","N/A","/app1/ifd/gps/{ushort=1}","GPS latitude reference (N/S)","Photography-specific; not applicable to fractals",No,Yes
+"GPS Location","N/A","/app1/ifd/gps/{ushort=2}","GPS latitude","Photography-specific; not applicable to fractals",No,Yes
+"GPS Location","N/A","/app1/ifd/gps/{ushort=3}","GPS longitude reference (E/W)","Photography-specific; not applicable to fractals",No,Yes
+"GPS Location","N/A","/app1/ifd/gps/{ushort=4}","GPS longitude","Photography-specific; not applicable to fractals",No,Yes
+"XMP Metadata","N/A","/xmp/dc:creator","Dublin Core creator (author) via XMP","JPEG XMP namespace for rich metadata",No,Yes
+"XMP Metadata","N/A","/xmp/dc:title","Dublin Core title via XMP","JPEG XMP namespace for rich metadata",No,Yes
+"XMP Metadata","N/A","/xmp/dc:description","Dublin Core description via XMP","JPEG XMP namespace for rich metadata; preferred over ImageDescription",No,Yes
+"XMP Metadata","N/A","/xmp/dc:rights","Dublin Core copyright/rights via XMP","JPEG XMP namespace for rich metadata",No,Yes
+"XMP Metadata","N/A","/xmp/xmp:CreatorTool","XMP creator tool (software)","JPEG XMP namespace; similar to Software tag",No,Yes
+"XMP Metadata","N/A","/xmp/xmp:CreateDate","XMP creation date","JPEG XMP namespace for creation timestamp",No,Yes
+"IPTC Metadata","N/A","/app13/irb/8bimiptc/iptc/by-line","IPTC creator/author","JPEG IPTC metadata; journalism standard",No,Yes
+"IPTC Metadata","N/A","/app13/irb/8bimiptc/iptc/headline","IPTC headline","JPEG IPTC metadata; brief title",No,Yes
+"IPTC Metadata","N/A","/app13/irb/8bimiptc/iptc/caption abstract","IPTC caption/description","JPEG IPTC metadata; detailed description",No,Yes
+"IPTC Metadata","N/A","/app13/irb/8bimiptc/iptc/copyright notice","IPTC copyright notice","JPEG IPTC metadata; copyright string",No,Yes
+"IPTC Metadata","N/A","/app13/irb/8bimiptc/iptc/category","IPTC category code","JPEG IPTC metadata; 3-character category",No,Yes
+"Transparency","N/A (native)","N/A","Alpha channel (transparency)","PNG supports alpha natively; JPEG does not support transparency",Yes,No
+"Animation","N/A (use APNG)","N/A","Animation frames","PNG extension (APNG) supports animation; standard PNG does not",Partial,No
+"Compression","/tEXt/Compression","Compression level (encoder setting)","PNG compression level 0-9","PNG supports lossless compression; not stored in file metadata",Yes,N/A
+"Compression","N/A","JPEG quality (encoder setting)","JPEG quality percentage 0-100","JPEG lossy compression; quality not stored in file",N/A,Yes
+"Custom Chunks","/tEXt/{custom}","N/A","Custom text chunk with any keyword","PNG allows arbitrary tEXt chunks; keyword max 79 chars",Yes,No
+"Custom Chunks","/iTXt/{custom}","N/A","International text chunk (UTF-8 with language)","PNG iTXt supports Unicode and language tags",Yes,No
+"Custom Chunks","/zTXt/{custom}","N/A","Compressed text chunk","PNG zTXt for large text data with compression",Yes,No
+"Implementation Notes","","","","For PNG: tEXt chunks are easiest; use BitmapPropertySet with '/tEXt/KeywordName' format","-","-"
+"Implementation Notes","","","","For JPEG: Use EXIF tags via IFD paths or XMP for modern apps; IPTC for journalism workflow","-","-"
+"Implementation Notes","","","","ManpLab Strategy: Store all fractal params in JSON in single '/tEXt/ManpLabMetadata' property (PNG)","-","-"
+"Implementation Notes","","","","ManpLab Strategy: For JPEG store critical params in EXIF ImageDescription or UserComment","-","-"
+"Implementation Notes","","","","Read-back: PNG tEXt chunks are reliably readable; JPEG may require EXIF or XMP parsing","-","-"
+"Implementation Notes","","","","Windows.Graphics.Imaging supports most standard properties; custom properties easier in PNG","-","-"
