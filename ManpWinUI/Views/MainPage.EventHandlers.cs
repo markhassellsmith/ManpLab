@@ -178,11 +178,9 @@ namespace ManpWinUI.Views
 
                 savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
 
-                // Generate filename based on fractal type
-                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                var fractalName = ViewModel.SelectedFractalType.Replace(" ", "");
-                var mode = ViewModel.SelectedIterationMode == "Julia" ? "_Julia" : "";
-                savePicker.SuggestedFileName = $"{fractalName}{mode}_{timestamp}";
+                // Generate filename using helper method
+                var metadata = ViewModel.CreateMetadata();
+                savePicker.SuggestedFileName = GenerateExportFileName();
 
                 // Add file type choices based on fractal type
                 savePicker.FileTypeChoices.Add("PNG Image", new[] { ".png" });
@@ -192,7 +190,6 @@ namespace ManpWinUI.Views
                 if (ViewModel.IsHailstoneMode && ViewModel.CurrentHailstoneResult != null)
                 {
                     savePicker.FileTypeChoices.Add("SVG Vector Image", new[] { ".svg" });
-                    savePicker.SuggestedFileName = $"Hailstone_{timestamp}";
                 }
 
                 var file = await savePicker.PickSaveFileAsync();
@@ -215,7 +212,6 @@ namespace ManpWinUI.Views
                     }
 
                     var hailstoneExportService = new HailstoneExportService();
-                    var metadata = ViewModel.CreateMetadata();
 
                     var success = await hailstoneExportService.ExportAsSvgAsync(
                         ViewModel.CurrentHailstoneResult,
@@ -241,7 +237,6 @@ namespace ManpWinUI.Views
                 {
                     // Handle PNG/JPEG export
                     var format = extension == ".png" ? ImageFormat.PNG : ImageFormat.JPEG;
-                    var metadata = ViewModel.CreateMetadata();
 
                     // Save directly to the chosen file
                     using (var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
@@ -322,7 +317,7 @@ namespace ManpWinUI.Views
                 WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
 
                 savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
-                savePicker.SuggestedFileName = $"Hailstone_{DateTime.Now:yyyyMMdd_HHmmss}";
+                savePicker.SuggestedFileName = GenerateExportFileName();
                 savePicker.FileTypeChoices.Add("SVG Image", new[] { ".svg" });
 
                 var file = await savePicker.PickSaveFileAsync();
@@ -383,6 +378,21 @@ namespace ManpWinUI.Views
             {
                 ViewModel.StatusMessage = $"Error copying to clipboard: {ex.Message}";
             }
+        }
+
+        /// <summary>
+        /// Helper method to generate consistent filenames across all export methods.
+        /// Format: FractalFamily_FractalName[_Julia]_YYYYMMDD_HHmmss
+        /// </summary>
+        private string GenerateExportFileName()
+        {
+            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            var metadata = ViewModel.CreateMetadata();
+            var fractalFamily = metadata.FractalFamily.Replace(" ", "");
+            var fractalName = ViewModel.SelectedFractalType.Replace(" ", "");
+            var mode = ViewModel.SelectedIterationMode == "Julia" ? "_Julia" : "";
+
+            return $"{fractalFamily}_{fractalName}{mode}_{timestamp}";
         }
 
         private async System.Threading.Tasks.Task SaveImageAsync(ImageFormat format)

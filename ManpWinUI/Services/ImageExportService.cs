@@ -265,14 +265,16 @@ public class ImageExportService : IImageExportService
 
     /// <summary>
     /// Generates a filename based on fractal metadata.
+    /// Format: FractalFamily_FractalName[_Julia]_YYYYMMDD_HHmmss
     /// </summary>
     private string GenerateFileName(FractalMetadata metadata)
     {
         var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        var fractalFamily = metadata.FractalFamily.Replace(" ", "");
         var fractalName = metadata.FractalType.Replace(" ", "");
         var mode = metadata.IterationMode == "Julia" ? "_Julia" : "";
 
-        return $"{fractalName}{mode}_{timestamp}";
+        return $"{fractalFamily}_{fractalName}{mode}_{timestamp}";
     }
 }
 
