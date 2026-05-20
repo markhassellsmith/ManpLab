@@ -26,9 +26,9 @@ void RegisterLambdaExtendedFamily()
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot z_n^3 \cdot (1 - z_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
+        ComplexD z(0.5, 0.0);  // Better starting point for Lambda fractals
         ComplexD lambda = isJulia ? juliaC : c;
-        const double bailout = 4.0;
+        const double bailout = 100.0;  // Higher bailout for more structure
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -47,10 +47,10 @@ void RegisterLambdaExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = 0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 4.0;
+    spec.defaultZoom = 0.155642;  // Viewport tuning: X scale 25.7
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -67,9 +67,9 @@ void RegisterLambdaExtendedFamily()
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot z_n^4 \cdot (1 - z_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
+        ComplexD z(0.5, 0.0);  // Better starting point for Lambda fractals
         ComplexD lambda = isJulia ? juliaC : c;
-        const double bailout = 4.0;
+        const double bailout = 100.0;  // Higher bailout for more structure
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -88,10 +88,10 @@ void RegisterLambdaExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = 0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 4.0;
+    spec.defaultZoom = 0.072596;  // Viewport tuning: X scale 55.1
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -108,9 +108,9 @@ void RegisterLambdaExtendedFamily()
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot \tanh(z_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
+        ComplexD z(0.5, 0.0);  // Better starting point for Lambda fractals
         ComplexD lambda = isJulia ? juliaC : c;
-        const double bailout = 100.0;
+        const double bailout = 50.0;  // Adjusted bailout for tanh
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -134,10 +134,10 @@ void RegisterLambdaExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
-    spec.defaultBailout = 100.0;
+    spec.defaultCenterX = -0.05;
+    spec.defaultCenterY = 0.03;
+    spec.defaultZoom = 0.135593;  // Viewport tuning: X scale 29.5
+    spec.defaultBailout = 50.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -154,9 +154,9 @@ void RegisterLambdaExtendedFamily()
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot \tan(z_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
+        ComplexD z(0.5, 0.0);  // Better starting point for Lambda fractals
         ComplexD lambda = isJulia ? juliaC : c;
-        const double bailout = 100.0;
+        const double bailout = 50.0;  // Adjusted bailout for tan
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -185,10 +185,10 @@ void RegisterLambdaExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
-    spec.defaultBailout = 100.0;
+    spec.defaultCenterX = -0.05;
+    spec.defaultCenterY = 0.04;
+    spec.defaultZoom = 1.481481;  // Viewport tuning: X scale 2.70
+    spec.defaultBailout = 50.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -205,9 +205,9 @@ void RegisterLambdaExtendedFamily()
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot z_n^2 \cdot (1 - z_n^2))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
+        ComplexD z(0.5, 0.0);  // Better starting point for Lambda fractals
         ComplexD lambda = isJulia ? juliaC : c;
-        const double bailout = 4.0;
+        const double bailout = 100.0;  // Higher bailout for more structure
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -224,10 +224,10 @@ void RegisterLambdaExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 4.0;
+    spec.defaultCenterX = -0.07;
+    spec.defaultCenterY = 0.09;
+    spec.defaultZoom = 0.333333;  // Viewport tuning: X scale 12.0
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -261,9 +261,9 @@ void RegisterLambdaExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = 1.00;
+    spec.defaultCenterY = -0.01;
+    spec.defaultZoom = 0.8;
     spec.defaultBailout = 4.0;
     spec.hasSymmetry = false;
 
@@ -281,9 +281,9 @@ void RegisterLambdaExtendedFamily()
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot z_n \cdot (1 - z_n) + z_n)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
+        ComplexD z(0.5, 0.0);  // Better starting point for Lambda fractals
         ComplexD lambda = isJulia ? juliaC : c;
-        const double bailout = 4.0;
+        const double bailout = 100.0;  // Higher bailout for more structure
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -301,9 +301,9 @@ void RegisterLambdaExtendedFamily()
 
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 4.0;
+    spec.defaultCenterY = 0.01;
+    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -320,11 +320,11 @@ void RegisterLambdaExtendedFamily()
     spec.formulaLatex = R"(z_{n+1} = \lambda \cdot z_n \cdot (1 - z_n) + p \cdot z_{n-1})";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
+        ComplexD z(0.5, 0.0);  // Better starting point for Lambda fractals
         ComplexD z_prev(0.0, 0.0);
         ComplexD lambda = isJulia ? juliaC : c;
-        ComplexD p(0.5, 0.0);  // Phoenix parameter
-        const double bailout = 4.0;
+        ComplexD p(-0.5, 0.0);  // Phoenix parameter - negative for more interesting patterns
+        const double bailout = 100.0;  // Higher bailout for more structure
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -340,10 +340,10 @@ void RegisterLambdaExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 4.0;
+    spec.defaultCenterX = 0.8;
+    spec.defaultCenterY = 0.01;
+    spec.defaultZoom = 0.766284;  // Viewport tuning: X scale 5.22
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);

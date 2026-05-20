@@ -60,7 +60,7 @@ void RegisterPowerVariantsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.0;  // Viewport tuning: X scale 4.0
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -94,7 +94,7 @@ void RegisterPowerVariantsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 0.932401;  // Viewport tuning: X scale 4.29
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -128,7 +128,7 @@ void RegisterPowerVariantsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.0;  // Viewport tuning: X scale 4.0
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);

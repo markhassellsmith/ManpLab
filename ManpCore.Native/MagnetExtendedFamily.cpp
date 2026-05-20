@@ -66,8 +66,8 @@ void RegisterMagnetExtendedFamily()
 
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterY = 0.06;
+    spec.defaultZoom = 0.251572;  // Viewport tuning: X scale 15.9
     spec.defaultBailout = 1000.0;
     spec.hasSymmetry = false;
 
@@ -128,9 +128,9 @@ void RegisterMagnetExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = -2.05;
+    spec.defaultCenterY = -0.39;
+    spec.defaultZoom = 2.020202;  // Viewport tuning: X scale 1.98
     spec.defaultBailout = 1000.0;
     spec.hasSymmetry = false;
 
@@ -190,7 +190,7 @@ void RegisterMagnetExtendedFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.5;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.7;
+    spec.defaultZoom = 0.341880;  // Viewport tuning: X scale 11.7
     spec.defaultBailout = 1000.0;
     spec.hasSymmetry = false;
 
@@ -254,9 +254,9 @@ void RegisterMagnetExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 1.5;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = -0.64;
+    spec.defaultCenterY = 0.1;
+    spec.defaultZoom = 0.197044;  // Viewport tuning: X scale 20.3
     spec.defaultBailout = 1000.0;
     spec.hasSymmetry = false;
 

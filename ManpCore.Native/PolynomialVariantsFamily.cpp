@@ -64,7 +64,7 @@ void RegisterPolynomialVariantsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.2;
+    spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -106,7 +106,7 @@ void RegisterPolynomialVariantsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.3;
+    spec.defaultZoom = 0.928074;  // Viewport tuning: X scale 4.31
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -142,11 +142,11 @@ void RegisterPolynomialVariantsFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.4;
+    spec.defaultCenterX = -0.17;
+    spec.defaultCenterY = 0.02;
+    spec.defaultZoom = 1.123596;  // Viewport tuning: X scale 3.56
     spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
+    spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
 
@@ -190,7 +190,7 @@ void RegisterPolynomialVariantsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.0;  // Viewport tuning: X scale 4.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -242,7 +242,7 @@ void RegisterPolynomialVariantsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 0.125;  // Viewport tuning: X scale 32.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -290,7 +290,7 @@ void RegisterPolynomialVariantsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.626016;  // Viewport tuning: X scale 2.46
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -342,7 +342,7 @@ void RegisterPolynomialVariantsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 1.0;  // Viewport tuning: X scale 4.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -378,9 +378,9 @@ void RegisterPolynomialVariantsFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.5;
+    spec.defaultCenterX = -0.57;
+    spec.defaultCenterY = 0.03;
+    spec.defaultZoom = 1.084011;  // Viewport tuning: X scale 3.69
     spec.defaultBailout = 10.0;
     spec.hasSymmetry = false;
 
