@@ -306,7 +306,7 @@ void RegisterPowerVariantsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.2;
+    spec.defaultZoom = 5.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -341,7 +341,7 @@ void RegisterPowerVariantsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.2;
+    spec.defaultZoom = 5.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);

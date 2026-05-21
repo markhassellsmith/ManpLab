@@ -491,5 +491,111 @@ namespace Native {
         }
     };
 
+    //=============================================================================
+    // Complex Math Helper Functions
+    //=============================================================================
+
+    /// <summary>
+    /// Complex square root: sqrt(z)
+    /// Uses the principal branch: sqrt(z) = sqrt(|z|) * exp(i*arg(z)/2)
+    /// </summary>
+    inline ComplexD ComplexSqrt(const ComplexD& z)
+    {
+        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+        if (mag < 1e-15) return ComplexD(0.0, 0.0);
+
+        double arg = std::atan2(z.imag, z.real);
+        double sqrt_mag = std::sqrt(mag);
+
+        return ComplexD(sqrt_mag * std::cos(arg / 2.0), sqrt_mag * std::sin(arg / 2.0));
+    }
+
+    /// <summary>
+    /// Complex natural logarithm: ln(z)
+    /// Uses principal branch: ln(z) = ln(|z|) + i*arg(z)
+    /// </summary>
+    inline ComplexD ComplexLn(const ComplexD& z)
+    {
+        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+        if (mag < 1e-15) return ComplexD(-1e10, 0.0);  // Return large negative for log(0)
+
+        double arg = std::atan2(z.imag, z.real);
+        double ln_mag = std::log(mag);
+
+        return ComplexD(ln_mag, arg);
+    }
+
+    /// <summary>
+    /// Complex arcsine: asin(z) = -i * ln(iz + sqrt(1 - z^2))
+    /// </summary>
+    inline ComplexD ComplexAsin(const ComplexD& z)
+    {
+        // Calculate z^2
+        ComplexD z2 = z * z;
+
+        // Calculate 1 - z^2
+        ComplexD one_minus_z2(1.0 - z2.real, -z2.imag);
+
+        // Calculate sqrt(1 - z^2)
+        ComplexD sqrt_term = ComplexSqrt(one_minus_z2);
+
+        // Calculate iz = i * z = (i * (a + bi)) = (-b + ai)
+        ComplexD iz(-z.imag, z.real);
+
+        // Calculate iz + sqrt(1 - z^2)
+        ComplexD arg = iz + sqrt_term;
+
+        // Calculate ln(iz + sqrt(1 - z^2))
+        ComplexD ln_arg = ComplexLn(arg);
+
+        // Return -i * ln_arg = -i * (a + bi) = (b - ai)
+        return ComplexD(ln_arg.imag, -ln_arg.real);
+    }
+
+    /// <summary>
+    /// Complex arccosine: acos(z) = -i * ln(z + sqrt(z^2 - 1))
+    /// </summary>
+    inline ComplexD ComplexAcos(const ComplexD& z)
+    {
+        // Calculate z^2
+        ComplexD z2 = z * z;
+
+        // Calculate z^2 - 1
+        ComplexD z2_minus_one(z2.real - 1.0, z2.imag);
+
+        // Calculate sqrt(z^2 - 1)
+        ComplexD sqrt_term = ComplexSqrt(z2_minus_one);
+
+        // Calculate z + sqrt(z^2 - 1)
+        ComplexD arg = z + sqrt_term;
+
+        // Calculate ln(z + sqrt(z^2 - 1))
+        ComplexD ln_arg = ComplexLn(arg);
+
+        // Return -i * ln_arg = -i * (a + bi) = (b - ai)
+        return ComplexD(ln_arg.imag, -ln_arg.real);
+    }
+
+    /// <summary>
+    /// Complex arctangent: atan(z) = (i/2) * ln((i+z)/(i-z))
+    /// </summary>
+    inline ComplexD ComplexAtan(const ComplexD& z)
+    {
+        // Calculate i + z = i + (a + bi) = (a + (b+1)i)
+        ComplexD i_plus_z(z.real, z.imag + 1.0);
+
+        // Calculate i - z = i - (a + bi) = (-a + (1-b)i)
+        ComplexD i_minus_z(-z.real, 1.0 - z.imag);
+
+        // Calculate (i+z)/(i-z)
+        ComplexD ratio = i_plus_z / i_minus_z;
+
+        // Calculate ln((i+z)/(i-z))
+        ComplexD ln_ratio = ComplexLn(ratio);
+
+        // Return (i/2) * ln_ratio = (i/2) * (a + bi) = (-b/2 + (a/2)i)
+        return ComplexD(-ln_ratio.imag / 2.0, ln_ratio.real / 2.0);
+    }
+
 } // namespace Native
 

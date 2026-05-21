@@ -68,7 +68,7 @@ void RegisterStrangeAttractorsExtendedFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 6.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -126,9 +126,9 @@ void RegisterStrangeAttractorsExtendedFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = 0.17;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.07;  // Viewport tuning: from registry
+    spec.defaultZoom = 7.9964866052;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -186,9 +186,9 @@ void RegisterStrangeAttractorsExtendedFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 3.0;
+    spec.defaultCenterX = -0.45;  // Viewport tuning: from registry
+    spec.defaultCenterY = -0.53;  // Viewport tuning: from registry
+    spec.defaultZoom = 4.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -254,9 +254,9 @@ void RegisterStrangeAttractorsExtendedFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = 1.0;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.0;  // Viewport tuning: from registry
+    spec.defaultZoom = 0.071157376225;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -314,9 +314,9 @@ void RegisterStrangeAttractorsExtendedFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = 0.0;  // Viewport tuning: from registry
+    spec.defaultCenterY = -0.01;  // Viewport tuning: from registry
+    spec.defaultZoom = 16.339920949;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -372,7 +372,7 @@ void RegisterStrangeAttractorsExtendedFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 24.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 

@@ -112,9 +112,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.47;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.0;    // Viewport tuning: from registry
+    spec.defaultZoom = 3.69343324;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -683,7 +683,7 @@ void RegisterClassicEscapeTimeFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 16.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -719,9 +719,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = -0.83;  // Viewport tuning: from registry
+    spec.defaultCenterY = 1.59;   // Viewport tuning: from registry
+    spec.defaultZoom = 11.992388216;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -767,7 +767,7 @@ void RegisterClassicEscapeTimeFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 55.715236051;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
