@@ -45,7 +45,7 @@ void RegisterMandelVariantsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.8;
+    spec.defaultZoom = 0.995025;  // Viewport tuning: X scale 4.02
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -83,7 +83,7 @@ void RegisterMandelVariantsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.8;
+    spec.defaultZoom = 0.808081;  // Viewport tuning: X scale 4.95
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -101,9 +101,9 @@ void RegisterMandelVariantsFamily()
     spec.formulaLatex = R"(z_{n+1} = z_n^2 + c \cdot z_n(1-z_n))";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+        ComplexD z = isJulia ? c : ComplexD(0.5, 0.0);  // Better starting point to avoid degenerate case
         ComplexD constant = isJulia ? juliaC : c;
-        const double bailout = 256.0;
+        const double bailout = 100.0;  // Lower bailout for hybrid formula
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -119,10 +119,10 @@ void RegisterMandelVariantsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 256.0;
+    spec.defaultCenterX = 1.0;
+    spec.defaultCenterY = 0.01;
+    spec.defaultZoom = 0.660066;  // Viewport tuning: X scale 6.06
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -155,9 +155,9 @@ void RegisterMandelVariantsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.36;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.943396;  // Viewport tuning: X scale 4.24
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -231,7 +231,7 @@ void RegisterMandelVariantsFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -272,9 +272,9 @@ void RegisterMandelVariantsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.21;
+    spec.defaultCenterY = -0.02;
+    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -310,9 +310,9 @@ void RegisterMandelVariantsFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.25;
+    spec.defaultCenterY = -0.02;
+    spec.defaultZoom = 0.821355;  // Viewport tuning: X scale 4.87
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 

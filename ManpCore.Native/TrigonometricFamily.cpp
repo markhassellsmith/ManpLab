@@ -46,9 +46,9 @@ void RegisterTrigonometricFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.80;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.0;    // Viewport tuning: from registry
+    spec.defaultZoom = 3.0;       // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -83,9 +83,9 @@ void RegisterTrigonometricFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = 0.01;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.06;  // Viewport tuning: from registry
+    spec.defaultZoom = 12.861281550;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -159,9 +159,9 @@ void RegisterTrigonometricFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = -0.06;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.02;   // Viewport tuning: from registry
+    spec.defaultZoom = 10.106422018;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -200,7 +200,7 @@ void RegisterTrigonometricFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 12.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -238,7 +238,7 @@ void RegisterTrigonometricFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 6.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -277,7 +277,7 @@ void RegisterTrigonometricFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 6.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -315,7 +315,7 @@ void RegisterTrigonometricFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 12.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -354,7 +354,7 @@ void RegisterTrigonometricFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 48.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -392,7 +392,7 @@ void RegisterTrigonometricFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 6.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -428,7 +428,7 @@ void RegisterTrigonometricFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 12.861281550;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);
@@ -462,9 +462,9 @@ void RegisterTrigonometricFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = 1.531554445;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.04;         // Viewport tuning: from registry
+    spec.defaultZoom = 12.861281550;    // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
 
     FractalRegistry::Register(spec);

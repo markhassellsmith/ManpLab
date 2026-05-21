@@ -57,6 +57,33 @@ public partial class MainViewModel
     [ObservableProperty]
     public partial string SelectedFractalType { get; set; } = "Mandelbrot";
 
+    /// <summary>
+    /// Gets the full display name for the currently selected fractal.
+    /// Falls back to SelectedFractalType if display name is not available.
+    /// </summary>
+    public string SelectedFractalDisplayName
+    {
+        get
+        {
+            // Try to get the full display name from the fractal info
+            var displayName = SelectedFractalInfo?.DisplayName;
+            if (!string.IsNullOrEmpty(displayName))
+                return displayName;
+
+            // Fallback: Try to fetch it from the registry
+            try
+            {
+                var fractalInfo = ManpCore.Native.FractalRegistryWrapper.GetFractalInfo(SelectedFractalType);
+                return fractalInfo?.DisplayName ?? SelectedFractalType;
+            }
+            catch
+            {
+                // If all else fails, use the short name
+                return SelectedFractalType;
+            }
+        }
+    }
+
     partial void OnSelectedFractalTypeChanging(string value)
     {
         System.Diagnostics.Debug.WriteLine($"[OnSelectedFractalTypeChanging] ABOUT TO CHANGE from '{SelectedFractalType}' to '{value}'");

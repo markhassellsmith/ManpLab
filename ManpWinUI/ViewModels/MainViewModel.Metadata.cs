@@ -37,8 +37,13 @@ public partial class MainViewModel
             };
         }
 
+        // Get fractal family from the native registry
+        var fractalInfo = ManpCore.Native.FractalRegistryWrapper.GetFractalInfo(SelectedFractalType);
+        var fractalFamily = fractalInfo?.Category ?? "Unknown";
+
         return Models.FractalMetadata.FromViewModel(
             fractalType: SelectedFractalType,
+            fractalFamily: fractalFamily,
             iterationMode: SelectedIterationMode,
             centerX: CenterX,
             centerY: CenterY,

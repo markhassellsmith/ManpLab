@@ -89,9 +89,9 @@ void RegisterMultibrotFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = -0.16;
+    spec.defaultCenterY = 0.01;
+    spec.defaultZoom = 0.733945;  // Viewport tuning: X scale 5.45
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;  // 3-fold rotational symmetry
     spec.parameters = {};
@@ -114,7 +114,7 @@ void RegisterMultibrotFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.7;
+    spec.defaultZoom = 0.932401;  // Viewport tuning: X scale 4.29
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;  // 4-fold rotational symmetry
     spec.parameters = {};
@@ -137,7 +137,7 @@ void RegisterMultibrotFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.65;
+    spec.defaultZoom = 0.865801;  // Viewport tuning: X scale 4.62
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;  // 5-fold rotational symmetry
     spec.parameters = {};

@@ -28,7 +28,7 @@ void RegisterBurningShipFamily()
     // Burning Ship has different default view (ship appears in bottom-left quadrant)
     spec.defaultCenterX = -0.5;
     spec.defaultCenterY = -0.5;
-    spec.defaultZoom = 0.8;
+    spec.defaultZoom = 1.895735;  // Viewport tuning: X scale 2.11
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;  // No symmetry due to absolute values
 

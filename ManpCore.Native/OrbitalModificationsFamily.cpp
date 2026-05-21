@@ -34,9 +34,9 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "Tracks minimum distance to trap during escape";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultCenterX = -0.09;
+            spec.defaultCenterY = -0.02;
+            spec.defaultZoom = 0.959233;  // Viewport tuning: X scale 4.17
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -96,7 +96,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -154,9 +154,9 @@ namespace Native
             spec.discoveryYear = 1998;
             spec.computationalNotes = "Threshold-based formula switching";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultCenterX = -0.15;
+            spec.defaultCenterY = -0.01;
+            spec.defaultZoom = 0.980392;  // Viewport tuning: X scale 4.08
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -222,9 +222,9 @@ namespace Native
             spec.discoveryYear = 1995;
             spec.computationalNotes = "Exponential moving average on orbit points";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultCenterX = -0.25;
+            spec.defaultCenterY = -0.01;
+            spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -284,7 +284,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -339,9 +339,9 @@ namespace Native
             spec.discoveryYear = 1993;
             spec.computationalNotes = "Point-to-triangle distance calculation";
 
-            spec.defaultCenterX = 0.0;
+            spec.defaultCenterX = -0.34;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -408,9 +408,9 @@ namespace Native
             spec.discoveryYear = 1996;
             spec.computationalNotes = "Running average of sine of angle";
 
-            spec.defaultCenterX = 0.0;
+            spec.defaultCenterX = -0.18;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -471,7 +471,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -539,7 +539,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -604,7 +604,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 

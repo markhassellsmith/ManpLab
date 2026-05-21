@@ -25,28 +25,42 @@ void RegisterSpecialExoticFamily()
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         // Hailstone (Collatz) sequence: n → n/2 (even) or 3n+1 (odd)
-        // Visualize using real part as starting value
-        long long n = static_cast<long long>(fabs(c.real * 1000.0));
+        // Use both real and imaginary parts to create 2D variation
+        // Map c.real to starting value n, and c.imag to a variation parameter
+
+        long long n = static_cast<long long>(fabs(c.real * 100.0) + fabs(c.imag * 10.0));
         if (n < 1) n = 1;
 
         int steps = 0;
+        long long maxValue = n;  // Track maximum value reached
+        long long totalPath = n; // Sum of path values for variation
+
         while (n != 1 && steps < maxIter) {
             if (n % 2 == 0) {
                 n = n / 2;
             } else {
                 n = 3 * n + 1;
             }
+            if (n > maxValue) maxValue = n;
+            totalPath += n;
             steps++;
             if (n > 1000000000LL) break;  // Prevent overflow
         }
 
-        return static_cast<double>(steps);
+        // Color by combination of steps and path characteristics
+        double result = static_cast<double>(steps);
+        // Add variation based on maximum height reached
+        result += std::log(static_cast<double>(maxValue + 1)) * 5.0;
+        // Add subtle variation based on total path length
+        result += std::log(static_cast<double>(totalPath)) * 0.1;
+
+        return result;
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 500.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.01;
+    spec.defaultCenterX = 0.39;
+    spec.defaultCenterY = -0.44;
+    spec.defaultZoom = 0.026667;  // Viewport tuning: X scale 150.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -112,7 +126,7 @@ void RegisterSpecialExoticFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.821355;  // Viewport tuning: X scale 4.87
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -129,16 +143,46 @@ void RegisterSpecialExoticFamily()
     spec.description = "Mandelbrot set rendered by tracking escape paths";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // For now, render as standard Mandelbrot (full Buddhabrot needs accumulation buffer)
-        return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, false, ComplexD(0, 0));
+        // Buddhabrot approximation: Instead of true Buddhabrot (which needs accumulation buffer),
+        // we render the complement - points that DON'T escape, weighted by orbit behavior
+        ComplexD z(0.0, 0.0);
+        double orbitSum = 0.0;
+        int escapeIter = maxIter;
+
+        for (int i = 0; i < maxIter; ++i)
+        {
+            // Standard Mandelbrot iteration
+            double zr2 = z.real * z.real;
+            double zi2 = z.imag * z.imag;
+            double modulus = zr2 + zi2;
+
+            if (modulus > 256.0) {
+                escapeIter = i;
+                break;
+            }
+
+            // Track orbit path length for pseudo-Buddhabrot effect
+            orbitSum += std::sqrt(modulus);
+
+            z.imag = 2.0 * z.real * z.imag + c.imag;
+            z.real = zr2 - zi2 + c.real;
+        }
+
+        // Points inside the set: return based on orbit complexity
+        if (escapeIter == maxIter) {
+            return orbitSum * 0.5;  // Interior points colored by orbit behavior
+        }
+
+        // Points outside: return based on escape time and orbit path
+        return maxIter - escapeIter + orbitSum * 0.1;
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.33;
+    spec.defaultCenterY = 0.03;
+    spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
     spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
+    spec.hasSymmetry = false;  // Buddhabrot rendering breaks symmetry
     spec.parameters = {};
 
     FractalRegistry::Register(spec);
@@ -177,9 +221,9 @@ void RegisterSpecialExoticFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 2.5;
-    spec.defaultCenterY = 2.5;
-    spec.defaultZoom = 0.5;
+    spec.defaultCenterX = -0.01;
+    spec.defaultCenterY = 0.0;
+    spec.defaultZoom = 0.205128;  // Viewport tuning: X scale 19.5
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -215,7 +259,7 @@ void RegisterSpecialExoticFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.505051;  // Viewport tuning: X scale 7.92
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
     spec.parameters = {};
@@ -232,21 +276,25 @@ void RegisterSpecialExoticFamily()
     spec.description = "Thorn fractal: z = z²/c + c";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0, 0);
+        ComplexD z(0.1, 0.0);  // Non-zero starting point for better structure
         ComplexD constant = isJulia ? juliaC : c;
-        double denom = constant.real * constant.real + constant.imag * constant.imag;
-        if (denom < 1e-10) denom = 1e-10;
+        double c_mag2 = constant.real * constant.real + constant.imag * constant.imag;
+        if (c_mag2 < 1e-10) return static_cast<double>(maxIter);
 
         for (int iter = 0; iter < maxIter; ++iter) {
             // z = z²/c + c
             double z_sq_real = z.real * z.real - z.imag * z.imag;
             double z_sq_imag = 2.0 * z.real * z.imag;
 
-            z = ComplexD((z_sq_real * constant.real + z_sq_imag * constant.imag) / denom + constant.real,
-                        (z_sq_imag * constant.real - z_sq_real * constant.imag) / denom + constant.imag);
+            // Complex division: z²/c
+            double div_real = (z_sq_real * constant.real + z_sq_imag * constant.imag) / c_mag2;
+            double div_imag = (z_sq_imag * constant.real - z_sq_real * constant.imag) / c_mag2;
+
+            z.real = div_real + constant.real;
+            z.imag = div_imag + constant.imag;
 
             double modulus = z.real * z.real + z.imag * z.imag;
-            if (modulus > 256.0)
+            if (modulus > 100.0)  // Lower bailout for better structure visibility
                 return iter + 1.0 - log(log(modulus)) / log(2.0);
         }
         return static_cast<double>(maxIter);
@@ -255,8 +303,8 @@ void RegisterSpecialExoticFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 256.0;
+    spec.defaultZoom = 4.566210;  // Viewport tuning: X scale 0.876
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
 
@@ -296,9 +344,9 @@ void RegisterSpecialExoticFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = -0.22;
+    spec.defaultCenterY = 0.05;
+    spec.defaultZoom = 0.32;  // Viewport tuning: X scale 12.5
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};

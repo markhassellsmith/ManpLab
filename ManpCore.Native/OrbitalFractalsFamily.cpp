@@ -28,12 +28,15 @@ void RegisterOrbitalFractalsFamily()
         ComplexD z(0.0, 0.0);
         const double bailout = 256.0;
         double minDist = 1000.0;
+        int escapeIter = maxIter;
 
         for (int i = 0; i < maxIter; ++i)
         {
             double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout)
-                return minDist * maxIter;
+            if (magSq > bailout) {
+                escapeIter = i;
+                break;
+            }
 
             // Cross trap: distance to axes
             double dist = std::min(std::abs(z.real), std::abs(z.imag));
@@ -45,13 +48,15 @@ void RegisterOrbitalFractalsFamily()
             z.imag = 2.0 * temp.real * temp.imag + c.imag;
         }
 
-        return minDist * maxIter;
+        // Return logarithmic scaling for better visual contrast
+        if (minDist < 0.001) minDist = 0.001;
+        return escapeIter + 50.0 * std::log(minDist + 0.01);
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.24;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -95,9 +100,9 @@ void RegisterOrbitalFractalsFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.38;
+    spec.defaultCenterY = -0.02;
+    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -117,14 +122,17 @@ void RegisterOrbitalFractalsFamily()
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z(0.0, 0.0);
         const double bailout = 256.0;
-        ComplexD trapPoint(0.0, 0.0);
+        ComplexD trapPoint(-0.5, 0.0);  // Interesting trap point location
         double minDist = 1000.0;
+        int escapeIter = maxIter;
 
         for (int i = 0; i < maxIter; ++i)
         {
             double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout)
-                return minDist * maxIter;
+            if (magSq > bailout) {
+                escapeIter = i;
+                break;
+            }
 
             // Point trap: distance to specific point
             double dx = z.real - trapPoint.real;
@@ -138,13 +146,15 @@ void RegisterOrbitalFractalsFamily()
             z.imag = 2.0 * temp.real * temp.imag + c.imag;
         }
 
-        return minDist * maxIter;
+        // Return logarithmic scaling for better visual contrast
+        if (minDist < 0.001) minDist = 0.001;
+        return escapeIter + 50.0 * std::log(minDist + 0.01);
     };
 
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -188,9 +198,9 @@ void RegisterOrbitalFractalsFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.17;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.995025;  // Viewport tuning: X scale 4.02
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -233,7 +243,7 @@ void RegisterOrbitalFractalsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -254,12 +264,15 @@ void RegisterOrbitalFractalsFamily()
         ComplexD z(0.0, 0.0);
         const double bailout = 256.0;
         double minDist = 1000.0;
+        int escapeIter = maxIter;
 
         for (int i = 0; i < maxIter; ++i)
         {
             double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout)
-                return minDist * maxIter;
+            if (magSq > bailout) {
+                escapeIter = i;
+                break;
+            }
 
             double mag = std::sqrt(magSq);
             if (mag < minDist)
@@ -270,13 +283,15 @@ void RegisterOrbitalFractalsFamily()
             z.imag = 2.0 * temp.real * temp.imag + c.imag;
         }
 
-        return minDist * maxIter;
+        // Return logarithmic scaling for better visual contrast
+        if (minDist < 0.001) minDist = 0.001;
+        return escapeIter + 50.0 * std::log(minDist + 0.01);
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.24;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -319,7 +334,7 @@ void RegisterOrbitalFractalsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 
@@ -365,7 +380,7 @@ void RegisterOrbitalFractalsFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
 

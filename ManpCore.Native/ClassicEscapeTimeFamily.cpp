@@ -112,9 +112,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultCenterX = -0.47;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.0;    // Viewport tuning: from registry
+    spec.defaultZoom = 3.69343324;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -189,9 +189,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = -0.29;
+    spec.defaultCenterY = -0.56;
+    spec.defaultZoom = 1.673640;  // Viewport tuning: X scale 2.39
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;
     spec.parameters = {};
@@ -282,22 +282,35 @@ void RegisterClassicEscapeTimeFamily()
     spec.description = "Mark's variation of the Mandelbrot set (classic implementation)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Placeholder - will implement full Marks algorithm
-        return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, isJulia, juliaC);
-    };
+        ComplexD constant = isJulia ? juliaC : c;
+        ComplexD z(0.0, 0.0);  // Start at origin (different from MarksMandel)
+        const double bailout = 256.0;
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
+        for (int i = 0; i < maxIter; ++i)
+        {
+            // Classic variation: z = z² + c + z (additive feedback)
+            ComplexD z2 = z * z;
+            z = z2 + constant + z * 0.1;  // Small additive term makes it different
 
-    FractalRegistry::Register(spec);
+            double magSq = z.real * z.real + z.imag * z.imag;
+            if (magSq > bailout)
+                        return i + 1.0 - std::log(std::log(std::sqrt(magSq))) / std::log(2.0);
+                    }
+                    return static_cast<double>(maxIter);
+                };
 
-    //=========================================================================
-    // SPIDER (93-94) - Spider fractal
+                spec.supportsJulia = true;
+                spec.defaultCenterX = -0.39;
+                spec.defaultCenterY = 0.0;
+                spec.defaultZoom = 1.084011;  // Viewport tuning: X scale 3.69
+                spec.defaultBailout = 256.0;
+                spec.hasSymmetry = false;
+                spec.parameters = {};
+
+                FractalRegistry::Register(spec);
+
+                //=========================================================================
+                // SPIDER (93-94) - Spider fractal
     //=========================================================================
     spec.name = "Spider";
     spec.displayName = "Spider";
@@ -322,9 +335,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.59;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -405,9 +418,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = -0.15;
+    spec.defaultCenterY = 0.63;
+    spec.defaultZoom = 0.873362;  // Viewport tuning: X scale 4.58
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -443,9 +456,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.45;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 2.0;  // Viewport tuning: X scale 2.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -484,7 +497,7 @@ void RegisterClassicEscapeTimeFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 8.0;  // Viewport tuning: X scale 0.5
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -592,9 +605,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = -0.54;
+    spec.defaultCenterY = 0.04;
+    spec.defaultZoom = 1.101928;  // Viewport tuning: X scale 3.63
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -630,9 +643,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = -0.11;
+    spec.defaultCenterY = -0.04;
+    spec.defaultZoom = 0.692042;  // Viewport tuning: X scale 5.78
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -670,7 +683,7 @@ void RegisterClassicEscapeTimeFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 16.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -706,9 +719,9 @@ void RegisterClassicEscapeTimeFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = -0.83;  // Viewport tuning: from registry
+    spec.defaultCenterY = 1.59;   // Viewport tuning: from registry
+    spec.defaultZoom = 11.992388216;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};
@@ -754,7 +767,7 @@ void RegisterClassicEscapeTimeFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 55.715236051;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};

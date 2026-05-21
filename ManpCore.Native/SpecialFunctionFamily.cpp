@@ -81,9 +81,9 @@ namespace Native
             spec.discoveryYear = 1995;
             spec.computationalNotes = "Uses Lanczos approximation; poles at z = 0, -1, -2, ...";
 
-            spec.defaultCenterX = 1.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.3;
+            spec.defaultCenterX = -1.13;
+            spec.defaultCenterY = -0.07;
+            spec.defaultZoom = 0.4;  // Viewport tuning: X scale 10.0
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -145,8 +145,8 @@ namespace Native
             spec.computationalNotes = "erf(z) = (2/√π)∫₀ᶻ e^(-t²) dt; bounded on real axis";
 
             spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            spec.defaultCenterY = 0.05;
+            spec.defaultZoom = 0.107239;  // Viewport tuning: X scale 37.3
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = true;
 
@@ -206,7 +206,7 @@ namespace Native
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
             {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                ComplexD z = isJulia ? c : ComplexD(0.1, 0.0);  // Better starting point
                 ComplexD constant = isJulia ? juliaC : c;
 
                 for (int i = 0; i < maxIter; ++i)
@@ -218,8 +218,10 @@ namespace Native
                         mag = 1e-6; // Avoid division by zero
                     }
 
-                    // Bessel J₀-like: oscillates with decay
-                    double besselVal = std::cos(mag) / std::sqrt(mag);
+                    // Improved Bessel J₀-like: oscillates with decay and phase
+                    // Use more accurate approximation: J0(z) ≈ cos(z - π/4) / sqrt(z)
+                    double phase_adjust = mag - 0.785398;  // π/4 ≈ 0.785
+                    double besselVal = std::cos(phase_adjust) / std::sqrt(mag + 0.1);
                     double angle = std::atan2(z.imag, z.real);
 
                     z.real = besselVal * std::cos(angle) + constant.real;
@@ -258,9 +260,9 @@ namespace Native
             spec.discoveryYear = 1992;
             spec.computationalNotes = "Related to Fibonacci-like sequences when c=1";
 
-            spec.defaultCenterX = 1.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            spec.defaultCenterX = -3.65;
+            spec.defaultCenterY = -0.57;
+            spec.defaultZoom = 0.547192;  // Viewport tuning: X scale 7.31
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -320,7 +322,7 @@ namespace Native
 
             spec.defaultCenterX = 1.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            spec.defaultZoom = 0.106952;  // Viewport tuning: X scale 37.4
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -384,9 +386,9 @@ namespace Native
             spec.discoveryYear = 1998;
             spec.computationalNotes = "Newton's method for solving W*exp(W) = c";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            spec.defaultCenterX = 2.56;
+            spec.defaultCenterY = 0.15;
+            spec.defaultZoom = 0.109890;  // Viewport tuning: X scale 36.4
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -468,9 +470,9 @@ namespace Native
             spec.discoveryYear = 1994;
             spec.computationalNotes = "sinh + cosh = exp(z); rapid growth";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.3;
+            spec.defaultCenterX = -1.64;
+            spec.defaultCenterY = 0.02;
+            spec.defaultZoom = 0.524934;  // Viewport tuning: X scale 7.62
             spec.defaultBailout = 10.0;
             spec.hasSymmetry = false;
 

@@ -24,9 +24,9 @@ void RegisterTricornFamily()
 
     spec.supportsJulia = true;
 
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.8;
+    spec.defaultCenterX = -0.25;
+    spec.defaultCenterY = 0.04;
+    spec.defaultZoom = 0.574713;  // Viewport tuning: X scale 6.96
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = true;  // Y-axis symmetry
 
