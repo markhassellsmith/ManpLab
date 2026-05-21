@@ -13,7 +13,7 @@
         <EnableMsixTooling>true</EnableMsixTooling>
         <WindowsPackageType>MSIX</WindowsPackageType>
         <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-        <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+        <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
         <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
         <AppxBundle>Never</AppxBundle>
         <DefaultLanguage>en-US</DefaultLanguage>
@@ -28,7 +28,7 @@
         <AppxPackageVersion>$(FileVersion)</AppxPackageVersion>
 
         <!-- Force deployment in debug mode -->
-        <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+        <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
         <GenerateTestArtifacts>True</GenerateTestArtifacts>
         <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 
@@ -69,6 +69,8 @@
         <!-- Default to x64 for MSIX packaging -->
         <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
         <PlatformTarget Condition="'$(PlatformTarget)' == ''">x64</PlatformTarget>
+        <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+        <AppInstallerUri>C:\Users\Mark\source\repos\ManpLab\AppPackages</AppInstallerUri>
     </PropertyGroup>
     <ItemGroup>
       <Content Remove="Assets\FractalKnowledge\fractals_sample.json" />
@@ -347,6 +349,28 @@
         <Message Text="Deploying MSIX package from $(OutDir)" Importance="high" />
         <Exec Command="powershell.exe -Command &quot;Add-AppxPackage -Register '$(OutDir)AppxManifest.xml' -ForceApplicationShutdown -ForceUpdateFromAnyVersion&quot;" IgnoreExitCode="true" ContinueOnError="true" />
         <Message Text="MSIX package deployed successfully" Importance="high" />
+    </Target>
+
+    <!-- Copy MSIX to easy-to-find Release folder after creating package -->
+    <Target Name="CopyMsixToReleaseFolder" AfterTargets="_CreateMsixBundle;_CreateMsixUploadPackageArchive" Condition="'$(Configuration)'=='Release'">
+        <PropertyGroup>
+            <ReleaseFolderPath>$(SolutionDir)Release\</ReleaseFolderPath>
+            <MsixFileName>ManpWinUI_$(AppxPackageVersion)_$(PlatformTarget).msix</MsixFileName>
+        </PropertyGroup>
+
+        <MakeDir Directories="$(ReleaseFolderPath)" Condition="!Exists('$(ReleaseFolderPath)')" />
+
+        <!-- Find and copy the MSIX file -->
+        <ItemGroup>
+            <MsixFiles Include="$(OutDir)**\*.msix" />
+        </ItemGroup>
+
+        <Copy SourceFiles="@(MsixFiles)" DestinationFolder="$(ReleaseFolderPath)" SkipUnchangedFiles="false" Condition="'@(MsixFiles)' != ''" />
+
+        <Message Text="=====================================" Importance="high" />
+        <Message Text="MSIX PACKAGE LOCATION:" Importance="high" />
+        <Message Text="$(ReleaseFolderPath)$(MsixFileName)" Importance="high" />
+        <Message Text="=====================================" Importance="high" />
     </Target>
 
     <!-- 
