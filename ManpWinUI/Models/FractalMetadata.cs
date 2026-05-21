@@ -19,6 +19,9 @@ public class FractalMetadata
     [JsonPropertyName("fractalType")]
     public string FractalType { get; set; } = "Mandelbrot";
 
+    [JsonPropertyName("fractalFamily")]
+    public string FractalFamily { get; set; } = "Mandelbrot";
+
     [JsonPropertyName("visualizationName")]
     public string? VisualizationName { get; set; }
 
@@ -66,6 +69,7 @@ public class FractalMetadata
     /// </summary>
     public static FractalMetadata FromViewModel(
         string fractalType,
+        string fractalFamily,
         string iterationMode,
         double centerX,
         double centerY,
@@ -84,6 +88,7 @@ public class FractalMetadata
         return new FractalMetadata
         {
             FractalType = fractalType,
+            FractalFamily = fractalFamily,
             VisualizationName = visualizationName,
             IterationMode = iterationMode,
             CenterX = centerX,

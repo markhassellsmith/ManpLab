@@ -67,9 +67,9 @@ void RegisterPhoenixExtendedFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = -0.19;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.6;
+    spec.defaultZoom = 0.919540;  // Viewport tuning: X scale 4.35
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -109,9 +109,9 @@ void RegisterPhoenixExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = -0.17;
+    spec.defaultCenterY = 0.07;
+    spec.defaultZoom = 0.706714;  // Viewport tuning: X scale 5.66
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -153,7 +153,7 @@ void RegisterPhoenixExtendedFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.8;
+    spec.defaultZoom = 1.226994;  // Viewport tuning: X scale 3.26
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -241,7 +241,7 @@ void RegisterPhoenixExtendedFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.2;
+    spec.defaultZoom = 0.173913;  // Viewport tuning: X scale 23.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -287,7 +287,7 @@ void RegisterPhoenixExtendedFamily()
     spec.supportsJulia = true;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultZoom = 0.5;  // Viewport tuning: X scale 8.0
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -327,9 +327,9 @@ void RegisterPhoenixExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.7;
+    spec.defaultCenterX = -0.19;
+    spec.defaultCenterY = 0.02;
+    spec.defaultZoom = 1.360544;  // Viewport tuning: X scale 2.94
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -372,9 +372,9 @@ void RegisterPhoenixExtendedFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
+    spec.defaultCenterX = 0.6;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+    spec.defaultZoom = 0.821355;  // Viewport tuning: X scale 4.87
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 

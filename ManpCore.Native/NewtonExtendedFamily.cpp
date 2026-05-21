@@ -295,7 +295,7 @@ void RegisterNewtonExtendedFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultZoom = 0.05;  // CSV: scale 96x54 -> zoom to see full texture
     spec.defaultBailout = 100.0;
     spec.hasSymmetry = true;
 
@@ -314,16 +314,26 @@ void RegisterNewtonExtendedFamily()
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z = c;
-        const double tolerance = 0.001;
-        const double bailout = 100.0;
+        const double tolerance = 0.0001;
+        const double bailout = 50.0;
+        const double PI = 3.14159265358979323846;
 
-        // Primary roots are 0 and ±2πi, ±4πi, etc.
+        // Roots are z = 2πin for integer n (cosh(z) = 1)
+        // We'll detect convergence to roots and color by basin + iteration
         for (int i = 0; i < maxIter; ++i)
         {
-            // Check for convergence to zero (main root)
-            double mag = std::sqrt(z.real*z.real + z.imag*z.imag);
-            if (mag < tolerance)
-                return i + 1.0 - std::log(mag / tolerance) / std::log(2.0);
+            // Check convergence to any root z = 2πin
+            // For fractals, we check imaginary part modulo 2π
+            double imag_mod = std::fmod(std::abs(z.imag), 2.0 * PI);
+            bool near_root = (std::abs(z.real) < tolerance) && 
+                           (imag_mod < tolerance || imag_mod > 2.0*PI - tolerance);
+
+            if (near_root && i > 0)
+            {
+                // Color by which root basin (based on imaginary part)
+                double root_index = std::round(z.imag / (2.0 * PI));
+                return i + 0.1 * std::fmod(std::abs(root_index), 7.0);
+            }
 
             // Complex cosh(z) = cosh(a)cos(b) + i*sinh(a)sin(b)
             double cosh_z_real = std::cosh(z.real) * std::cos(z.imag);
@@ -346,6 +356,7 @@ void RegisterNewtonExtendedFamily()
             ComplexD ratio = f_z / sinh_z;
             z = z - ratio;
 
+            double mag = std::sqrt(z.real*z.real + z.imag*z.imag);
             if (mag > bailout) return static_cast<double>(maxIter);
         }
         return static_cast<double>(maxIter);
@@ -354,9 +365,9 @@ void RegisterNewtonExtendedFamily()
     spec.supportsJulia = false;
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
-    spec.defaultBailout = 100.0;
-    spec.hasSymmetry = false;
+    spec.defaultZoom = 0.2;  // Viewport tuning: X scale 20.0
+    spec.defaultBailout = 50.0;
+    spec.hasSymmetry = true;
 
     FractalRegistry::Register(spec);
 

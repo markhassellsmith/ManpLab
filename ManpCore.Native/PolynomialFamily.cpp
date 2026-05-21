@@ -29,9 +29,9 @@ namespace Native
             spec.discoveryYear = 1980;
             spec.computationalNotes = "Slightly slower than quadratic due to cubic multiplication";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            spec.defaultCenterX = -0.19;
+            spec.defaultCenterY = 0.02;
+            spec.defaultZoom = 0.733945;  // Viewport tuning: X scale 5.45
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -86,9 +86,9 @@ namespace Native
             spec.discoveryYear = 1980;
             spec.computationalNotes = "Computed efficiently as (z²)²";
 
-            spec.defaultCenterX = 0.0;
+            spec.defaultCenterX = -0.11;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.0;
+            spec.defaultZoom = 0.963855;  // Viewport tuning: X scale 4.15
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -144,9 +144,9 @@ namespace Native
             spec.discoveryYear = 1980;
             spec.computationalNotes = "Computed as z⁴ * z";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.2;
+            spec.defaultCenterX = 0.08;
+            spec.defaultCenterY = -0.02;
+            spec.defaultZoom = 1.0;  // Viewport tuning: X scale 4.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -205,9 +205,9 @@ namespace Native
             spec.discoveryYear = 1980;
             spec.computationalNotes = "Computed efficiently as (z³)²";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.3;
+            spec.defaultCenterX = -0.01;
+            spec.defaultCenterY = -0.04;
+            spec.defaultZoom = 0.956938;  // Viewport tuning: X scale 4.18
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -267,7 +267,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.4;
+            spec.defaultZoom = 1.0;  // Viewport tuning: X scale 4.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -328,7 +328,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.5;
+            spec.defaultZoom = 1.0;  // Viewport tuning: X scale 4.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -392,7 +392,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            spec.defaultZoom = 0.606061;  // Viewport tuning: X scale 6.6
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -445,9 +445,9 @@ namespace Native
             spec.discoveryYear = 2000;
             spec.computationalNotes = "Applies absolute value to both components before squaring";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.7;
+            spec.defaultCenterX = -0.21;
+            spec.defaultCenterY = -0.58;
+            spec.defaultZoom = 0.932401;  // Viewport tuning: X scale 4.29
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 

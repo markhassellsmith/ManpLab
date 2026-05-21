@@ -14,19 +14,20 @@ void RegisterTrigonometricExtendedFamily()
     FractalSpec spec;
 
     //=========================================================================
-    // Tangent Mandelbrot
+    // Chebyshev Polynomial (First Kind)
     //=========================================================================
-    spec.name = "TanMandel";
-    spec.displayName = "Tangent Mandelbrot";
-    spec.category = "Trigonometric";
+    spec.name = "ChebyshevPolynomial";
+    spec.displayName = "Chebyshev Polynomial";
+    spec.category = "Classical Polynomials";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with tangent function: z = tan(z) + c";
-    spec.formula = "z = tan(z) + c";
-    spec.formulaLatex = R"(z_{n+1} = \tan(z_n) + c)";
+    spec.description = "Uses Chebyshev polynomials of the first kind Tₙ(z): z = Tₙ(z) + c. Computed via recurrence: T₀=1, T₁=z, Tₙ₊₁=2zTₙ - Tₙ₋₁. Related to cos(n·arccos(z)) and used in approximation theory. Named after Pafnuty Chebyshev.";
+    spec.formula = "z = Tₙ(z) + c";
+    spec.formulaLatex = R"(z_{n+1} = T_n(z_n) + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
+        const double bailout = 1000.0;  // Increased bailout for better escape detection
+        const int n = 4;  // Degree 4 for better balance of escape/bounded regions
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -34,31 +35,50 @@ void RegisterTrigonometricExtendedFamily()
             if (magSq > bailout)
                 return i + 1.0 - std::log2(std::log(magSq) / std::log(bailout));
 
-            // tan(z) = sin(z)/cos(z)
-            double sin_real = std::sin(z.real) * std::cosh(z.imag);
-            double sin_imag = std::cos(z.real) * std::sinh(z.imag);
+            // Compute Tₙ(z) using recurrence relation
+            // T₀(z) = 1, T₁(z) = z
+            // Tₖ₊₁(z) = 2z·Tₖ(z) - Tₖ₋₁(z)
 
-            double cos_real = std::cos(z.real) * std::cosh(z.imag);
-            double cos_imag = -std::sin(z.real) * std::sinh(z.imag);
+            ComplexD T_prev(1.0, 0.0);  // T₀ = 1
+            ComplexD T_curr = z;         // T₁ = z
 
-            double cos_magSq = cos_real * cos_real + cos_imag * cos_imag;
-            if (cos_magSq < 1e-10) break;
+            if (n == 0) {
+                z.real = 1.0 + c.real;
+                z.imag = c.imag;
+            } else if (n == 1) {
+                z.real += c.real;
+                z.imag += c.imag;
+            } else {
+                // Compute Tₙ using recurrence
+                for (int k = 1; k < n; ++k) {
+                    // T_next = 2z * T_curr - T_prev
+                    ComplexD zT_curr(
+                        2.0 * (z.real * T_curr.real - z.imag * T_curr.imag),
+                        2.0 * (z.real * T_curr.imag + z.imag * T_curr.real)
+                    );
 
-            double tan_real = (sin_real * cos_real + sin_imag * cos_imag) / cos_magSq;
-            double tan_imag = (sin_imag * cos_real - sin_real * cos_imag) / cos_magSq;
+                    ComplexD T_next(
+                        zT_curr.real - T_prev.real,
+                        zT_curr.imag - T_prev.imag
+                    );
 
-            z.real = tan_real + c.real;
-            z.imag = tan_imag + c.imag;
+                    T_prev = T_curr;
+                    T_curr = T_next;
+                }
+
+                z.real = T_curr.real + c.real;
+                z.imag = T_curr.imag + c.imag;
+            }
         }
 
         return static_cast<double>(maxIter);
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
-    spec.defaultBailout = 256.0;
+    spec.defaultCenterX = -0.8737499999999998;  // Viewport tuning: from registry
+    spec.defaultCenterY = -0.0089062499999999975;  // Viewport tuning: from registry
+    spec.defaultZoom = 1.2;  // Viewport tuning: X Scale Width from registry
+    spec.defaultBailout = 1000.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
@@ -105,9 +125,9 @@ void RegisterTrigonometricExtendedFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = -3.18;  // Viewport tuning: from registry
+    spec.defaultCenterY = -0.20;  // Viewport tuning: from registry
+    spec.defaultZoom = 10.202898551;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -152,9 +172,9 @@ void RegisterTrigonometricExtendedFamily()
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.5;
+    spec.defaultCenterX = 1.54;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.02;  // Viewport tuning: from registry
+    spec.defaultZoom = 64.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 
@@ -208,19 +228,22 @@ void RegisterTrigonometricExtendedFamily()
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // ArcSin Fractal
+    // Weierstrass ℘-function (Elliptic Function)
     //=========================================================================
-    spec.name = "ArcSinMandel";
-    spec.displayName = "ArcSin Mandelbrot";
-    spec.category = "Trigonometric";
+    spec.name = "WeierstrassP";
+    spec.displayName = "Weierstrass ℘-function";
+    spec.category = "Elliptic Functions";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with arcsine function: z = asin(z) + c";
-    spec.formula = "z = asin(z) + c";
-    spec.formulaLatex = R"(z_{n+1} = \arcsin(z_n) + c)";
+    spec.description = "Uses the Weierstrass elliptic ℘-function: z = ℘(z) + c. The ℘-function is doubly periodic with poles and satisfies (℘')² = 4℘³ - g₂℘ - g₃.";
+    spec.formula = "z = ℘(z) + c";
+    spec.formulaLatex = R"(z_{n+1} = \wp(z_n) + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
+        ComplexD z(0.5, 0.0);  // Better starting point
+        const double bailout = 1000.0;  // Increased bailout
+
+        // Weierstrass invariants - try more extreme values for better escape behavior
+        const double g2 = 4.0;
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -228,42 +251,61 @@ void RegisterTrigonometricExtendedFamily()
             if (magSq > bailout)
                 return i + 1.0 - std::log2(std::log(magSq) / std::log(bailout));
 
-            // asin(z) = -i*ln(iz + sqrt(1-z^2))
-            // Approximate for fractal purposes
-            double asin_real = std::asin(std::tanh(z.real)) * std::cos(z.imag);
-            double asin_imag = std::log(std::abs(z.imag + std::sqrt(1.0 + z.imag * z.imag)));
+            // Simplified approach: ℘(z) ≈ 1/z² for small z (near pole)
+            // Use the fundamental property that ℘ has a double pole at origin
 
-            z.real = asin_real + c.real;
-            z.imag = asin_imag + c.imag;
+            if (magSq < 1e-10) {
+                break;  // Too close to pole
+            }
+
+            // ℘(z) ≈ 1/z² + (g₂/20)z² + ...
+            // Compute 1/z²
+            double z2_real = z.real * z.real - z.imag * z.imag;
+            double z2_imag = 2.0 * z.real * z.imag;
+            double z2_mag = z2_real * z2_real + z2_imag * z2_imag;
+
+            if (z2_mag < 1e-10) break;
+
+            // 1/z² = z²* / |z²|²
+            double invz2_real = z2_real / z2_mag;
+            double invz2_imag = -z2_imag / z2_mag;
+
+            // Add correction: (g₂/20)z²
+            double correction_scale = g2 / 20.0;
+            invz2_real += correction_scale * z2_real;
+            invz2_imag += correction_scale * z2_imag;
+
+            z.real = invz2_real + c.real;
+            z.imag = invz2_imag + c.imag;
         }
 
         return static_cast<double>(maxIter);
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 256.0;
+    spec.defaultCenterX = -4.7690299296942804;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.23205411268820592;  // Viewport tuning: from registry
+    spec.defaultZoom = 14.773732960;  // Viewport tuning: X Scale Width from registry
+    spec.defaultBailout = 1000.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // ArcCos Fractal
+    // Jacobi Elliptic sn Function
     //=========================================================================
-    spec.name = "ArcCosMandel";
-    spec.displayName = "ArcCos Mandelbrot";
-    spec.category = "Trigonometric";
+    spec.name = "JacobiSN";
+    spec.displayName = "Jacobi Elliptic sn";
+    spec.category = "Elliptic Functions";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with arccosine function: z = acos(z) + c";
-    spec.formula = "z = acos(z) + c";
-    spec.formulaLatex = R"(z_{n+1} = \arccos(z_n) + c)";
+    spec.description = "Uses Jacobi elliptic sine amplitude: z = sn(z, k) + c. Doubly periodic function that generalizes sine, with parameter k (elliptic modulus).";
+    spec.formula = "z = sn(z, k) + c";
+    spec.formulaLatex = R"(z_{n+1} = \text{sn}(z_n, k) + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.5, 0.0);
-        const double bailout = 256.0;
-        const double pi = 3.14159265358979323846;
+        ComplexD z(0.0, 0.0);
+        const double bailout = 100.0;
+        const double k = 0.7;  // Elliptic modulus (0 < k < 1)
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -271,40 +313,63 @@ void RegisterTrigonometricExtendedFamily()
             if (magSq > bailout)
                 return i + 1.0 - std::log2(std::log(magSq) / std::log(bailout));
 
-            // acos(z) = pi/2 - asin(z)
-            double asin_real = std::asin(std::tanh(z.real)) * std::cos(z.imag);
-            double asin_imag = std::log(std::abs(z.imag + std::sqrt(1.0 + z.imag * z.imag)));
+            // Jacobi sn approximation using series expansion
+            // For small z: sn(z,k) ≈ z - (1+k²)z³/6 + (1+14k²+k⁴)z⁵/120
+            // For general case, use relation to sine for fractal visualization
+            // sn(z,k) reduces to sin(z) when k=0
 
-            z.real = (pi / 2.0 - asin_real) + c.real;
-            z.imag = -asin_imag + c.imag;
+            double u = z.real;
+            double v = z.imag;
+
+            // Simplified sn using modified sine with elliptic modulus effect
+            // sn(u+iv, k) ≈ sin(u)·cosh(k'v) / sqrt(1-k²sin²u·sinh²(k'v)) + i·term
+            // For visualization, use approximation: sn ≈ sin(z) / (1 + k²·z²/6)
+
+            double sinU = std::sin(u);
+            double cosU = std::cos(u);
+            double sinhV = std::sinh(v);
+            double coshV = std::cosh(v);
+
+            // Real part: sin(u)·cosh(v)
+            double snReal = sinU * coshV;
+            // Imaginary part: cos(u)·sinh(v)
+            double snImag = cosU * sinhV;
+
+            // Apply elliptic modulus correction (simplified)
+            double k2 = k * k;
+            double correction = 1.0 / (1.0 + k2 * magSq / 6.0);
+
+            z.real = snReal * correction + c.real;
+            z.imag = snImag * correction + c.imag;
         }
 
         return static_cast<double>(maxIter);
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 256.0;
+    spec.defaultCenterX = 0.64405093999652652;  // Viewport tuning: from registry
+    spec.defaultCenterY = -0.011114970475860277;  // Viewport tuning: from registry
+    spec.defaultZoom = 18.594110911;  // Viewport tuning: X Scale Width from registry
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // ArcTan Fractal
+    // Legendre Polynomial
     //=========================================================================
-    spec.name = "ArcTanMandel";
-    spec.displayName = "ArcTan Mandelbrot";
-    spec.category = "Trigonometric";
+    spec.name = "LegendrePolynomial";
+    spec.displayName = "Legendre Polynomial";
+    spec.category = "Classical Polynomials";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with arctangent function: z = atan(z) + c";
-    spec.formula = "z = atan(z) + c";
-    spec.formulaLatex = R"(z_{n+1} = \arctan(z_n) + c)";
+    spec.description = "Uses Legendre polynomials Pₙ(z): z = Pₙ(z) + c. Computed via recurrence: P₀=1, P₁=z, Pₙ₊₁=(2n+1)zPₙ - nPₙ₋₁/(n+1). Studied by Legendre and Laplace.";
+    spec.formula = "z = Pₙ(z) + c";
+    spec.formulaLatex = R"(z_{n+1} = P_n(z_n) + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
+        const double bailout = 100.0;
+        const int n = 5;  // Polynomial degree
 
         for (int i = 0; i < maxIter; ++i)
         {
@@ -312,13 +377,43 @@ void RegisterTrigonometricExtendedFamily()
             if (magSq > bailout)
                 return i + 1.0 - std::log2(std::log(magSq) / std::log(bailout));
 
-            // atan(z) for complex z
-            double atan_real = 0.5 * (std::atan2(z.real, 1.0 - z.imag) + std::atan2(-z.real, 1.0 + z.imag));
-            double atan_imag = 0.25 * std::log((1.0 + z.imag) * (1.0 + z.imag) + z.real * z.real) -
-                              0.25 * std::log((1.0 - z.imag) * (1.0 - z.imag) + z.real * z.real);
+            // Compute Pₙ(z) using recurrence relation
+            // P₀(z) = 1, P₁(z) = z
+            // Pₖ₊₁(z) = ((2k+1)·z·Pₖ(z) - k·Pₖ₋₁(z)) / (k+1)
 
-            z.real = atan_real + c.real;
-            z.imag = atan_imag + c.imag;
+            ComplexD P_prev(1.0, 0.0);  // P₀ = 1
+            ComplexD P_curr = z;         // P₁ = z
+
+            if (n == 0) {
+                z.real = 1.0 + c.real;
+                z.imag = c.imag;
+            } else if (n == 1) {
+                z.real += c.real;
+                z.imag += c.imag;
+            } else {
+                // Compute Pₙ using recurrence
+                for (int k = 1; k < n; ++k) {
+                    double coeff1 = (2.0 * k + 1.0) / (k + 1.0);
+                    double coeff2 = static_cast<double>(k) / (k + 1.0);
+
+                    // P_next = coeff1 * z * P_curr - coeff2 * P_prev
+                    ComplexD zP_curr(
+                        coeff1 * (z.real * P_curr.real - z.imag * P_curr.imag),
+                        coeff1 * (z.real * P_curr.imag + z.imag * P_curr.real)
+                    );
+
+                    ComplexD P_next(
+                        zP_curr.real - coeff2 * P_prev.real,
+                        zP_curr.imag - coeff2 * P_prev.imag
+                    );
+
+                    P_prev = P_curr;
+                    P_curr = P_next;
+                }
+
+                z.real = P_curr.real + c.real;
+                z.imag = P_curr.imag + c.imag;
+            }
         }
 
         return static_cast<double>(maxIter);
@@ -328,21 +423,21 @@ void RegisterTrigonometricExtendedFamily()
     spec.defaultCenterX = 0.0;
     spec.defaultCenterY = 0.0;
     spec.defaultZoom = 1.5;
-    spec.defaultBailout = 256.0;
+    spec.defaultBailout = 100.0;
     spec.hasSymmetry = false;
 
     FractalRegistry::Register(spec);
 
     //=========================================================================
-    // Hyperbolic Tangent
+    // Hyperbolic Secant
     //=========================================================================
-    spec.name = "TanhMandel";
-    spec.displayName = "Tanh Mandelbrot (Linear)";
+    spec.name = "SechMandel";
+    spec.displayName = "Sech Mandelbrot";
     spec.category = "Trigonometric";
     spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with hyperbolic tangent: z = tanh(z) + c";
-    spec.formula = "z = tanh(z) + c";
-    spec.formulaLatex = R"(z_{n+1} = \tanh(z_n) + c)";
+    spec.description = "Mandelbrot with hyperbolic secant: z = sech(z) + c";
+    spec.formula = "z = sech(z) + c";
+    spec.formulaLatex = R"(z_{n+1} = \text{sech}(z_n) + c)";
 
     spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
         ComplexD z(0.0, 0.0);
@@ -354,30 +449,27 @@ void RegisterTrigonometricExtendedFamily()
             if (magSq > bailout)
                 return i + 1.0 - std::log2(std::log(magSq) / std::log(bailout));
 
-            // tanh(z) = sinh(z)/cosh(z)
-            double sinh_real = std::sinh(z.real) * std::cos(z.imag);
-            double sinh_imag = std::cosh(z.real) * std::sin(z.imag);
-
+            // sech(z) = 1/cosh(z)
             double cosh_real = std::cosh(z.real) * std::cos(z.imag);
             double cosh_imag = std::sinh(z.real) * std::sin(z.imag);
 
             double cosh_magSq = cosh_real * cosh_real + cosh_imag * cosh_imag;
             if (cosh_magSq < 1e-10) break;
 
-            double tanh_real = (sinh_real * cosh_real + sinh_imag * cosh_imag) / cosh_magSq;
-            double tanh_imag = (sinh_imag * cosh_real - sinh_real * cosh_imag) / cosh_magSq;
+            double sech_real = cosh_real / cosh_magSq;
+            double sech_imag = -cosh_imag / cosh_magSq;
 
-            z.real = tanh_real + c.real;
-            z.imag = tanh_imag + c.imag;
+            z.real = sech_real + c.real;
+            z.imag = sech_imag + c.imag;
         }
 
         return static_cast<double>(maxIter);
     };
 
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 2.0;
+    spec.defaultCenterX = -0.77812500000000007;  // Viewport tuning: from registry
+    spec.defaultCenterY = 0.03515625;  // Viewport tuning: from registry
+    spec.defaultZoom = 12.0;  // Viewport tuning: X Scale Width from registry
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
 

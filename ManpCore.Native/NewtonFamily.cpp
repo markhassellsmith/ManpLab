@@ -174,9 +174,9 @@ void RegisterNewtonFamily()
     };
 
     spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.6;
+    spec.defaultCenterX = -0.55;
+    spec.defaultCenterY = 0.03;
+    spec.defaultZoom = 1.801802;  // Viewport tuning: X scale 2.22
     spec.defaultBailout = 256.0;
     spec.hasSymmetry = false;
     spec.parameters = {};

@@ -31,7 +31,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -104,7 +104,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -176,7 +176,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -243,9 +243,9 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "Check for division by zero in denominator";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.5;
+            spec.defaultCenterX = -0.06;
+            spec.defaultCenterY = -0.13;
+            spec.defaultZoom = 1.329004;  // Viewport tuning: X scale 3.01
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -314,9 +314,9 @@ namespace Native
             spec.discoveryYear = 1992;
             spec.computationalNotes = "Singularities when z² = c";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.0;
+            spec.defaultCenterX = 4.03;
+            spec.defaultCenterY = 0.14;
+            spec.defaultZoom = 0.333333;  // Viewport tuning: X scale 12.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -386,7 +386,7 @@ namespace Native
 
             spec.defaultCenterX = 0.0;
             spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            spec.defaultZoom = 0.05;  // Viewport tuning: X scale 80.0
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
@@ -473,9 +473,9 @@ namespace Native
             spec.discoveryYear = 1827;
             spec.computationalNotes = "Preserves circles and angles (conformal)";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.0;
+            spec.defaultCenterX = -2.36;
+            spec.defaultCenterY = 0.01;
+            spec.defaultZoom = 0.541272;  // Viewport tuning: X scale 7.39
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
@@ -536,9 +536,9 @@ namespace Native
             spec.discoveryYear = 1992;
             spec.computationalNotes = "Combines polynomial and rational characteristics";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.2;
+            spec.defaultCenterX = 0.09;
+            spec.defaultCenterY = -0.17;
+            spec.defaultZoom = 2.162162;  // Viewport tuning: X scale 1.85
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
