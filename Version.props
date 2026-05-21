@@ -4,7 +4,7 @@
     <!-- This is the single source of truth for version numbers -->
 
     <!-- Version format: Major.Minor.Patch -->
-    <VersionPrefix>1.4.0</VersionPrefix>
+    <VersionPrefix>1.5.1</VersionPrefix>
 
     <!-- VersionSuffix: Leave empty for releases, or use "beta", "rc1", etc. -->
     <VersionSuffix></VersionSuffix>
