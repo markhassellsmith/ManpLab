@@ -389,7 +389,12 @@ namespace ManpWinUI.Views
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var metadata = ViewModel.CreateMetadata();
             var fractalFamily = metadata.FractalFamily.Replace(" ", "");
-            var fractalName = ViewModel.SelectedFractalType.Replace(" ", "");
+
+            // Get the full display name from the browser's selected fractal
+            var fractalName = BrowserViewModel.SelectedFractal?.DisplayName ?? ViewModel.SelectedFractalType;
+            // Remove spaces between words (e.g., "Lambda Mandel Cosh" -> "LambdaMandelCosh")
+            fractalName = fractalName.Replace(" ", "");
+
             var mode = ViewModel.SelectedIterationMode == "Julia" ? "_Julia" : "";
 
             return $"{fractalFamily}_{fractalName}{mode}_{timestamp}";

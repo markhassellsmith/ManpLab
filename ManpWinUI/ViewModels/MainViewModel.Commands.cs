@@ -33,7 +33,7 @@ public partial class MainViewModel
         _renderCancellationSource = new CancellationTokenSource();
         var cancellationToken = _renderCancellationSource.Token;
 
-        var fractalName = IsJuliaMode ? $"{SelectedFractalType} Julia" : SelectedFractalType;
+        var fractalName = IsJuliaMode ? $"{SelectedFractalDisplayName} Julia" : SelectedFractalDisplayName;
 
         // Calculate viewport width to determine if arbitrary precision is needed
         double viewWidth = 3.0 / Zoom;
