@@ -349,6 +349,28 @@
         <Message Text="MSIX package deployed successfully" Importance="high" />
     </Target>
 
+    <!-- Copy MSIX to easy-to-find Release folder after creating package -->
+    <Target Name="CopyMsixToReleaseFolder" AfterTargets="_CreateMsixBundle;_CreateMsixUploadPackageArchive" Condition="'$(Configuration)'=='Release'">
+        <PropertyGroup>
+            <ReleaseFolderPath>$(SolutionDir)Release\</ReleaseFolderPath>
+            <MsixFileName>ManpWinUI_$(AppxPackageVersion)_$(PlatformTarget).msix</MsixFileName>
+        </PropertyGroup>
+
+        <MakeDir Directories="$(ReleaseFolderPath)" Condition="!Exists('$(ReleaseFolderPath)')" />
+
+        <!-- Find and copy the MSIX file -->
+        <ItemGroup>
+            <MsixFiles Include="$(OutDir)**\*.msix" />
+        </ItemGroup>
+
+        <Copy SourceFiles="@(MsixFiles)" DestinationFolder="$(ReleaseFolderPath)" SkipUnchangedFiles="false" Condition="'@(MsixFiles)' != ''" />
+
+        <Message Text="=====================================" Importance="high" />
+        <Message Text="MSIX PACKAGE LOCATION:" Importance="high" />
+        <Message Text="$(ReleaseFolderPath)$(MsixFileName)" Importance="high" />
+        <Message Text="=====================================" Importance="high" />
+    </Target>
+
     <!-- 
         Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
         Tools extension to be activated for this project even if the Windows App SDK Nuget
