@@ -1,100 +1,33 @@
-Index,Group Name,Fractal Name,Pass/Fail,Notes,Center X,Center Y,X Scale Width,Y Scale Width,VP Tuning Status,Action?
-154,Lambda Fractals,Lambda Modified,Pass,,0,0.01,6.00E+00,3.38E+00,FORMULA FIXED,Resubmit with NEW numbers; generated
-155,Lambda Fractals,Lambda Phoenix,Pass,,0.8,0.01,5.22E+00,2.94E+00,FORMULA FIXED,Resubmit with NEW numbers; generated
-156,Lambda Fractals,Lambda Power 3,Pass,,0.5,0,2.57E+01,1.45E+01,FORMULA FIXED,Resubmit with NEW numbers; generated
-157,Lambda Fractals,Lambda Power 4,Pass,,0.5,0,5.51E+01,3.10E+01,FORMULA FIXED,Resubmit with NEW numbers; generated
-158,Lambda Fractals,Lambda Squared,Pass,,-0.07,0.09,1.20E+01,6.75E+00,FORMULA FIXED,Resubmit with NEW numbers; generated
-159,Lambda Fractals,Lambda Tan,Pass,,-0.05,0.04,2.70E+00,1.52E+01,FORMULA FIXED,Resubmit with NEW numbers; generated
-160,Lambda Fractals,Lambda Tanh,Pass,,-0.05,0.03,2.95E+01,1.66E+01,FORMULA FIXED,Resubmit with NEW numbers; generated
-161,Magnet Fractals,Magnet I Cubic,Pass,,0.5,0,1.17E+01,6.59E+00,NOT APPLIED,Resubmit with same numbers
-162,Magnet Fractals,Magnet I Julia,Pass,,0,0.06,1.59E+01,8.95E+00,NOT APPLIED,Resubmit with same numbers
-163,Magnet Fractals,Magnet II Cubic,Pass,,-0.64,0.1,2.03E+01,5.53E-02,NOT APPLIED,Resubmit with same numbers
-164,Magnet Fractals,Magnet II Julia,Pass,,-2.05,-0.39,1.98E+00,5.69E-02,NOT APPLIED,Resubmit with same numbers
-165,Mandelbrot Variants,Burning Ship,Pass,,-0.5,-0.5,2.11E+00,1.00E+00,NOT APPLIED,Resubmit with same numbers
-166,Mandelbrot Variants,Celtic Buffalo,Pass,,-0.29,-0.56,2.39E+00,3.54E-01,NOT APPLIED,Resubmit with same numbers
-167,Mandelbrot Variants,Celtic Heart,Pass,,-0.54,0.04,3.63E+00,3.10E-01,NOT APPLIED,Resubmit with same numbers
-168,Mandelbrot Variants,Heart Mandelbrot (Sine),Pass,,-0.45,0,2.00E+00,1.13E+00,NOT APPLIED,Resubmit with same numbers
-169,Mandelbrot Variants,Julia Power 4,Pass,,0,0,4.95E+00,2.78E+00,NOT APPLIED,Resubmit with same numbers
-170,Mandelbrot Variants,Mandelbar,Pass,,0,0,7.92E+00,4.45E+00,NOT APPLIED,Resubmit with same numbers
-171,Mandelbrot Variants,Mandelbar (Conjugate),Pass,,0,0,6.00E+00,3.38E+00,NOT APPLIED,Resubmit with same numbers
-172,Mandelbrot Variants,Mandelbrot Power 4,Pass,,0,0,4.02E+00,2.26E+00,NOT APPLIED,Resubmit with same numbers
-173,Mandelbrot Variants,Mandelbrot-Lambda,Pass,,1,0.01,6.06E+00,3.41E+00,FORMULA FIXED,Resubmit with NEW numbers; generated
-176,Mandelbrot Variants,Marks Mandelbrot,Pass,,-0.36,0,4.24E+00,2.39E+00,NOT APPLIED,Resubmit with same numbers
-177,Mandelbrot Variants,Marks Mandelbrot (Classic),Pass,no difference with previous?,-0.39,0,3.69E+00,2.08E+00,IMPROVED + NOT APPLIED,Resubmit with NEW numbers; generated
-178,Mandelbrot Variants,Multibrot (Power 6),Pass,,0,0,4.00E+00,2.50E+00,NOT APPLIED,Resubmit with same numbers
-179,Mandelbrot Variants,Multibrot (Power 7),Pass,,0,0,4.29E+00,2.41E+00,NOT APPLIED,Resubmit with same numbers
-180,Mandelbrot Variants,Multibrot (Power 8),Pass,,0,0,4.00E+00,2.25E+00,NOT APPLIED,Resubmit with same numbers
-181,Mandelbrot Variants,Multibrot³ (Cubic),Pass,,-0.16,0.01,5.45E+00,3.07E+00,NOT APPLIED,Resubmit with same numbers
-182,Mandelbrot Variants,Multibrot? (Quartic),Pass,,0,0,4.29E+00,2.41E+00,NOT APPLIED,Resubmit with same numbers
-183,Mandelbrot Variants,Multibrot? (Quintic),Pass,,0,0,4.62E+00,2.60E+00,NOT APPLIED,Resubmit with same numbers
-184,Mandelbrot Variants,Perpendicular Mandelbrot (Abs First),Pass,,-0.15,0.63,4.58E+00,2.58E+00,NOT APPLIED,Resubmit with same numbers
-185,Mandelbrot Variants,Shark Fin Mandelbrot,Pass,,0,0,5.00E-01,2.81E-01,NOT APPLIED,Resubmit with same numbers
-186,Mandelbrot Variants,Spider,Pass,nice,-0.59,0,3.00E+00,1.69E+00,NOT APPLIED,Resubmit with same numbers
-187,Mandelbrot Variants,Spider Variant,Pass,,-0.25,-0.02,4.87E+00,2.74E+00,NOT APPLIED,Resubmit with same numbers
-188,Mandelbrot Variants,Thorn,Pass,,-0.21,-0.02,6.00E+00,3.38E+00,NOT APPLIED,Resubmit with same numbers
-189,Mandelbrot Variants,Thorn (Classic),Pass,,0,0,8.76E-01,4.93E-01,FORMULA FIXED,Resubmit with NEW numbers; generated
-190,Mandelbrot Variants,Tricorn (Mandelbar),Pass,,-0.25,0.04,6.96E+00,3.92E+00,NOT APPLIED,Resubmit with same numbers
-191,Mandelbrot Variants,Wavy Mandelbrot,Pass,,-0.11,-0.04,5.78E+00,3.25E+00,NOT APPLIED,Resubmit with same numbers
-192,Multibrot Powers,Buffalo (Polynomial),Pass,,-0.21,-0.58,4.29E+00,2.41E+00,NOT APPLIED,Resubmit with same numbers
-193,Multibrot Powers,Multibrot-10 (Decic),Pass,,0,0,4.00E+00,2.25E+00,NOT APPLIED,Resubmit with same numbers
-194,Multibrot Powers,Multibrot-3 (Cubic),Pass,,-0.19,0.02,5.45E+00,3.07E+00,NOT APPLIED,Resubmit with same numbers
-195,Multibrot Powers,Multibrot-4 (Quartic),Pass,,-0.11,0,4.15E+00,2.34E+00,NOT APPLIED,Resubmit with same numbers
-196,Multibrot Powers,Multibrot-5 (Quintic),Pass,,0.08,-0.02,4.00E+00,2.25E+00,NOT APPLIED,Resubmit with same numbers
-197,Multibrot Powers,Multibrot-6 (Sextic),Pass,,-0.01,-0.04,4.18E+00,2.35E+00,NOT APPLIED,Resubmit with same numbers
-198,Multibrot Powers,Multibrot-8 (Octic),Pass,,0,0,4.00E+00,2.25E+00,NOT APPLIED,Resubmit with same numbers
-199,Multibrot Powers,Tricorn (Polynomial),Pass,,0,0,6.60E+00,3.71E+00,NOT APPLIED,Resubmit with same numbers
-202,Newton's Method,Newton Cosh,Pass,full screen coverage,0,0,2.00E+01,1.13E+01,FORMULA FIXED,Resubmit with NEW numbers; generated
-207,Newton's Method,Nova,Pass,,-0.55,0.03,2.22E+00,1.25E+00,NOT APPLIED,Resubmit with same numbers
-208,Orbit Statistics,Angle Average,Pass,,0,0,6.00E+00,3.38E+00,NOT APPLIED,Resubmit with same numbers
-209,Orbit Statistics,Average Distance,Pass,,0,0,6.00E+00,3.38E+00,NOT APPLIED,Resubmit with same numbers
-210,Orbit Statistics,Maximum Distance,Pass,,0,0,6.00E+00,3.38E+00,NOT APPLIED,Resubmit with same numbers
-211,Orbit Statistics,Minimum Distance,Pass,,-0.24,0,3.00E+00,1.69E+00,FORMULA FIXED,Resubmit with NEW numbers; generated
-212,Orbit Trap,Orbit Trap (Circle),Pass,,-0.38,-0.02,3.00E+00,1.69E+00,NOT APPLIED,Resubmit with same numbers
-213,Orbit Trap,Orbit Trap (Cross),Pass,looks identical to Minimum Distance,-0.24,0,3.00E+00,1.69E+00,FORMULA FIXED,Resubmit with NEW numbers; generated
-214,Orbit Trap,Orbit Trap (Point),Pass,glowing green and blue Mandelbrot,0,0,3.00E+00,1.69E+00,FORMULA FIXED,Resubmit with NEW numbers; generated
-215,Orbit Trap,Orbit Trap (Square),Pass,,-0.17,0,4.02E+00,2.26E+00,NOT APPLIED,Resubmit with same numbers
-216,Orbital Advanced,Circular Orbit Trap,Pass,,-0.09,-0.02,4.17E+00,2.35E+00,NOT APPLIED,Resubmit with same numbers
-217,Orbital Advanced,Cross Orbit Trap,Pass,,0,0,1.50E+01,8.44E+00,NOT APPLIED,Resubmit with same numbers
-218,Orbital Advanced,Delta Magnitude Tracking,Pass,,0,0,1.50E+01,8.44E+00,NOT APPLIED,Resubmit with same numbers
-219,Orbital Advanced,Orbit Angle Accumulation,Pass,,0,0,1.50E+01,8.44E+00,NOT APPLIED,Resubmit with same numbers
-220,Orbital Advanced,Orbital Curvature Tracking,Pass,,0,0,3.75E+00,2.11E+00,NOT APPLIED,Resubmit with same numbers
-221,Orbital Advanced,Point-Line Orbit Trap,Pass,,0,0,3.75E+00,2.11E+00,NOT APPLIED,Resubmit with same numbers
-222,Orbital Advanced,Smoothed Orbit (Running Average),Pass,,-0.25,-0.01,3.75E+00,2.11E+00,NOT APPLIED,Resubmit with same numbers
-223,Orbital Advanced,Stalks (Conditional),Pass,yet another mandelbrot,-0.15,-0.01,4.08E+00,2.29E+00,NOT APPLIED,Resubmit with same numbers
-224,Orbital Advanced,Stripe Average Coloring,Pass,,-0.18,0,3.75E+00,2.11E+00,NOT APPLIED,Resubmit with same numbers
-225,Orbital Advanced,Triangle Orbit Trap,Pass,,-0.34,0,1.50E+01,8.44E+00,NOT APPLIED,Resubmit with same numbers
-226,Phoenix Fractals,Phoenix Complex Feedback,Pass,,-0.19,0.02,2.94E+00,1.65E+00,NOT APPLIED,Resubmit with same numbers
-227,Phoenix Fractals,Phoenix Cosh,Pass,,0,0,2.30E+01,1.29E+01,NOT APPLIED,Resubmit with same numbers
-228,Phoenix Fractals,Phoenix Cubic,Pass,,0,0,3.26E+00,1.84E+00,NOT APPLIED,Resubmit with same numbers
-229,Phoenix Fractals,Phoenix Julia,Pass,,-0.17,0.07,5.66E+00,3.18E+00,NOT APPLIED,Resubmit with same numbers
-230,Phoenix Fractals,Phoenix Lambda,Pass,,0.6,0,4.87E+00,2.74E+00,NOT APPLIED,Resubmit with same numbers
-231,Phoenix Fractals,Phoenix Mandelbrot,Pass,,-0.19,0,4.35E+00,2.45E+00,NOT APPLIED,Resubmit with same numbers
-233,Phoenix Fractals,Phoenix Sine,Pass,,0,0,8.00E+00,4.50E+00,NOT APPLIED,Resubmit with same numbers
-234,Polynomial Variants,Biomorph,Pass,,-0.57,0.03,3.69E+00,2.08E+00,NOT APPLIED,Resubmit with same numbers
-235,Polynomial Variants,Cubic Mandelbrot,Pass,,0,0,5.00E+00,2.81E+00,NOT APPLIED,Resubmit with same numbers
-236,Polynomial Variants,Polynomial z³-z+c,Pass,,0,0,2.46E+00,1.39E+00,NOT APPLIED,Resubmit with same numbers
-237,Polynomial Variants,Polynomial z?+z³+c,Pass,,0,0,4.00E+00,2.25E+00,NOT APPLIED,Resubmit with same numbers
-238,Polynomial Variants,Quartic Mandelbrot,Pass,,0,0,4.31E+00,2.42E+00,NOT APPLIED,Resubmit with same numbers
-239,Polynomial Variants,Quintic Mandelbrot,Pass,,-0.17,0.02,3.56E+00,2.00E+00,NOT APPLIED,Resubmit with same numbers
-240,Polynomial Variants,Rational R1,Pass,,0,0,3.20E+01,1.80E+01,NOT APPLIED,Resubmit with same numbers
-241,Polynomial Variants,Sextic Mandelbrot,Pass,,0,0,4.00E+00,2.25E+00,NOT APPLIED,Resubmit with same numbers
-242,Rational Function Fractals,Halley's Method z³-1,Pass,,0,0,8.00E+01,4.50E+01,NOT APPLIED,Resubmit with same numbers
-243,Rational Function Fractals,Möbius Fractal,Pass,,-2.36,0.01,7.39E+00,4.16E+00,NOT APPLIED,Resubmit with same numbers
-244,Rational Function Fractals,Newton z³-1,Pass,,0,0,5.00E+00,2.81E+00,NOT APPLIED,Resubmit with same numbers
-245,Rational Function Fractals,Newton z?-1,Pass,,0,0,5.00E+00,2.81E+00,NOT APPLIED,Resubmit with same numbers
-246,Rational Function Fractals,Newton z?-1,Pass,,0,0,5.00E+00,2.81E+00,NOT APPLIED,Resubmit with same numbers
-247,Rational Function Fractals,Rational (z²+c)/(z²-c),Pass,,4.03,0.14,1.20E+01,6.75E+00,NOT APPLIED,Resubmit with same numbers
-248,Rational Function Fractals,Rational z²/(z³+c),Pass,,-0.06,-0.13,3.01E+00,1.69E+00,NOT APPLIED,Resubmit with same numbers
-249,Rational Function Fractals,Rational z³/(z³+c),Pass,,0.09,-0.17,1.85E+00,1.04E+00,NOT APPLIED,Resubmit with same numbers
-251,Special,Buddhabrot,Pass,"this is not the Buddahbrot shape.  It is the classic Mandelbrot shape, but's worth saving somehow",-0.33,0.03,3.75E+00,2.11E+00,FORMULA FIXED,Resubmit with NEW numbers; generated
-252,Special,Hailstone Sequence,Pass,,0.39,-0.44,1.50E+02,8.44E+01,FORMULA FIXED,Resubmit with NEW numbers; generated
-253,Special,Lyapunov,Pass,,-0.01,0,1.95E+01,1.10E+01,NOT APPLIED,Resubmit with same numbers
-254,Special,NumFractal,Pass,,0,0,4.87E+00,2.74E+00,NOT APPLIED,Resubmit with same numbers
-255,Special,Tetration (Classic),Pass,,-0.22,0.05,1.25E+01,7.03E+00,NOT APPLIED,Resubmit with same numbers
-256,Special Function Fractals,Bessel-like Oscillatory,Fail,check the computations; black disk with a green crescent edge.  No fine structure; original Bessel disk with waves and striations is gone,,,,,IMPROVED + NOT APPLIED,
-257,Special Function Fractals,Continued Fraction Fractal,Pass,,-3.65,-0.57,7.31E+00,4.11E+00,NOT APPLIED,Resubmit with same numbers
-258,Special Function Fractals,Error Function (erf) Fractal,Pass,,0,0.05,3.73E+01,2.10E+01,NOT APPLIED,Resubmit with same numbers
-259,Special Function Fractals,Gamma Function Fractal,Pass,,-1.13,-0.07,1.00E+01,5.63E+00,NOT APPLIED,Resubmit with same numbers
-260,Special Function Fractals,Hyperbolic Combination,Pass,,-1.64,0.02,7.62E+00,4.29E+00,NOT APPLIED,Resubmit with same numbers
-261,Special Function Fractals,Lambert W Function,Pass,,2.56,0.15,3.64E+01,2.05E+01,NOT APPLIED,Resubmit with same numbers
-262,Special Function Fractals,Tetration (Power Tower),Pass,,1,0,3.74E+01,2.10E+01,NOT APPLIED,Resubmit with same numbers
+Index,Group Name,Fractal Name,Pass/Fail,Notes,Center X,Center Y,X Scale Width,Y Scale Width,VP Tuning Status,Mark's Action?
+263,Strange Attractors,Bedhead Attractor,Pass,,0.00,0.00,2.4000000000E+01,1.3500000000E+01,,
+264,Strange Attractors,Clifford Attractor,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,
+265,Strange Attractors,De Jong Attractor,Pass,,0.17,0.07,7.9964866052E+00,7.9964866052E+00,,
+266,Strange Attractors,Duffing Attractor,Pass,,1.00,0.00,7.1157376225E-02,4.0026024126E-02,,
+267,Strange Attractors,Svensson Attractor,Pass,,0.00,-0.01,1.6339920949E+01,9.1912055336E+00,,
+268,Strange Attractors,Tinkerbell Attractor,Pass,,-0.45,-0.53,4.0000000000E+00,2.2500000000E+00,,
+269,Tricorn Family,Tricorn (Power 3),Pass,,0.00,0.00,5.0000000000E+00,2.8125000000E+00,,
+270,Tricorn Family,Tricorn (Power 4),Pass,,0.00,0.00,5.0000000000E+00,2.8125000000E+00,,
+271,Trigonometric,ArcCos Mandelbrot,Fail,black screen at all zoom levels,,,,,,
+272,Trigonometric,ArcSin Mandelbrot,Fail,black screen at all zoom levels,,,,,,
+273,Trigonometric,ArcTan Mandelbrot,Fail,black screen at all zoom levels,,,,,,
+274,Trigonometric,Cosecant Mandelbrot,Fail,black disk; that's all,,,,,,
+275,Trigonometric,Cosh Mandelbrot,Pass,,-0.83,1.59,1.1992388216E+01,6.7457183717E+00,,
+276,Trigonometric,Cotangent Mandelbrot,Pass,,-3.18,-0.20,1.0202898551E+01,5.7391304348E+00,,
+277,Trigonometric,Mandel Trig,Pass,just another mandelbrot,-0.47,0.00,3.6934332400E+00,2.0775561975E+00,,
+278,Trigonometric,Secant Mandelbrot,Pass,,1.54,0.02,6.4000000000E+01,3.6000000000E+01,,
+279,Trigonometric,Sinh Mandelbrot,Pass,,0.00,0.00,1.6000000000E+01,9.0000000000E+00,,
+280,Trigonometric,Tangent Mandelbrot,Fail,not sure if this is right.  Straight line along the X axis with occasional small beads of varying sizes.  No other structure,,,,,,
+281,Trigonometric,Tanh Mandelbrot,Pass,pinnants,0.00,0.00,5.5715236051E+01,3.1339820279E+01,,
+282,Trigonometric,Tanh Mandelbrot (Linear),Fail,not sure if this is right.  Straight line along the Y axis with occasional small beads of varying sizes.  No other structure,,,,,,
+283,Trigonometric Fractals,Cos(z) + c,Pass,,1.531554445,0.04,1.2861281550E+01,7.2344708721E+00,,
+284,Trigonometric Fractals,Lambda Lambda Cosh,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,
+285,Trigonometric Fractals,Lambda Lambda Cosine,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,
+286,Trigonometric Fractals,Lambda Lambda Sine,Pass,,-0.06,0.02,1.0106422018E+01,5.6848623853E+00,,
+287,Trigonometric Fractals,Lambda Lambda Sinh,Pass,,0.00,0.00,1.2000000000E+01,6.7500000000E+00,,
+288,Trigonometric Fractals,Lambda Mandel Cosh,Pass,,0.00,0.00,4.8000000000E+01,2.7000000000E+01,,
+289,Trigonometric Fractals,Lambda Mandel Cosine,Pass,,0.00,0.00,1.2000000000E+01,6.7500000000E+00,,
+290,Trigonometric Fractals,Lambda Mandel Sine,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,
+291,Trigonometric Fractals,Lambda Mandel Sinh,Pass,,0.00,0.00,1.0446606760E+01,5.8762163022E+00,,
+292,Trigonometric Fractals,Mandelbrot Trig,Pass,,-0.80,0.00,3.0000000000E+00,1.6875000000E+00,,
+293,Trigonometric Fractals,Sin(z) + c,Pass,,0.00,0.00,1.2861281550E+01,7.2344708721E+00,,
+294,Trigonometric Fractals,Sine Fractal,Pass,,0.01,0.06,1.2861281550E+01,7.2344708721E+00,,
