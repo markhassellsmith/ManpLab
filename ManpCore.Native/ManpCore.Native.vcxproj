@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -61,6 +61,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;NO_WARN_MBCS_MFC_DEPRECATION;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)ManpWIN64;$(SolutionDir)external\mpfr\include;$(SolutionDir)qdlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -77,6 +78,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)ManpWIN64;$(SolutionDir)external\mpfr\include;$(SolutionDir)qdlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -93,6 +95,7 @@
     <ClInclude Include="FractalEngineWrapper.h" />
     <ClInclude Include="FractalRegistry.h" />
     <ClInclude Include="FractalRegistryWrapper.h" />
+    <ClInclude Include="InitialConditionsService.h" />
     <ClInclude Include="MandelbrotCalculator.h" />
     <ClInclude Include="NativePerformanceBaseline.h" />
   </ItemGroup>
@@ -109,6 +112,7 @@
     <ClCompile Include="ExoticFormulasFamily.cpp" />
     <ClCompile Include="ExponentialLogarithmicFamily.cpp" />
     <ClCompile Include="HybridFamily.cpp" />
+    <ClCompile Include="InitialConditionsService.cpp" />
     <ClCompile Include="HistoricalFractalsFamily.cpp" />
     <ClCompile Include="IFSFamily.cpp" />
     <ClCompile Include="JuliaVariantsFamily.cpp" />
@@ -164,6 +168,9 @@
     <!-- PertEngine.cpp excluded - contains GUI code -->
     <ClCompile Include="ViewOptimizationDiagnostics.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\InitialConditions.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
@@ -191,3 +198,4 @@
     <Message Text="[CopyDependencies] Copied MPFR/GMP DLLs to $(SolutionOutputDir)" Importance="high" />
   </Target>
 </Project>
+
