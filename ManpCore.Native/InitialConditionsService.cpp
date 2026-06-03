@@ -20,39 +20,11 @@ std::map<std::string, InitialConditions>& InitialConditionsService::GetRegistry(
 }
 
 //=============================================================================
-// Private Helper - Get Data Directory
+// Get Resource File Path (Read-Only Application Data)
 //=============================================================================
 
-std::string InitialConditionsService::GetDataDirectory()
+std::string InitialConditionsService::GetResourceFilePath()
 {
-    // Try to use the executable's directory first for deployed scenarios
-    wchar_t exePath[MAX_PATH];
-    GetModuleFileNameW(NULL, exePath, MAX_PATH);
-    std::filesystem::path exeDir = std::filesystem::path(exePath).parent_path();
-    std::filesystem::path dataDir = exeDir / "FractalData";
-
-    // Ensure directory exists
-    if (!std::filesystem::exists(dataDir))
-    {
-        std::filesystem::create_directories(dataDir);
-    }
-
-    return dataDir.string();
-}
-
-//=============================================================================
-// Get Source Resource Path (for initial data file)
-//=============================================================================
-
-std::string GetResourceFilePath()
-{
-    // Check in the native project's Resources folder (development scenario)
-    std::filesystem::path devResourcePath = "ManpCore.Native\\Resources\\InitialConditions.txt";
-    if (std::filesystem::exists(devResourcePath))
-    {
-        return devResourcePath.string();
-    }
-
     // Check relative to executable (deployed scenario)
     wchar_t exePath[MAX_PATH];
     GetModuleFileNameW(NULL, exePath, MAX_PATH);
@@ -63,20 +35,18 @@ std::string GetResourceFilePath()
         return deployedResourcePath.string();
     }
 
+    // Check in the native project's Resources folder (development scenario)
+    std::filesystem::path devResourcePath = "ManpCore.Native\\Resources\\InitialConditions.txt";
+    if (std::filesystem::exists(devResourcePath))
+    {
+        return devResourcePath.string();
+    }
+
     return "";
 }
 
 //=============================================================================
-// Get Data File Path
-//=============================================================================
-
-std::string InitialConditionsService::GetDataFilePath()
-{
-    return GetDataDirectory() + "\\InitialConditions.txt";
-}
-
-//=============================================================================
-// Initialize - Load from File
+// Initialize - Load from Resource File (Read-Only)
 //=============================================================================
 
 void InitialConditionsService::Initialize()
@@ -87,33 +57,21 @@ void InitialConditionsService::Initialize()
     auto& registry = GetRegistry();
     registry.clear();
 
-    std::string filePath = GetDataFilePath();
-    std::ifstream file(filePath);
+    // Load from read-only resource file
+    std::string resourcePath = GetResourceFilePath();
+    if (resourcePath.empty())
+    {
+        // Resource file not found - registry will remain empty
+        s_initialized = true;
+        return;
+    }
 
-    // If the writable file doesn't exist, try to copy from Resources
+    std::ifstream file(resourcePath);
     if (!file.is_open())
     {
-        std::string resourcePath = GetResourceFilePath();
-        if (!resourcePath.empty())
-        {
-            try
-            {
-                std::filesystem::copy_file(resourcePath, filePath, 
-                    std::filesystem::copy_options::overwrite_existing);
-                file.open(filePath);
-            }
-            catch (...)
-            {
-                // Couldn't copy - will create new file on first save
-            }
-        }
-
-        if (!file.is_open())
-        {
-            // File doesn't exist yet - that's okay, it will be created on first save
-            s_initialized = true;
-            return;
-        }
+        // Couldn't open file - registry will remain empty
+        s_initialized = true;
+        return;
     }
 
     std::string line;
@@ -153,40 +111,7 @@ void InitialConditionsService::Initialize()
 }
 
 //=============================================================================
-// Save - Write to File
-//=============================================================================
-
-void InitialConditionsService::Save()
-{
-    std::string filePath = GetDataFilePath();
-    std::ofstream file(filePath);
-
-    if (!file.is_open())
-    {
-        // TODO: Consider logging error
-        return;
-    }
-
-    // Write header
-    file << "# Fractal Initial Conditions Data File\n";
-    file << "# Format: FractalName|CenterX|CenterY|Zoom\n";
-    file << "# Auto-generated - edits will be preserved but may be reformatted\n";
-    file << "#\n";
-
-    auto& registry = GetRegistry();
-    for (const auto& entry : registry)
-    {
-        file << entry.first << "|"
-             << entry.second.centerX << "|"
-             << entry.second.centerY << "|"
-             << entry.second.zoom << "\n";
-    }
-
-    file.close();
-}
-
-//=============================================================================
-// Get - Retrieve Initial Conditions
+// Get - Retrieve Initial Conditions (Read-Only)
 //=============================================================================
 
 InitialConditions InitialConditionsService::Get(const std::string& fractalName)
@@ -202,28 +127,6 @@ InitialConditions InitialConditionsService::Get(const std::string& fractalName)
 
     // Return default if not found
     return InitialConditions();
-}
-
-//=============================================================================
-// Set - Store/Update Initial Conditions
-//=============================================================================
-
-void InitialConditionsService::Set(const std::string& fractalName, double centerX, double centerY, double zoom)
-{
-    if (!s_initialized)
-        Initialize();
-
-    InitialConditions conditions(centerX, centerY, zoom);
-    auto& registry = GetRegistry();
-    registry[fractalName] = conditions;
-
-    // Persist to file
-    Save();
-}
-
-void InitialConditionsService::Set(const std::string& fractalName, const InitialConditions& conditions)
-{
-    Set(fractalName, conditions.centerX, conditions.centerY, conditions.zoom);
 }
 
 //=============================================================================

@@ -25,7 +25,9 @@ struct InitialConditions
 
 //=============================================================================
 // InitialConditions Service
-// Manages persistent storage and retrieval of fractal initial view conditions
+// READ-ONLY service for fractal default viewport positions
+// Loads from Resources\InitialConditions.txt (shipped with application)
+// This is immutable application data, NOT user preferences
 //=============================================================================
 
 class InitialConditionsService
@@ -34,14 +36,6 @@ public:
     // Get initial conditions for a fractal by name
     // Returns default values (0.0, 0.0, 1.0) if fractal not found
     static InitialConditions Get(const std::string& fractalName);
-
-    // Set/update initial conditions for a fractal
-    // Creates new entry if fractal doesn't exist, updates if it does
-    // Persists changes to the data file
-    static void Set(const std::string& fractalName, double centerX, double centerY, double zoom);
-
-    // Set/update initial conditions using struct
-    static void Set(const std::string& fractalName, const InitialConditions& conditions);
 
     // Check if initial conditions exist for a fractal
     static bool Has(const std::string& fractalName);
@@ -52,25 +46,19 @@ public:
     // Get all fractal names that have initial conditions stored
     static std::vector<std::string> GetFractalNames();
 
-    // Reload data from file (useful for external edits)
+    // Reload data from file (useful for external edits during development)
     static void Reload();
 
-    // Get the data file path
-    static std::string GetDataFilePath();
+    // Get the resource file path (for debugging/verification)
+    static std::string GetResourceFilePath();
 
 private:
     // Singleton storage
     static std::map<std::string, InitialConditions>& GetRegistry();
     static bool s_initialized;
 
-    // Initialize from data file
+    // Initialize from resource file (read-only)
     static void Initialize();
-
-    // Save to data file
-    static void Save();
-
-    // Get the writable data directory path
-    static std::string GetDataDirectory();
 };
 
 } // namespace Native
