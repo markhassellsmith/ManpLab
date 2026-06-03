@@ -6,16 +6,28 @@ The `InitialConditionsService` provides **read-only access** to default viewport
 
 ## Design Philosophy
 
+### "See the Forest, Not the Tree"
+
+The initial viewport positions are **deliberately chosen** to show the **global structure** of each fractal:
+
+- **Top-down view**: Shows the entire fractal shape from a distance
+- **Structural overview**: Where large-scale patterns and symmetries are visible
+- **Before details**: Circular or amorphous regions with emerging self-similar structure
+- **Context first**: Users see the "whole shape" before exploring interesting details
+
+**Not** "most interesting views" - those are for users to discover through exploration!
+
 ### What This Service IS:
-- ✅ **Immutable fractal metadata** - defines the "best" initial view for each fractal
+- ✅ **Immutable fractal metadata** - defines the "forest view" for each fractal
 - ✅ **Read-only resource** - loaded from `Resources\InitialConditions.txt`
 - ✅ **Application data** - shipped with the app, same for all users
-- ✅ **Curated defaults** - carefully chosen viewport positions that showcase each fractal
+- ✅ **Global context views** - carefully chosen to show overall structure
 
 ### What This Service is NOT:
 - ❌ **User preferences** - does NOT store where the user last viewed a fractal
 - ❌ **Writable data store** - does NOT modify or save changes
 - ❌ **Bookmark system** - does NOT track user's favorite positions
+- ❌ **"Interesting zoom" catalog** - shows structure, not cherry-picked details
 - ❌ **Session state** - does NOT remember viewport changes between runs
 
 ## File Location
@@ -52,6 +64,25 @@ Each line defines:
 - **CenterX**: X-coordinate of viewport center
 - **CenterY**: Y-coordinate of viewport center
 - **Zoom**: Initial zoom level (smaller = more zoomed out)
+
+### Zoom Level Philosophy
+
+The zoom values are chosen to show **global structure**:
+
+- **Large zoom values** (e.g., 0.5-2.0): Show the entire fractal's extent
+- **Purpose**: Display the "forest" - overall shape and symmetry
+- **What users see**: 
+  - Circular or amorphous boundary regions
+  - Large-scale structural patterns
+  - Emerging self-similar features
+  - The fractal's "whole shape" before details
+
+**Not optimized for:**
+- Close-up details
+- "Most beautiful" zoom locations
+- Interesting micro-structures
+
+Users discover those through exploration!
 
 ## API Usage
 

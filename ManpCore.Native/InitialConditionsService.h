@@ -28,6 +28,13 @@ struct InitialConditions
 // READ-ONLY service for fractal default viewport positions
 // Loads from Resources\InitialConditions.txt (shipped with application)
 // This is immutable application data, NOT user preferences
+//
+// Design Philosophy: "See the forest, not the tree"
+// - Initial views show the GLOBAL structure of each fractal
+// - Top-down view where large-scale patterns are visible
+// - Shows the "whole shape" before zooming into details
+// - Circular/amorphous regions with emerging self-similar structure
+// - Users start with context, then explore interesting details themselves
 //=============================================================================
 
 class InitialConditionsService
