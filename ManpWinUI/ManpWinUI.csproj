@@ -249,6 +249,14 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <!-- InitialConditions Data File: Required for fractal viewport defaults -->
+      <Content Include="..\ManpCore.Native\Resources\InitialConditions.txt">
+        <Link>Resources\InitialConditions.txt</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
     <!-- Week 7: Color and Render Settings Views -->
     <ItemGroup>
       <Page Update="Views\Properties\ColorEditorView.xaml">
