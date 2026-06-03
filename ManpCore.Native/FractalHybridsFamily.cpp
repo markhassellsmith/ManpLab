@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
@@ -7,15 +8,19 @@ namespace Native
     void RegisterFractalHybridsFamily()
     {
         // ═══════════════════════════════════════════════════════════════════════════════
-        // FRACTAL HYBRIDS & MUTATIONS
+        // HYBRIDS FRACTAL & MUTATIONS
         // Creative combinations and variations of classic fractals
         // ═══════════════════════════════════════════════════════════════════════════════
 
         // ───────────────────────────────────────────────────────────────────────────────
         // Burning Ship + Mandelbrot Hybrid
         // ───────────────────────────────────────────────────────────────────────────────
+
+        InitialConditions ic;  // Declare ONCE at the top
+
         {
             FractalSpec spec;
+
             spec.name = "BurningMandel";
             spec.displayName = "Burning Mandelbrot Hybrid";
             spec.category = "Hybrid Fractals";
@@ -30,45 +35,49 @@ namespace Native
             spec.discoveryYear = 2000;
             spec.computationalNotes = "Alternating formula creates mixed characteristics";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.6;
+            ic = InitialConditionsService::Get("BurningMandel");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    if (i % 2 == 0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        // Burning Ship step
-                        x = std::abs(x);
-                        y = std::abs(y);
+                        double x = z.real;
+                        double y = z.imag;
+
+                        if (i % 2 == 0)
+                        {
+                            // Burning Ship step
+                            x = std::abs(x);
+                            y = std::abs(y);
+                        }
+
+                        // Square: z²
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            double log_zn = std::log(mag2) / 2.0;
+                            double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                            return i + 1.0 - nu;
+                        }
                     }
 
-                    // Square: z²
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
-                    {
-                        double log_zn = std::log(mag2) / 2.0;
-                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                        return i + 1.0 - nu;
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -92,48 +101,52 @@ namespace Native
             spec.discoveryYear = 2001;
             spec.computationalNotes = "Weight parameter controls polynomial vs exponential character";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.4;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.4;
+            InitialConditions ic = InitialConditionsService::Get("ExpMandelHybrid");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                double a = 0.7; // Polynomial weight
-                double b = 0.3; // Exponential weight
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // z²
-                    double zSqReal = x * x - y * y;
-                    double zSqImag = 2.0 * x * y;
+                    double a = 0.7; // Polynomial weight
+                    double b = 0.3; // Exponential weight
 
-                    // e^z
-                    double expX = std::exp(x);
-                    double expReal = expX * std::cos(y);
-                    double expImag = expX * std::sin(y);
-
-                    // Hybrid: a*z² + b*e^z + c
-                    z.real = a * zSqReal + b * expReal + constant.real;
-                    z.imag = a * zSqImag + b * expImag + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        // z²
+                        double zSqReal = x * x - y * y;
+                        double zSqImag = 2.0 * x * y;
+
+                        // e^z
+                        double expX = std::exp(x);
+                        double expReal = expX * std::cos(y);
+                        double expImag = expX * std::sin(y);
+
+                        // Hybrid: a*z² + b*e^z + c
+                        z.real = a * zSqReal + b * expReal + constant.real;
+                        z.imag = a * zSqImag + b * expImag + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -157,43 +170,47 @@ namespace Native
             spec.discoveryYear = 2003;
             spec.computationalNotes = "Power oscillates between 1.0 and 3.0 with period of ~126 iterations for smooth morphing";
 
-            spec.defaultCenterX = -0.5;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.0;
+            //spec.defaultCenterX = -0.5;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 1.0;
+            InitialConditions ic = InitialConditionsService::Get("MutantMandelbrot");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // Power varies between 1.0 and 3.0 with slower oscillation for smoother morphing
-                    double power = 2.0 + std::sin(i / 20.0);
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    // Standard escape check
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
+                        // Power varies between 1.0 and 3.0 with slower oscillation for smoother morphing
+                        double power = 2.0 + std::sin(i / 20.0);
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        // Standard escape check
+                        if (mag2 > 256.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+
+                        double mag = std::sqrt(mag2);
+                        double angle = std::atan2(z.imag, z.real);
+
+                        // z^power using polar form
+                        double newMag = std::pow(mag, power);
+                        double newAngle = angle * power;
+
+                        z.real = newMag * std::cos(newAngle) + constant.real;
+                        z.imag = newMag * std::sin(newAngle) + constant.imag;
                     }
 
-                    double mag = std::sqrt(mag2);
-                    double angle = std::atan2(z.imag, z.real);
-
-                    // z^power using polar form
-                    double newMag = std::pow(mag, power);
-                    double newAngle = angle * power;
-
-                    z.real = newMag * std::cos(newAngle) + constant.real;
-                    z.imag = newMag * std::sin(newAngle) + constant.imag;
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -217,46 +234,50 @@ namespace Native
             spec.discoveryYear = 1998;
             spec.computationalNotes = "Averaging creates smooth transition between behaviors";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            InitialConditions ic = InitialConditionsService::Get("TrigMandelBlend");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // z²
-                    double zSqReal = x * x - y * y;
-                    double zSqImag = 2.0 * x * y;
-
-                    // sin(z)
-                    double sinReal = std::sin(x) * std::cosh(y);
-                    double sinImag = std::cos(x) * std::sinh(y);
-
-                    // Average and add c
-                    z.real = (zSqReal + sinReal) / 2.0 + constant.real;
-                    z.imag = (zSqImag + sinImag) / 2.0 + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        double log_zn = std::log(mag2) / 2.0;
-                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                        return i + 1.0 - nu;
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        // z²
+                        double zSqReal = x * x - y * y;
+                        double zSqImag = 2.0 * x * y;
+
+                        // sin(z)
+                        double sinReal = std::sin(x) * std::cosh(y);
+                        double sinImag = std::cos(x) * std::sinh(y);
+
+                        // Average and add c
+                        z.real = (zSqReal + sinReal) / 2.0 + constant.real;
+                        z.imag = (zSqImag + sinImag) / 2.0 + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            double log_zn = std::log(mag2) / 2.0;
+                            double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                            return i + 1.0 - nu;
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -280,49 +301,53 @@ namespace Native
             spec.discoveryYear = 2004;
             spec.computationalNotes = "Modulo arithmetic creates Sierpinski-like splitting";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.8;
+            InitialConditions ic = InitialConditionsService::Get("SierpinskiMandel");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // Standard z²
-                    double zSqReal = x * x - y * y;
-                    double zSqImag = 2.0 * x * y;
-
-                    z.real = zSqReal + constant.real;
-                    z.imag = zSqImag + constant.imag;
-
-                    // Sierpinski-like splitting based on bit patterns
-                    int ix = static_cast<int>(std::abs(z.real * 10.0)) % 3;
-                    int iy = static_cast<int>(std::abs(z.imag * 10.0)) % 3;
-
-                    if (ix == 1 && iy == 1)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        // Sierpinski "hole"
-                        return static_cast<double>(i);
+                        double x = z.real;
+                        double y = z.imag;
+
+                        // Standard z²
+                        double zSqReal = x * x - y * y;
+                        double zSqImag = 2.0 * x * y;
+
+                        z.real = zSqReal + constant.real;
+                        z.imag = zSqImag + constant.imag;
+
+                        // Sierpinski-like splitting based on bit patterns
+                        int ix = static_cast<int>(std::abs(z.real * 10.0)) % 3;
+                        int iy = static_cast<int>(std::abs(z.imag * 10.0)) % 3;
+
+                        if (ix == 1 && iy == 1)
+                        {
+                            // Sierpinski "hole"
+                            return static_cast<double>(i);
+                        }
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -346,64 +371,68 @@ namespace Native
             spec.discoveryYear = 1996;
             spec.computationalNotes = "Perturbation term distorts classic basin structure";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.6;
+            InitialConditions ic = InitialConditionsService::Get("PerturbedNewton");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // z²
-                    double x2 = x * x - y * y;
-                    double y2 = 2.0 * x * y;
-
-                    // z³
-                    double x3 = x * x2 - y * y2;
-                    double y3 = x * y2 + y * x2;
-
-                    // Newton step: (2z³+1)/(3z²)
-                    double numReal = 2.0 * x3 + 1.0;
-                    double numImag = 2.0 * y3;
-
-                    double denReal = 3.0 * x2;
-                    double denImag = 3.0 * y2;
-
-                    double denMag2 = denReal * denReal + denImag * denImag;
-
-                    if (denMag2 < 1e-10)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
+                        double x = z.real;
+                        double y = z.imag;
+
+                        // z²
+                        double x2 = x * x - y * y;
+                        double y2 = 2.0 * x * y;
+
+                        // z³
+                        double x3 = x * x2 - y * y2;
+                        double y3 = x * y2 + y * x2;
+
+                        // Newton step: (2z³+1)/(3z²)
+                        double numReal = 2.0 * x3 + 1.0;
+                        double numImag = 2.0 * y3;
+
+                        double denReal = 3.0 * x2;
+                        double denImag = 3.0 * y2;
+
+                        double denMag2 = denReal * denReal + denImag * denImag;
+
+                        if (denMag2 < 1e-10)
+                        {
+                            return static_cast<double>(i);
+                        }
+
+                        double newtonReal = (numReal * denReal + numImag * denImag) / denMag2;
+                        double newtonImag = (numImag * denReal - numReal * denImag) / denMag2;
+
+                        // Perturbation: c*sin(z)
+                        double sinReal = std::sin(x) * std::cosh(y);
+                        double sinImag = std::cos(x) * std::sinh(y);
+
+                        z.real = newtonReal + constant.real * sinReal;
+                        z.imag = newtonImag + constant.imag * sinImag;
+
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+
+                        if (std::abs(mag - 1.0) < 0.01)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    double newtonReal = (numReal * denReal + numImag * denImag) / denMag2;
-                    double newtonImag = (numImag * denReal - numReal * denImag) / denMag2;
-
-                    // Perturbation: c*sin(z)
-                    double sinReal = std::sin(x) * std::cosh(y);
-                    double sinImag = std::cos(x) * std::sinh(y);
-
-                    z.real = newtonReal + constant.real * sinReal;
-                    z.imag = newtonImag + constant.imag * sinImag;
-
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
-
-                    if (std::abs(mag - 1.0) < 0.01)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -427,37 +456,41 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "Complex extension of famous 1D bifurcation diagram";
 
-            spec.defaultCenterX = 2.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.4;
+            //spec.defaultCenterX = 2.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.4;
+            InitialConditions ic = InitialConditionsService::Get("BifurcationMandel");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // z*(1-z)
-                    double zProd1Real = z.real * (1.0 - z.real) - z.imag * (-z.imag);
-                    double zProd1Imag = z.real * (-z.imag) + z.imag * (1.0 - z.real);
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // c * z*(1-z)
-                    z.real = constant.real * zProd1Real - constant.imag * zProd1Imag;
-                    z.imag = constant.real * zProd1Imag + constant.imag * zProd1Real;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        // z*(1-z)
+                        double zProd1Real = z.real * (1.0 - z.real) - z.imag * (-z.imag);
+                        double zProd1Imag = z.real * (-z.imag) + z.imag * (1.0 - z.real);
 
-                return static_cast<double>(maxIter);
-            };
+                        // c * z*(1-z)
+                        z.real = constant.real * zProd1Real - constant.imag * zProd1Imag;
+                        z.imag = constant.real * zProd1Imag + constant.imag * zProd1Real;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -481,42 +514,46 @@ namespace Native
             spec.discoveryYear = 1999;
             spec.computationalNotes = "Absolute value on real part only creates unique topology";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.7;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.7;
+            InitialConditions ic = InitialConditionsService::Get("CelticMandelbrot");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // z²
-                    double zSqReal = x * x - y * y;
-                    double zSqImag = 2.0 * x * y;
-
-                    // Apply abs to real part only
-                    z.real = std::abs(zSqReal) + constant.real;
-                    z.imag = zSqImag + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        double log_zn = std::log(mag2) / 2.0;
-                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                        return i + 1.0 - nu;
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        // z²
+                        double zSqReal = x * x - y * y;
+                        double zSqImag = 2.0 * x * y;
+
+                        // Apply abs to real part only
+                        z.real = std::abs(zSqReal) + constant.real;
+                        z.imag = zSqImag + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            double log_zn = std::log(mag2) / 2.0;
+                            double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                            return i + 1.0 - nu;
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }

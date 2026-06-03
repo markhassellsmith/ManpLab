@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
@@ -11,6 +12,7 @@ namespace Native {
     void RegisterTrigonometricExtendedFamily()
     {
         FractalSpec spec;
+        InitialConditions ic;  // Declare ONCE at the top
 
         //=========================================================================
         // Chebyshev Polynomial (First Kind)
@@ -76,9 +78,13 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        spec.defaultCenterX = -0.8737499999999998;  // Viewport tuning: from registry
-        spec.defaultCenterY = -0.0089062499999999975;  // Viewport tuning: from registry
-        spec.defaultZoom = 1.2;  // Viewport tuning: X Scale Width from registry
+        //spec.defaultCenterX = -0.8737499999999998;  // Viewport tuning: from registry
+        //spec.defaultCenterY = -0.0089062499999999975;  // Viewport tuning: from registry
+        //spec.defaultZoom = 1.2;  // Viewport tuning: X Scale Width from registry
+        ic = InitialConditionsService::Get("ChebyshevPolynomial");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
         spec.defaultBailout = 1000.0;
         spec.hasSymmetry = false;
 
@@ -126,9 +132,13 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        spec.defaultCenterX = -3.18;  // Viewport tuning: from registry
-        spec.defaultCenterY = -0.20;  // Viewport tuning: from registry
-        spec.defaultZoom = 10.202898551;  // Viewport tuning: X Scale Width from registry
+        //spec.defaultCenterX = -3.18;  // Viewport tuning: from registry
+        //spec.defaultCenterY = -0.20;  // Viewport tuning: from registry
+        //spec.defaultZoom = 10.202898551;  // Viewport tuning: X Scale Width from registry
+        ic = InitialConditionsService::Get("CotMandel");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
         spec.defaultBailout = 256.0;
         spec.hasSymmetry = false;
 
@@ -173,9 +183,13 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        spec.defaultCenterX = 1.54;  // Viewport tuning: from registry
-        spec.defaultCenterY = 0.02;  // Viewport tuning: from registry
-        spec.defaultZoom = 64.0;  // Viewport tuning: X Scale Width from registry
+        //spec.defaultCenterX = 1.54;  // Viewport tuning: from registry
+        //spec.defaultCenterY = 0.02;  // Viewport tuning: from registry
+        //spec.defaultZoom = 64.0;  // Viewport tuning: X Scale Width from registry
+        ic = InitialConditionsService::Get("SecMandel");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
         spec.defaultBailout = 256.0;
         spec.hasSymmetry = false;
 
@@ -220,9 +234,13 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        spec.defaultCenterX = 0.0;
-        spec.defaultCenterY = 0.0;
-        spec.defaultZoom = 1.5;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 1.5;
+        ic = InitialConditionsService::Get("CscMandel");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
         spec.defaultBailout = 256.0;
         spec.hasSymmetry = false;
 
@@ -284,9 +302,13 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        spec.defaultCenterX = -7.084664462935784;  // Viewport tuning: from registry
-        spec.defaultCenterY = 0.1481917598835060;  // Viewport tuning: from registry
-        spec.defaultZoom = 0.19299539049631545;  // Viewport tuning: X Scale Width from registry
+        //spec.defaultCenterX = -7.084664462935784;  // Viewport tuning: from registry
+        //spec.defaultCenterY = 0.1481917598835060;  // Viewport tuning: from registry
+        //spec.defaultZoom = 0.19299539049631545;  // Viewport tuning: X Scale Width from registry
+        ic = InitialConditionsService::Get("WeierstrassP");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
         spec.defaultBailout = 1000.0;
         spec.hasSymmetry = false;
 
@@ -348,9 +370,13 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        spec.defaultCenterX = 0.0043229257991153069;  // Viewport tuning: from registry
-        spec.defaultCenterY = 0.043608552897599878;  // Viewport tuning: from registry
-        spec.defaultZoom = 0.15261363593213784;  // Viewport tuning: X Scale Width from registry
+        //spec.defaultCenterX = 0.0043229257991153069;  // Viewport tuning: from registry
+        //spec.defaultCenterY = 0.043608552897599878;  // Viewport tuning: from registry
+        //spec.defaultZoom = 0.15261363593213784;  // Viewport tuning: X Scale Width from registry
+        ic = InitialConditionsService::Get("JacobiSN");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
         spec.defaultBailout = 100.0;
         spec.hasSymmetry = false;
 
@@ -423,9 +449,13 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        spec.defaultCenterX = 0.0;
-        spec.defaultCenterY = 0.0;
-        spec.defaultZoom = 1.5;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 1.5;
+        ic = InitialConditionsService::Get("LegendrePolynomial");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
         spec.defaultBailout = 100.0;
         spec.hasSymmetry = false;
 
@@ -470,9 +500,13 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        spec.defaultCenterX = -0.77812500000000007;  // Viewport tuning: from registry
-        spec.defaultCenterY = 0.03515625;  // Viewport tuning: from registry
-        spec.defaultZoom = 12.0;  // Viewport tuning: X Scale Width from registry
+        //spec.defaultCenterX = -0.77812500000000007;  // Viewport tuning: from registry
+        //spec.defaultCenterY = 0.03515625;  // Viewport tuning: from registry
+        //spec.defaultZoom = 12.0;  // Viewport tuning: X Scale Width from registry
+        ic = InitialConditionsService::Get("SechMandel");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
         spec.defaultBailout = 256.0;
         spec.hasSymmetry = false;
 

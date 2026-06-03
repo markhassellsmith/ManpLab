@@ -1,117 +1,133 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 
 namespace Native {
+    //=============================================================================
+    // Mandelbrot Family
+    // Standard Mandelbrot set: z = z² + c
+    //=============================================================================
 
-//=============================================================================
-// Mandelbrot Family
-// Standard Mandelbrot set: z = z² + c
-//=============================================================================
+    void RegisterMandelbrotFamily()
+    {
+        FractalSpec spec;
+        InitialConditions ic;  // Declare ONCE at the top
 
-void RegisterMandelbrotFamily()
-{
-    FractalSpec spec;
+        //=========================================================================
+        // Mandelbrot (Standard)
+        //=========================================================================
+        spec.name = "Mandelbrot";
+        spec.displayName = "Mandelbrot Set";
+        spec.category = "Classic Fractals";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "The classic Mandelbrot set. Iteration formula: z = z² + c";
 
-    //=========================================================================
-    // Mandelbrot (Standard)
-    //=========================================================================
-    spec.name = "Mandelbrot";
-    spec.displayName = "Mandelbrot Set";
-    spec.category = "Classic Fractals";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "The classic Mandelbrot set. Iteration formula: z = z² + c";
+        // Use existing calculation function from MandelbrotCalculator.h
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, isJulia, juliaC);
+            };
 
-    // Use existing calculation function from MandelbrotCalculator.h
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, isJulia, juliaC);
-    };
+        // Mandelbrot supports Julia mode
+        spec.supportsJulia = true;
 
-    // Mandelbrot supports Julia mode
-    spec.supportsJulia = true;
+        // Default view settings
+        //spec.defaultCenterX = -0.5;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 1.0;
+        ic = InitialConditionsService::Get("Mandelbrot");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;  // X-axis symmetry
 
-    // Default view settings
-    spec.defaultCenterX = -0.5;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;  // X-axis symmetry
+        // No custom parameters (uses standard Julia c_x, c_y when in Julia mode)
+        spec.parameters = {};
 
-    // No custom parameters (uses standard Julia c_x, c_y when in Julia mode)
-    spec.parameters = {};
+        FractalRegistry::Register(spec);
 
-    FractalRegistry::Register(spec);
+        //=========================================================================
+        // Julia - San Marco
+        //=========================================================================
+        spec.name = "JuliaSanMarco";
+        spec.displayName = "Julia - San Marco";
+        spec.category = "Julia Sets";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Classic Julia set with c = -0.75 + 0.0i (San Marco dragon)";
 
-    //=========================================================================
-    // Julia - San Marco
-    //=========================================================================
-    spec.name = "JuliaSanMarco";
-    spec.displayName = "Julia - San Marco";
-    spec.category = "Julia Sets";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Classic Julia set with c = -0.75 + 0.0i (San Marco dragon)";
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            // Force Julia mode with classic San Marco constant
+            return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, true, ComplexD(-0.75, 0.0));
+            };
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Force Julia mode with classic San Marco constant
-        return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, true, ComplexD(-0.75, 0.0));
-    };
+        spec.supportsJulia = false;  // Pre-set Julia
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.5;
+        ic = InitialConditionsService::Get("JuliaSanMarco");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
+        spec.parameters = {};
 
-    spec.supportsJulia = false;  // Pre-set Julia
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.5;
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
-    spec.parameters = {};
+        FractalRegistry::Register(spec);
 
-    FractalRegistry::Register(spec);
+        //=========================================================================
+        // Julia - Douady Rabbit
+        //=========================================================================
+        spec.name = "JuliaDouadyRabbit";
+        spec.displayName = "Julia - Douady Rabbit";
+        spec.category = "Julia Sets";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Famous Julia set with c = -0.123 + 0.745i (Douady's rabbit)";
 
-    //=========================================================================
-    // Julia - Douady Rabbit
-    //=========================================================================
-    spec.name = "JuliaDouadyRabbit";
-    spec.displayName = "Julia - Douady Rabbit";
-    spec.category = "Julia Sets";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Famous Julia set with c = -0.123 + 0.745i (Douady's rabbit)";
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, true, ComplexD(-0.123, 0.745));
+            };
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, true, ComplexD(-0.123, 0.745));
-    };
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.5;
+        ic = InitialConditionsService::Get("JuliaDouadyRabbit");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;
+        spec.parameters = {};
 
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.5;
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
+        FractalRegistry::Register(spec);
 
-    FractalRegistry::Register(spec);
+        //=========================================================================
+        // Julia - Siegel Disk
+        //=========================================================================
+        spec.name = "JuliaSiegelDiskAlt";
+        spec.displayName = "Julia - Siegel Disk (Alt)";
+        spec.category = "Julia Sets";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Julia set with c = -0.390541 - 0.586788i (Siegel disk)";
 
-    //=========================================================================
-    // Julia - Siegel Disk
-    //=========================================================================
-    spec.name = "JuliaSiegelDiskAlt";
-    spec.displayName = "Julia - Siegel Disk (Alt)";
-    spec.category = "Julia Sets";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Julia set with c = -0.390541 - 0.586788i (Siegel disk)";
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            // Use different quasi-periodic point for distinct appearance
+            ComplexD actualC = isJulia ? juliaC : ComplexD(-0.624, 0.418);
+            return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, true, actualC);
+            };
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Use different quasi-periodic point for distinct appearance
-        ComplexD actualC = isJulia ? juliaC : ComplexD(-0.624, 0.418);
-        return MandelbrotCalculator::CalculateSmoothIterations(c, maxIter, true, actualC);
-    };
+        spec.supportsJulia = true;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 1.082778;
+        ic = InitialConditionsService::Get("JuliaSiegelDiskAlt");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;
+        spec.parameters = {};
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.082778;
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
-
-    FractalRegistry::Register(spec);
-}
-
+        FractalRegistry::Register(spec);
+    }
 } // namespace Native

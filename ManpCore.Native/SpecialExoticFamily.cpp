@@ -1,357 +1,390 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
 namespace Native {
+    //=============================================================================
+    // Special & Exotic Fractals Family
+    // Unique and unusual fractals from ManpWIN64
+    // Includes: Hailstone, Buddhabrot, Lyapunov, Cellular, etc.
+    //=============================================================================
 
-//=============================================================================
-// Special & Exotic Fractals Family
-// Unique and unusual fractals from ManpWIN64
-// Includes: Hailstone, Buddhabrot, Lyapunov, Cellular, etc.
-//=============================================================================
+    void RegisterSpecialExoticFamily()
+    {
+        FractalSpec spec;
+        InitialConditions ic;  // Declare ONCE at the top
 
-void RegisterSpecialExoticFamily()
-{
-    FractalSpec spec;
+        //=========================================================================
+        // HAILSTONE (245) - 2D Hailstone sequence with cycle detection
+        //=========================================================================
+        spec.name = "Hailstone";
+        spec.displayName = "Hailstone Sequence";
+        spec.category = "Special";
+        spec.type = FractalCategory::Sequence2D;
+        spec.description = "2D visualization of Collatz (3n+1) sequence with cycle detection";
 
-    //=========================================================================
-    // HAILSTONE (245) - 2D Hailstone sequence with cycle detection
-    //=========================================================================
-    spec.name = "Hailstone";
-    spec.displayName = "Hailstone Sequence";
-    spec.category = "Special";
-    spec.type = FractalCategory::Sequence2D;
-    spec.description = "2D visualization of Collatz (3n+1) sequence with cycle detection";
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            // Hailstone (Collatz) sequence: n → n/2 (even) or 3n+1 (odd)
+            // Use both real and imaginary parts to create 2D variation
+            // Map c.real to starting value n, and c.imag to a variation parameter
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Hailstone (Collatz) sequence: n → n/2 (even) or 3n+1 (odd)
-        // Use both real and imaginary parts to create 2D variation
-        // Map c.real to starting value n, and c.imag to a variation parameter
+            long long n = static_cast<long long>(fabs(c.real * 100.0) + fabs(c.imag * 10.0));
+            if (n < 1) n = 1;
 
-        long long n = static_cast<long long>(fabs(c.real * 100.0) + fabs(c.imag * 10.0));
-        if (n < 1) n = 1;
+            int steps = 0;
+            long long maxValue = n;  // Track maximum value reached
+            long long totalPath = n; // Sum of path values for variation
 
-        int steps = 0;
-        long long maxValue = n;  // Track maximum value reached
-        long long totalPath = n; // Sum of path values for variation
-
-        while (n != 1 && steps < maxIter) {
-            if (n % 2 == 0) {
-                n = n / 2;
-            } else {
-                n = 3 * n + 1;
-            }
-            if (n > maxValue) maxValue = n;
-            totalPath += n;
-            steps++;
-            if (n > 1000000000LL) break;  // Prevent overflow
-        }
-
-        // Color by combination of steps and path characteristics
-        double result = static_cast<double>(steps);
-        // Add variation based on maximum height reached
-        result += std::log(static_cast<double>(maxValue + 1)) * 5.0;
-        // Add subtle variation based on total path length
-        result += std::log(static_cast<double>(totalPath)) * 0.1;
-
-        return result;
-    };
-
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.39;
-    spec.defaultCenterY = -0.44;
-    spec.defaultZoom = 0.026667;  // Viewport tuning: X scale 150.0
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
-    // HAILSTONE2D - 2D Trajectory Visualization with Axes and Labels
-    //=========================================================================
-    spec.name = "Hailstone2D";
-    spec.displayName = "2-D Hailstone Trajectory";
-    spec.category = "Special";
-    spec.type = FractalCategory::Sequence2D;
-    spec.description = "Interactive 2D visualization of Collatz sequence trajectory with coordinate axes, grid, point labels, and path rendering on black background";
-
-    // This is a marker entry - actual rendering uses HailstoneRenderService
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // This calculator won't be used - HailstoneRenderService handles the rendering
-        // But we need a valid calculator for registry compliance
-        return 0.0;
-    };
-
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 27.0;   // Classic starting point
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
-    spec.defaultBailout = 1000.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
-    // NUMFRACTAL (244) - Fractal dedicated to an 11-year-old discoverer
-    //=========================================================================
-    spec.name = "NumFractal";
-    spec.displayName = "NumFractal";
-    spec.category = "Special";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Unique fractal dedicated to an 11-year-old discoverer";
-
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Placeholder implementation - unique iteration formula
-        ComplexD z(0, 0);
-        ComplexD constant = isJulia ? juliaC : c;
-
-        for (int iter = 0; iter < maxIter; ++iter) {
-            // z = z³ + c (cubic variant)
-            double x2 = z.real * z.real;
-            double y2 = z.imag * z.imag;
-            double x3 = x2 * z.real - 3.0 * z.real * y2;
-            double y3 = 3.0 * x2 * z.imag - y2 * z.imag;
-
-            z = ComplexD(x3 + constant.real, y3 + constant.imag);
-
-            double modulus = z.real * z.real + z.imag * z.imag;
-            if (modulus > 256.0)
-                return iter + 1.0 - log(log(modulus)) / log(2.0);
-        }
-        return static_cast<double>(maxIter);
-    };
-
-    spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.821355;  // Viewport tuning: X scale 4.87
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
-    // BUDDHABROT (229) - Buddhabrot rendering technique
-    //=========================================================================
-    spec.name = "Buddhabrot";
-    spec.displayName = "Buddhabrot";
-    spec.category = "Special";
-    spec.type = FractalCategory::Special;
-    spec.description = "Mandelbrot set rendered by tracking escape paths";
-
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Buddhabrot approximation: Instead of true Buddhabrot (which needs accumulation buffer),
-        // we render the complement - points that DON'T escape, weighted by orbit behavior
-        ComplexD z(0.0, 0.0);
-        double orbitSum = 0.0;
-        int escapeIter = maxIter;
-
-        for (int i = 0; i < maxIter; ++i)
-        {
-            // Standard Mandelbrot iteration
-            double zr2 = z.real * z.real;
-            double zi2 = z.imag * z.imag;
-            double modulus = zr2 + zi2;
-
-            if (modulus > 256.0) {
-                escapeIter = i;
-                break;
+            while (n != 1 && steps < maxIter) {
+                if (n % 2 == 0) {
+                    n = n / 2;
+                }
+                else {
+                    n = 3 * n + 1;
+                }
+                if (n > maxValue) maxValue = n;
+                totalPath += n;
+                steps++;
+                if (n > 1000000000LL) break;  // Prevent overflow
             }
 
-            // Track orbit path length for pseudo-Buddhabrot effect
-            orbitSum += std::sqrt(modulus);
+            // Color by combination of steps and path characteristics
+            double result = static_cast<double>(steps);
+            // Add variation based on maximum height reached
+            result += std::log(static_cast<double>(maxValue + 1)) * 5.0;
+            // Add subtle variation based on total path length
+            result += std::log(static_cast<double>(totalPath)) * 0.1;
 
-            z.imag = 2.0 * z.real * z.imag + c.imag;
-            z.real = zr2 - zi2 + c.real;
-        }
+            return result;
+            };
 
-        // Points inside the set: return based on orbit complexity
-        if (escapeIter == maxIter) {
-            return orbitSum * 0.5;  // Interior points colored by orbit behavior
-        }
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = 0.39;
+        //spec.defaultCenterY = -0.44;
+        //spec.defaultZoom = 0.026667;  // Viewport tuning: X scale 150.0
+        ic = InitialConditionsService::Get("Hailstone");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;
+        spec.parameters = {};
 
-        // Points outside: return based on escape time and orbit path
-        return maxIter - escapeIter + orbitSum * 0.1;
-    };
+        FractalRegistry::Register(spec);
 
-    spec.supportsJulia = false;
-    spec.defaultCenterX = -0.33;
-    spec.defaultCenterY = 0.03;
-    spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;  // Buddhabrot rendering breaks symmetry
-    spec.parameters = {};
+        //=========================================================================
+        // HAILSTONE2D - 2D Trajectory Visualization with Axes and Labels
+        //=========================================================================
+        spec.name = "Hailstone2D";
+        spec.displayName = "2-D Hailstone Trajectory";
+        spec.category = "Special";
+        spec.type = FractalCategory::Sequence2D;
+        spec.description = "Interactive 2D visualization of Collatz sequence trajectory with coordinate axes, grid, point labels, and path rendering on black background";
 
-    FractalRegistry::Register(spec);
+        // This is a marker entry - actual rendering uses HailstoneRenderService
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            // This calculator won't be used - HailstoneRenderService handles the rendering
+            // But we need a valid calculator for registry compliance
+            return 0.0;
+            };
 
-    //=========================================================================
-    // LYAPUNOV (123) - Lyapunov fractal based on population dynamics
-    //=========================================================================
-    spec.name = "Lyapunov";
-    spec.displayName = "Lyapunov";
-    spec.category = "Special";
-    spec.type = FractalCategory::Sequence2D;
-    spec.description = "Lyapunov exponent fractal from population dynamics";
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = 27.0;   // Classic starting point
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 1.0;
+        ic = InitialConditionsService::Get("Hailstone2D");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 1000.0;
+        spec.hasSymmetry = false;
+        spec.parameters = {};
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        // Lyapunov: iterate x = r*x*(1-x) with alternating r values
-        double a = fabs(c.real);
-        double b = fabs(c.imag);
-        if (a < 0.1) a = 0.1;
-        if (b < 0.1) b = 0.1;
-        if (a > 4.0) a = 4.0;
-        if (b > 4.0) b = 4.0;
+        FractalRegistry::Register(spec);
 
-        double x = 0.5;
-        double sum = 0.0;
+        //=========================================================================
+        // NUMFRACTAL (244) - Fractal dedicated to an 11-year-old discoverer
+        //=========================================================================
+        spec.name = "NumFractal";
+        spec.displayName = "NumFractal";
+        spec.category = "Special";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Unique fractal dedicated to an 11-year-old discoverer";
 
-        for (int iter = 0; iter < maxIter; ++iter) {
-            double r = (iter % 2 == 0) ? a : b;
-            x = r * x * (1.0 - x);
-            if (x > 0.0 && x < 1.0) {
-                sum += log(fabs(r * (1.0 - 2.0 * x)));
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            // Placeholder implementation - unique iteration formula
+            ComplexD z(0, 0);
+            ComplexD constant = isJulia ? juliaC : c;
+
+            for (int iter = 0; iter < maxIter; ++iter) {
+                // z = z³ + c (cubic variant)
+                double x2 = z.real * z.real;
+                double y2 = z.imag * z.imag;
+                double x3 = x2 * z.real - 3.0 * z.real * y2;
+                double y3 = 3.0 * x2 * z.imag - y2 * z.imag;
+
+                z = ComplexD(x3 + constant.real, y3 + constant.imag);
+
+                double modulus = z.real * z.real + z.imag * z.imag;
+                if (modulus > 256.0)
+                    return iter + 1.0 - log(log(modulus)) / log(2.0);
             }
-        }
+            return static_cast<double>(maxIter);
+            };
 
-        double lyapunov = sum / maxIter;
-        return lyapunov * 50.0 + 128.0;  // Scale for coloring
-    };
+        spec.supportsJulia = true;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.821355;  // Viewport tuning: X scale 4.87
+        ic = InitialConditionsService::Get("NumFractal");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;
+        spec.parameters = {};
 
-    spec.supportsJulia = false;
-    spec.defaultCenterX = -0.01;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.205128;  // Viewport tuning: X scale 19.5
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
+        FractalRegistry::Register(spec);
 
-    FractalRegistry::Register(spec);
+        //=========================================================================
+        // BUDDHABROT (229) - Buddhabrot rendering technique
+        //=========================================================================
+        spec.name = "Buddhabrot";
+        spec.displayName = "Buddhabrot";
+        spec.category = "Special";
+        spec.type = FractalCategory::Special;
+        spec.description = "Mandelbrot set rendered by tracking escape paths";
 
-    //=========================================================================
-    // MANDELBAR (231) - Mandelbar (Tricorn without conjugate in z²)
-    //=========================================================================
-    spec.name = "MandelbarExotic";
-    spec.displayName = "Mandelbar";
-    spec.category = "Mandelbrot Variants";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbar fractal: z = conj(z)² + c";
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            // Buddhabrot approximation: Instead of true Buddhabrot (which needs accumulation buffer),
+            // we render the complement - points that DON'T escape, weighted by orbit behavior
+            ComplexD z(0.0, 0.0);
+            double orbitSum = 0.0;
+            int escapeIter = maxIter;
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0, 0);
-        ComplexD constant = isJulia ? juliaC : c;
+            for (int i = 0; i < maxIter; ++i)
+            {
+                // Standard Mandelbrot iteration
+                double zr2 = z.real * z.real;
+                double zi2 = z.imag * z.imag;
+                double modulus = zr2 + zi2;
 
-        for (int iter = 0; iter < maxIter; ++iter) {
-            // Mandelbar: conjugate before squaring
-            z = ComplexD(z.real, -z.imag);
-            z = ComplexD(z.real * z.real - z.imag * z.imag + constant.real,
-                        2.0 * z.real * z.imag + constant.imag);
+                if (modulus > 256.0) {
+                    escapeIter = i;
+                    break;
+                }
 
-            double modulus = z.real * z.real + z.imag * z.imag;
-            if (modulus > 256.0)
-                return iter + 1.0 - log(log(modulus)) / log(2.0);
-        }
-        return static_cast<double>(maxIter);
-    };
+                // Track orbit path length for pseudo-Buddhabrot effect
+                orbitSum += std::sqrt(modulus);
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.505051;  // Viewport tuning: X scale 7.92
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
-    spec.parameters = {};
+                z.imag = 2.0 * z.real * z.imag + c.imag;
+                z.real = zr2 - zi2 + c.real;
+            }
 
-    FractalRegistry::Register(spec);
+            // Points inside the set: return based on orbit complexity
+            if (escapeIter == maxIter) {
+                return orbitSum * 0.5;  // Interior points colored by orbit behavior
+            }
 
-    //=========================================================================
-    // THORN (227) - Thorn fractal (classic variant)
-    //=========================================================================
-    spec.name = "ThornClassic";
-    spec.displayName = "Thorn (Classic)";
-    spec.category = "Mandelbrot Variants";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Thorn fractal: z = z²/c + c";
+            // Points outside: return based on escape time and orbit path
+            return maxIter - escapeIter + orbitSum * 0.1;
+            };
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.1, 0.0);  // Non-zero starting point for better structure
-        ComplexD constant = isJulia ? juliaC : c;
-        double c_mag2 = constant.real * constant.real + constant.imag * constant.imag;
-        if (c_mag2 < 1e-10) return static_cast<double>(maxIter);
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = -0.33;
+        //spec.defaultCenterY = 0.03;
+        //spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+        ic = InitialConditionsService::Get("Buddhabrot");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;  // Buddhabrot rendering breaks symmetry
+        spec.parameters = {};
 
-        for (int iter = 0; iter < maxIter; ++iter) {
-            // z = z²/c + c
-            double z_sq_real = z.real * z.real - z.imag * z.imag;
-            double z_sq_imag = 2.0 * z.real * z.imag;
+        FractalRegistry::Register(spec);
 
-            // Complex division: z²/c
-            double div_real = (z_sq_real * constant.real + z_sq_imag * constant.imag) / c_mag2;
-            double div_imag = (z_sq_imag * constant.real - z_sq_real * constant.imag) / c_mag2;
+        //=========================================================================
+        // LYAPUNOV (123) - Lyapunov fractal based on population dynamics
+        //=========================================================================
+        spec.name = "Lyapunov";
+        spec.displayName = "Lyapunov";
+        spec.category = "Special";
+        spec.type = FractalCategory::Sequence2D;
+        spec.description = "Lyapunov exponent fractal from population dynamics";
 
-            z.real = div_real + constant.real;
-            z.imag = div_imag + constant.imag;
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            // Lyapunov: iterate x = r*x*(1-x) with alternating r values
+            double a = fabs(c.real);
+            double b = fabs(c.imag);
+            if (a < 0.1) a = 0.1;
+            if (b < 0.1) b = 0.1;
+            if (a > 4.0) a = 4.0;
+            if (b > 4.0) b = 4.0;
 
-            double modulus = z.real * z.real + z.imag * z.imag;
-            if (modulus > 100.0)  // Lower bailout for better structure visibility
-                return iter + 1.0 - log(log(modulus)) / log(2.0);
-        }
-        return static_cast<double>(maxIter);
-    };
+            double x = 0.5;
+            double sum = 0.0;
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 4.566210;  // Viewport tuning: X scale 0.876
-    spec.defaultBailout = 100.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
+            for (int iter = 0; iter < maxIter; ++iter) {
+                double r = (iter % 2 == 0) ? a : b;
+                x = r * x * (1.0 - x);
+                if (x > 0.0 && x < 1.0) {
+                    sum += log(fabs(r * (1.0 - 2.0 * x)));
+                }
+            }
 
-    FractalRegistry::Register(spec);
+            double lyapunov = sum / maxIter;
+            return lyapunov * 50.0 + 128.0;  // Scale for coloring
+            };
 
-    //=========================================================================
-    // TETRATION (236) - Infinite tower: z^z^z^...
-    //=========================================================================
-    spec.name = "TetrationClassic";
-    spec.displayName = "Tetration (Classic)";
-    spec.category = "Special";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Infinite power tower: z^z^z^z...";
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = -0.01;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.205128;  // Viewport tuning: X scale 19.5
+        ic = InitialConditionsService::Get("Lyapunov");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;
+        spec.parameters = {};
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(1, 0);  // Start with z = 1
-        ComplexD constant = isJulia ? juliaC : c;
+        FractalRegistry::Register(spec);
 
-        for (int iter = 0; iter < maxIter; ++iter) {
-            // z = c^z (tetration approximation)
-            double r = sqrt(constant.real * constant.real + constant.imag * constant.imag);
-            if (r < 1e-10) break;
-            double theta = atan2(constant.imag, constant.real);
-            double ln_r = log(r);
+        //=========================================================================
+        // MANDELBAR (231) - Mandelbar (Tricorn without conjugate in z²)
+        //=========================================================================
+        spec.name = "MandelbarExotic";
+        spec.displayName = "Mandelbar";
+        spec.category = "Mandelbrot Variants";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbar fractal: z = conj(z)² + c";
 
-            double re_exp = z.real * ln_r - z.imag * theta;
-            double im_exp = z.real * theta + z.imag * ln_r;
-            double exp_re = exp(re_exp);
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0, 0);
+            ComplexD constant = isJulia ? juliaC : c;
 
-            z = ComplexD(exp_re * cos(im_exp), exp_re * sin(im_exp));
+            for (int iter = 0; iter < maxIter; ++iter) {
+                // Mandelbar: conjugate before squaring
+                z = ComplexD(z.real, -z.imag);
+                z = ComplexD(z.real * z.real - z.imag * z.imag + constant.real,
+                    2.0 * z.real * z.imag + constant.imag);
 
-            double modulus = z.real * z.real + z.imag * z.imag;
-            if (modulus > 256.0)
-                return iter + 1.0 - log(log(modulus)) / log(2.0);
-        }
-        return static_cast<double>(maxIter);
-    };
+                double modulus = z.real * z.real + z.imag * z.imag;
+                if (modulus > 256.0)
+                    return iter + 1.0 - log(log(modulus)) / log(2.0);
+            }
+            return static_cast<double>(maxIter);
+            };
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = -0.22;
-    spec.defaultCenterY = 0.05;
-    spec.defaultZoom = 0.32;  // Viewport tuning: X scale 12.5
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;
-    spec.parameters = {};
+        spec.supportsJulia = true;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.505051;  // Viewport tuning: X scale 7.92
+        ic = InitialConditionsService::Get("MandelbarExotic");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
+        spec.parameters = {};
 
-    FractalRegistry::Register(spec);
-}
+        FractalRegistry::Register(spec);
 
+        //=========================================================================
+        // THORN (227) - Thorn fractal (classic variant)
+        //=========================================================================
+        spec.name = "ThornClassic";
+        spec.displayName = "Thorn (Classic)";
+        spec.category = "Mandelbrot Variants";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Thorn fractal: z = z²/c + c";
+
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.1, 0.0);  // Non-zero starting point for better structure
+            ComplexD constant = isJulia ? juliaC : c;
+            double c_mag2 = constant.real * constant.real + constant.imag * constant.imag;
+            if (c_mag2 < 1e-10) return static_cast<double>(maxIter);
+
+            for (int iter = 0; iter < maxIter; ++iter) {
+                // z = z²/c + c
+                double z_sq_real = z.real * z.real - z.imag * z.imag;
+                double z_sq_imag = 2.0 * z.real * z.imag;
+
+                // Complex division: z²/c
+                double div_real = (z_sq_real * constant.real + z_sq_imag * constant.imag) / c_mag2;
+                double div_imag = (z_sq_imag * constant.real - z_sq_real * constant.imag) / c_mag2;
+
+                z.real = div_real + constant.real;
+                z.imag = div_imag + constant.imag;
+
+                double modulus = z.real * z.real + z.imag * z.imag;
+                if (modulus > 100.0)  // Lower bailout for better structure visibility
+                    return iter + 1.0 - log(log(modulus)) / log(2.0);
+            }
+            return static_cast<double>(maxIter);
+            };
+
+        spec.supportsJulia = true;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 4.566210;  // Viewport tuning: X scale 0.876
+        ic = InitialConditionsService::Get("ThornClassic");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 100.0;
+        spec.hasSymmetry = false;
+        spec.parameters = {};
+
+        FractalRegistry::Register(spec);
+
+        //=========================================================================
+        // TETRATION (236) - Infinite tower: z^z^z^...
+        //=========================================================================
+        spec.name = "TetrationClassic";
+        spec.displayName = "Tetration (Classic)";
+        spec.category = "Special";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Infinite power tower: z^z^z^z...";
+
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(1, 0);  // Start with z = 1
+            ComplexD constant = isJulia ? juliaC : c;
+
+            for (int iter = 0; iter < maxIter; ++iter) {
+                // z = c^z (tetration approximation)
+                double r = sqrt(constant.real * constant.real + constant.imag * constant.imag);
+                if (r < 1e-10) break;
+                double theta = atan2(constant.imag, constant.real);
+                double ln_r = log(r);
+
+                double re_exp = z.real * ln_r - z.imag * theta;
+                double im_exp = z.real * theta + z.imag * ln_r;
+                double exp_re = exp(re_exp);
+
+                z = ComplexD(exp_re * cos(im_exp), exp_re * sin(im_exp));
+
+                double modulus = z.real * z.real + z.imag * z.imag;
+                if (modulus > 256.0)
+                    return iter + 1.0 - log(log(modulus)) / log(2.0);
+            }
+            return static_cast<double>(maxIter);
+            };
+
+        spec.supportsJulia = true;
+        //spec.defaultCenterX = -0.22;
+        //spec.defaultCenterY = 0.05;
+        //spec.defaultZoom = 0.32;  // Viewport tuning: X scale 12.5
+        ic = InitialConditionsService::Get("TetrationClassic");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;
+        spec.parameters = {};
+
+        FractalRegistry::Register(spec);
+    }
 } // namespace Native

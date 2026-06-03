@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
@@ -6,6 +7,8 @@ namespace Native
 {
     void RegisterEnhancedJuliaPresetsFamily()
     {
+        InitialConditions ic;  // Declare ONCE at the top
+
         // ═══════════════════════════════════════════════════════════════════════════════
         // ENHANCED JULIA PRESETS COLLECTION
         // Famous, beautiful, and mathematically interesting Julia set constants
@@ -13,29 +16,29 @@ namespace Native
 
         // Helper lambda for standard Julia calculation
         auto juliaCalc = [](ComplexD c, int maxIter, ComplexD juliaConstant) -> double
-        {
-            ComplexD z = c;
-
-            for (int i = 0; i < maxIter; ++i)
             {
-                double x = z.real;
-                double y = z.imag;
+                ComplexD z = c;
 
-                z.real = x * x - y * y + juliaConstant.real;
-                z.imag = 2.0 * x * y + juliaConstant.imag;
-
-                double mag2 = z.real * z.real + z.imag * z.imag;
-
-                if (mag2 > 256.0)
+                for (int i = 0; i < maxIter; ++i)
                 {
-                    double log_zn = std::log(mag2) / 2.0;
-                    double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                    return i + 1.0 - nu;
-                }
-            }
+                    double x = z.real;
+                    double y = z.imag;
 
-            return static_cast<double>(maxIter);
-        };
+                    z.real = x * x - y * y + juliaConstant.real;
+                    z.imag = 2.0 * x * y + juliaConstant.imag;
+
+                    double mag2 = z.real * z.real + z.imag * z.imag;
+
+                    if (mag2 > 256.0)
+                    {
+                        double log_zn = std::log(mag2) / 2.0;
+                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                        return i + 1.0 - nu;
+                    }
+                }
+
+                return static_cast<double>(maxIter);
+            };
 
         // ───────────────────────────────────────────────────────────────────────────────
         // Julia: Golden Ratio
@@ -56,18 +59,22 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "Creates spirals with golden ratio proportions and fine structure";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaGoldenRatio");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                // Use c = -0.4 + 0.6i for golden ratio spiral patterns
-                // This creates much more interesting structure than φ - 2 (which is near a Siegel disk)
-                return juliaCalc(c, maxIter, ComplexD(-0.4, 0.6));
-            };
+                {
+                    // Use c = -0.4 + 0.6i for golden ratio spiral patterns
+                    // This creates much more interesting structure than φ - 2 (which is near a Siegel disk)
+                    return juliaCalc(c, maxIter, ComplexD(-0.4, 0.6));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -91,16 +98,20 @@ namespace Native
             spec.discoveryYear = 1982;
             spec.computationalNotes = "c = i creates dendritic Julia set";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.6;
+            ic = InitialConditionsService::Get("JuliaDendritePreset");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(0.0, 1.0));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(0.0, 1.0));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -124,16 +135,20 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "Parameter in upper half-plane creates spirals";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaSpiralPreset");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(0.4, 0.6));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(0.4, 0.6));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -157,16 +172,20 @@ namespace Native
             spec.discoveryYear = 1984;
             spec.computationalNotes = "Classic dragon parameter";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.55;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.55;
+            ic = InitialConditionsService::Get("JuliaDragonPreset");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.8, 0.156));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.8, 0.156));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -190,16 +209,20 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "Near parabolic point creates cauliflower structure";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaCauliflower");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(0.25, 0.0));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(0.25, 0.0));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -223,16 +246,20 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "From interesting Mandelbrot region";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaSeahorse");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.75, 0.11));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.75, 0.11));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -256,16 +283,20 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "Resembles airplane from certain angles";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaAirplane");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.7269, 0.1889));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.7269, 0.1889));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -289,16 +320,20 @@ namespace Native
             spec.discoveryYear = 1988;
             spec.computationalNotes = "High imaginary component creates jagged patterns";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaLightning");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.52, 0.57));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.52, 0.57));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -322,16 +357,20 @@ namespace Native
             spec.discoveryYear = 1987;
             spec.computationalNotes = "Close to parabolic point creates intricate detail";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaSnowflake");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(0.285, 0.01));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(0.285, 0.01));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -355,16 +394,20 @@ namespace Native
             spec.discoveryYear = 1989;
             spec.computationalNotes = "Near real axis creates petal-like structures";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaFlower");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(0.28, 0.008));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(0.28, 0.008));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -388,16 +431,20 @@ namespace Native
             spec.discoveryYear = 1983;
             spec.computationalNotes = "Feigenbaum constant δ ≈ 4.669 appears in scaling";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaFeigenbaum");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-1.401155, 0.0));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-1.401155, 0.0));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -421,16 +468,20 @@ namespace Native
             spec.discoveryYear = 1991;
             spec.computationalNotes = "Near-rational ratio creates pseudo-symmetry";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaTwistedCross");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(0.45, 0.1428));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(0.45, 0.1428));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -454,16 +505,20 @@ namespace Native
             spec.discoveryYear = 1982;
             spec.computationalNotes = "c = -1 is boundary between connected/disconnected";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaBackbone");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-1.0, 0.0));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-1.0, 0.0));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -487,16 +542,20 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "Specific ratio creates spiral arm separation";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaSpiralGalaxy");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.4, 0.59));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.4, 0.59));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -520,16 +579,20 @@ namespace Native
             spec.discoveryYear = 1992;
             spec.computationalNotes = "Many small bulbs create tentacle appearance";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaMedusa");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.194, 0.6557));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.194, 0.6557));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -553,16 +616,20 @@ namespace Native
             spec.discoveryYear = 1988;
             spec.computationalNotes = "Creates angular rather than smooth boundaries";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaCrystal");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.7, 0.27015));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.7, 0.27015));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -586,16 +653,20 @@ namespace Native
             spec.discoveryYear = 1993;
             spec.computationalNotes = "High imaginary component creates elongated swirls";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaPaisley");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.162, 1.04));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.162, 1.04));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -619,16 +690,20 @@ namespace Native
             spec.discoveryYear = 1986;
             spec.computationalNotes = "Small real component maintains approximate circularity";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaFuzzyBlob");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.11, 0.6557));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.11, 0.6557));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -652,16 +727,20 @@ namespace Native
             spec.discoveryYear = 1983;
             spec.computationalNotes = "Near transition point creates elongated shape";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaEye");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.75, 0.0));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.75, 0.0));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -685,16 +764,20 @@ namespace Native
             spec.discoveryYear = 1991;
             spec.computationalNotes = "Parameter creates visual threefold structure";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaTripleSpiral");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.4, 0.6));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.4, 0.6));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -718,16 +801,20 @@ namespace Native
             spec.discoveryYear = 1995;
             spec.computationalNotes = "Specific parameter ratio creates heart cleft";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaHeart");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.835, -0.2321));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.835, -0.2321));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -751,16 +838,20 @@ namespace Native
             spec.discoveryYear = 1994;
             spec.computationalNotes = "Creates node-and-connection topology";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaNeurons");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.8, 0.156));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.8, 0.156));
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -784,16 +875,20 @@ namespace Native
             spec.discoveryYear = 1989;
             spec.computationalNotes = "Creates hierarchical branching pattern";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("JuliaFractalTree");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [juliaCalc](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                return juliaCalc(c, maxIter, ComplexD(-0.75, 0.2));
-            };
+                {
+                    return juliaCalc(c, maxIter, ComplexD(-0.75, 0.2));
+                };
 
             FractalRegistry::Register(spec);
         }

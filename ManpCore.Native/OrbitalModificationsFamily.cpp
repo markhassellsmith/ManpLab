@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
@@ -10,6 +11,7 @@ namespace Native
 {
     void RegisterOrbitalModificationsFamily()
     {
+        InitialConditions ic;  // Declare ONCE at the top
         // ═══════════════════════════════════════════════════════════════════════════════
         // ORBITAL ADVANCED TECHNIQUES
         // Advanced orbital techniques: orbit traps, path modifications, conditional logic
@@ -34,43 +36,47 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "Tracks minimum distance to trap during escape";
 
-            spec.defaultCenterX = -0.09;
-            spec.defaultCenterY = -0.02;
-            spec.defaultZoom = 0.959233;  // Viewport tuning: X scale 4.17
+            //spec.defaultCenterX = -0.09;
+            //spec.defaultCenterY = -0.02;
+            //spec.defaultZoom = 0.959233;  // Viewport tuning: X scale 4.17
+            ic = InitialConditionsService::Get("CircularOrbitTrap");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                ComplexD trap(0.0, 0.0); // Trap at origin
-                double minDist = 1e10;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    ComplexD trap(0.0, 0.0); // Trap at origin
+                    double minDist = 1e10;
 
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    // Distance to trap
-                    double dist = std::sqrt((z.real - trap.real) * (z.real - trap.real) + 
-                                           (z.imag - trap.imag) * (z.imag - trap.imag));
-                    if (dist < minDist) minDist = dist;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        // Color by minimum trap distance
-                        return minDist * 50.0;
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return minDist * 50.0;
-            };
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        // Distance to trap
+                        double dist = std::sqrt((z.real - trap.real) * (z.real - trap.real) +
+                            (z.imag - trap.imag) * (z.imag - trap.imag));
+                        if (dist < minDist) minDist = dist;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            // Color by minimum trap distance
+                            return minDist * 50.0;
+                        }
+                    }
+
+                    return minDist * 50.0;
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -94,43 +100,47 @@ namespace Native
             spec.discoveryYear = 1992;
             spec.computationalNotes = "Minimum distance to either axis";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
+            ic = InitialConditionsService::Get("CrossOrbitTrap");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                double minDist = 1e10;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double minDist = 1e10;
 
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    // Distance to cross (min distance to either axis)
-                    double distToXAxis = std::abs(z.imag);
-                    double distToYAxis = std::abs(z.real);
-                    double dist = std::min(distToXAxis, distToYAxis);
-
-                    if (dist < minDist) minDist = dist;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return minDist * 100.0;
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return minDist * 100.0;
-            };
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        // Distance to cross (min distance to either axis)
+                        double distToXAxis = std::abs(z.imag);
+                        double distToYAxis = std::abs(z.real);
+                        double dist = std::min(distToXAxis, distToYAxis);
+
+                        if (dist < minDist) minDist = dist;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            return minDist * 100.0;
+                        }
+                    }
+
+                    return minDist * 100.0;
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -154,51 +164,55 @@ namespace Native
             spec.discoveryYear = 1998;
             spec.computationalNotes = "Threshold-based formula switching";
 
-            spec.defaultCenterX = -0.15;
-            spec.defaultCenterY = -0.01;
-            spec.defaultZoom = 0.980392;  // Viewport tuning: X scale 4.08
+            //spec.defaultCenterX = -0.15;
+            //spec.defaultCenterY = -0.01;
+            //spec.defaultZoom = 0.980392;  // Viewport tuning: X scale 4.08
+            ic = InitialConditionsService::Get("StalksConditional");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                double threshold = 2.0;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
-                    double mag = std::sqrt(x * x + y * y);
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double threshold = 2.0;
 
-                    if (mag < threshold)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        // z² + c
-                        z.real = x * x - y * y + constant.real;
-                        z.imag = 2.0 * x * y + constant.imag;
-                    }
-                    else
-                    {
-                        // z³ + c
-                        double x2 = x * x - y * y;
-                        double y2 = 2.0 * x * y;
-                        z.real = x * x2 - y * y2 + constant.real;
-                        z.imag = x * y2 + y * x2 + constant.imag;
+                        double x = z.real;
+                        double y = z.imag;
+                        double mag = std::sqrt(x * x + y * y);
+
+                        if (mag < threshold)
+                        {
+                            // z² + c
+                            z.real = x * x - y * y + constant.real;
+                            z.imag = 2.0 * x * y + constant.imag;
+                        }
+                        else
+                        {
+                            // z³ + c
+                            double x2 = x * x - y * y;
+                            double y2 = 2.0 * x * y;
+                            z.real = x * x2 - y * y2 + constant.real;
+                            z.imag = x * y2 + y * x2 + constant.imag;
+                        }
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            double log_zn = std::log(mag2) / 2.0;
+                            double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                            return i + 1.0 - nu;
+                        }
                     }
 
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
-                    {
-                        double log_zn = std::log(mag2) / 2.0;
-                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                        return i + 1.0 - nu;
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -222,43 +236,47 @@ namespace Native
             spec.discoveryYear = 1995;
             spec.computationalNotes = "Exponential moving average on orbit points";
 
-            spec.defaultCenterX = -0.25;
-            spec.defaultCenterY = -0.01;
-            spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+            //spec.defaultCenterX = -0.25;
+            //spec.defaultCenterY = -0.01;
+            //spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+            ic = InitialConditionsService::Get("SmoothedOrbit");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                ComplexD zSmooth(0.0, 0.0);
-                double alpha = 0.9;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    ComplexD zSmooth(0.0, 0.0);
+                    double alpha = 0.9;
 
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    // Apply smoothing
-                    zSmooth.real = alpha * zSmooth.real + (1.0 - alpha) * z.real;
-                    zSmooth.imag = alpha * zSmooth.imag + (1.0 - alpha) * z.imag;
-
-                    double mag2 = zSmooth.real * zSmooth.real + zSmooth.imag * zSmooth.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        double log_zn = std::log(mag2) / 2.0;
-                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                        return i + 1.0 - nu;
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        // Apply smoothing
+                        zSmooth.real = alpha * zSmooth.real + (1.0 - alpha) * z.real;
+                        zSmooth.imag = alpha * zSmooth.imag + (1.0 - alpha) * z.imag;
+
+                        double mag2 = zSmooth.real * zSmooth.real + zSmooth.imag * zSmooth.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            double log_zn = std::log(mag2) / 2.0;
+                            double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                            return i + 1.0 - nu;
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -282,40 +300,44 @@ namespace Native
             spec.discoveryYear = 1994;
             spec.computationalNotes = "Accumulates atan2 values to track total rotation";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
+            ic = InitialConditionsService::Get("OrbitAngleAccum");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                double angleSum = 0.0;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double angleSum = 0.0;
 
-                    // Accumulate angle
-                    angleSum += std::atan2(y, x);
-
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        // Return based on accumulated angle
-                        return std::fmod(std::abs(angleSum), 100.0);
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return std::fmod(std::abs(angleSum), 100.0);
-            };
+                        // Accumulate angle
+                        angleSum += std::atan2(y, x);
+
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            // Return based on accumulated angle
+                            return std::fmod(std::abs(angleSum), 100.0);
+                        }
+                    }
+
+                    return std::fmod(std::abs(angleSum), 100.0);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -339,52 +361,56 @@ namespace Native
             spec.discoveryYear = 1993;
             spec.computationalNotes = "Point-to-triangle distance calculation";
 
-            spec.defaultCenterX = -0.34;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
+            //spec.defaultCenterX = -0.34;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
+            ic = InitialConditionsService::Get("TriangleOrbitTrap");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                double minDist = 1e10;
-
-                // Triangle vertices (equilateral, radius 1)
-                double v1x = 0.0, v1y = 1.0;
-                double v2x = 0.866, v2y = -0.5;
-                double v3x = -0.866, v3y = -0.5;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double minDist = 1e10;
 
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
+                    // Triangle vertices (equilateral, radius 1)
+                    double v1x = 0.0, v1y = 1.0;
+                    double v2x = 0.866, v2y = -0.5;
+                    double v3x = -0.866, v3y = -0.5;
 
-                    // Simplified distance to triangle (distance to nearest edge)
-                    double d1 = std::abs((v2y - v1y) * z.real - (v2x - v1x) * z.imag + v2x * v1y - v2y * v1x) / 
-                               std::sqrt((v2y - v1y) * (v2y - v1y) + (v2x - v1x) * (v2x - v1x));
-                    double d2 = std::abs((v3y - v2y) * z.real - (v3x - v2x) * z.imag + v3x * v2y - v3y * v2x) / 
-                               std::sqrt((v3y - v2y) * (v3y - v2y) + (v3x - v2x) * (v3x - v2x));
-                    double d3 = std::abs((v1y - v3y) * z.real - (v1x - v3x) * z.imag + v1x * v3y - v1y * v3x) / 
-                               std::sqrt((v1y - v3y) * (v1y - v3y) + (v1x - v3x) * (v1x - v3x));
-
-                    double dist = std::min({d1, d2, d3});
-                    if (dist < minDist) minDist = dist;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return minDist * 50.0;
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return minDist * 50.0;
-            };
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        // Simplified distance to triangle (distance to nearest edge)
+                        double d1 = std::abs((v2y - v1y) * z.real - (v2x - v1x) * z.imag + v2x * v1y - v2y * v1x) /
+                            std::sqrt((v2y - v1y) * (v2y - v1y) + (v2x - v1x) * (v2x - v1x));
+                        double d2 = std::abs((v3y - v2y) * z.real - (v3x - v2x) * z.imag + v3x * v2y - v3y * v2x) /
+                            std::sqrt((v3y - v2y) * (v3y - v2y) + (v3x - v2x) * (v3x - v2x));
+                        double d3 = std::abs((v1y - v3y) * z.real - (v1x - v3x) * z.imag + v1x * v3y - v1y * v3x) /
+                            std::sqrt((v1y - v3y) * (v1y - v3y) + (v1x - v3x) * (v1x - v3x));
+
+                        double dist = std::min({ d1, d2, d3 });
+                        if (dist < minDist) minDist = dist;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            return minDist * 50.0;
+                        }
+                    }
+
+                    return minDist * 50.0;
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -408,44 +434,48 @@ namespace Native
             spec.discoveryYear = 1996;
             spec.computationalNotes = "Running average of sine of angle";
 
-            spec.defaultCenterX = -0.18;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+            //spec.defaultCenterX = -0.18;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+            ic = InitialConditionsService::Get("StripeAverage");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                double stripeSum = 0.0;
-                int count = 0;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double stripeSum = 0.0;
+                    int count = 0;
 
-                    // Accumulate stripe value
-                    double angle = std::atan2(y, x);
-                    stripeSum += std::sin(angle * 10.0); // Frequency 10 for visible stripes
-                    count++;
-
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        double avg = count > 0 ? stripeSum / count : 0.0;
-                        return (avg + 1.0) * 50.0; // Map [-1,1] to [0,100]
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                double avg = count > 0 ? stripeSum / count : 0.0;
-                return (avg + 1.0) * 50.0;
-            };
+                        // Accumulate stripe value
+                        double angle = std::atan2(y, x);
+                        stripeSum += std::sin(angle * 10.0); // Frequency 10 for visible stripes
+                        count++;
+
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            double avg = count > 0 ? stripeSum / count : 0.0;
+                            return (avg + 1.0) * 50.0; // Map [-1,1] to [0,100]
+                        }
+                    }
+
+                    double avg = count > 0 ? stripeSum / count : 0.0;
+                    return (avg + 1.0) * 50.0;
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -469,51 +499,55 @@ namespace Native
             spec.discoveryYear = 1997;
             spec.computationalNotes = "Second derivative approximation via angle differences";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+            ic = InitialConditionsService::Get("CurvatureTracking");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                double prevAngle = 0.0;
-                double curvatureSum = 0.0;
-                int count = 0;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double prevAngle = 0.0;
+                    double curvatureSum = 0.0;
+                    int count = 0;
 
-                    double angle = std::atan2(y, x);
-
-                    if (i > 0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        double angleDiff = std::abs(angle - prevAngle);
-                        // Normalize to [-π, π]
-                        if (angleDiff > M_PI) angleDiff = 2.0 * M_PI - angleDiff;
-                        curvatureSum += angleDiff;
-                        count++;
+                        double x = z.real;
+                        double y = z.imag;
+
+                        double angle = std::atan2(y, x);
+
+                        if (i > 0)
+                        {
+                            double angleDiff = std::abs(angle - prevAngle);
+                            // Normalize to [-π, π]
+                            if (angleDiff > M_PI) angleDiff = 2.0 * M_PI - angleDiff;
+                            curvatureSum += angleDiff;
+                            count++;
+                        }
+
+                        prevAngle = angle;
+
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            return count > 0 ? (curvatureSum / count) * 100.0 : 0.0;
+                        }
                     }
 
-                    prevAngle = angle;
-
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
-                    {
-                        return count > 0 ? (curvatureSum / count) * 100.0 : 0.0;
-                    }
-                }
-
-                return count > 0 ? (curvatureSum / count) * 100.0 : 0.0;
-            };
+                    return count > 0 ? (curvatureSum / count) * 100.0 : 0.0;
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -537,48 +571,52 @@ namespace Native
             spec.discoveryYear = 1999;
             spec.computationalNotes = "First derivative of magnitude along orbit";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.266667;  // Viewport tuning: X scale 15.0
+            ic = InitialConditionsService::Get("DeltaMagnitude");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                double prevMag = 0.0;
-                double deltaSum = 0.0;
-                int count = 0;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
-                    double currentMag = std::sqrt(x * x + y * y);
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double prevMag = 0.0;
+                    double deltaSum = 0.0;
+                    int count = 0;
 
-                    if (i > 0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        double delta = std::abs(currentMag - prevMag);
-                        deltaSum += delta;
-                        count++;
+                        double x = z.real;
+                        double y = z.imag;
+                        double currentMag = std::sqrt(x * x + y * y);
+
+                        if (i > 0)
+                        {
+                            double delta = std::abs(currentMag - prevMag);
+                            deltaSum += delta;
+                            count++;
+                        }
+
+                        prevMag = currentMag;
+
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            return count > 0 ? (deltaSum / count) * 20.0 : 0.0;
+                        }
                     }
 
-                    prevMag = currentMag;
-
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
-                    {
-                        return count > 0 ? (deltaSum / count) * 20.0 : 0.0;
-                    }
-                }
-
-                return count > 0 ? (deltaSum / count) * 20.0 : 0.0;
-            };
+                    return count > 0 ? (deltaSum / count) * 20.0 : 0.0;
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -602,49 +640,53 @@ namespace Native
             spec.discoveryYear = 1994;
             spec.computationalNotes = "Minimum of point distance and line distance";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 1.066667;  // Viewport tuning: X scale 3.75
+            ic = InitialConditionsService::Get("PointLineOrbitTrap");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                ComplexD point(0.5, 0.0);
-                double minDist = 1e10;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    ComplexD point(0.5, 0.0);
+                    double minDist = 1e10;
 
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    // Distance to point
-                    double distPoint = std::sqrt((z.real - point.real) * (z.real - point.real) + 
-                                                 (z.imag - point.imag) * (z.imag - point.imag));
-
-                    // Distance to line (y = 0)
-                    double distLine = std::abs(z.imag);
-
-                    // Minimum of both
-                    double dist = std::min(distPoint, distLine);
-
-                    if (dist < minDist) minDist = dist;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return minDist * 50.0;
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return minDist * 50.0;
-            };
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        // Distance to point
+                        double distPoint = std::sqrt((z.real - point.real) * (z.real - point.real) +
+                            (z.imag - point.imag) * (z.imag - point.imag));
+
+                        // Distance to line (y = 0)
+                        double distLine = std::abs(z.imag);
+
+                        // Minimum of both
+                        double dist = std::min(distPoint, distLine);
+
+                        if (dist < minDist) minDist = dist;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            return minDist * 50.0;
+                        }
+                    }
+
+                    return minDist * 50.0;
+                };
 
             FractalRegistry::Register(spec);
         }

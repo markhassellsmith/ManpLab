@@ -1,390 +1,422 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
 namespace Native {
+    //=============================================================================
+    // Orbital Fractals Family
+    // Fractals with orbit modifications and trapping techniques
+    //=============================================================================
 
-//=============================================================================
-// Orbital Fractals Family
-// Fractals with orbit modifications and trapping techniques
-//=============================================================================
+    void RegisterOrbitalFractalsFamily()
+    {
+        FractalSpec spec;
+        InitialConditions ic;  // Declare ONCE at the top
 
-void RegisterOrbitalFractalsFamily()
-{
-    FractalSpec spec;
+        //=========================================================================
+        // Orbit Trap - Cross
+        //=========================================================================
+        spec.name = "OrbitTrapCross";
+        spec.displayName = "Orbit Trap (Cross)";
+        spec.category = "Orbit Trap";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbrot with cross-shaped orbit trap";
+        spec.formula = "z = z² + c, trap: min(|Re(z)|, |Im(z)|)";
+        spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{trap} = \min(|Re(z)|, |Im(z)|))";
 
-    //=========================================================================
-    // Orbit Trap - Cross
-    //=========================================================================
-    spec.name = "OrbitTrapCross";
-    spec.displayName = "Orbit Trap (Cross)";
-    spec.category = "Orbit Trap";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with cross-shaped orbit trap";
-    spec.formula = "z = z² + c, trap: min(|Re(z)|, |Im(z)|)";
-    spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{trap} = \min(|Re(z)|, |Im(z)|))";
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.0, 0.0);
+            const double bailout = 256.0;
+            double minDist = 1000.0;
+            int escapeIter = maxIter;
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
-        double minDist = 1000.0;
-        int escapeIter = maxIter;
+            for (int i = 0; i < maxIter; ++i)
+            {
+                double magSq = z.real * z.real + z.imag * z.imag;
+                if (magSq > bailout) {
+                    escapeIter = i;
+                    break;
+                }
 
-        for (int i = 0; i < maxIter; ++i)
-        {
-            double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout) {
-                escapeIter = i;
-                break;
+                // Cross trap: distance to axes
+                double dist = std::min(std::abs(z.real), std::abs(z.imag));
+                if (dist < minDist)
+                    minDist = dist;
+
+                ComplexD temp = z;
+                z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
+                z.imag = 2.0 * temp.real * temp.imag + c.imag;
             }
 
-            // Cross trap: distance to axes
-            double dist = std::min(std::abs(z.real), std::abs(z.imag));
-            if (dist < minDist)
-                minDist = dist;
+            // Return logarithmic scaling for better visual contrast
+            if (minDist < 0.001) minDist = 0.001;
+            return escapeIter + 50.0 * std::log(minDist + 0.01);
+            };
 
-            ComplexD temp = z;
-            z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
-            z.imag = 2.0 * temp.real * temp.imag + c.imag;
-        }
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = -0.24;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
+        ic = InitialConditionsService::Get("OrbitTrapCross");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
 
-        // Return logarithmic scaling for better visual contrast
-        if (minDist < 0.001) minDist = 0.001;
-        return escapeIter + 50.0 * std::log(minDist + 0.01);
-    };
+        FractalRegistry::Register(spec);
 
-    spec.supportsJulia = false;
-    spec.defaultCenterX = -0.24;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
+        //=========================================================================
+        // Orbit Trap - Circle
+        //=========================================================================
+        spec.name = "OrbitTrapCircle";
+        spec.displayName = "Orbit Trap (Circle)";
+        spec.category = "Orbit Trap";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbrot with circular orbit trap";
+        spec.formula = "z = z² + c, trap: ||z| - r|";
+        spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{trap} = ||z| - r|)";
 
-    FractalRegistry::Register(spec);
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.0, 0.0);
+            const double bailout = 256.0;
+            const double trapRadius = 0.5;
+            double minDist = 1000.0;
 
-    //=========================================================================
-    // Orbit Trap - Circle
-    //=========================================================================
-    spec.name = "OrbitTrapCircle";
-    spec.displayName = "Orbit Trap (Circle)";
-    spec.category = "Orbit Trap";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with circular orbit trap";
-    spec.formula = "z = z² + c, trap: ||z| - r|";
-    spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{trap} = ||z| - r|)";
+            for (int i = 0; i < maxIter; ++i)
+            {
+                double magSq = z.real * z.real + z.imag * z.imag;
+                if (magSq > bailout)
+                    return minDist * maxIter;
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
-        const double trapRadius = 0.5;
-        double minDist = 1000.0;
+                // Circle trap: distance from circle of radius trapRadius
+                double mag = std::sqrt(magSq);
+                double dist = std::abs(mag - trapRadius);
+                if (dist < minDist)
+                    minDist = dist;
 
-        for (int i = 0; i < maxIter; ++i)
-        {
-            double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout)
-                return minDist * maxIter;
-
-            // Circle trap: distance from circle of radius trapRadius
-            double mag = std::sqrt(magSq);
-            double dist = std::abs(mag - trapRadius);
-            if (dist < minDist)
-                minDist = dist;
-
-            ComplexD temp = z;
-            z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
-            z.imag = 2.0 * temp.real * temp.imag + c.imag;
-        }
-
-        return minDist * maxIter;
-    };
-
-    spec.supportsJulia = false;
-    spec.defaultCenterX = -0.38;
-    spec.defaultCenterY = -0.02;
-    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
-    // Orbit Trap - Point
-    //=========================================================================
-    spec.name = "OrbitTrapPoint";
-    spec.displayName = "Orbit Trap (Point)";
-    spec.category = "Orbit Trap";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with point orbit trap";
-    spec.formula = "z = z² + c, trap: |z - p|";
-    spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{trap} = |z - p|)";
-
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
-        ComplexD trapPoint(-0.5, 0.0);  // Interesting trap point location
-        double minDist = 1000.0;
-        int escapeIter = maxIter;
-
-        for (int i = 0; i < maxIter; ++i)
-        {
-            double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout) {
-                escapeIter = i;
-                break;
+                ComplexD temp = z;
+                z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
+                z.imag = 2.0 * temp.real * temp.imag + c.imag;
             }
 
-            // Point trap: distance to specific point
-            double dx = z.real - trapPoint.real;
-            double dy = z.imag - trapPoint.imag;
-            double dist = std::sqrt(dx * dx + dy * dy);
-            if (dist < minDist)
-                minDist = dist;
+            return minDist * maxIter;
+            };
 
-            ComplexD temp = z;
-            z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
-            z.imag = 2.0 * temp.real * temp.imag + c.imag;
-        }
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = -0.38;
+        //spec.defaultCenterY = -0.02;
+        //spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
+        ic = InitialConditionsService::Get("OrbitTrapCircle");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
 
-        // Return logarithmic scaling for better visual contrast
-        if (minDist < 0.001) minDist = 0.001;
-        return escapeIter + 50.0 * std::log(minDist + 0.01);
-    };
+        FractalRegistry::Register(spec);
 
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
+        //=========================================================================
+        // Orbit Trap - Point
+        //=========================================================================
+        spec.name = "OrbitTrapPoint";
+        spec.displayName = "Orbit Trap (Point)";
+        spec.category = "Orbit Trap";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbrot with point orbit trap";
+        spec.formula = "z = z² + c, trap: |z - p|";
+        spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{trap} = |z - p|)";
 
-    FractalRegistry::Register(spec);
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.0, 0.0);
+            const double bailout = 256.0;
+            ComplexD trapPoint(-0.5, 0.0);  // Interesting trap point location
+            double minDist = 1000.0;
+            int escapeIter = maxIter;
 
-    //=========================================================================
-    // Orbit Trap - Square
-    //=========================================================================
-    spec.name = "OrbitTrapSquare";
-    spec.displayName = "Orbit Trap (Square)";
-    spec.category = "Orbit Trap";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot with square orbit trap";
-    spec.formula = "z = z² + c, trap: max(|Re(z)|, |Im(z)|)";
-    spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{trap} = \max(|Re(z)|, |Im(z)|))";
+            for (int i = 0; i < maxIter; ++i)
+            {
+                double magSq = z.real * z.real + z.imag * z.imag;
+                if (magSq > bailout) {
+                    escapeIter = i;
+                    break;
+                }
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
-        const double trapSize = 0.5;
-        double minDist = 1000.0;
+                // Point trap: distance to specific point
+                double dx = z.real - trapPoint.real;
+                double dy = z.imag - trapPoint.imag;
+                double dist = std::sqrt(dx * dx + dy * dy);
+                if (dist < minDist)
+                    minDist = dist;
 
-        for (int i = 0; i < maxIter; ++i)
-        {
-            double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout)
-                return minDist * maxIter;
-
-            // Square trap: distance from square boundary
-            double dist = std::max(std::abs(z.real), std::abs(z.imag));
-            dist = std::abs(dist - trapSize);
-            if (dist < minDist)
-                minDist = dist;
-
-            ComplexD temp = z;
-            z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
-            z.imag = 2.0 * temp.real * temp.imag + c.imag;
-        }
-
-        return minDist * maxIter;
-    };
-
-    spec.supportsJulia = false;
-    spec.defaultCenterX = -0.17;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.995025;  // Viewport tuning: X scale 4.02
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
-    // Average Distance
-    //=========================================================================
-    spec.name = "AverageDistance";
-    spec.displayName = "Average Distance";
-    spec.category = "Orbit Statistics";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot colored by average orbit distance";
-    spec.formula = "z = z² + c, color by average |z|";
-    spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{avg}(\sum |z_n|))";
-
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
-        double sumDist = 0.0;
-
-        int i;
-        for (i = 0; i < maxIter; ++i)
-        {
-            double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout)
-                break;
-
-            sumDist += std::sqrt(magSq);
-
-            ComplexD temp = z;
-            z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
-            z.imag = 2.0 * temp.real * temp.imag + c.imag;
-        }
-
-        if (i == 0) return 0.0;
-        return (sumDist / i) * maxIter * 0.1;
-    };
-
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
-
-    FractalRegistry::Register(spec);
-
-    //=========================================================================
-    // Minimum Distance
-    //=========================================================================
-    spec.name = "MinimumDistance";
-    spec.displayName = "Minimum Distance";
-    spec.category = "Orbit Statistics";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot colored by minimum orbit distance from origin";
-    spec.formula = "z = z² + c, color by min(|z|)";
-    spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \min(|z_n|))";
-
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
-        double minDist = 1000.0;
-        int escapeIter = maxIter;
-
-        for (int i = 0; i < maxIter; ++i)
-        {
-            double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout) {
-                escapeIter = i;
-                break;
+                ComplexD temp = z;
+                z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
+                z.imag = 2.0 * temp.real * temp.imag + c.imag;
             }
 
-            double mag = std::sqrt(magSq);
-            if (mag < minDist)
-                minDist = mag;
+            // Return logarithmic scaling for better visual contrast
+            if (minDist < 0.001) minDist = 0.001;
+            return escapeIter + 50.0 * std::log(minDist + 0.01);
+            };
 
-            ComplexD temp = z;
-            z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
-            z.imag = 2.0 * temp.real * temp.imag + c.imag;
-        }
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
+        ic = InitialConditionsService::Get("OrbitTrapPoint");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
 
-        // Return logarithmic scaling for better visual contrast
-        if (minDist < 0.001) minDist = 0.001;
-        return escapeIter + 50.0 * std::log(minDist + 0.01);
-    };
+        FractalRegistry::Register(spec);
 
-    spec.supportsJulia = false;
-    spec.defaultCenterX = -0.24;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
+        //=========================================================================
+        // Orbit Trap - Square
+        //=========================================================================
+        spec.name = "OrbitTrapSquare";
+        spec.displayName = "Orbit Trap (Square)";
+        spec.category = "Orbit Trap";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbrot with square orbit trap";
+        spec.formula = "z = z² + c, trap: max(|Re(z)|, |Im(z)|)";
+        spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{trap} = \max(|Re(z)|, |Im(z)|))";
 
-    FractalRegistry::Register(spec);
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.0, 0.0);
+            const double bailout = 256.0;
+            const double trapSize = 0.5;
+            double minDist = 1000.0;
 
-    //=========================================================================
-    // Maximum Distance
-    //=========================================================================
-    spec.name = "MaximumDistance";
-    spec.displayName = "Maximum Distance";
-    spec.category = "Orbit Statistics";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot colored by maximum orbit distance before escape";
-    spec.formula = "z = z² + c, color by max(|z|)";
-    spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \max(|z_n|))";
+            for (int i = 0; i < maxIter; ++i)
+            {
+                double magSq = z.real * z.real + z.imag * z.imag;
+                if (magSq > bailout)
+                    return minDist * maxIter;
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
-        double maxDist = 0.0;
+                // Square trap: distance from square boundary
+                double dist = std::max(std::abs(z.real), std::abs(z.imag));
+                dist = std::abs(dist - trapSize);
+                if (dist < minDist)
+                    minDist = dist;
 
-        for (int i = 0; i < maxIter; ++i)
-        {
-            double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout)
-                return maxDist * maxIter * 0.1;
+                ComplexD temp = z;
+                z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
+                z.imag = 2.0 * temp.real * temp.imag + c.imag;
+            }
 
-            double mag = std::sqrt(magSq);
-            if (mag > maxDist)
-                maxDist = mag;
+            return minDist * maxIter;
+            };
 
-            ComplexD temp = z;
-            z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
-            z.imag = 2.0 * temp.real * temp.imag + c.imag;
-        }
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = -0.17;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.995025;  // Viewport tuning: X scale 4.02
+        ic = InitialConditionsService::Get("OrbitTrapSquare");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
 
-        return maxDist * maxIter * 0.1;
-    };
+        FractalRegistry::Register(spec);
 
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
+        //=========================================================================
+        // Average Distance
+        //=========================================================================
+        spec.name = "AverageDistance";
+        spec.displayName = "Average Distance";
+        spec.category = "Orbit Statistics";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbrot colored by average orbit distance";
+        spec.formula = "z = z² + c, color by average |z|";
+        spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{avg}(\sum |z_n|))";
 
-    FractalRegistry::Register(spec);
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.0, 0.0);
+            const double bailout = 256.0;
+            double sumDist = 0.0;
 
-    //=========================================================================
-    // Angle Average
-    //=========================================================================
-    spec.name = "AngleAverage";
-    spec.displayName = "Angle Average";
-    spec.category = "Orbit Statistics";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Mandelbrot colored by average orbit angle";
-    spec.formula = "z = z² + c, color by average arg(z)";
-    spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{avg}(\arg(z_n)))";
+            int i;
+            for (i = 0; i < maxIter; ++i)
+            {
+                double magSq = z.real * z.real + z.imag * z.imag;
+                if (magSq > bailout)
+                    break;
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        ComplexD z(0.0, 0.0);
-        const double bailout = 256.0;
-        double sumAngle = 0.0;
-        const double pi = 3.14159265358979323846;
+                sumDist += std::sqrt(magSq);
 
-        int i;
-        for (i = 0; i < maxIter; ++i)
-        {
-            double magSq = z.real * z.real + z.imag * z.imag;
-            if (magSq > bailout)
-                break;
+                ComplexD temp = z;
+                z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
+                z.imag = 2.0 * temp.real * temp.imag + c.imag;
+            }
 
-            if (magSq > 1e-10)
-                sumAngle += std::atan2(z.imag, z.real);
+            if (i == 0) return 0.0;
+            return (sumDist / i) * maxIter * 0.1;
+            };
 
-            ComplexD temp = z;
-            z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
-            z.imag = 2.0 * temp.real * temp.imag + c.imag;
-        }
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
+        ic = InitialConditionsService::Get("AverageDistance");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
 
-        if (i == 0) return 0.0;
-        double avgAngle = sumAngle / i;
-        return ((avgAngle + pi) / (2.0 * pi)) * maxIter;  // Normalize to [0, maxIter]
-    };
+        FractalRegistry::Register(spec);
 
-    spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;
+        //=========================================================================
+        // Minimum Distance
+        //=========================================================================
+        spec.name = "MinimumDistance";
+        spec.displayName = "Minimum Distance";
+        spec.category = "Orbit Statistics";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbrot colored by minimum orbit distance from origin";
+        spec.formula = "z = z² + c, color by min(|z|)";
+        spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \min(|z_n|))";
 
-    FractalRegistry::Register(spec);
-}
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.0, 0.0);
+            const double bailout = 256.0;
+            double minDist = 1000.0;
+            int escapeIter = maxIter;
 
+            for (int i = 0; i < maxIter; ++i)
+            {
+                double magSq = z.real * z.real + z.imag * z.imag;
+                if (magSq > bailout) {
+                    escapeIter = i;
+                    break;
+                }
+
+                double mag = std::sqrt(magSq);
+                if (mag < minDist)
+                    minDist = mag;
+
+                ComplexD temp = z;
+                z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
+                z.imag = 2.0 * temp.real * temp.imag + c.imag;
+            }
+
+            // Return logarithmic scaling for better visual contrast
+            if (minDist < 0.001) minDist = 0.001;
+            return escapeIter + 50.0 * std::log(minDist + 0.01);
+            };
+
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = -0.24;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0
+        ic = InitialConditionsService::Get("MinimumDistance");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
+
+        FractalRegistry::Register(spec);
+
+        //=========================================================================
+        // Maximum Distance
+        //=========================================================================
+        spec.name = "MaximumDistance";
+        spec.displayName = "Maximum Distance";
+        spec.category = "Orbit Statistics";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbrot colored by maximum orbit distance before escape";
+        spec.formula = "z = z² + c, color by max(|z|)";
+        spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \max(|z_n|))";
+
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.0, 0.0);
+            const double bailout = 256.0;
+            double maxDist = 0.0;
+
+            for (int i = 0; i < maxIter; ++i)
+            {
+                double magSq = z.real * z.real + z.imag * z.imag;
+                if (magSq > bailout)
+                    return maxDist * maxIter * 0.1;
+
+                double mag = std::sqrt(magSq);
+                if (mag > maxDist)
+                    maxDist = mag;
+
+                ComplexD temp = z;
+                z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
+                z.imag = 2.0 * temp.real * temp.imag + c.imag;
+            }
+
+            return maxDist * maxIter * 0.1;
+            };
+
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
+        ic = InitialConditionsService::Get("MaximumDistance");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
+
+        FractalRegistry::Register(spec);
+
+        //=========================================================================
+        // Angle Average
+        //=========================================================================
+        spec.name = "AngleAverage";
+        spec.displayName = "Angle Average";
+        spec.category = "Orbit Statistics";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Mandelbrot colored by average orbit angle";
+        spec.formula = "z = z² + c, color by average arg(z)";
+        spec.formulaLatex = R"(z_{n+1} = z_n^2 + c, \; \text{avg}(\arg(z_n)))";
+
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            ComplexD z(0.0, 0.0);
+            const double bailout = 256.0;
+            double sumAngle = 0.0;
+            const double pi = 3.14159265358979323846;
+
+            int i;
+            for (i = 0; i < maxIter; ++i)
+            {
+                double magSq = z.real * z.real + z.imag * z.imag;
+                if (magSq > bailout)
+                    break;
+
+                if (magSq > 1e-10)
+                    sumAngle += std::atan2(z.imag, z.real);
+
+                ComplexD temp = z;
+                z.real = temp.real * temp.real - temp.imag * temp.imag + c.real;
+                z.imag = 2.0 * temp.real * temp.imag + c.imag;
+            }
+
+            if (i == 0) return 0.0;
+            double avgAngle = sumAngle / i;
+            return ((avgAngle + pi) / (2.0 * pi)) * maxIter;  // Normalize to [0, maxIter]
+            };
+
+        spec.supportsJulia = false;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.666667;  // Viewport tuning: X scale 6.0
+        ic = InitialConditionsService::Get("AngleAverage");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;
+
+        FractalRegistry::Register(spec);
+    }
 } // namespace Native

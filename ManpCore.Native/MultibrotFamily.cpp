@@ -1,148 +1,160 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
 namespace Native {
+    //=============================================================================
+    // Multibrot Family
+    // Generalized Mandelbrot: z = z^n + c for various powers n
+    //=============================================================================
 
-//=============================================================================
-// Multibrot Family
-// Generalized Mandelbrot: z = z^n + c for various powers n
-//=============================================================================
-
-// Helper function for complex power calculation
-static ComplexD ComplexPower(ComplexD z, int power)
-{
-    if (power == 2)
+    // Helper function for complex power calculation
+    static ComplexD ComplexPower(ComplexD z, int power)
     {
-        // Optimized for power 2
-        return ComplexD(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y);
-    }
-
-    // General power using polar form: (r^n) * (cos(n*θ) + i*sin(n*θ))
-    double r = sqrt(z.x * z.x + z.y * z.y);
-    double theta = atan2(z.y, z.x);
-
-    double r_n = pow(r, power);
-    double n_theta = power * theta;
-
-    return ComplexD(r_n * cos(n_theta), r_n * sin(n_theta));
-}
-
-// Generalized Multibrot calculator
-static double CalculateMultibrot(ComplexD c, int maxIter, int power, bool isJulia, ComplexD juliaC)
-{
-    ComplexD z;
-    ComplexD constant;
-
-    if (isJulia)
-    {
-        z = c;
-        constant = juliaC;
-    }
-    else
-    {
-        z = ComplexD(0.0, 0.0);
-        constant = c;
-    }
-
-    int iteration = 0;
-    double bailout = 256.0;
-
-    while (iteration < maxIter)
-    {
-        double magnitude2 = z.x * z.x + z.y * z.y;
-
-        if (magnitude2 > bailout)
+        if (power == 2)
         {
-            // Smooth coloring
-            double log_zn = log(magnitude2) / 2.0;
-            double nu = log(log_zn / log(2.0)) / log(2.0);
-            return iteration + 1.0 - nu;
+            // Optimized for power 2
+            return ComplexD(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y);
         }
 
-        // z = z^power + c
-        ComplexD z_powered = ComplexPower(z, power);
-        z.x = z_powered.x + constant.x;
-        z.y = z_powered.y + constant.y;
+        // General power using polar form: (r^n) * (cos(n*θ) + i*sin(n*θ))
+        double r = sqrt(z.x * z.x + z.y * z.y);
+        double theta = atan2(z.y, z.x);
 
-        iteration++;
+        double r_n = pow(r, power);
+        double n_theta = power * theta;
+
+        return ComplexD(r_n * cos(n_theta), r_n * sin(n_theta));
     }
 
-    return (double)maxIter;
-}
+    // Generalized Multibrot calculator
+    static double CalculateMultibrot(ComplexD c, int maxIter, int power, bool isJulia, ComplexD juliaC)
+    {
+        ComplexD z;
+        ComplexD constant;
 
-void RegisterMultibrotFamily()
-{
-    FractalSpec spec;
+        if (isJulia)
+        {
+            z = c;
+            constant = juliaC;
+        }
+        else
+        {
+            z = ComplexD(0.0, 0.0);
+            constant = c;
+        }
 
-    //=========================================================================
-    // Multibrot 3 (Cubic Mandelbrot)
-    //=========================================================================
-    spec.name = "Multibrot3";
-    spec.displayName = "Multibrot³ (Cubic)";
-    spec.category = "Mandelbrot Variants";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Cubic Mandelbrot set. Iteration formula: z = z³ + c";
+        int iteration = 0;
+        double bailout = 256.0;
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        return CalculateMultibrot(c, maxIter, 3, isJulia, juliaC);
-    };
+        while (iteration < maxIter)
+        {
+            double magnitude2 = z.x * z.x + z.y * z.y;
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = -0.16;
-    spec.defaultCenterY = 0.01;
-    spec.defaultZoom = 0.733945;  // Viewport tuning: X scale 5.45
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;  // 3-fold rotational symmetry
-    spec.parameters = {};
+            if (magnitude2 > bailout)
+            {
+                // Smooth coloring
+                double log_zn = log(magnitude2) / 2.0;
+                double nu = log(log_zn / log(2.0)) / log(2.0);
+                return iteration + 1.0 - nu;
+            }
 
-    FractalRegistry::Register(spec);
+            // z = z^power + c
+            ComplexD z_powered = ComplexPower(z, power);
+            z.x = z_powered.x + constant.x;
+            z.y = z_powered.y + constant.y;
 
-    //=========================================================================
-    // Multibrot 4 (Quartic Mandelbrot)
-    //=========================================================================
-    spec.name = "Multibrot4";
-    spec.displayName = "Multibrot⁴ (Quartic)";
-    spec.category = "Mandelbrot Variants";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Quartic Mandelbrot set. Iteration formula: z = z⁴ + c";
+            iteration++;
+        }
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        return CalculateMultibrot(c, maxIter, 4, isJulia, juliaC);
-    };
+        return (double)maxIter;
+    }
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.932401;  // Viewport tuning: X scale 4.29
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = true;  // 4-fold rotational symmetry
-    spec.parameters = {};
+    void RegisterMultibrotFamily()
+    {
+        FractalSpec spec;
+        InitialConditions ic;  // Declare ONCE at the top
 
-    FractalRegistry::Register(spec);
+        //=========================================================================
+        // Multibrot 3 (Cubic Mandelbrot)
+        //=========================================================================
+        spec.name = "Multibrot3";
+        spec.displayName = "Multibrot³ (Cubic)";
+        spec.category = "Mandelbrot Variants";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Cubic Mandelbrot set. Iteration formula: z = z³ + c";
 
-    //=========================================================================
-    // Multibrot 5 (Quintic Mandelbrot)
-    //=========================================================================
-    spec.name = "Multibrot5";
-    spec.displayName = "Multibrot⁵ (Quintic)";
-    spec.category = "Mandelbrot Variants";
-    spec.type = FractalCategory::EscapeTime2D;
-    spec.description = "Quintic Mandelbrot set. Iteration formula: z = z⁵ + c";
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            return CalculateMultibrot(c, maxIter, 3, isJulia, juliaC);
+            };
 
-    spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-        return CalculateMultibrot(c, maxIter, 5, isJulia, juliaC);
-    };
+        spec.supportsJulia = true;
+        //spec.defaultCenterX = -0.16;
+        //spec.defaultCenterY = 0.01;
+        //spec.defaultZoom = 0.733945;  // Viewport tuning: X scale 5.45
+        ic = InitialConditionsService::Get("Multibrot3");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;  // 3-fold rotational symmetry
+        spec.parameters = {};
 
-    spec.supportsJulia = true;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 0.865801;  // Viewport tuning: X scale 4.62
-    spec.defaultBailout = 256.0;
-    spec.hasSymmetry = false;  // 5-fold rotational symmetry
-    spec.parameters = {};
+        FractalRegistry::Register(spec);
 
-    FractalRegistry::Register(spec);
-}
+        //=========================================================================
+        // Multibrot 4 (Quartic Mandelbrot)
+        //=========================================================================
+        spec.name = "Multibrot4";
+        spec.displayName = "Multibrot⁴ (Quartic)";
+        spec.category = "Mandelbrot Variants";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Quartic Mandelbrot set. Iteration formula: z = z⁴ + c";
 
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            return CalculateMultibrot(c, maxIter, 4, isJulia, juliaC);
+            };
+
+        spec.supportsJulia = true;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.932401;  // Viewport tuning: X scale 4.29
+        ic = InitialConditionsService::Get("Multibrot4");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = true;  // 4-fold rotational symmetry
+        spec.parameters = {};
+
+        FractalRegistry::Register(spec);
+
+        //=========================================================================
+        // Multibrot 5 (Quintic Mandelbrot)
+        //=========================================================================
+        spec.name = "Multibrot5";
+        spec.displayName = "Multibrot⁵ (Quintic)";
+        spec.category = "Mandelbrot Variants";
+        spec.type = FractalCategory::EscapeTime2D;
+        spec.description = "Quintic Mandelbrot set. Iteration formula: z = z⁵ + c";
+
+        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
+            return CalculateMultibrot(c, maxIter, 5, isJulia, juliaC);
+            };
+
+        spec.supportsJulia = true;
+        //spec.defaultCenterX = 0.0;
+        //spec.defaultCenterY = 0.0;
+        //spec.defaultZoom = 0.865801;  // Viewport tuning: X scale 4.62
+        ic = InitialConditionsService::Get("Multibrot5");
+        spec.defaultCenterX = ic.centerX;
+        spec.defaultCenterY = ic.centerY;
+        spec.defaultZoom = ic.zoom;
+        spec.defaultBailout = 256.0;
+        spec.hasSymmetry = false;  // 5-fold rotational symmetry
+        spec.parameters = {};
+
+        FractalRegistry::Register(spec);
+    }
 } // namespace Native

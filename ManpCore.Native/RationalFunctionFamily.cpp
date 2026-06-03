@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
@@ -6,6 +7,8 @@ namespace Native
 {
     void RegisterRationalFunctionFamily()
     {
+        InitialConditions ic;  // Declare ONCE at the top
+
         // ═══════════════════════════════════════════════════════════════════════════════
         // RATIONAL FUNCTION FRACTALS - Ratios of polynomials
         // ═══════════════════════════════════════════════════════════════════════════════
@@ -29,56 +32,60 @@ namespace Native
             spec.discoveryYear = 1669;
             spec.computationalNotes = "Simplified to z(n+1) = (2z³+1)/(3z²) for efficiency";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
+            ic = InitialConditionsService::Get("NewtonCubic");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // z³
-                    double x = z.real;
-                    double y = z.imag;
-                    double x2 = x * x - y * y;
-                    double y2 = 2.0 * x * y;
-                    double x3 = x * x2 - y * y2;
-                    double y3 = x * y2 + y * x2;
+                    ComplexD z = c;
 
-                    // z²
-                    double zSqReal = x * x - y * y;
-                    double zSqImag = 2.0 * x * y;
-
-                    // Newton iteration: z = z - (z³-1)/(3z²) = (2z³+1)/(3z²)
-                    // Numerator: 2z³ + 1
-                    double numReal = 2.0 * x3 + 1.0;
-                    double numImag = 2.0 * y3;
-
-                    // Denominator: 3z²
-                    double denReal = 3.0 * zSqReal;
-                    double denImag = 3.0 * zSqImag;
-
-                    // Complex division
-                    double denMag2 = denReal * denReal + denImag * denImag;
-                    if (denMag2 < 1e-10) return static_cast<double>(maxIter);
-
-                    z.real = (numReal * denReal + numImag * denImag) / denMag2;
-                    z.imag = (numImag * denReal - numReal * denImag) / denMag2;
-
-                    // Check for convergence (distance to any root < tolerance)
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
-                    if (std::abs(mag - 1.0) < 0.001)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        // z³
+                        double x = z.real;
+                        double y = z.imag;
+                        double x2 = x * x - y * y;
+                        double y2 = 2.0 * x * y;
+                        double x3 = x * x2 - y * y2;
+                        double y3 = x * y2 + y * x2;
 
-                return static_cast<double>(maxIter);
-            };
+                        // z²
+                        double zSqReal = x * x - y * y;
+                        double zSqImag = 2.0 * x * y;
+
+                        // Newton iteration: z = z - (z³-1)/(3z²) = (2z³+1)/(3z²)
+                        // Numerator: 2z³ + 1
+                        double numReal = 2.0 * x3 + 1.0;
+                        double numImag = 2.0 * y3;
+
+                        // Denominator: 3z²
+                        double denReal = 3.0 * zSqReal;
+                        double denImag = 3.0 * zSqImag;
+
+                        // Complex division
+                        double denMag2 = denReal * denReal + denImag * denImag;
+                        if (denMag2 < 1e-10) return static_cast<double>(maxIter);
+
+                        z.real = (numReal * denReal + numImag * denImag) / denMag2;
+                        z.imag = (numImag * denReal - numReal * denImag) / denMag2;
+
+                        // Check for convergence (distance to any root < tolerance)
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                        if (std::abs(mag - 1.0) < 0.001)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -102,55 +109,59 @@ namespace Native
             spec.discoveryYear = 1980;
             spec.computationalNotes = "Simplified to z(n+1) = (3z⁴+1)/(4z³)";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
+            ic = InitialConditionsService::Get("NewtonQuarticRational");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = c;
 
-                    // z²
-                    double x2 = x * x - y * y;
-                    double y2 = 2.0 * x * y;
-
-                    // z⁴ = (z²)²
-                    double x4 = x2 * x2 - y2 * y2;
-                    double y4 = 2.0 * x2 * y2;
-
-                    // z³
-                    double x3 = x * x2 - y * y2;
-                    double y3 = x * y2 + y * x2;
-
-                    // Newton: (3z⁴+1)/(4z³)
-                    double numReal = 3.0 * x4 + 1.0;
-                    double numImag = 3.0 * y4;
-
-                    double denReal = 4.0 * x3;
-                    double denImag = 4.0 * y3;
-
-                    double denMag2 = denReal * denReal + denImag * denImag;
-                    if (denMag2 < 1e-10) return static_cast<double>(maxIter);
-
-                    z.real = (numReal * denReal + numImag * denImag) / denMag2;
-                    z.imag = (numImag * denReal - numReal * denImag) / denMag2;
-
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
-                    if (std::abs(mag - 1.0) < 0.001)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        // z²
+                        double x2 = x * x - y * y;
+                        double y2 = 2.0 * x * y;
+
+                        // z⁴ = (z²)²
+                        double x4 = x2 * x2 - y2 * y2;
+                        double y4 = 2.0 * x2 * y2;
+
+                        // z³
+                        double x3 = x * x2 - y * y2;
+                        double y3 = x * y2 + y * x2;
+
+                        // Newton: (3z⁴+1)/(4z³)
+                        double numReal = 3.0 * x4 + 1.0;
+                        double numImag = 3.0 * y4;
+
+                        double denReal = 4.0 * x3;
+                        double denImag = 4.0 * y3;
+
+                        double denMag2 = denReal * denReal + denImag * denImag;
+                        if (denMag2 < 1e-10) return static_cast<double>(maxIter);
+
+                        z.real = (numReal * denReal + numImag * denImag) / denMag2;
+                        z.imag = (numImag * denReal - numReal * denImag) / denMag2;
+
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                        if (std::abs(mag - 1.0) < 0.001)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -174,52 +185,56 @@ namespace Native
             spec.discoveryYear = 1980;
             spec.computationalNotes = "Simplified to z(n+1) = (4z⁵+1)/(5z⁴)";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.8;  // Viewport tuning: X scale 5.0
+            ic = InitialConditionsService::Get("NewtonQuinticRational");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = c;
 
-                    double x2 = x * x - y * y;
-                    double y2 = 2.0 * x * y;
-
-                    double x4 = x2 * x2 - y2 * y2;
-                    double y4 = 2.0 * x2 * y2;
-
-                    double x5 = x * x4 - y * y4;
-                    double y5 = x * y4 + y * x4;
-
-                    // Newton: (4z⁵+1)/(5z⁴)
-                    double numReal = 4.0 * x5 + 1.0;
-                    double numImag = 4.0 * y5;
-
-                    double denReal = 5.0 * x4;
-                    double denImag = 5.0 * y4;
-
-                    double denMag2 = denReal * denReal + denImag * denImag;
-                    if (denMag2 < 1e-10) return static_cast<double>(maxIter);
-
-                    z.real = (numReal * denReal + numImag * denImag) / denMag2;
-                    z.imag = (numImag * denReal - numReal * denImag) / denMag2;
-
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
-                    if (std::abs(mag - 1.0) < 0.001)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        double x2 = x * x - y * y;
+                        double y2 = 2.0 * x * y;
+
+                        double x4 = x2 * x2 - y2 * y2;
+                        double y4 = 2.0 * x2 * y2;
+
+                        double x5 = x * x4 - y * y4;
+                        double y5 = x * y4 + y * x4;
+
+                        // Newton: (4z⁵+1)/(5z⁴)
+                        double numReal = 4.0 * x5 + 1.0;
+                        double numImag = 4.0 * y5;
+
+                        double denReal = 5.0 * x4;
+                        double denImag = 5.0 * y4;
+
+                        double denMag2 = denReal * denReal + denImag * denImag;
+                        if (denMag2 < 1e-10) return static_cast<double>(maxIter);
+
+                        z.real = (numReal * denReal + numImag * denImag) / denMag2;
+                        z.imag = (numImag * denReal - numReal * denImag) / denMag2;
+
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                        if (std::abs(mag - 1.0) < 0.001)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -243,54 +258,58 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "Check for division by zero in denominator";
 
-            spec.defaultCenterX = -0.06;
-            spec.defaultCenterY = -0.13;
-            spec.defaultZoom = 1.329004;  // Viewport tuning: X scale 3.01
+            //spec.defaultCenterX = -0.06;
+            //spec.defaultCenterY = -0.13;
+            //spec.defaultZoom = 1.329004;  // Viewport tuning: X scale 3.01
+            ic = InitialConditionsService::Get("RationalZ2Z3");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // z²
-                    double x2 = x * x - y * y;
-                    double y2 = 2.0 * x * y;
-
-                    // z³
-                    double x3 = x * x2 - y * y2;
-                    double y3 = x * y2 + y * x2;
-
-                    // z³ + c
-                    double denReal = x3 + constant.real;
-                    double denImag = y3 + constant.imag;
-
-                    double denMag2 = denReal * denReal + denImag * denImag;
-                    if (denMag2 < 1e-10)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
+                        double x = z.real;
+                        double y = z.imag;
+
+                        // z²
+                        double x2 = x * x - y * y;
+                        double y2 = 2.0 * x * y;
+
+                        // z³
+                        double x3 = x * x2 - y * y2;
+                        double y3 = x * y2 + y * x2;
+
+                        // z³ + c
+                        double denReal = x3 + constant.real;
+                        double denImag = y3 + constant.imag;
+
+                        double denMag2 = denReal * denReal + denImag * denImag;
+                        if (denMag2 < 1e-10)
+                        {
+                            return static_cast<double>(i);
+                        }
+
+                        // z² / (z³ + c)
+                        z.real = (x2 * denReal + y2 * denImag) / denMag2;
+                        z.imag = (y2 * denReal - x2 * denImag) / denMag2;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0 || mag2 < 1e-10)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    // z² / (z³ + c)
-                    z.real = (x2 * denReal + y2 * denImag) / denMag2;
-                    z.imag = (y2 * denReal - x2 * denImag) / denMag2;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0 || mag2 < 1e-10)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -314,53 +333,57 @@ namespace Native
             spec.discoveryYear = 1992;
             spec.computationalNotes = "Singularities when z² = c";
 
-            spec.defaultCenterX = 4.03;
-            spec.defaultCenterY = 0.14;
-            spec.defaultZoom = 0.333333;  // Viewport tuning: X scale 12.0
+            //spec.defaultCenterX = 4.03;
+            //spec.defaultCenterY = 0.14;
+            //spec.defaultZoom = 0.333333;  // Viewport tuning: X scale 12.0
+            ic = InitialConditionsService::Get("RationalSymmetric");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // z²
-                    double x2 = x * x - y * y;
-                    double y2 = 2.0 * x * y;
-
-                    // Numerator: z² + c
-                    double numReal = x2 + constant.real;
-                    double numImag = y2 + constant.imag;
-
-                    // Denominator: z² - c
-                    double denReal = x2 - constant.real;
-                    double denImag = y2 - constant.imag;
-
-                    double denMag2 = denReal * denReal + denImag * denImag;
-                    if (denMag2 < 1e-10)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
+                        double x = z.real;
+                        double y = z.imag;
+
+                        // z²
+                        double x2 = x * x - y * y;
+                        double y2 = 2.0 * x * y;
+
+                        // Numerator: z² + c
+                        double numReal = x2 + constant.real;
+                        double numImag = y2 + constant.imag;
+
+                        // Denominator: z² - c
+                        double denReal = x2 - constant.real;
+                        double denImag = y2 - constant.imag;
+
+                        double denMag2 = denReal * denReal + denImag * denImag;
+                        if (denMag2 < 1e-10)
+                        {
+                            return static_cast<double>(i);
+                        }
+
+                        z.real = (numReal * denReal + numImag * denImag) / denMag2;
+                        z.imag = (numImag * denReal - numReal * denImag) / denMag2;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    z.real = (numReal * denReal + numImag * denImag) / denMag2;
-                    z.imag = (numImag * denReal - numReal * denImag) / denMag2;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -384,72 +407,76 @@ namespace Native
             spec.discoveryYear = 1694;
             spec.computationalNotes = "More complex than Newton but converges faster near roots";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.05;  // Viewport tuning: X scale 80.0
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.05;  // Viewport tuning: X scale 80.0
+            ic = InitialConditionsService::Get("HalleyCubic");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = c;
 
-                    // f(z) = z³ - 1
-                    double x2 = x * x - y * y;
-                    double y2 = 2.0 * x * y;
-                    double fx = x * x2 - y * y2 - 1.0;
-                    double fy = x * y2 + y * x2;
-
-                    // f'(z) = 3z²
-                    double fpx = 3.0 * (x * x - y * y);
-                    double fpy = 3.0 * (2.0 * x * y);
-
-                    // f''(z) = 6z
-                    double fppx = 6.0 * x;
-                    double fppy = 6.0 * y;
-
-                    // 2f'(z)²
-                    double fp2Real = fpx * fpx - fpy * fpy;
-                    double fp2Imag = 2.0 * fpx * fpy;
-                    fp2Real *= 2.0;
-                    fp2Imag *= 2.0;
-
-                    // f(z)f''(z)
-                    double ffppReal = fx * fppx - fy * fppy;
-                    double ffppImag = fx * fppy + fy * fppx;
-
-                    // Denominator: 2f'² - ff''
-                    double denReal = fp2Real - ffppReal;
-                    double denImag = fp2Imag - ffppImag;
-
-                    double denMag2 = denReal * denReal + denImag * denImag;
-                    if (denMag2 < 1e-10) return static_cast<double>(maxIter);
-
-                    // Numerator: 2f(z)f'(z)
-                    double numReal = 2.0 * (fx * fpx - fy * fpy);
-                    double numImag = 2.0 * (fx * fpy + fy * fpx);
-
-                    // Division
-                    double divReal = (numReal * denReal + numImag * denImag) / denMag2;
-                    double divImag = (numImag * denReal - numReal * denImag) / denMag2;
-
-                    z.real = x - divReal;
-                    z.imag = y - divImag;
-
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
-                    if (std::abs(mag - 1.0) < 0.001)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        // f(z) = z³ - 1
+                        double x2 = x * x - y * y;
+                        double y2 = 2.0 * x * y;
+                        double fx = x * x2 - y * y2 - 1.0;
+                        double fy = x * y2 + y * x2;
+
+                        // f'(z) = 3z²
+                        double fpx = 3.0 * (x * x - y * y);
+                        double fpy = 3.0 * (2.0 * x * y);
+
+                        // f''(z) = 6z
+                        double fppx = 6.0 * x;
+                        double fppy = 6.0 * y;
+
+                        // 2f'(z)²
+                        double fp2Real = fpx * fpx - fpy * fpy;
+                        double fp2Imag = 2.0 * fpx * fpy;
+                        fp2Real *= 2.0;
+                        fp2Imag *= 2.0;
+
+                        // f(z)f''(z)
+                        double ffppReal = fx * fppx - fy * fppy;
+                        double ffppImag = fx * fppy + fy * fppx;
+
+                        // Denominator: 2f'² - ff''
+                        double denReal = fp2Real - ffppReal;
+                        double denImag = fp2Imag - ffppImag;
+
+                        double denMag2 = denReal * denReal + denImag * denImag;
+                        if (denMag2 < 1e-10) return static_cast<double>(maxIter);
+
+                        // Numerator: 2f(z)f'(z)
+                        double numReal = 2.0 * (fx * fpx - fy * fpy);
+                        double numImag = 2.0 * (fx * fpy + fy * fpx);
+
+                        // Division
+                        double divReal = (numReal * denReal + numImag * denImag) / denMag2;
+                        double divImag = (numImag * denReal - numReal * denImag) / denMag2;
+
+                        z.real = x - divReal;
+                        z.imag = y - divImag;
+
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                        if (std::abs(mag - 1.0) < 0.001)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -473,46 +500,50 @@ namespace Native
             spec.discoveryYear = 1827;
             spec.computationalNotes = "Preserves circles and angles (conformal)";
 
-            spec.defaultCenterX = -2.36;
-            spec.defaultCenterY = 0.01;
-            spec.defaultZoom = 0.541272;  // Viewport tuning: X scale 7.39
+            //spec.defaultCenterX = -2.36;
+            //spec.defaultCenterY = 0.01;
+            //spec.defaultZoom = 0.541272;  // Viewport tuning: X scale 7.39
+            ic = InitialConditionsService::Get("Mobius");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // Numerator: z + c
-                    double numReal = z.real + constant.real;
-                    double numImag = z.imag + constant.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // Denominator: z - c
-                    double denReal = z.real - constant.real;
-                    double denImag = z.imag - constant.imag;
-
-                    double denMag2 = denReal * denReal + denImag * denImag;
-                    if (denMag2 < 1e-10)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
+                        // Numerator: z + c
+                        double numReal = z.real + constant.real;
+                        double numImag = z.imag + constant.imag;
+
+                        // Denominator: z - c
+                        double denReal = z.real - constant.real;
+                        double denImag = z.imag - constant.imag;
+
+                        double denMag2 = denReal * denReal + denImag * denImag;
+                        if (denMag2 < 1e-10)
+                        {
+                            return static_cast<double>(i);
+                        }
+
+                        z.real = (numReal * denReal + numImag * denImag) / denMag2;
+                        z.imag = (numImag * denReal - numReal * denImag) / denMag2;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    z.real = (numReal * denReal + numImag * denImag) / denMag2;
-                    z.imag = (numImag * denReal - numReal * denImag) / denMag2;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -536,52 +567,56 @@ namespace Native
             spec.discoveryYear = 1992;
             spec.computationalNotes = "Combines polynomial and rational characteristics";
 
-            spec.defaultCenterX = 0.09;
-            spec.defaultCenterY = -0.17;
-            spec.defaultZoom = 2.162162;  // Viewport tuning: X scale 1.85
+            //spec.defaultCenterX = 0.09;
+            //spec.defaultCenterY = -0.17;
+            //spec.defaultZoom = 2.162162;  // Viewport tuning: X scale 1.85
+            ic = InitialConditionsService::Get("RationalPower");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // z³
-                    double x2 = x * x - y * y;
-                    double y2 = 2.0 * x * y;
-                    double x3 = x * x2 - y * y2;
-                    double y3 = x * y2 + y * x2;
-
-                    // Denominator: z³ + c
-                    double denReal = x3 + constant.real;
-                    double denImag = y3 + constant.imag;
-
-                    double denMag2 = denReal * denReal + denImag * denImag;
-                    if (denMag2 < 1e-10)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
+                        double x = z.real;
+                        double y = z.imag;
+
+                        // z³
+                        double x2 = x * x - y * y;
+                        double y2 = 2.0 * x * y;
+                        double x3 = x * x2 - y * y2;
+                        double y3 = x * y2 + y * x2;
+
+                        // Denominator: z³ + c
+                        double denReal = x3 + constant.real;
+                        double denImag = y3 + constant.imag;
+
+                        double denMag2 = denReal * denReal + denImag * denImag;
+                        if (denMag2 < 1e-10)
+                        {
+                            return static_cast<double>(i);
+                        }
+
+                        // z³ / (z³ + c)
+                        z.real = (x3 * denReal + y3 * denImag) / denMag2;
+                        z.imag = (y3 * denReal - x3 * denImag) / denMag2;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0 || mag2 < 1e-10)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    // z³ / (z³ + c)
-                    z.real = (x3 * denReal + y3 * denImag) / denMag2;
-                    z.imag = (y3 * denReal - x3 * denImag) / denMag2;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0 || mag2 < 1e-10)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }

@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
@@ -17,10 +18,14 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         // Exponential Mandelbrot
         // ───────────────────────────────────────────────────────────────────────────────
+
+        InitialConditions ic;  // Declare ONCE at the top
+
         {
             FractalSpec spec;
+
             spec.name = "ExponentialLogarithmic";
-            spec.displayName = "Exponential Mandelbrot";
+            spec.displayName = "Exponential Logarithmic";
             spec.category = "Exponential Fractals";
             spec.type = FractalCategory::EscapeTime2D;
             spec.description = "Uses exponential function in iteration: z(n+1) = exp(z(n)) + c. Creates spiraling patterns with period-based structure.";
@@ -33,34 +38,38 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "exp(x+iy) = exp(x)(cos(y) + i*sin(y)); periodic in y with period 2π";
 
-            spec.defaultCenterX = -1.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.2;  // Viewport tuning: X scale 20, Y scale 11.25
+            //spec.defaultCenterX = -1.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.2;  // Viewport tuning: X scale 20, Y scale 11.25
+            ic = InitialConditionsService::Get("ExponentialLogarithmic");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // exp(z) = exp(x+iy) = exp(x) * (cos(y) + i*sin(y))
-                    double expX = std::exp(z.real);
-                    z.real = expX * std::cos(z.imag) + constant.real;
-                    z.imag = expX * std::sin(z.imag) + constant.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        // exp(z) = exp(x+iy) = exp(x) * (cos(y) + i*sin(y))
+                        double expX = std::exp(z.real);
+                        z.real = expX * std::cos(z.imag) + constant.real;
+                        z.imag = expX * std::sin(z.imag) + constant.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -84,55 +93,59 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "log(z) = log|z| + i*arg(z); requires magnitude check to avoid log(0)";
 
-            spec.defaultCenterX = 0.24;
-            spec.defaultCenterY = -0.3;
-            spec.defaultZoom = 2.067161;  // Viewport tuning: X scale 1.935, Y scale 1.088
+            //spec.defaultCenterX = 0.24;
+            //spec.defaultCenterY = -0.3;
+            //spec.defaultZoom = 2.067161;  // Viewport tuning: X scale 1.935, Y scale 1.088
+            ic = InitialConditionsService::Get("Logarithmic");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.1, 0.1);
-                ComplexD constant = isJulia ? juliaC : c;
-                ComplexD zPrev = z;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                    ComplexD z = isJulia ? c : ComplexD(0.1, 0.1);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    ComplexD zPrev = z;
 
-                    if (mag < 1e-10)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);  // Converged to zero
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+
+                        if (mag < 1e-10)
+                        {
+                            return static_cast<double>(i);  // Converged to zero
+                        }
+
+                        // log(z) = log|z| + i*arg(z)
+                        double logMag = std::log(mag);
+                        double arg = std::atan2(z.imag, z.real);
+
+                        z.real = logMag + constant.real;
+                        z.imag = arg + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        // Check for escape (rare but possible)
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+
+                        // Check for convergence (primary exit condition for logarithmic fractals)
+                        double dx = z.real - zPrev.real;
+                        double dy = z.imag - zPrev.imag;
+                        double delta = dx * dx + dy * dy;
+
+                        if (delta < 1e-8)
+                            return static_cast<double>(maxIter - i);  // Converged: return inverse iteration count for coloring
+
+                        zPrev = z;
                     }
 
-                    // log(z) = log|z| + i*arg(z)
-                    double logMag = std::log(mag);
-                    double arg = std::atan2(z.imag, z.real);
-
-                    z.real = logMag + constant.real;
-                    z.imag = arg + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    // Check for escape (rare but possible)
-                    if (mag2 > 100.0)
-                    {
-                        return static_cast<double>(i);
-                    }
-
-                    // Check for convergence (primary exit condition for logarithmic fractals)
-                    double dx = z.real - zPrev.real;
-                    double dy = z.imag - zPrev.imag;
-                    double delta = dx * dx + dy * dy;
-
-                    if (delta < 1e-8)
-                        return static_cast<double>(maxIter - i);  // Converged: return inverse iteration count for coloring
-
-                    zPrev = z;
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -156,40 +169,44 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "First squares z, then applies exponential function";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.3;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.3;
+            ic = InitialConditionsService::Get("ExpSquare");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // First square: z²
-                    double x = z.real;
-                    double y = z.imag;
-                    double zSquaredReal = x * x - y * y;
-                    double zSquaredImag = 2.0 * x * y;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // Then exp(z²)
-                    double expX = std::exp(zSquaredReal);
-                    z.real = expX * std::cos(zSquaredImag) + constant.real;
-                    z.imag = expX * std::sin(zSquaredImag) + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        // First square: z²
+                        double x = z.real;
+                        double y = z.imag;
+                        double zSquaredReal = x * x - y * y;
+                        double zSquaredImag = 2.0 * x * y;
 
-                return static_cast<double>(maxIter);
-            };
+                        // Then exp(z²)
+                        double expX = std::exp(zSquaredReal);
+                        z.real = expX * std::cos(zSquaredImag) + constant.real;
+                        z.imag = expX * std::sin(zSquaredImag) + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -213,51 +230,55 @@ namespace Native
             spec.discoveryYear = 1995;
             spec.computationalNotes = "z^z = exp(z*ln(z)); computationally intensive";
 
-            spec.defaultCenterX = 0.75;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.532567;  // Viewport tuning: X scale 2.61, Y scale 1.47
+            //spec.defaultCenterX = 0.75;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 1.532567;  // Viewport tuning: X scale 2.61, Y scale 1.47
+            ic = InitialConditionsService::Get("PowerTower");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    if (mag < 1e-10)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(maxIter);
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+
+                        if (mag < 1e-10)
+                        {
+                            return static_cast<double>(maxIter);
+                        }
+
+                        // z^z = exp(z * log(z))
+                        double logMag = std::log(mag);
+                        double arg = std::atan2(z.imag, z.real);
+                        double logReal = logMag;
+                        double logImag = arg;
+
+                        // Multiply: z * log(z)
+                        double productReal = z.real * logReal - z.imag * logImag;
+                        double productImag = z.real * logImag + z.imag * logReal;
+
+                        // Exponentiate: exp(z * log(z))
+                        double expX = std::exp(productReal);
+                        z.real = expX * std::cos(productImag) + constant.real;
+                        z.imag = expX * std::sin(productImag) + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    // z^z = exp(z * log(z))
-                    double logMag = std::log(mag);
-                    double arg = std::atan2(z.imag, z.real);
-                    double logReal = logMag;
-                    double logImag = arg;
-
-                    // Multiply: z * log(z)
-                    double productReal = z.real * logReal - z.imag * logImag;
-                    double productImag = z.real * logImag + z.imag * logReal;
-
-                    // Exponentiate: exp(z * log(z))
-                    double expX = std::exp(productReal);
-                    z.real = expX * std::cos(productImag) + constant.real;
-                    z.imag = expX * std::sin(productImag) + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -281,49 +302,53 @@ namespace Native
             spec.discoveryYear = 1990;
             spec.computationalNotes = "z^c = exp(c*ln(z)); parameter-dependent structure";
 
-            spec.defaultCenterX = 0.5;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0, Y scale 1.69
+            //spec.defaultCenterX = 0.5;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 1.333333;  // Viewport tuning: X scale 3.0, Y scale 1.69
+            ic = InitialConditionsService::Get("ComplexPower");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    if (mag < 1e-10)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(maxIter);
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+
+                        if (mag < 1e-10)
+                        {
+                            return static_cast<double>(maxIter);
+                        }
+
+                        // z^c = exp(c * log(z))
+                        double logMag = std::log(mag);
+                        double arg = std::atan2(z.imag, z.real);
+
+                        // c * log(z)
+                        double productReal = constant.real * logMag - constant.imag * arg;
+                        double productImag = constant.real * arg + constant.imag * logMag;
+
+                        // exp(c * log(z))
+                        double expX = std::exp(productReal);
+                        z.real = expX * std::cos(productImag) + constant.real;
+                        z.imag = expX * std::sin(productImag) + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    // z^c = exp(c * log(z))
-                    double logMag = std::log(mag);
-                    double arg = std::atan2(z.imag, z.real);
-
-                    // c * log(z)
-                    double productReal = constant.real * logMag - constant.imag * arg;
-                    double productImag = constant.real * arg + constant.imag * logMag;
-
-                    // exp(c * log(z))
-                    double expX = std::exp(productReal);
-                    z.real = expX * std::cos(productImag) + constant.real;
-                    z.imag = expX * std::sin(productImag) + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -347,41 +372,45 @@ namespace Native
             spec.discoveryYear = 1992;
             spec.computationalNotes = "Linear term provides stability, exponential term provides growth";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("ExponentialJulia");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // exp(z)
-                    double expX = std::exp(z.real);
-                    double expReal = expX * std::cos(z.imag);
-                    double expImag = expX * std::sin(z.imag);
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // c * exp(z) + z
-                    double newReal = constant.real * expReal - constant.imag * expImag + z.real;
-                    double newImag = constant.real * expImag + constant.imag * expReal + z.imag;
-
-                    z.real = newReal;
-                    z.imag = newImag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        // exp(z)
+                        double expX = std::exp(z.real);
+                        double expReal = expX * std::cos(z.imag);
+                        double expImag = expX * std::sin(z.imag);
 
-                return static_cast<double>(maxIter);
-            };
+                        // c * exp(z) + z
+                        double newReal = constant.real * expReal - constant.imag * expImag + z.real;
+                        double newImag = constant.real * expImag + constant.imag * expReal + z.imag;
+
+                        z.real = newReal;
+                        z.imag = newImag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }

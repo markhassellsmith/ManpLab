@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
@@ -6,6 +7,8 @@ namespace Native
 {
     void RegisterHistoricalFractalsFamily()
     {
+        InitialConditions ic;  // Declare ONCE at the top
+
         // ═══════════════════════════════════════════════════════════════════════════════
         // HISTORICAL & LESSER-KNOWN FRACTALS
         // Classic fractals from early fractal research and lesser-known discoveries
@@ -30,47 +33,51 @@ namespace Native
             spec.discoveryYear = 1986;
             spec.computationalNotes = "Modified escape condition creates bilateral symmetry";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("Biomorphs");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 10.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                double threshold = 10.0;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // Standard z² + c iteration
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double threshold = 10.0;
 
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    // Add sinh/cosh perturbation for more biological complexity
-                    // This creates tendrils and appendages
-                    double sinh_factor = std::sinh(z.real * 0.5) * 0.1;
-                    double cosh_factor = std::cosh(z.imag * 0.5) * 0.1;
-                    z.real += sinh_factor;
-                    z.imag += cosh_factor;
-
-                    // Biomorph escape condition: either component exceeds threshold
-                    if (std::abs(z.real) > threshold || std::abs(z.imag) > threshold)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        // Add smooth coloring based on which axis escaped
-                        double re_dist = std::abs(z.real) - threshold;
-                        double im_dist = std::abs(z.imag) - threshold;
-                        double fraction = re_dist / (re_dist + im_dist + 1e-10);
-                        return static_cast<double>(i) + fraction;
-                    }
-                }
+                        // Standard z² + c iteration
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        // Add sinh/cosh perturbation for more biological complexity
+                        // This creates tendrils and appendages
+                        double sinh_factor = std::sinh(z.real * 0.5) * 0.1;
+                        double cosh_factor = std::cosh(z.imag * 0.5) * 0.1;
+                        z.real += sinh_factor;
+                        z.imag += cosh_factor;
+
+                        // Biomorph escape condition: either component exceeds threshold
+                        if (std::abs(z.real) > threshold || std::abs(z.imag) > threshold)
+                        {
+                            // Add smooth coloring based on which axis escaped
+                            double re_dist = std::abs(z.real) - threshold;
+                            double im_dist = std::abs(z.imag) - threshold;
+                            double fraction = re_dist / (re_dist + im_dist + 1e-10);
+                            return static_cast<double>(i) + fraction;
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -94,44 +101,48 @@ namespace Native
             spec.discoveryYear = 1988;
             spec.computationalNotes = "Combines trigonometric and polynomial terms";
 
-            spec.defaultCenterX = -0.75;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 1.018523;  // Viewport tuning: X scale 3.93, Y scale 2.21
+            //spec.defaultCenterX = -0.75;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 1.018523;  // Viewport tuning: X scale 3.93, Y scale 2.21
+            ic = InitialConditionsService::Get("PickoverStalks");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // sin(z) for complex z: sin(x+iy) = sin(x)cosh(y) + i*cos(x)sinh(y)
-                    double sinReal = std::sin(x) * std::cosh(y);
-                    double sinImag = std::cos(x) * std::sinh(y);
-
-                    // z²
-                    double zSqReal = x * x - y * y;
-                    double zSqImag = 2.0 * x * y;
-
-                    // sin(z) + z² + c
-                    z.real = sinReal + zSqReal + constant.real;
-                    z.imag = sinImag + zSqImag + constant.imag;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        double x = z.real;
+                        double y = z.imag;
 
-                return static_cast<double>(maxIter);
-            };
+                        // sin(z) for complex z: sin(x+iy) = sin(x)cosh(y) + i*cos(x)sinh(y)
+                        double sinReal = std::sin(x) * std::cosh(y);
+                        double sinImag = std::cos(x) * std::sinh(y);
+
+                        // z²
+                        double zSqReal = x * x - y * y;
+                        double zSqImag = 2.0 * x * y;
+
+                        // sin(z) + z² + c
+                        z.real = sinReal + zSqReal + constant.real;
+                        z.imag = sinImag + zSqImag + constant.imag;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -155,36 +166,40 @@ namespace Native
             spec.discoveryYear = 1986;
             spec.computationalNotes = "Parameters a, b, c control structure; uses real-valued iteration";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.009036;  // Viewport tuning: X scale 442.66, Y scale 248.99
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.009036;  // Viewport tuning: X scale 442.66, Y scale 248.99
+            ic = InitialConditionsService::Get("MartinMap");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                // Classic parameters
-                double a = 3.14;
-                double b = -0.9;
-                double cp = 1.0;
-
-                double x = 0.1;
-                double y = 0.1;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double xNew = y - (x >= 0.0 ? 1.0 : -1.0) * std::sqrt(std::abs(b * x - cp));
-                    double yNew = a - x;
+                    // Classic parameters
+                    double a = 3.14;
+                    double b = -0.9;
+                    double cp = 1.0;
 
-                    x = xNew;
-                    y = yNew;
+                    double x = 0.1;
+                    double y = 0.1;
 
-                    if (std::abs(x) > 100.0 || std::abs(y) > 100.0)
-                        return static_cast<double>(i);
-                }
+                    for (int i = 0; i < maxIter; ++i)
+                    {
+                        double xNew = y - (x >= 0.0 ? 1.0 : -1.0) * std::sqrt(std::abs(b * x - cp));
+                        double yNew = a - x;
 
-                return std::sqrt(x * x + y * y) * 10.0;
-            };
+                        x = xNew;
+                        y = yNew;
+
+                        if (std::abs(x) > 100.0 || std::abs(y) > 100.0)
+                            return static_cast<double>(i);
+                    }
+
+                    return std::sqrt(x * x + y * y) * 10.0;
+                };
 
             spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
                 // Martin Map: x' = y - sign(x)*sqrt(|bx - c|), y' = a - x
@@ -198,7 +213,7 @@ namespace Native
                 x = x_new;
                 y = y_new;
                 // z unused for 2D map
-            };
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -222,42 +237,46 @@ namespace Native
             spec.discoveryYear = 1987;
             spec.computationalNotes = "Modulo operation creates periodic boundaries";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.3;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.3;
+            ic = InitialConditionsService::Get("ChipMap");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
-                ComplexD constant = isJulia ? juliaC : c;
-                const double TWO_PI = 6.283185307179586;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double x = z.real;
-                    double y = z.imag;
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+                    const double TWO_PI = 6.283185307179586;
 
-                    // z² + c
-                    z.real = x * x - y * y + constant.real;
-                    z.imag = 2.0 * x * y + constant.imag;
-
-                    // Check for escape BEFORE applying modulo
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
+                        double x = z.real;
+                        double y = z.imag;
+
+                        // z² + c
+                        z.real = x * x - y * y + constant.real;
+                        z.imag = 2.0 * x * y + constant.imag;
+
+                        // Check for escape BEFORE applying modulo
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 256.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+
+                        // Apply modulo 2π to create periodic boundaries
+                        z.real = std::fmod(z.real, TWO_PI);
+                        z.imag = std::fmod(z.imag, TWO_PI);
                     }
 
-                    // Apply modulo 2π to create periodic boundaries
-                    z.real = std::fmod(z.real, TWO_PI);
-                    z.imag = std::fmod(z.imag, TWO_PI);
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -281,47 +300,51 @@ namespace Native
             spec.discoveryYear = 1989;
             spec.computationalNotes = "Simplified quaternion multiplication for 2D visualization";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.6;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.6;
+            ic = InitialConditionsService::Get("QuaternionJulia2D");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                // Quaternion as (w, x, y, z) - we'll use (0, c.real, c.imag, 0) for initial
-                double w = 0.0, x = c.real, y = c.imag, z = 0.0;
-                ComplexD constant = isJulia ? juliaC : c;
-                double cw = 0.0, cx = constant.real, cy = constant.imag, cz = 0.0;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // Quaternion multiplication: q² 
-                    // (w,x,y,z)² = (w²-x²-y²-z², 2wx, 2wy, 2wz)
-                    double w2 = w * w - x * x - y * y - z * z;
-                    double x2 = 2.0 * w * x;
-                    double y2 = 2.0 * w * y;
-                    double z2 = 2.0 * w * z;
+                    // Quaternion as (w, x, y, z) - we'll use (0, c.real, c.imag, 0) for initial
+                    double w = 0.0, x = c.real, y = c.imag, z = 0.0;
+                    ComplexD constant = isJulia ? juliaC : c;
+                    double cw = 0.0, cx = constant.real, cy = constant.imag, cz = 0.0;
 
-                    // Add c
-                    w = w2 + cw;
-                    x = x2 + cx;
-                    y = y2 + cy;
-                    z = z2 + cz;
-
-                    // Quaternion magnitude
-                    double mag2 = w * w + x * x + y * y + z * z;
-
-                    if (mag2 > 256.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        double log_zn = std::log(mag2) / 2.0;
-                        double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                        return i + 1.0 - nu;
-                    }
-                }
+                        // Quaternion multiplication: q²
+                        // (w,x,y,z)² = (w²-x²-y²-z², 2wx, 2wy, 2wz)
+                        double w2 = w * w - x * x - y * y - z * z;
+                        double x2 = 2.0 * w * x;
+                        double y2 = 2.0 * w * y;
+                        double z2 = 2.0 * w * z;
 
-                return static_cast<double>(maxIter);
-            };
+                        // Add c
+                        w = w2 + cw;
+                        x = x2 + cx;
+                        y = y2 + cy;
+                        z = z2 + cz;
+
+                        // Quaternion magnitude
+                        double mag2 = w * w + x * x + y * y + z * z;
+
+                        if (mag2 > 256.0)
+                        {
+                            double log_zn = std::log(mag2) / 2.0;
+                            double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
+                            return i + 1.0 - nu;
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -345,45 +368,49 @@ namespace Native
             spec.discoveryYear = 1995;
             spec.computationalNotes = "Complex extension of Collatz map creates fractal basins";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.5;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.5;
+            ic = InitialConditionsService::Get("CollatzFractal");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+                    ComplexD z = c;
 
-                    // Use magnitude to determine "evenness" in complex extension
-                    if (std::fmod(mag * 10.0, 2.0) < 1.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        // "Even" path: z/2
-                        z.real /= 2.0;
-                        z.imag /= 2.0;
-                    }
-                    else
-                    {
-                        // "Odd" path: (3z+1)/2
-                        z.real = (3.0 * z.real + 1.0) / 2.0;
-                        z.imag = (3.0 * z.imag) / 2.0;
+                        double mag = std::sqrt(z.real * z.real + z.imag * z.imag);
+
+                        // Use magnitude to determine "evenness" in complex extension
+                        if (std::fmod(mag * 10.0, 2.0) < 1.0)
+                        {
+                            // "Even" path: z/2
+                            z.real /= 2.0;
+                            z.imag /= 2.0;
+                        }
+                        else
+                        {
+                            // "Odd" path: (3z+1)/2
+                            z.real = (3.0 * z.real + 1.0) / 2.0;
+                            z.imag = (3.0 * z.imag) / 2.0;
+                        }
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        // Check for convergence to 1 (in Collatz) or escape
+                        if (mag2 < 0.01 || mag2 > 256.0)
+                        {
+                            return static_cast<double>(i);
+                        }
                     }
 
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    // Check for convergence to 1 (in Collatz) or escape
-                    if (mag2 < 0.01 || mag2 > 256.0)
-                    {
-                        return static_cast<double>(i);
-                    }
-                }
-
-                return static_cast<double>(maxIter);
-            };
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -407,35 +434,39 @@ namespace Native
             spec.discoveryYear = 1918;
             spec.computationalNotes = "Models nonlinear oscillator with cubic restoring force";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.591042;  // Viewport tuning: X scale 6.77, Y scale 3.81
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.591042;  // Viewport tuning: X scale 6.77, Y scale 3.81
+            ic = InitialConditionsService::Get("DuffingMap");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                double x = 0.1;
-                double y = 0.1;
-
-                // Classic parameters
-                double a = 2.75;
-                double b = 0.2;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    double xNew = y;
-                    double yNew = -b * x + a * y - y * y * y;
+                    double x = 0.1;
+                    double y = 0.1;
 
-                    x = xNew;
-                    y = yNew;
+                    // Classic parameters
+                    double a = 2.75;
+                    double b = 0.2;
 
-                    if (std::abs(x) > 100.0 || std::abs(y) > 100.0)
-                        return static_cast<double>(i);
-                }
+                    for (int i = 0; i < maxIter; ++i)
+                    {
+                        double xNew = y;
+                        double yNew = -b * x + a * y - y * y * y;
 
-                return std::sqrt(x * x + y * y) * 10.0;
-            };
+                        x = xNew;
+                        y = yNew;
+
+                        if (std::abs(x) > 100.0 || std::abs(y) > 100.0)
+                            return static_cast<double>(i);
+                    }
+
+                    return std::sqrt(x * x + y * y) * 10.0;
+                };
 
             spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
                 // Duffing Map: x' = y, y' = -bx + ay - y³
@@ -448,7 +479,7 @@ namespace Native
                 x = x_new;
                 y = y_new;
                 // z unused for 2D map
-            };
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -472,37 +503,41 @@ namespace Native
             spec.discoveryYear = 1985;
             spec.computationalNotes = "Sine function creates natural periodicity in imaginary direction";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.2;
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.2;
+            ic = InitialConditionsService::Get("SinusoidalFractal");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 100.0;
             spec.hasSymmetry = true;
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
-            {
-                ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
-                ComplexD constant = isJulia ? juliaC : c;
-
-                for (int i = 0; i < maxIter; ++i)
                 {
-                    // sin(z) = sin(x+iy) = sin(x)cosh(y) + i*cos(x)sinh(y)
-                    double sinReal = std::sin(z.real) * std::cosh(z.imag);
-                    double sinImag = std::cos(z.real) * std::sinh(z.imag);
+                    ComplexD z = isJulia ? c : ComplexD(0.5, 0.5);
+                    ComplexD constant = isJulia ? juliaC : c;
 
-                    // c * sin(z)
-                    z.real = constant.real * sinReal - constant.imag * sinImag;
-                    z.imag = constant.real * sinImag + constant.imag * sinReal;
-
-                    double mag2 = z.real * z.real + z.imag * z.imag;
-
-                    if (mag2 > 100.0)
+                    for (int i = 0; i < maxIter; ++i)
                     {
-                        return static_cast<double>(i);
-                    }
-                }
+                        // sin(z) = sin(x+iy) = sin(x)cosh(y) + i*cos(x)sinh(y)
+                        double sinReal = std::sin(z.real) * std::cosh(z.imag);
+                        double sinImag = std::cos(z.real) * std::sinh(z.imag);
 
-                return static_cast<double>(maxIter);
-            };
+                        // c * sin(z)
+                        z.real = constant.real * sinReal - constant.imag * sinImag;
+                        z.imag = constant.real * sinImag + constant.imag * sinReal;
+
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0)
+                        {
+                            return static_cast<double>(i);
+                        }
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
 
             FractalRegistry::Register(spec);
         }

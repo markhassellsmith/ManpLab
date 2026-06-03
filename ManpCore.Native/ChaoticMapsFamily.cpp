@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 #include "MandelbrotCalculator.h"
 #include <cmath>
 
@@ -6,6 +7,8 @@ namespace Native
 {
     void RegisterChaoticMapsFamily()
     {
+        InitialConditions ic;  // Declare ONCE at the top
+
         // ═══════════════════════════════════════════════════════════════════════════════
         // CHAOTIC MAPS & DYNAMICAL SYSTEMS
         // Famous maps from chaos theory and nonlinear dynamics
@@ -36,6 +39,7 @@ namespace Native
         // ───────────────────────────────────────────────────────────────────────────────
         {
             FractalSpec spec;
+
             spec.name = "LiuChen";
             spec.displayName = "Liu-Chen Attractor";
             spec.category = "Chaotic Maps";
@@ -49,9 +53,13 @@ namespace Native
             spec.discoveryYear = 2004;
             spec.computationalNotes = "Multi-wing attractor with a=10, b=40, c=2.5, requires small dt=0.001";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.025974;  // Viewport tuning: X scale 154, Y scale 86.8
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.025974;  // Viewport tuning: X scale 154, Y scale 86.8
+            ic = InitialConditionsService::Get("LiuChen");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -81,7 +89,7 @@ namespace Native
                 x += dx2 * dt;
                 y += dy2 * dt;
                 z += dz2 * dt;
-            };
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -104,9 +112,13 @@ namespace Native
             spec.discoveryYear = 1979;
             spec.computationalNotes = "Euler integration with small timestep for stability";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.268393;  // Viewport of 11.177639 by 6.287422
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.268393;  // Viewport of 11.177639 by 6.287422
+            ic = InitialConditionsService::Get("RabinovichFabrikant");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -125,7 +137,7 @@ namespace Native
                 x += dx * dt;
                 y += dy * dt;
                 z += dz * dt;
-            };
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -148,9 +160,13 @@ namespace Native
             spec.discoveryYear = 1981;
             spec.computationalNotes = "Third-order differential equation system";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 2.758621;  // Viewport tuning: X scale 1.45, Y scale 0.813
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 2.758621;  // Viewport tuning: X scale 1.45, Y scale 0.813
+            ic = InitialConditionsService::Get("Arneodo");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -181,7 +197,7 @@ namespace Native
                 x += dx2 * dt;
                 y += dy2 * dt;
                 z += dz2 * dt;
-            };
+                };
 
             FractalRegistry::Register(spec);
         }
@@ -204,9 +220,13 @@ namespace Native
             spec.discoveryYear = 1994;
             spec.computationalNotes = "Simplest chaotic attractor with only quadratic nonlinearity";
 
-            spec.defaultCenterX = 0.0;
-            spec.defaultCenterY = 0.0;
-            spec.defaultZoom = 0.15625;  // Viewport of 19.2 by 10.8
+            //spec.defaultCenterX = 0.0;
+            //spec.defaultCenterY = 0.0;
+            //spec.defaultZoom = 0.15625;  // Viewport of 19.2 by 10.8
+            ic = InitialConditionsService::Get("SprottB");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom;
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = false;
 
@@ -223,7 +243,7 @@ namespace Native
                 x += dx * dt;
                 y += dy * dt;
                 z += dz * dt;
-            };
+                };
 
             FractalRegistry::Register(spec);
         }
