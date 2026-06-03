@@ -1,0 +1,233 @@
+﻿# Fractal Name Mapping Review Report
+# Generated: 2026-06-01 10:45:36
+#
+# This file shows:
+#   - CSV names that don't have matches yet
+#   - All available code display names for reference
+#
+# You can use this to identify which CSV names need to be corrected
+# or which internal names should be manually assigned
+#
+
+=== UNMATCHED CSV ENTRIES (103) ===
+Row 1: 'Aizawa Attractor' [Attractors]
+Row 102: 'Newton-Mandelbrot Blend' [Hybrid Fractals]
+Row 105: 'Sine-Mandelbrot Hybrid' [Hybrid Fractals]
+Row 111: 'Sierpinski Triangle (IFS)' [Iterated Function Systems]
+Row 145: 'Julia - Lambda (Alt)' [Julia Sets]
+Row 150: 'Julia - Power 5' [Julia Sets]
+Row 151: 'Julia - Power 6' [Julia Sets]
+Row 165: 'Magnet I Cubic' [Magnet Fractals]
+Row 167: 'Magnet II Cubic' [Magnet Fractals]
+Row 168: 'Magnet II Julia' [Magnet Fractals]
+Row 17: 'Mandelbrot Parameter Space' [Bifurcation]
+Row 172: 'Heart Mandelbrot (Sine)' [Mandelbrot Variants]
+Row 173: 'Julia Power 4' [Mandelbrot Variants]
+Row 175: 'Mandelbar (Conjugate)' [Mandelbrot Variants]
+Row 177: 'Mandelbrot-Lambda' [Mandelbrot Variants]
+Row 18: 'May-Lyapunov Reference' [Bifurcation]
+Row 180: 'Marks Mandelbrot' [Mandelbrot Variants]
+Row 181: 'Marks Mandelbrot (Classic)' [Mandelbrot Variants]
+Row 183: 'Multibrot (Power 7)' [Mandelbrot Variants]
+Row 184: 'Multibrot (Power 8)' [Mandelbrot Variants]
+Row 185: 'Multibrot? (Cubic)' [Mandelbrot Variants]
+Row 186: 'Multibrot? (Quartic)' [Mandelbrot Variants]
+Row 187: 'Multibrot? (Quintic)' [Mandelbrot Variants]
+Row 188: 'Perpendicular Mandelbrot (Abs First)' [Mandelbrot Variants]
+Row 2: 'Chen-Lee Attractor' [Attractors]
+Row 20: 'Burning Ship (Power 3)' [Burning Ship Family]
+Row 204: 'Newton (z?-1)' [Newton's Method]
+Row 205: 'Newton Basin (z?-1)' [Newton's Method]
+Row 207: 'Newton Quartic (z?-1)' [Newton's Method]
+Row 208: 'Newton Quintic (z?-1)' [Newton's Method]
+Row 209: 'Newton Sextic (z?-1)' [Newton's Method]
+Row 21: 'Burning Ship (Power 4)' [Burning Ship Family]
+Row 210: 'Newton Sine' [Newton's Method]
+Row 230: 'Phoenix Complex Feedback' [Phoenix Fractals]
+Row 232: 'Phoenix Cubic' [Phoenix Fractals]
+Row 233: 'Phoenix Julia' [Phoenix Fractals]
+Row 236: 'Phoenix Quartic' [Phoenix Fractals]
+Row 237: 'Phoenix Sine' [Phoenix Fractals]
+Row 240: 'Polynomial z?-z+c' [Polynomial Variants]
+Row 241: 'Polynomial z?+z?+c' [Polynomial Variants]
+Row 242: 'Quartic Mandelbrot' [Polynomial Variants]
+Row 243: 'Quintic Mandelbrot' [Polynomial Variants]
+Row 245: 'Sextic Mandelbrot' [Polynomial Variants]
+Row 246: 'Halley's Method z?-1' [Rational Function Fractals]
+Row 247: 'M?bius Fractal' [Rational Function Fractals]
+Row 248: 'Newton z?-1' [Rational Function Fractals]
+Row 249: 'Newton z?-1' [Rational Function Fractals]
+Row 250: 'Newton z?-1' [Rational Function Fractals]
+Row 251: 'Rational (z?+c)/(z?-c)' [Rational Function Fractals]
+Row 252: 'Rational z?/(z?+c)' [Rational Function Fractals]
+Row 253: 'Rational z?/(z?+c)' [Rational Function Fractals]
+Row 254: '2-D Hailstone Trajectory' [Special]
+Row 267: 'Bedhead Attractor' [Strange Attractors]
+Row 269: 'De Jong Attractor' [Strange Attractors]
+Row 270: 'Duffing Attractor' [Strange Attractors]
+Row 271: 'Svensson Attractor' [Strange Attractors]
+Row 272: 'Tinkerbell Attractor' [Strange Attractors]
+Row 273: 'Tricorn (Power 3)' [Tricorn Family]
+Row 274: 'Tricorn (Power 4)' [Tricorn Family]
+Row 275: 'Cosecant Mandelbrot' [Trigonometric]
+Row 277: 'Cotangent Mandelbrot' [Trigonometric]
+Row 279: 'Secant Mandelbrot' [Trigonometric]
+Row 280: 'Sech Mandelbrot' [Trigonmetric]
+Row 283: 'Cos(z) + c' [Trigonometric Fractals]
+Row 284: 'Lambda Lambda Cosh' [Trigonometric Fractals]
+Row 285: 'Lambda Lambda Cosine' [Trigonometric Fractals]
+Row 286: 'Lambda Lambda Sine' [Trigonometric Fractals]
+Row 287: 'Lambda Lambda Sinh' [Trigonometric Fractals]
+Row 288: 'Lambda Mandel Cosh' [Trigonometric Fractals]
+Row 289: 'Lambda Mandel Cosine' [Trigonometric Fractals]
+Row 290: 'Lambda Mandel Sine' [Trigonometric Fractals]
+Row 291: 'Lambda Mandel Sinh' [Trigonometric Fractals]
+Row 293: 'Sin(z) + c' [Trigonometric Fractals]
+Row 294: 'Sine Fractal' [Trigonometric Fractals]
+Row 3: 'Dadras Attractor' [Attractors]
+Row 4: 'Halvorsen Attractor' [Attractors]
+Row 43: 'Chebyshev' [Classical Polynomials]
+Row 45: '1/sin(z)?' [Complex Functions]
+Row 46: 'cos(z)/tan(z)' [Complex Functions]
+Row 48: 'Tetration (z^z)' [Complex Functions]
+Row 49: 'Trig + Trig' [Complex Functions]
+Row 50: 'Trig ? Trig' [Complex Functions]
+Row 51: 'Trig Squared' [Complex Functions]
+Row 52: 'z?sin(z) + z' [Complex Functions]
+Row 53: 'Burning Ship (Distance Estimator)' [Distance Estimator]
+Row 54: 'Julia (Distance Estimator)' [Distance Estimator]
+Row 56: 'Tricorn (Distance Estimator)' [Distance Estimator]
+Row 57: 'Jacobi Elliptic sn' [Elliptic Functions]
+Row 58: 'Weierstrauss p-function' [Elliptic Functions]
+Row 59: 'Buffalo Fractal' [Exotic]
+Row 6: 'Pickover Attractor' [Attractors]
+Row 68: 'Magnet II' [Exotic Fractals]
+Row 7: 'Thomas Attractor' [Attractors]
+Row 75: 'Lambda Lambda Exponential' [Exponential Fractals]
+Row 76: 'Lambda Mandel Exponential' [Exponential Fractals]
+Row 77: 'Logarithm Fractal' [Exponential Fractals]
+Row 79: 'Mandelbrot Exponential' [Exponential Fractals]
+Row 81: 'z^z + c' [Exponential Fractals]
+Row 93: 'Celtic-Burning Ship Hybrid' [Hybrid Fractals]
+Row 94: 'Collatz-Style Hybrid' [Hybrid Fractals]
+Row 95: 'Exponential-Mandelbrot Blend' [Hybrid Fractals]
+Row 97: 'Magnet-Mandelbrot Hybrid' [Hybrid Fractals]
+Row 99: 'Mandelbrot-Lambda Mix' [Hybrid Fractals]
+
+
+=== ALL CODE DISPLAY NAMES (113) ===
+
+Arneodo Attractor -> Arneodo
+Barnsley Fern (IFS) -> BarnsleyFern
+Barnsley M1 -> BarnsleyM1
+Bessel-like Oscillatory -> BesselLikeFractal
+Bifurcation-Mandelbrot -> BifurcationMandel
+Buffalo (Polynomial) -> BuffaloPolynomial
+Burning Mandelbrot Hybrid -> BurningMandel
+Burning Ship -> BurningShip
+Celtic Mandelbrot -> CelticMandel
+Celtic Mandelbrot (Hybrid) -> CelticMandelbrot
+Chebyshev Polynomial -> ChebyshevPolynomial
+Chip Map -> ChipMap
+Circular Orbit Trap -> CircularOrbitTrap
+Clifford Attractor -> Clifford
+Collatz Fractal -> CollatzFractal
+Complex Power -> ComplexPower
+Continued Fraction Fractal -> ContinuedFraction
+Cross Orbit Trap -> CrossOrbitTrap
+Cubic Mandelbrot -> CubicMandel
+Delta Magnitude Tracking -> DeltaMagnitude
+Duffing Map -> DuffingMap
+Error Function (erf) Fractal -> ErrorFunctionFractal
+Exponential Fractal -> Exponential
+Exponential Julia -> ExponentialJulia
+Exponential Mandelbrot -> ExponentialLogarithmic
+Exponential Square -> ExpSquare
+Exponential-Mandelbrot Hybrid -> ExpMandelHybrid
+Gamma Function Fractal -> GammaFractal
+Hailstone Sequence -> Hailstone
+Halley's Method zÂ³-1 -> HalleyCubic
+Hyperbolic Combination -> HyperbolicCombo
+Julia - Airplane -> JuliaAirplane
+Julia - Backbone -> JuliaBackbone
+Julia - Cauliflower -> JuliaCauliflower
+Julia - Classic -> JuliaClassic
+Julia - Crystal -> JuliaCrystal
+Julia - Dendrite -> JuliaDendrite
+Julia - Dendrite (Preset) -> JuliaDendritePreset
+Julia - Dragon (Preset) -> JuliaDragonPreset
+Julia - Eye -> JuliaEye
+Julia - Feigenbaum Point -> JuliaFeigenbaum
+Julia - Flower -> JuliaFlower
+Julia - Fractal Tree -> JuliaFractalTree
+Julia - Fuzzy Blob -> JuliaFuzzyBlob
+Julia - Golden Ratio -> JuliaGoldenRatio
+Julia - Heart -> JuliaHeart
+Julia - Lightning -> JuliaLightning
+Julia - Medusa -> JuliaMedusa
+Julia - Neurons -> JuliaNeurons
+Julia - Paisley -> JuliaPaisley
+Julia - Seahorse Valley -> JuliaSeahorse
+Julia - Snowflake -> JuliaSnowflake
+Julia - Spiral (Preset) -> JuliaSpiralPreset
+Julia - Spiral Galaxy -> JuliaSpiralGalaxy
+Julia - Triple Spiral -> JuliaTripleSpiral
+Julia - Twisted Cross -> JuliaTwistedCross
+Lambda -> Lambda
+Lambda Power 3 -> LambdaPower3
+Lambert W Function -> LambertW
+Liu-Chen Attractor -> LiuChen
+Logarithmic Mandelbrot -> Logarithmic
+Logistic Parameter Space -> LogisticParameterSpace
+Lorenz Attractor -> Lorenz
+MÃ¶bius Fractal -> Mobius
+Magnet I -> Magnet1
+Magnet I Julia -> Magnet1J
+Mandelbrot (Distance Estimator) -> MandelbrotDEM
+Mandelbrot Power 4 -> Mandel4
+Mandelbrot Set -> Mandelbrot
+Mandelbrot Trig -> MandelTrig
+Mandelbrot-Burning Ship Hybrid -> MandelBurningHybrid
+Martin Map -> MartinMap
+Multibrot (Power 6) -> Multibrot6
+Multibrot-10 (Decic) -> Multibrot-10
+Multibrot-3 (Cubic) -> Multibrot-3
+Multibrot-4 (Quartic) -> Multibrot-4
+Multibrot-5 (Quintic) -> Multibrot-5
+Multibrot-6 (Sextic) -> Multibrot-6
+Multibrot-8 (Octic) -> Multibrot-8
+MultibrotÂ³ (Cubic) -> Multibrot3
+Mutant Mandelbrot (Power Evolution) -> MutantMandelbrot
+Newton (zÂ³-1) -> Newton
+Newton Quartic (zâ´-1) -> NewtonQuartic
+Newton zâ´-1 -> NewtonQuarticRational
+Newton zâµ-1 -> NewtonQuinticRational
+Newton zÂ³-1 -> NewtonCubic
+Orbit Angle Accumulation -> OrbitAngleAccum
+Orbit Trap (Cross) -> OrbitTrapCross
+Orbital Curvature Tracking -> CurvatureTracking
+Perturbed Newton -> PerturbedNewton
+Phoenix Fractal -> Phoenix
+Phoenix Mandelbrot -> PhoenixM
+Pickover Biomorphs -> Biomorphs
+Pickover Stalks -> PickoverStalks
+Point-Line Orbit Trap -> PointLineOrbitTrap
+Power Tower (z^z) -> PowerTower
+Quaternion Julia (2D slice) -> QuaternionJulia2D
+Rabinovich-Fabrikant Attractor -> RabinovichFabrikant
+Rational (zÂ²+c)/(zÂ²-c) -> RationalSymmetric
+Rational zÂ²/(zÂ³+c) -> RationalZ2Z3
+Rational zÂ³/(zÂ³+c) -> RationalPower
+Sierpinski-Mandelbrot Cross -> SierpinskiMandel
+Sinusoidal Fractal -> SinusoidalFractal
+Smoothed Orbit (Running Average) -> SmoothedOrbit
+Sprott B Attractor -> SprottB
+Square + Trig -> SqrTrig
+Stalks (Conditional) -> StalksConditional
+Stripe Average Coloring -> StripeAverage
+Tetration (Power Tower) -> TetrationPowerTower
+Triangle Orbit Trap -> TriangleOrbitTrap
+Tricorn (Mandelbar) -> Tricorn
+Tricorn (Polynomial) -> Tricorn-Poly
+Trig-Mandelbrot Blend -> TrigMandelBlend
+

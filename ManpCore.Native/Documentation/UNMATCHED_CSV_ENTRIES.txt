@@ -1,0 +1,130 @@
+# UNMATCHED CSV ENTRIES - Manual Mapping Required
+# These 76 CSV entries have your explicit values but couldn't be auto-matched to code
+
+# YOUR TASK: For each row below, find the correct internal name from the code
+# Then either:
+#   A) Update the CSV's "Internal Name" column manually, OR
+#   B) Tell me the mappings and I'll update them
+
+# To find internal names, search *Family.cpp files for spec.name assignments
+
+# ============================================================================
+# Format: CSV_Row_Number | CSV_Descriptive_Name | Your_Values
+# ============================================================================
+
+1 | Aizawa Attractor | X=, Y=, Width=
+2 | Chen-Lee Attractor | X=, Y=, Width=
+3 | Dadras Attractor | X=, Y=, Width=
+4 | Halvorsen Attractor | X=, Y=, Width=
+6 | Pickover Attractor | X=, Y=, Width=
+7 | Thomas Attractor | X=, Y=, Width=
+17 | Mandelbrot Parameter Space | X=, Y=, Width=
+18 | May-Lyapunov Reference | X=, Y=, Width=
+20 | Burning Ship (Power 3) | X=, Y=, Width=
+21 | Burning Ship (Power 4) | X=, Y=, Width=
+43 | Chebyshev | X=-0.8737499999999998, Y=-0.01, Width=1.2000000000E+00
+45 | 1/sin(z)² | X=, Y=, Width=
+46 | cos(z)/tan(z) | X=, Y=, Width=
+48 | Tetration (z^z) | X=-1.12, Y=0.18, Width=3.7968605725E+01
+49 | Trig + Trig | X=, Y=, Width=
+50 | Trig × Trig | X=, Y=, Width=
+51 | Trig Squared | X=, Y=, Width=
+52 | z·sin(z) + z | X=, Y=, Width=
+53 | Burning Ship (Distance Estimator) | X=, Y=, Width=
+54 | Julia (Distance Estimator) | X=, Y=, Width=
+56 | Tricorn (Distance Estimator) | X=, Y=, Width=
+57 | Jacobi Elliptic sn | X=0.00, Y=0.04, Width=1.9657483302E+01
+58 | Weierstrauss p-function | X=-7.08, Y=0.15, Width=1.5544412705E+01
+59 | Buffalo Fractal | X=0.00, Y=0.00, Width=6.0000000000E+00
+68 | Magnet II | X=, Y=, Width=
+75 | Lambda Lambda Exponential | X=-2.50, Y=0.00, Width=1.2000000000E+01
+76 | Lambda Mandel Exponential | X=0.00, Y=0.00, Width=3.7377883029E+01
+77 | Logarithm Fractal | X=0.88, Y=0.00, Width=3.7500000000E-01
+79 | Mandelbrot Exponential | X=-1.75, Y=0.00, Width=3.0000000000E+00
+81 | z^z + c | X=0.50, Y=0.00, Width=1.5000000000E+00
+91 | Burning Mandelbrot Hybrid | X=-0.50, Y=0.00, Width=3.7942978950E+00
+93 | Celtic-Burning Ship Hybrid | X=-0.50, Y=0.00, Width=4.1877356095E+00
+94 | Collatz-Style Hybrid | X=0.00, Y=0.00, Width=6.0000000000E+00
+95 | Exponential-Mandelbrot Blend | X=-1.40, Y=0.00, Width=3.0000000000E+00
+96 | Exponential-Mandelbrot Hybrid | X=-1.40, Y=0.00, Width=5.6960146866E+00
+97 | Magnet-Mandelbrot Hybrid | X=-2.00, Y=0.00, Width=1.9878954426E+01
+98 | Mandelbrot-Burning Ship Hybrid | X=0.00, Y=0.00, Width=4.5202694987E+00
+99 | Mandelbrot-Lambda Mix | X=-0.75, Y=0.00, Width=8.3170035400E+00
+101 | Mutant Mandelbrot (Power Evolution) | X=-0.50, Y=0.00, Width=3.0000000000E+00
+102 | Newton-Mandelbrot Blend | X=-0.75, Y=0.00, Width=1.0867649184E+01
+104 | Sierpinski-Mandelbrot Cross | X=0.00, Y=0.00, Width=7.5000000000E+00
+105 | Sine-Mandelbrot Hybrid | X=0.00, Y=0.00, Width=4.0000000000E+00
+107 | Trig-Mandelbrot Blend | X=-0.37, Y=-0.01, Width=4.1593292609E+00
+120 | Julia - Feigenbaum Point | X=-0.01, Y=-0.09, Width=4.4701327434E+00
+130 | Julia - Seahorse Valley | X=0.03, Y=0.00, Width=3.2650046168E+00
+145 | Julia - Lambda (Alt) | X=0.45, Y=-0.04, Width=6.0000000000E+00
+150 | Julia - Power 5 | X=0.00, Y=0.00, Width=4.0000000000E+00
+151 | Julia - Power 6 | X=0.00, Y=0.00, Width=5.9223668113E+00
+165 | Magnet I Cubic | X=0.50, Y=0.00, Width=1.1708916568E+01
+166 | Magnet I Julia | X=0.00, Y=0.06, Width=1.5913224864E+01
+167 | Magnet II Cubic | X=-0.64, Y=0.10, Width=2.0325406911E+01
+168 | Magnet II Julia | X=-2.05, Y=-0.39, Width=1.9784731066E+00
+172 | Heart Mandelbrot (Sine) | X=-0.45, Y=0.00, Width=2.0000000000E+00
+173 | Julia Power 4 | X=0.00, Y=0.00, Width=4.9481546654E+00
+175 | Mandelbar (Conjugate) | X=0.00, Y=0.00, Width=6.0000000000E+00
+176 | Mandelbrot Power 4 | X=0.00, Y=0.00, Width=4.0191504845E+00
+177 | Mandelbrot-Lambda | X=1.00, Y=0.01, Width=6.0609152673E+00
+180 | Marks Mandelbrot | X=-0.36, Y=0.00, Width=4.2426406871E+00
+181 | Marks Mandelbrot (Classic) | X=-0.39, Y=0.00, Width=3.6934332400E+00
+183 | Multibrot (Power 7) | X=0.00, Y=0.00, Width=4.2870938501E+00
+184 | Multibrot (Power 8) | X=0.00, Y=0.00, Width=4.0000000000E+00
+185 | Multibrot³ (Cubic) | X=-0.16, Y=0.01, Width=5.4524630517E+00
+186 | Multibrot⁴ (Quartic) | X=0.00, Y=0.00, Width=4.2857142857E+00
+187 | Multibrot⁵ (Quintic) | X=0.00, Y=0.00, Width=4.6153846154E+00
+188 | Perpendicular Mandelbrot (Abs First) | X=-0.15, Y=0.63, Width=4.5794579575E+00
+210 | Newton Sine | X=0.00, Y=0.00, Width=9.6000000000E+01
+230 | Phoenix Complex Feedback | X=-0.19, Y=0.02, Width=2.9396959630E+00
+232 | Phoenix Cubic | X=0.00, Y=0.00, Width=3.2645646124E+00
+233 | Phoenix Julia | X=-0.17, Y=0.07, Width=5.6568542495E+00
+237 | Phoenix Sine | X=0.00, Y=0.00, Width=8.0000000000E+00
+240 | Polynomial z³-z+c | X=0.00, Y=0.00, Width=2.4622888267E+00
+241 | Polynomial z⁴+z³+c | X=0.00, Y=0.00, Width=4.0000000000E+00
+242 | Quartic Mandelbrot | X=0.00, Y=0.00, Width=4.3063061148E+00
+243 | Quintic Mandelbrot | X=-0.17, Y=0.02, Width=3.5586858811E+00
+245 | Sextic Mandelbrot | X=0.00, Y=0.00, Width=4.0000000000E+00
+246 | Halley's Method z³-1 | X=0.00, Y=0.00, Width=8.0000000000E+01
+247 | Möbius Fractal | X=-2.36, Y=0.01, Width=7.3868664801E+00
+248 | Newton z³-1 | X=0.00, Y=0.00, Width=5.0000000000E+00
+249 | Newton z⁴-1 | X=0.00, Y=0.00, Width=5.0000000000E+00
+250 | Newton z⁵-1 | X=0.00, Y=0.00, Width=5.0000000000E+00
+251 | Rational (z²+c)/(z²-c) | X=4.03, Y=0.14, Width=1.2000000000E+01
+252 | Rational z²/(z³+c) | X=-0.06, Y=-0.13, Width=3.0082887420E+00
+253 | Rational z³/(z³+c) | X=0.09, Y=-0.17, Width=1.8494037002E+00
+267 | Bedhead Attractor | X=0.00, Y=0.00, Width=2.4000000000E+01
+269 | De Jong Attractor | X=0.17, Y=0.07, Width=7.9964866052E+00
+270 | Duffing Attractor | X=1.00, Y=0.00, Width=7.1157376225E-02
+271 | Svensson Attractor | X=0.00, Y=-0.01, Width=1.6339920949E+01
+272 | Tinkerbell Attractor | X=-0.45, Y=-0.53, Width=4.0000000000E+00
+273 | Tricorn (Power 3) | X=0.00, Y=0.00, Width=5.0000000000E+00
+274 | Tricorn (Power 4) | X=0.00, Y=0.00, Width=5.0000000000E+00
+275 | Cosecant Mandelbrot | X=-3.15, Y=0.01, Width=7.4642639323E+00
+277 | Cotangent Mandelbrot | X=-3.18, Y=-0.20, Width=1.0202898551E+01
+279 | Secant Mandelbrot | X=1.54, Y=0.02, Width=6.4000000000E+01
+280 | Sech Mandelbrot | X=-0.78, Y=0.04, Width=1.2000000000E+01
+283 | Cos(z) + c | X=1.531554445, Y=0.04, Width=1.2861281550E+01
+284 | Lambda Lambda Cosh | X=0.00, Y=0.00, Width=6.0000000000E+00
+285 | Lambda Lambda Cosine | X=0.00, Y=0.00, Width=6.0000000000E+00
+286 | Lambda Lambda Sine | X=-0.06, Y=0.02, Width=1.0106422018E+01
+287 | Lambda Lambda Sinh | X=0.00, Y=0.00, Width=1.2000000000E+01
+288 | Lambda Mandel Cosh | X=0.00, Y=0.00, Width=4.8000000000E+01
+289 | Lambda Mandel Cosine | X=0.00, Y=0.00, Width=1.2000000000E+01
+290 | Lambda Mandel Sine | X=0.00, Y=0.00, Width=6.0000000000E+00
+291 | Lambda Mandel Sinh | X=0.00, Y=0.00, Width=1.0446606760E+01
+293 | Sin(z) + c | X=0.00, Y=0.00, Width=1.2861281550E+01
+294 | Sine Fractal | X=0.01, Y=0.06, Width=1.2861281550E+01
+
+# ============================================================================
+# BOTTOM LINE:
+#
+# - 145 CSV entries ARE WORKING (already in InitialConditions.txt)
+# - 76 CSV entries NEED MANUAL MAPPING (this list)
+# - 46 CSV entries have NO values (marked in CSV but empty X/Y/Width columns)
+#
+# Once you provide the internal name mappings for these 76, I can add them
+# to the data store with your explicit CSV values.
+# ============================================================================
