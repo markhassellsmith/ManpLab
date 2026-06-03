@@ -79,37 +79,13 @@ public class FractalRenderService : IFractalRenderService
                 double top = centerY + viewHeight / 2.0;
                 double bottom = centerY - viewHeight / 2.0;
 
-                                    System.Diagnostics.Debug.WriteLine($@"
-                ═══════════════════════════════════════════════════════════════
-                FRACTAL RENDER SERVICE - STARTING RENDER
-                ═══════════════════════════════════════════════════════════════
-                Input Parameters:
-                  Center: ({centerX:F10}, {centerY:F10})
-                  Zoom: {zoom:F4}x
-                  Size: {width}×{height}
-                  Max Iterations: {maxIterations}
-                  Palette: {palette}
-
-                Calculated View:
-                  ViewWidth: {viewWidth:F10}
-                  ViewHeight: {viewHeight:F10}
-                  Boundaries:
-                    Left   = {left:F10}
-                    Right  = {right:F10}
-                    Top    = {top:F10}
-                    Bottom = {bottom:F10}
-                ═══════════════════════════════════════════════════════════════
-                ");
+                // Debug diagnostics removed - initial conditions system is working
 
                                 // Parse palette string to enum
-                var paletteEnum = ParsePalette(palette);
-
-                System.Diagnostics.Debug.WriteLine($"Palette string '{palette}' mapped to enum value: {paletteEnum} (int: {(int)paletteEnum})");
-                System.Diagnostics.Debug.WriteLine($"Color offset: {colorOffset}°");
+                                var paletteEnum = ParsePalette(palette);
 
                 try
                 {
-                    System.Diagnostics.Debug.WriteLine($"Creating FractalParameters object...");
 
                     // Validate parameters before native call
                     if (width <= 0 || width > 8192)
@@ -139,8 +115,6 @@ public class FractalRenderService : IFractalRenderService
                         UseSmoothColoring = useSmoothColoring
                     };
 
-                    System.Diagnostics.Debug.WriteLine($"[FractalRenderService] useDeepZoom parameter received: {useDeepZoom}");
-
                     // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
                     // Phase 1 Complete: Now using perturbation theory for true deep zoom support
                     if (useDeepZoom)
@@ -158,18 +132,7 @@ public class FractalRenderService : IFractalRenderService
                         parameters.BigCenterY = new BigDouble(centerY, precision);
                         parameters.BigViewWidth = new BigDouble(viewWidth, precision);
                         parameters.BigViewHeight = new BigDouble(viewHeight, precision);
-
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] Enabled with {precision} digit precision");
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] View width: {viewWidth:E10} requires {scaleDigits} digits for scale, +20 margin = {requiredPrecision} total");
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigCenterX: {parameters.BigCenterX}");
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigCenterY: {parameters.BigCenterY}");
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] BigViewWidth: {parameters.BigViewWidth}");
                     }
-
-                    System.Diagnostics.Debug.WriteLine($"FractalParameters created successfully");
-                    System.Diagnostics.Debug.WriteLine($"  FractalType: {parameters.FractalType}");
-                    System.Diagnostics.Debug.WriteLine($"  Width: {parameters.Width}, Height: {parameters.Height}");
-                    System.Diagnostics.Debug.WriteLine($"  Calling _engine.Calculate()...");
 
                     // Set up progress reporting with dispatcher marshaling
                     EventHandler<ManpCore.Native.ProgressEventArgs>? progressHandler = null;
@@ -186,21 +149,13 @@ public class FractalRenderService : IFractalRenderService
                                 }
                                 catch (Exception ex)
                                 {
-                                    System.Diagnostics.Debug.WriteLine($"Progress report error: {ex.Message}");
+                                    // Suppress progress report errors
                                 }
                             });
 
-                            if (!enqueued)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Warning: Failed to enqueue progress update to UI thread");
-                            }
+                            // Enqueue failures are expected during fast renders
                         };
                         _engine.ProgressChanged += progressHandler;
-                        System.Diagnostics.Debug.WriteLine("Progress reporting enabled with captured DispatcherQueue");
-                    }
-                    else if (progress != null)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Warning: No DispatcherQueue available for progress reporting");
                     }
 
                     FractalResult result;
@@ -208,7 +163,6 @@ public class FractalRenderService : IFractalRenderService
                     // Choose rendering path based on deep zoom requirement
                     if (useDeepZoom && parameters.BigCenterX != null)
                     {
-                        System.Diagnostics.Debug.WriteLine("[DeepZoom] Using perturbation theory rendering path");
 
                         // Check if reference orbit is valid for current parameters
                         bool needsRebuild = !_engine.IsReferenceOrbitValid(
@@ -222,7 +176,6 @@ public class FractalRenderService : IFractalRenderService
 
                         if (needsRebuild)
                         {
-                            System.Diagnostics.Debug.WriteLine("[DeepZoom] Building reference orbit...");
                             var orbitResult = _engine.BuildReferenceOrbit(
                                 parameters.BigCenterX.ToString(),
                                 parameters.BigCenterY.ToString(),
@@ -241,26 +194,16 @@ public class FractalRenderService : IFractalRenderService
                             {
                                 throw new InvalidOperationException("Failed to build reference orbit");
                             }
-
-                            System.Diagnostics.Debug.WriteLine("[DeepZoom] Reference orbit built successfully");
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("[DeepZoom] Reusing cached reference orbit");
                         }
 
                         // Render using perturbation theory
                         result = _engine.CalculateWithPerturbation(parameters);
-                        System.Diagnostics.Debug.WriteLine($"[DeepZoom] Perturbation render complete: used {result.ArithType} precision");
                     }
                     else
                     {
                         // Standard rendering path for shallow zooms
-                        System.Diagnostics.Debug.WriteLine("Using standard rendering path");
                         result = _engine.Calculate(parameters);
                     }
-
-                    System.Diagnostics.Debug.WriteLine($"Calculate() completed successfully");
 
                     // Clean up progress handler
                     if (progressHandler != null)
@@ -287,12 +230,6 @@ public class FractalRenderService : IFractalRenderService
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"ERROR in native rendering: {ex.GetType().Name}: {ex.Message}");
-                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                    if (ex.InnerException != null)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Inner exception: {ex.InnerException.GetType().Name}: {ex.InnerException.Message}");
-                    }
                     _logger.LogError(ex, "Error in native rendering");
                     throw;
                 }
