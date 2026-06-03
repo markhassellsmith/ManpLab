@@ -250,9 +250,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <!-- InitialConditions Data File: Required for fractal viewport defaults -->
-      <Content Include="..\ManpCore.Native\Resources\InitialConditions.txt">
-        <Link>Resources\InitialConditions.txt</Link>
+      <!-- InitialConditions Data File: Required for fractal viewport defaults (CSV UTF-8) -->
+      <Content Include="..\ManpCore.Native\Resources\InitialConditions.csv">
+        <Link>Resources\InitialConditions.csv</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
