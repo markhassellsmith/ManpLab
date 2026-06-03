@@ -20,7 +20,7 @@ std::map<std::string, InitialConditions>& InitialConditionsService::GetRegistry(
 }
 
 //=============================================================================
-// Get Resource File Path (Read-Only Application Data)
+// Get Resource File Path (CSV Format)
 //=============================================================================
 
 std::string InitialConditionsService::GetResourceFilePath()
@@ -29,14 +29,14 @@ std::string InitialConditionsService::GetResourceFilePath()
     wchar_t exePath[MAX_PATH];
     GetModuleFileNameW(NULL, exePath, MAX_PATH);
     std::filesystem::path exeDir = std::filesystem::path(exePath).parent_path();
-    std::filesystem::path deployedResourcePath = exeDir / "Resources" / "InitialConditions.txt";
+    std::filesystem::path deployedResourcePath = exeDir / "Resources" / "InitialConditions.csv";
     if (std::filesystem::exists(deployedResourcePath))
     {
         return deployedResourcePath.string();
     }
 
     // Check in the native project's Resources folder (development scenario)
-    std::filesystem::path devResourcePath = "ManpCore.Native\\Resources\\InitialConditions.txt";
+    std::filesystem::path devResourcePath = "ManpCore.Native\\Resources\\InitialConditions.csv";
     if (std::filesystem::exists(devResourcePath))
     {
         return devResourcePath.string();
@@ -46,7 +46,7 @@ std::string InitialConditionsService::GetResourceFilePath()
 }
 
 //=============================================================================
-// Initialize - Load from Resource File (Read-Only)
+// Initialize - Load from CSV Resource File
 //=============================================================================
 
 void InitialConditionsService::Initialize()
@@ -57,7 +57,7 @@ void InitialConditionsService::Initialize()
     auto& registry = GetRegistry();
     registry.clear();
 
-    // Load from read-only resource file
+    // Load from CSV resource file
     std::string resourcePath = GetResourceFilePath();
     if (resourcePath.empty())
     {
@@ -75,19 +75,28 @@ void InitialConditionsService::Initialize()
     }
 
     std::string line;
+    bool isFirstLine = true;
+
     while (std::getline(file, line))
     {
+        // Skip header row
+        if (isFirstLine)
+        {
+            isFirstLine = false;
+            continue;
+        }
+
         // Skip empty lines and comments
         if (line.empty() || line[0] == '#')
             continue;
 
-        // Format: FractalName|CenterX|CenterY|Zoom
+        // Format: FractalName,CenterX,CenterY,Zoom
         std::stringstream ss(line);
         std::string name, centerXStr, centerYStr, zoomStr;
 
-        if (std::getline(ss, name, '|') &&
-            std::getline(ss, centerXStr, '|') &&
-            std::getline(ss, centerYStr, '|') &&
+        if (std::getline(ss, name, ',') &&
+            std::getline(ss, centerXStr, ',') &&
+            std::getline(ss, centerYStr, ',') &&
             std::getline(ss, zoomStr))
         {
             try
@@ -182,6 +191,62 @@ void InitialConditionsService::Reload()
 {
     s_initialized = false;
     Initialize();
+}
+
+//=============================================================================
+// Set - Update Initial Conditions for a Fractal
+//=============================================================================
+
+void InitialConditionsService::Set(const std::string& fractalName, const InitialConditions& conditions)
+{
+    if (!s_initialized)
+        Initialize();
+
+    auto& registry = GetRegistry();
+    registry[fractalName] = conditions;
+}
+
+//=============================================================================
+// Save - Persist Registry to CSV File
+//=============================================================================
+
+bool InitialConditionsService::Save()
+{
+    if (!s_initialized)
+        Initialize();
+
+    std::string resourcePath = GetResourceFilePath();
+    if (resourcePath.empty())
+    {
+        return false; // No file path available
+    }
+
+    // Open file for writing with UTF-8 BOM
+    std::ofstream file(resourcePath, std::ios::binary);
+    if (!file.is_open())
+    {
+        return false;
+    }
+
+    // Write UTF-8 BOM
+    const unsigned char bom[] = { 0xEF, 0xBB, 0xBF };
+    file.write(reinterpret_cast<const char*>(bom), sizeof(bom));
+
+    // Write header
+    file << "FractalName,CenterX,CenterY,Zoom\n";
+
+    // Write all entries
+    auto& registry = GetRegistry();
+    for (const auto& entry : registry)
+    {
+        file << entry.first << ","
+             << entry.second.centerX << ","
+             << entry.second.centerY << ","
+             << entry.second.zoom << "\n";
+    }
+
+    file.close();
+    return true;
 }
 
 } // namespace Native

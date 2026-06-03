@@ -25,9 +25,9 @@ struct InitialConditions
 
 //=============================================================================
 // InitialConditions Service
-// READ-ONLY service for fractal default viewport positions
-// Loads from Resources\InitialConditions.txt (shipped with application)
-// This is immutable application data, NOT user preferences
+// Service for fractal default viewport positions
+// Loads from Resources\InitialConditions.csv (shipped with application)
+// CSV format enables easy editing in Excel with UTF-8 support
 //
 // Design Philosophy: "See the forest, not the tree"
 // - Initial views show the GLOBAL structure of each fractal
@@ -59,12 +59,18 @@ public:
     // Get the resource file path (for debugging/verification)
     static std::string GetResourceFilePath();
 
+    // Set initial conditions for a fractal (updates in-memory registry)
+    static void Set(const std::string& fractalName, const InitialConditions& conditions);
+
+    // Save current registry to CSV file (persists changes to disk)
+    static bool Save();
+
 private:
     // Singleton storage
     static std::map<std::string, InitialConditions>& GetRegistry();
     static bool s_initialized;
 
-    // Initialize from resource file (read-only)
+    // Initialize from CSV resource file
     static void Initialize();
 };
 
