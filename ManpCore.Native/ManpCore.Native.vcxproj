@@ -169,6 +169,7 @@
     <ClCompile Include="ViewOptimizationDiagnostics.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README_INITIAL_CONDITIONS_v2.md" />
     <None Include="Resources\InitialConditions.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -198,4 +199,3 @@
     <Message Text="[CopyDependencies] Copied MPFR/GMP DLLs to $(SolutionOutputDir)" Importance="high" />
   </Target>
 </Project>
-
