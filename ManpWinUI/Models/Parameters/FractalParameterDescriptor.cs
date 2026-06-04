@@ -97,6 +97,13 @@ public partial class FractalParameterDescriptor : ObservableObject
     public bool IsEditable { get; init; } = true;
 
     /// <summary>
+    /// Whether this parameter controls the viewport (center_x, center_y, zoom).
+    /// Viewport parameters should not be persisted - they are controlled by 
+    /// InitialConditionsService (default) or BookmarkService (user saved views).
+    /// </summary>
+    public bool IsViewportParameter { get; init; } = false;
+
+    /// <summary>
     /// Whether this parameter is required (cannot be null/empty).
     /// Example: centerX, centerY, zoom are always required.
     /// Optional parameters can be null (e.g., juliaC when not in Julia mode).
@@ -159,6 +166,7 @@ public partial class FractalParameterDescriptor : ObservableObject
             ChoiceValues = this.ChoiceValues,
             Description = description ?? this.Description,
             IsEditable = this.IsEditable,
+            IsViewportParameter = this.IsViewportParameter,
             IsRequired = this.IsRequired,
             ValidationRule = this.ValidationRule,
             DisplayOrder = this.DisplayOrder,

@@ -23,11 +23,12 @@ namespace ManpWinUI.ViewModels.Properties
 
             try
             {
-                // Create dictionary of editable parameter values
+                // Create dictionary of editable parameter values (excluding viewport parameters)
                 var parameterValues = new Dictionary<string, string>();
                 foreach (var parameter in Parameters)
                 {
-                    if (!parameter.IsReadOnly)
+                    // Skip viewport parameters - they're controlled by InitialConditions/Bookmarks
+                    if (!parameter.IsReadOnly && !parameter.IsViewportParameter)
                     {
                         parameterValues[parameter.Name] = parameter.Value;
                     }
@@ -37,7 +38,7 @@ namespace ManpWinUI.ViewModels.Properties
                 var json = JsonSerializer.Serialize(parameterValues);
                 _settingsService.SetFractalParameters(_currentFractalName, json);
 
-                System.Diagnostics.Debug.WriteLine($"[ParameterEditorViewModel] Saved {parameterValues.Count} parameters for {_currentFractalName}");
+                System.Diagnostics.Debug.WriteLine($"[ParameterEditorViewModel] Saved {parameterValues.Count} parameters for {_currentFractalName} (excluding viewport params)");
             }
             catch (Exception ex)
             {

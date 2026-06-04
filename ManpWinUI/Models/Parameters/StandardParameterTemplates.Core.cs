@@ -41,7 +41,8 @@ public static partial class StandardParameterTemplates
             StepSize = 0.01,
             FormatString = "F6",
             Description = "Real coordinate of the viewport center",
-            DisplayOrder = 1
+            DisplayOrder = 1,
+            IsViewportParameter = true  // Don't persist - controlled by InitialConditions/Bookmarks
         };
 
         yield return new FractalParameterDescriptor
@@ -56,7 +57,8 @@ public static partial class StandardParameterTemplates
             StepSize = 0.01,
             FormatString = "F6",
             Description = "Imaginary coordinate of the viewport center",
-            DisplayOrder = 2
+            DisplayOrder = 2,
+            IsViewportParameter = true  // Don't persist - controlled by InitialConditions/Bookmarks
         };
 
         yield return new FractalParameterDescriptor
@@ -72,7 +74,8 @@ public static partial class StandardParameterTemplates
             FormatString = "E2",
             Description = "Magnification level (higher = more zoomed in)",
             DisplayOrder = 3,
-            Unit = "x"
+            Unit = "x",
+            IsViewportParameter = true  // Don't persist - controlled by InitialConditions/Bookmarks
         };
     }
 

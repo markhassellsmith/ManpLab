@@ -119,6 +119,7 @@ namespace ManpWinUI.ViewModels.Properties
                 Type = uiType,
                 Description = descriptor.Description ?? string.Empty,
                 IsReadOnly = !descriptor.IsEditable,
+                IsViewportParameter = descriptor.IsViewportParameter,
                 MinValue = descriptor.MinValue as double? ?? double.MinValue,
                 MaxValue = descriptor.MaxValue as double? ?? double.MaxValue,
                 // Store descriptor key for reverse mapping

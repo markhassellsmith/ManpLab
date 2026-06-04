@@ -179,6 +179,12 @@ namespace ManpWinUI.ViewModels.Properties
         public bool IsReadOnly { get; set; } = false;
 
         /// <summary>
+        /// Whether this parameter controls the viewport (center_x, center_y, zoom).
+        /// Viewport parameters are not persisted - controlled by InitialConditions/Bookmarks.
+        /// </summary>
+        public bool IsViewportParameter { get; set; } = false;
+
+        /// <summary>
         /// Whether this parameter can be edited by the user.
         /// </summary>
         public bool IsEditable => !IsReadOnly;
