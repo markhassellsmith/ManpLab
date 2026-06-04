@@ -183,6 +183,7 @@ extern void RegisterChaoticMapsFamily();        // Clifford, De Jong, Tinkerbell
 extern void RegisterFractalHybridsFamily();     // Burning-Mandel, Exp-Mandel, Mutant, Trig-Blend, Sierpinski-Mandel, Perturbed Newton, Bifurcation-Mandel, Celtic = 8
 extern void RegisterOrbitalModificationsFamily(); // Circular trap, Cross trap, Stalks, Smoothed, Angle, Triangle trap, Stripe, Curvature, Delta, Point-Line = 10
 extern void RegisterEnhancedJuliaPresetsFamily(); // Golden, Dendrite, Spiral, Dragon, Cauliflower, Seahorse, Airplane, Lightning, Snowflake, Flower, Feigenbaum, TwistedCross, Backbone, SpiralGalaxy, Medusa, Crystal, Paisley, FuzzyBlob, Eye, TripleSpiral, Heart, Neurons, FractalTree = 23
+extern void RegisterPoleFunctionFamily();       // Digamma, Trigamma, Fermi-Dirac, Bose-Einstein, Planck, RLC, Damped Oscillator, Root Locus = 8
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -212,7 +213,7 @@ void FractalRegistry::InitializeBuiltins()
     RegisterHybridFamily();             // Hybrid fractals combining multiple formulas = 10
     RegisterMandelVariantsFamily();     // Mandelbrot variants: Mandel4, MandelLambda, Thorn, Spider, etc. = 8
     RegisterComplexFunctionsFamily();   // Complex function combinations: SqrTrig, TrigSqr, etc. = 8
-    RegisterBifurcationFamily();        // Bifurcation diagrams and parameter space = 6
+    RegisterBifurcationFamily();        // Bifurcation diagrams and parameter space = 4
     RegisterIFSFamily();                // Iterated Function Systems = 5
     RegisterDistanceEstimatorFamily();  // Distance estimator variants = 4
     RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, etc. = 8
@@ -230,7 +231,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterFractalHybridsFamily();     // Fractal hybrids = 8
     RegisterOrbitalModificationsFamily(); // Orbital modifications = 10
     RegisterEnhancedJuliaPresetsFamily(); // Julia presets = 23
-    // Total: 278 fractals
+    RegisterPoleFunctionFamily();       // Pole-based functions = 8
+    // Total: 300 fractals 🎯
 
     s_initialized = true;
 }
