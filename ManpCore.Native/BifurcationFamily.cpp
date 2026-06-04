@@ -14,63 +14,11 @@ namespace Native {
         FractalSpec spec;
         InitialConditions ic;  // Declare ONCE at the top
 
-        //=========================================================================
-        // Logistic Parameter Space
-        //=========================================================================
-        spec.name = "LogisticParameterSpace";
-        spec.displayName = "Logistic Parameter Space";
-        spec.category = "Bifurcation";
-        spec.type = FractalCategory::Sequence2D;
-        spec.description = "Parameter space visualization for the logistic map: xₙ₊₁ = r·xₙ·(1-xₙ). Shows averaged attractor behavior across parameter space. (Note: bifurcation diagrams require specialized rendering)";
-        spec.formula = "x = r·x·(1-x)";
-        spec.formulaLatex = R"(x_{n+1} = r \cdot x_n \cdot (1 - x_n))";
-
-        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-            // Sub-pixel sampling to reduce banding artifacts
-            double result = 0.0;
-            const int subsamples = 3;
-            const double delta = 0.001;  // Small offset for sub-sampling
-
-            for (int s = 0; s < subsamples; ++s)
-            {
-                double r = c.real + (s - 1) * delta;
-                double x = 0.5;  // Standard initial value
-                const int transient = 200;  // Skip transient behavior
-
-                // Run transient iterations
-                for (int i = 0; i < transient; ++i)
-                {
-                    x = r * x * (1.0 - x);
-                }
-
-                // Sample final behavior
-                double sum = 0.0;
-                int samples = maxIter < 50 ? maxIter : 50;
-                for (int i = 0; i < samples; ++i)
-                {
-                    x = r * x * (1.0 - x);
-                    sum += x;
-                }
-
-                result += sum / samples * maxIter;
-            }
-
-            // Return average to reduce banding
-            return result / subsamples;
-            };
-
-        spec.supportsJulia = false;
-        //spec.defaultCenterX = 2.0;
-        //spec.defaultCenterY = 0.0;
-        //spec.defaultZoom = 0.697;  // Viewport of approximately 4.303873 by 2.420929
-        ic = InitialConditionsService::Get("LogisticParameterSpace");
-        spec.defaultCenterX = ic.centerX;
-        spec.defaultCenterY = ic.centerY;
-        spec.defaultZoom = ic.zoom;
-        spec.defaultBailout = 100.0;
-        spec.hasSymmetry = false;
-
-        FractalRegistry::Register(spec);
+        // =========================================================================
+        // REMOVED: LogisticParameterSpace - 1D system creates boring vertical stripes
+        // REMOVED: MayLyapunovRef - 1D system creates boring vertical stripes
+        // See BIFURCATION_DIAGRAM_IMPLEMENTATION_PLAN.md for true bifurcation diagrams
+        // =========================================================================
 
         //=========================================================================
         // Lambda Parameter Space
@@ -283,69 +231,8 @@ namespace Native {
 
         FractalRegistry::Register(spec);
 
-        //=========================================================================
-        // May Lyapunov Reference
-        //=========================================================================
-        spec.name = "MayLyapunovRef";
-        spec.displayName = "May-Lyapunov Reference";
-        spec.category = "Bifurcation";
-        spec.type = FractalCategory::Sequence2D;
-        spec.description = "Lyapunov exponent visualization for the May logistic map: xₙ₊₁ = r·xₙ·(1-xₙ). Maps stability across parameter space via Lyapunov exponent calculation.";
-        spec.formula = "xₙ₊₁ = r·xₙ·(1-xₙ), showing stability via Lyapunov exponent";
-        spec.formulaLatex = R"(x_{n+1} = r \cdot x_n \cdot (1 - x_n))";
-
-        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-            // Sub-pixel sampling to reduce banding artifacts
-            double result = 0.0;
-            const int subsamples = 3;
-            const double delta = 0.001;
-
-            for (int s = 0; s < subsamples; ++s)
-            {
-                double r = c.real + (s - 1) * delta;
-                double x = 0.5;
-                const int transient = 200;
-
-                // Run transient
-                for (int i = 0; i < transient; ++i)
-                {
-                    x = r * x * (1.0 - x);
-                    if (x < 0.0 || x > 1.0) { result += 0.0; continue; }
-                }
-
-                // Calculate Lyapunov exponent
-                double lyapunov = 0.0;
-                int samples = maxIter < 100 ? maxIter : 100;
-                for (int i = 0; i < samples; ++i)
-                {
-                    x = r * x * (1.0 - x);
-                    if (x < 1e-10 || x > 1.0) break;
-
-                    double derivative = r * (1.0 - 2.0 * x);
-                    if (std::abs(derivative) > 1e-10)
-                        lyapunov += std::log(std::abs(derivative));
-                }
-
-                lyapunov /= samples;
-
-                // Map to visualization range
-                result += (lyapunov + 1.0) * maxIter * 0.5;
-            }
-
-            return result / subsamples;
-            };
-
-        spec.supportsJulia = false;
-        //spec.defaultCenterX = 2.0;  // Center of interesting parameter range
-        //spec.defaultCenterY = 0.0;  // Centered vertically
-        //spec.defaultZoom = 0.3;     // Viewport: 10.000 × 5.625
-        ic = InitialConditionsService::Get("MayLyapunovRef");
-        spec.defaultCenterX = ic.centerX;
-        spec.defaultCenterY = ic.centerY;
-        spec.defaultZoom = ic.zoom;
-        spec.defaultBailout = 100.0;
-        spec.hasSymmetry = false;
-
-        FractalRegistry::Register(spec);
+        // =========================================================================
+        // REMOVED: MayLyapunovRef - 1D system creates boring vertical stripes
+        // =========================================================================
     }
 } // namespace Native
