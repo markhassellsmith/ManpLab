@@ -18,6 +18,7 @@ Biomorphs,0,0,1
 BirdOfPrey,0,0,1
 Buddhabrot,-0.33,0.03,0.8
 Buffalo,0,0,0.5
+CahnHilliard,0,0,0.8
 BuffaloBurningShip,0,0,1
 BuffaloPolynomial,-0.21,-0.58,0.7
 BurningMandel,-0.5,0,0.790660112
@@ -99,6 +100,7 @@ JuliaFlower,-0.05,-0.03,0.700733496
 JuliaFractalTree,0.05,0.03,0.876843291
 JuliaFuzzyBlob,0.06,-0.02,0.752594866
 JuliaGoldenRatio,0,0.01,0.700819672
+GrayScott,0,0,0.40000000000000000
 JuliaHeart,-0.08,-0.03,0.844334719
 JuliaLambda,0.5,0,0.5
 JuliaLightning,0.15,-0.02,0.745950324
