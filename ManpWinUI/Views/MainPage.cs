@@ -174,7 +174,7 @@ namespace ManpWinUI.Views
                     ViewModel.UseFixedHailstoneViewport = false;
 
                     ViewModel.CurrentVisualizationName = "2-D Hailstone Trajectory";
-                    ViewModel.StatusMessage = "Loading 2-D Hailstone Trajectory...";
+                    ViewModel.StatusMessage = "Loading...";
 
                     // Update Info tab
                     ViewModel.UpdateSelectedFractalInfo(e.Fractal.Name);
@@ -234,7 +234,7 @@ namespace ManpWinUI.Views
                 }
 
                 // Auto-render the selected fractal
-                ViewModel.StatusMessage = $"Loading {metadata.DisplayName}...";
+                ViewModel.StatusMessage = "Loading...";
                 _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
             }
             catch (System.Exception ex)
