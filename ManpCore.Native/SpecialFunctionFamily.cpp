@@ -233,14 +233,26 @@ namespace Native
                             mag = 1e-6; // Avoid division by zero
                         }
 
-                        // Improved Bessel J₀-like: oscillates with decay and phase
-                        // Use more accurate approximation: J0(z) ≈ cos(z - π/4) / sqrt(z)
-                        double phase_adjust = mag - 0.785398;  // π/4 ≈ 0.785
-                        double besselVal = std::cos(phase_adjust) / std::sqrt(mag + 0.1);
-                        double angle = std::atan2(z.imag, z.real);
+                        // Improved Bessel J₀-like using full complex evaluation: cos(z - π/4) / sqrt(z)
+                        double z_shift = z.real - 0.785398;
+                        double cx = std::cos(z_shift) * std::cosh(z.imag);
+                        double cy = -std::sin(z_shift) * std::sinh(z.imag);
 
-                        z.real = besselVal * std::cos(angle) + constant.real;
-                        z.imag = besselVal * std::sin(angle) + constant.imag;
+                        double r = std::sqrt(mag);
+                        double theta = std::atan2(z.imag, z.real) * 0.5;
+                        double denom_r = std::sqrt(r);
+                        double denom_real = denom_r * std::cos(theta);
+                        double denom_imag = denom_r * std::sin(theta);
+
+                        // Complex division
+                        double denom_mag2 = denom_real * denom_real + denom_imag * denom_imag;
+                        if (denom_mag2 < 1e-12) denom_mag2 = 1e-12;
+
+                        double bessel_real = (cx * denom_real + cy * denom_imag) / denom_mag2;
+                        double bessel_imag = (cy * denom_real - cx * denom_imag) / denom_mag2;
+
+                        z.real = bessel_real + constant.real;
+                        z.imag = bessel_imag + constant.imag;
 
                         double mag2 = z.real * z.real + z.imag * z.imag;
 
