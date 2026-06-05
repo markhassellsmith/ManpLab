@@ -233,8 +233,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterOrbitalModificationsFamily(); // Orbital modifications = 10
     RegisterEnhancedJuliaPresetsFamily(); // Julia presets = 23
     RegisterPoleFunctionFamily();       // Pole-based functions = 8
-    RegisterChemicalEngineeringFamily(); // Chemical Engineering = 2
-    // Total: 302 fractals 🎯
+    RegisterChemicalEngineeringFamily(); // Chemical Engineering = 4
+    // Total: 304 fractals 🎯
 
     s_initialized = true;
 }

@@ -117,5 +117,132 @@ namespace Native {
 
             FractalRegistry::Register(spec);
         }
+
+        // ───────────────────────────────────────────────────────────────────────────────
+        // Langmuir-Hinshelwood Isotherm (Surface Catalysis)
+        // ───────────────────────────────────────────────────────────────────────────────
+        {
+            FractalSpec spec;
+            spec.name = "LangmuirIsotherm";
+            spec.displayName = "Langmuir-Hinshelwood Isotherm";
+            spec.category = "Chemical Engineering";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Models catalytic reaction rates where surface coverage saturates competing with desorption. Singular at ±i, resulting in distinct disconnected geometric islands.";
+            spec.formula = "z(n+1) = z(n)^2 / (1 + z(n)^2) + c";
+            spec.formulaLatex = R"(z_{n+1} = \frac{z_n^2}{1 + z_n^2} + c)";
+            spec.supportsJulia = true;
+
+            spec.visualCharacteristics = "Rational map behavior creates teardrops and fragmented 'islands', imitating saturation boundaries in active site coverage.";
+            spec.discoveredBy = "Langmuir (1918) & Hinshelwood (1926) Reaction Kinetics";
+            spec.computationalNotes = "Complex rational division handles ±i singularities dynamically.";
+
+            auto ic = InitialConditionsService::Get("LangmuirIsotherm");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 1.0;
+            spec.defaultBailout = 256.0;
+            spec.hasSymmetry = true;
+
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
+                {
+                    ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
+                    ComplexD constant = isJulia ? juliaC : c;
+
+                    for (int i = 0; i < maxIter; ++i)
+                    {
+                        double x2 = z.real * z.real;
+                        double y2 = z.imag * z.imag;
+                        double mag2 = x2 + y2;
+
+                        if (mag2 > 256.0) return static_cast<double>(i);
+
+                        // Calculate z^2
+                        double z2r = x2 - y2;
+                        double z2i = 2.0 * z.real * z.imag;
+
+                        // Calculate denominator 1 + z^2
+                        double denomr = 1.0 + z2r;
+                        double denomi = z2i;
+                        double denom_mag2 = denomr * denomr + denomi * denomi;
+
+                        // Prevent catastrophic div by zero if close to pole
+                        if (denom_mag2 < 1e-12) denom_mag2 = 1e-12;
+
+                        // (z^2) / (1+z^2) = (z2r + i z2i) / (denomr + i denomi)
+                        double newReal = (z2r * denomr + z2i * denomi) / denom_mag2;
+                        double newImag = (z2i * denomr - z2r * denomi) / denom_mag2;
+
+                        z.real = newReal + constant.real;
+                        z.imag = newImag + constant.imag;
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
+
+            FractalRegistry::Register(spec);
+        }
+
+        // ───────────────────────────────────────────────────────────────────────────────
+        // Arrhenius Kinetics Map (Thermal Activation)
+        // ───────────────────────────────────────────────────────────────────────────────
+        {
+            FractalSpec spec;
+            spec.name = "ArrheniusKinetics";
+            spec.displayName = "Arrhenius Kinetics Map (Thermal Activation)";
+            spec.category = "Chemical Engineering";
+            spec.type = FractalCategory::EscapeTime2D;
+            spec.description = "Maps the temperature-dependent reaction exponential progression with an activation energy barrier. Features a dominant essential singularity.";
+            spec.formula = "z(n+1) = exp(-1 / z(n)^2) + c";
+            spec.formulaLatex = R"(z_{n+1} = \exp\left(\frac{-1}{z_n^2}\right) + c)";
+            spec.supportsJulia = true;
+
+            spec.visualCharacteristics = "Displays massive essential singularity fragmentation (known as 'Fatou dust' or exponential petal structures) representing runaway kinetics.";
+            spec.discoveredBy = "Svante Arrhenius (1889) Equation";
+            spec.computationalNotes = "Uses w = -1/z^2, then e^w. Extremely chaotic near the origin due to the essential singularity.";
+
+            auto ic = InitialConditionsService::Get("ArrheniusKinetics");
+            spec.defaultCenterX = ic.centerX;
+            spec.defaultCenterY = ic.centerY;
+            spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 1.0;
+            spec.defaultBailout = 100.0;
+            spec.hasSymmetry = true;
+
+            spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
+                {
+                    ComplexD z = isJulia ? c : ComplexD(0.001, 0.0); // Offset to avoid div 0 at origin
+                    ComplexD constant = isJulia ? juliaC : c;
+
+                    for (int i = 0; i < maxIter; ++i)
+                    {
+                        double mag2 = z.real * z.real + z.imag * z.imag;
+
+                        if (mag2 > 100.0) return static_cast<double>(i);
+                        if (mag2 < 1e-12) mag2 = 1e-12; // Prevent div by zero at origin
+
+                        // Calculate z^2
+                        double z2r = z.real * z.real - z.imag * z.imag;
+                        double z2i = 2.0 * z.real * z.imag;
+
+                        // Calculate -1 / z^2 (activation energy barrier mapping)
+                        double z2mag2 = z2r * z2r + z2i * z2i;
+                        if (z2mag2 < 1e-12) z2mag2 = 1e-12;
+
+                        double wr = -z2r / z2mag2;
+                        double wi = z2i / z2mag2; // conjugate divided by mag2
+
+                        // Calculate exp(w)
+                        double exp_wr = std::exp(wr);
+                        double newReal = exp_wr * std::cos(wi) + constant.real;
+                        double newImag = exp_wr * std::sin(wi) + constant.imag;
+
+                        z.real = newReal;
+                        z.imag = newImag;
+                    }
+
+                    return static_cast<double>(maxIter);
+                };
+
+            FractalRegistry::Register(spec);
+        }
     }
 }
