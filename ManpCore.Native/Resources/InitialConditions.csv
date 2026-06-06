@@ -38,7 +38,7 @@ CelticBurningShip,-0.75,0.03,4.80E-01
 CelticHeart,-0.54,0.04,0.827423168
 CelticMandel,0,0,1
 CelticMandelbrot,-0.75,0,0.7
-ChebyshevPolynomial,-0.87,-0.01,2.50E+00
+ChebyshevPolynomial,-0.04,0.00,1.2924528302E+00
 ChenLee,-0.33,0.11,2.11E-02
 ChipMap,0,0,1
 CircularOrbitTrap,-0.09,-0.02,0.719303323
@@ -65,7 +65,7 @@ DragonCurveIFS,0.46,0.18,1.477383268
 Duffing,1,0,42.16007052
 DuffingMap,0,0,0.443281392
 ErrorFunctionFractal,0,0.05,0.080494792
-EulerBuckling,0.00,0.00,8.0907390084E-01
+EulerBuckling,0,0,8.09E-01
 ExpMandelBlend,-1.4,0,1
 ExpMandelHybrid,-1.4,0,0.526684035
 Exponential,0.22,0.04,0.078046875
@@ -274,7 +274,7 @@ SprottB,0,0,0.25
 Sqr1OverTrig,0.02,-0.01,2.50E-01
 SqrTrig,-0.71,0.01,1.00E+00
 StalksConditional,-0.15,-0.01,0.735656682
-StefanBoltzmann,0.00,0.00,1.0772513567E-01
+StefanBoltzmann,0,0,1.08E-01
 StripeAverage,-0.18,0,0.8
 Svensson,0,-0.01,0.183599419
 TanhMandelbrot,0,0,0.053845235
@@ -286,7 +286,7 @@ Thomas,1.55,1.37,3.28E-01
 Thorn,-0.21,-0.02,0.5
 ThornClassic,0,0,3.425286458
 Tinkerbell,-0.45,-0.53,0.75
-TorsionalTwist,-0.32,0.03,7.3713461367E-01
+TorsionalTwist,-0.32,0.03,7.37E-01
 TreeIFS,-0.01,1.03,2.03470441
 TriangleOrbitTrap,-0.34,0,0.2
 Tricorn,-0.25,0.04,0.430765211
@@ -308,3 +308,6 @@ WeierstrassP,-7.08,0.15,0.19299539
 ZToTheZ,0.5,0,2
 Zubieta,0,0,5.859042837
 ZxTrigPlusZ,1.231109981,0.040223229,0.287174587
+CombinatorialMandelbrot,0.00,0.00,8.1225240013E-01
+InverseCombinatorial,-0.10,-0.10,5.0000000000E-01
+ChebyshevPolynomial,0,0,0.8

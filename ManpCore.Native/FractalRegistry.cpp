@@ -186,6 +186,7 @@ extern void RegisterEnhancedJuliaPresetsFamily(); // Golden, Dendrite, Spiral, D
 extern void RegisterPoleFunctionFamily();       // Digamma, Trigamma, Fermi-Dirac, Bose-Einstein, Planck, RLC, Damped Oscillator, Root Locus = 8
 extern void RegisterChemicalEngineeringFamily(); // Chemical Engineering = 4
 extern void RegisterMechanicalEngineeringFamily(); // Mechanical Engineering = 5
+extern void RegisterDiscreteMathematicsFamily(); // Discrete Mathematics = 3
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -236,7 +237,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterPoleFunctionFamily();       // Pole-based functions = 8
     RegisterChemicalEngineeringFamily(); // Chemical Engineering = 4
     RegisterMechanicalEngineeringFamily(); // Mechanical Engineering = 5
-    // Total: 309 fractals 🎯
+    RegisterDiscreteMathematicsFamily(); // Discrete Mathematics = 3
+    // Total: 312 fractals 🎯
 
     s_initialized = true;
 }

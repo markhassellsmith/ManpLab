@@ -108,6 +108,7 @@
     <ClCompile Include="BarnsleyFamily.cpp" />
     <ClCompile Include="ChemicalEngineeringFamily.cpp" />
     <ClCompile Include="ComplexFunctionsFamily.cpp" />
+    <ClCompile Include="DiscreteMathematicsFamily.cpp" />
     <ClCompile Include="DistanceEstimatorFamily.cpp" />
     <ClCompile Include="EnhancedJuliaPresetsFamily.cpp" />
     <ClCompile Include="ExoticFormulasFamily.cpp" />
