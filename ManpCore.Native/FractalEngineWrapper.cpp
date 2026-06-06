@@ -374,10 +374,27 @@ static void RenderHistogramFractal(
         int px = (int)((worldX - viewLeft) / viewWidth * width);
         int py = (int)((viewTop - worldY) / viewHeight * height);
 
-        // Bounds check
-        if (px >= 0 && px < width && py >= 0 && py < height)
+        // Add 3x3 splat filter. Attractor points are infinitesimally thin and sparsely 
+        // distributed; this filter smears out the visits, bridging gaps and creating a beautiful continuous glow.
+        if (px >= 1 && px < width - 1 && py >= 1 && py < height - 1)
         {
-            histogram[py * width + px]++;
+            int baseIdx = py * width + px;
+            histogram[baseIdx] += 4;         // Center
+            histogram[baseIdx - 1] += 2;     // Left
+            histogram[baseIdx + 1] += 2;     // Right
+            histogram[baseIdx - width] += 2; // Top
+            histogram[baseIdx + width] += 2; // Bottom
+
+            // Corners
+            histogram[baseIdx - width - 1] += 1;
+            histogram[baseIdx - width + 1] += 1;
+            histogram[baseIdx + width - 1] += 1;
+            histogram[baseIdx + width + 1] += 1;
+        }
+        else if (px >= 0 && px < width && py >= 0 && py < height)
+        {
+            // Boundary fallback
+            histogram[py * width + px] += 4;
         }
 
         // Progress reporting every 500k iterations
