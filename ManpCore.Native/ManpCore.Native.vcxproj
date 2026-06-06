@@ -106,6 +106,7 @@
     <ClCompile Include="BigDoubleSupport.cpp" />
     <ClCompile Include="BurningShipFamily.cpp" />
     <ClCompile Include="BarnsleyFamily.cpp" />
+    <ClCompile Include="ChemicalEngineeringFamily.cpp" />
     <ClCompile Include="ComplexFunctionsFamily.cpp" />
     <ClCompile Include="DistanceEstimatorFamily.cpp" />
     <ClCompile Include="EnhancedJuliaPresetsFamily.cpp" />
@@ -171,7 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README_INITIAL_CONDITIONS_v2.md" />
-    <None Include="Resources\InitialConditions.txt" />
+    <None Include="Resources\InitialConditions.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
