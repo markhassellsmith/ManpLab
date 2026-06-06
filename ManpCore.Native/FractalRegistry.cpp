@@ -184,7 +184,8 @@ extern void RegisterFractalHybridsFamily();     // Burning-Mandel, Exp-Mandel, M
 extern void RegisterOrbitalModificationsFamily(); // Circular trap, Cross trap, Stalks, Smoothed, Angle, Triangle trap, Stripe, Curvature, Delta, Point-Line = 10
 extern void RegisterEnhancedJuliaPresetsFamily(); // Golden, Dendrite, Spiral, Dragon, Cauliflower, Seahorse, Airplane, Lightning, Snowflake, Flower, Feigenbaum, TwistedCross, Backbone, SpiralGalaxy, Medusa, Crystal, Paisley, FuzzyBlob, Eye, TripleSpiral, Heart, Neurons, FractalTree = 23
 extern void RegisterPoleFunctionFamily();       // Digamma, Trigamma, Fermi-Dirac, Bose-Einstein, Planck, RLC, Damped Oscillator, Root Locus = 8
-extern void RegisterChemicalEngineeringFamily(); // Chemical Engineering = 2
+extern void RegisterChemicalEngineeringFamily(); // Chemical Engineering = 4
+extern void RegisterMechanicalEngineeringFamily(); // Mechanical Engineering = 5
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -234,7 +235,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterEnhancedJuliaPresetsFamily(); // Julia presets = 23
     RegisterPoleFunctionFamily();       // Pole-based functions = 8
     RegisterChemicalEngineeringFamily(); // Chemical Engineering = 4
-    // Total: 304 fractals 🎯
+    RegisterMechanicalEngineeringFamily(); // Mechanical Engineering = 5
+    // Total: 309 fractals 🎯
 
     s_initialized = true;
 }
