@@ -1,0 +1,17 @@
+1 Move the starting conditions (CenterX, CenterY, ViewPort width) into a service registry to make them easier to verify.   FINISHED.
+2 After the above, re-verify all starting conditions from the master Excel file.
+3 Incorporate more scientific functions of interest.  ONGOING.
+4 Export PNG and JPG files with specific properties set, including current conditions, formula, and attribution.
+5 Refactor large code files into smaller ones (define the threshold line count).
+
+
+
+1  When a user selects a fractal name from the Fractal Browser, I want the initial rendering to start with a certain centerX and centerY directly in the middle of the viewport.  I also want the initial rendering to start at a certain zoom level.  My objective is to start the user at the "top" level of a fractal, where the entire structure can be viewed where it is just beginning to show differentiation.  These structures are usually round, circular, or rectangular shapes.  The user is then free to zoom repeatedly to examine different areas of the starting fractal in detail.  I do not want to start the user zoomed in to a tree; I want the user to begin by seeing the entire forest's shape, metaphorically speaking.  Toward that end, I want to restructure the code a bit.  The initial conditions are currently stored as spec.defaultCenterX, spec.defaultCenterY, spec.defaultZoom.  I want these conditions to be provided by an InitialConditions service, so it  will need to provide access to a data store file containing all the initial conditions for each fractal that we have registered in the application.  There will need to be a getter function and a setter function.  The getter function's public interface will be called where the initial conditions are now currently stored in each fractal's code.  The setter function's public interface will be used by the AI agent to append the data store as we add a new fractal to the application.  I also need an "import from CSV / export to CSV" to read and write these values in bulk.  You can add these administrative options to another tab on one of the panels.  I think with all these features implemented, we will be able to maintain  the correct starting conditions for all fractals and make sure the user has a good experience with each fractal.
+
+2  Read the CSV file and set all initial conditions according to the file.
+
+3  I would like some more interesting scientific functions, one of which is lemniscate elliptic functions.
+
+4  Read through the documentation files and find the plans to add properties to files that are exported.
+
+5  Large code files should be refactored into smaller ones to help the AI agent's processes prevent editing issues.  Determine the threshold.
