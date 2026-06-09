@@ -1,0 +1,432 @@
+﻿
+### Attractors (7)
+
+- Aizawa Attractor
+- Chen-Lee Attractor
+- Dadras Attractor
+- Halvorsen Attractor
+- Lorenz Attractor
+- Pickover Attractor
+- Thomas Attractor
+
+### Barnsley (6)
+
+- Barnsley J1
+- Barnsley J2
+- Barnsley J3
+- Barnsley M1
+- Barnsley M2
+- Barnsley M3
+
+### Bifurcation (4)
+
+- Henon Parameter Space
+- Lambda Parameter Space
+- Mandelbrot Parameter Space
+- Orbit Diagram
+
+### Burning Ship Family (2)
+
+- Burning Ship (Power 3)
+- Burning Ship (Power 4)
+
+### Burning Ship Variants (12)
+
+- Bird of Prey
+- Buffalo Burning Ship
+- Burning Ship Cubic
+- Burning Ship Quartic
+- Burning Ship Quintic
+- Celtic Burning Ship
+- Diagonal Burning Ship
+- Partial Burning Ship
+- Perpendicular Burning Ship
+- Reverse Burning Ship
+- Shark Burning Ship
+- Vertical Burning Ship
+
+### Chaotic Maps (4)
+
+- Arneodo Attractor
+- Liu-Chen Attractor
+- Rabinovich-Fabrikant Attractor
+- Sprott B Attractor
+
+### Chemical Engineering (4)
+
+- Arrhenius Kinetics Map (Thermal Activation)
+- Cahn-Hilliard Map (Phase Separation)
+- Gray-Scott Autocatalysis (Reaction-Diffusion)
+- Langmuir-Hinshelwood Isotherm
+
+### Classic Fractals (5)
+
+- Lambda
+- Mandelbrot Set
+- Mandel-Lambda
+- Tetrate
+- Unity
+
+### Classical Polynomials (2)
+
+- Chebyshev Polynomial
+- Legendre Polynomial
+
+### Complex Functions (8)
+
+- 1/sin(z)Â²
+- cos(z)/tan(z)
+- Square + Trig
+- Tetration (z^z)
+- Trig + Trig
+- Trig Ã— Trig
+- Trig Squared
+- zÂ·sin(z) + z
+
+### Discrete Mathematics (3)
+
+- Chebyshev Polynomial Tâ‚ƒ(z) = 4zÂ³ - 3z + c
+- Combinatorial Mandelbrot zâ´ - z + c
+- Inverse Combinatorial 1/zÂ² + c
+
+### Distance Estimator (4)
+
+- Burning Ship (Distance Estimator)
+- Julia (Distance Estimator)
+- Mandelbrot (Distance Estimator)
+- Tricorn (Distance Estimator)
+
+### Elliptic Functions (4)
+
+- Jacobi Elliptic sn
+- Weierstrass â„˜-function
+- Weierstrass Î¶-function
+- Weierstrass Ïƒ-function
+
+### Exotic (8)
+
+- Buffalo Fractal
+- Celtic Mandelbrot
+- Heart Mandelbrot
+- Perpendicular Mandelbrot
+- Quasi-Perpendicular
+- Shark Fin
+- Wavy
+- Zubieta
+
+### Exotic Fractals (3)
+
+- Magnet I
+- Magnet II
+- Phoenix Fractal
+
+### Exponential Fractals (12)
+
+- Complex Power
+- Exponential Fractal
+- Exponential Julia
+- Exponential Logarithmic
+- Exponential Square
+- Lambda Lambda Exponential
+- Lambda Mandel Exponential
+- Logarithm Fractal
+- Logarithmic Mandelbrot
+- Mandelbrot Exponential
+- Power Tower (z^z)
+- z^z + c
+
+### Historical Fractals (8)
+
+- Chip Map
+- Collatz Fractal
+- Duffing Map
+- Martin Map
+- Pickover Biomorphs
+- Pickover Stalks
+- Quaternion Julia (2D slice)
+- Sinusoidal Fractal
+
+### Hybrid Fractals (18)
+
+- Bifurcation-Mandelbrot
+- Burning Mandelbrot Hybrid
+- Celtic Mandelbrot (Hybrid)
+- Celtic-Burning Ship Hybrid
+- Collatz-Style Hybrid
+- Exponential-Mandelbrot Blend
+- Exponential-Mandelbrot Hybrid
+- Magnet-Mandelbrot Hybrid
+- Mandelbrot-Burning Ship Hybrid
+- Mandelbrot-Lambda Mix
+- Multi-Power Cycle
+- Mutant Mandelbrot (Power Evolution)
+- Newton-Mandelbrot Blend
+- Perturbed Newton
+- Sierpinski-Mandelbrot Cross
+- Sine-Mandelbrot Hybrid
+- Tricorn-Phoenix Hybrid
+- Trig-Mandelbrot Blend
+
+### Iterated Function Systems (5)
+
+- Barnsley Fern (IFS)
+- Dragon Curve (IFS)
+- Pentagon (IFS)
+- Sierpinski Triangle (IFS)
+- Tree (IFS)
+
+### Julia Presets (23)
+
+- Julia - Airplane
+- Julia - Backbone
+- Julia - Cauliflower
+- Julia - Crystal
+- Julia - Dendrite (Preset)
+- Julia - Dragon (Preset)
+- Julia - Eye
+- Julia - Feigenbaum Point
+- Julia - Flower
+- Julia - Fractal Tree
+- Julia - Fuzzy Blob
+- Julia - Golden Ratio
+- Julia - Heart
+- Julia - Lightning
+- Julia - Medusa
+- Julia - Neurons
+- Julia - Paisley
+- Julia - Seahorse Valley
+- Julia - Snowflake
+- Julia - Spiral (Preset)
+- Julia - Spiral Galaxy
+- Julia - Triple Spiral
+- Julia - Twisted Cross
+
+### Julia Sets (21)
+
+- Julia - Burning Ship
+- Julia - Classic
+- Julia - Cubic
+- Julia - Custom
+- Julia - Dendrite
+- Julia - Douady Rabbit
+- Julia - Dragon
+- Julia - Exponential
+- Julia - Lambda
+- Julia - Lambda (Alt)
+- Julia - Magnet
+- Julia - Multibrot 3
+- Julia - Multibrot 4
+- Julia - Phoenix
+- Julia - Power 5
+- Julia - Power 6
+- Julia - San Marco
+- Julia - Siegel Disk
+- Julia - Siegel Disk (Alt)
+- Julia - Sine
+- Julia - Spiral
+
+### Lambda Fractals (8)
+
+- Lambda Flip
+- Lambda Modified
+- Lambda Phoenix
+- Lambda Power 3
+- Lambda Power 4
+- Lambda Squared
+- Lambda Tan
+- Lambda Tanh
+
+### Magnet Fractals (4)
+
+- Magnet I Cubic
+- Magnet I Julia
+- Magnet II Cubic
+- Magnet II Julia
+
+### Mandelbrot Variants (27)
+
+- Burning Ship
+- Celtic Buffalo
+- Celtic Heart
+- Heart Mandelbrot (Sine)
+- Julia Power 4
+- Mandelbar
+- Mandelbar (Conjugate)
+- Mandelbrot Power 4
+- Mandelbrot-Lambda
+- Manowar
+- Marks Julia
+- Marks Mandelbrot
+- Marks Mandelbrot (Classic)
+- Multibrot (Power 6)
+- Multibrot (Power 7)
+- Multibrot (Power 8)
+- Multibrotâ´ (Quartic)
+- Multibrotâµ (Quintic)
+- MultibrotÂ³ (Cubic)
+- Perpendicular Mandelbrot (Abs First)
+- Shark Fin Mandelbrot
+- Spider
+- Spider Variant
+- Thorn
+- Thorn (Classic)
+- Tricorn (Mandelbar)
+- Wavy Mandelbrot
+
+### Mechanical Engineering (5)
+
+- Basquin Fatigue Power Law (S-N Curve)
+- Euler-Bernoulli Buckling (Beam Deflection)
+- Ramberg-Osgood Plastic Deformation (Malleability)
+- Stefan-Boltzmann Radiative Cooling (Heat Flow)
+- Torsional Twist (Angle of Twist)
+
+### Multibrot Powers (8)
+
+- Buffalo (Polynomial)
+- Multibrot-10 (Decic)
+- Multibrot-3 (Cubic)
+- Multibrot-4 (Quartic)
+- Multibrot-5 (Quintic)
+- Multibrot-6 (Sextic)
+- Multibrot-8 (Octic)
+- Tricorn (Polynomial)
+
+### Newton's Method (8)
+
+- Newton (zÂ³-1)
+- Newton Basin (zÂ³-1)
+- Newton Cosh
+- Newton Quartic (zâ´-1)
+- Newton Quintic (zâµ-1)
+- Newton Sextic (zâ¶-1)
+- Newton Sine
+- Nova
+
+### Orbit Statistics (4)
+
+- Angle Average
+- Average Distance
+- Maximum Distance
+- Minimum Distance
+
+### Orbit Trap (4)
+
+- Orbit Trap (Circle)
+- Orbit Trap (Cross)
+- Orbit Trap (Point)
+- Orbit Trap (Square)
+
+### Orbital Advanced (10)
+
+- Circular Orbit Trap
+- Cross Orbit Trap
+- Delta Magnitude Tracking
+- Orbit Angle Accumulation
+- Orbital Curvature Tracking
+- Point-Line Orbit Trap
+- Smoothed Orbit (Running Average)
+- Stalks (Conditional)
+- Stripe Average Coloring
+- Triangle Orbit Trap
+
+### Phoenix Fractals (8)
+
+- Phoenix Complex Feedback
+- Phoenix Cosh
+- Phoenix Cubic
+- Phoenix Julia
+- Phoenix Lambda
+- Phoenix Mandelbrot
+- Phoenix Quartic
+- Phoenix Sine
+
+### Polynomial Variants (8)
+
+- Biomorph
+- Cubic Mandelbrot
+- Polynomial zâ´+zÂ³+c
+- Polynomial zÂ³-z+c
+- Quartic Mandelbrot
+- Quintic Mandelbrot
+- Rational R1
+- Sextic Mandelbrot
+
+### Rational Function Fractals (8)
+
+- Halley's Method zÂ³-1
+- MÃ¶bius Fractal
+- Newton zâ´-1
+- Newton zâµ-1
+- Newton zÂ³-1
+- Rational (zÂ²+c)/(zÂ²-c)
+- Rational zÂ²/(zÂ³+c)
+- Rational zÂ³/(zÂ³+c)
+
+### Special (6)
+
+- 2-D Hailstone Trajectory
+- Buddhabrot
+- Hailstone Sequence
+- Lyapunov
+- NumFractal
+- Tetration (Classic)
+
+### Special Function Fractals (15)
+
+- Bessel-like Oscillatory
+- Bose-Einstein Distribution
+- Continued Fraction Fractal
+- Damped Harmonic Oscillator
+- Digamma Function Ïˆ(z)
+- Error Function (erf) Fractal
+- Fermi-Dirac Distribution
+- Gamma Function Fractal
+- Hyperbolic Combination
+- Lambert W Function
+- Planck Distribution
+- RLC Circuit Resonance
+- Root Locus (Control Systems)
+- Tetration (Power Tower)
+- Trigamma Function Ïˆ'(z)
+
+### Strange Attractors (6)
+
+- Bedhead Attractor
+- Clifford Attractor
+- De Jong Attractor
+- Duffing Attractor
+- Svensson Attractor
+- Tinkerbell Attractor
+
+### Tricorn Family (2)
+
+- Tricorn (Power 3)
+- Tricorn (Power 4)
+
+### Trigonometric (8)
+
+- Cosecant Mandelbrot
+- Cosh Mandelbrot
+- Cotangent Mandelbrot
+- Mandel Trig
+- Secant Mandelbrot
+- Sech Mandelbrot
+- Sinh Mandelbrot
+- Tanh Mandelbrot
+
+### Trigonometric Fractals (12)
+
+- Cos(z) + c
+- Lambda Lambda Cosh
+- Lambda Lambda Cosine
+- Lambda Lambda Sine
+- Lambda Lambda Sinh
+- Lambda Mandel Cosh
+- Lambda Mandel Cosine
+- Lambda Mandel Sine
+- Lambda Mandel Sinh
+- Mandelbrot Trig
+- Sin(z) + c
+- Sine Fractal
+

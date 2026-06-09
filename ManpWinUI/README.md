@@ -1,4 +1,4 @@
-﻿# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
+# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -14,7 +14,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 ### Key Features
 
 - ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
-- 🎨 **300 Fractal Types** - Extended from Paul's 246 originals with 54 new implementations
+- 🎨 **316 Fractal Types** - Extended from Paul's 246 originals with 70 new implementations ([See complete list →](#appendix-complete-fractal-catalog))
 - 🔬 **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
 - ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
 - 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
@@ -41,7 +41,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 │   • BLA Acceleration                    │
 │   • Arbitrary Precision (MPFR/QD)       │
 │   • 246 Original Fractal Types          │
-│   • Extended to 300 Types in ManpLab    │
+│   • Extended to 316 Types in ManpLab    │
 │   • Multithreaded Rendering             │
 └─────────────────────────────────────────┘
 ```
@@ -200,25 +200,25 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 
 ---
 
-## Fractal Categories (300 Types)
+## Fractal Categories
 
-**Classic Fractals (20+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals
+ManpLab features **316 unique fractals** across **42 specialized categories**, from classic mathematical sets to cutting-edge physical simulations. [View complete catalog →](#appendix-complete-fractal-catalog)
 
-**Advanced Variants (40+):** MandelDerivatives, Mandelbar/Tricorn, Spider, Thorn, Tetration, Power Towers
+**Classic Fractals (30+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals, Barnsley systems
 
-**Scientific Systems (30+):** Strange attractors (Lorenz, Rössler, Hénon, Pickover, Chua), bifurcation diagrams, Lyapunov fractals
+**Mathematical Functions (50+):** Trigonometric, exponential, logarithmic, elliptic functions, special functions (Gamma, Bessel, Lambert W), polynomial variants
 
-**Hailstone Sequences:** 2D integer lattice dynamics with cycle detection, 5 transformation presets
+**Scientific Systems (35+):** Strange attractors (Lorenz, Rössler, Hénon, Chua), bifurcation diagrams, Lyapunov fractals, reaction-diffusion systems
 
-**Geometric & IFS (20+):** Sierpinski, Apollonius, Pascal triangle, L-Systems, Barnsley fern
+**Engineering Applications (10+):** Chemical kinetics, mechanical stress/strain, heat transfer, electrical circuits, control systems
 
-**Artistic Fractals (25+):** BuddhaBrot, Popcorn, Hopalong, Plasma, DLA, Langton's ant
+**Geometric & IFS (15+):** Sierpinski, Apollonius, Pascal triangle, Barnsley fern, fractal trees
 
-**Tierazon Set (30+):** Phoenix, Hypercomplex, Froth, Icon/Icon3D, function compositions
+**Orbit Traps & Advanced Coloring (20+):** Circular, cross, triangle traps, stripe averaging, curvature tracking, angle accumulation
 
-**Research Fractals (15+):** Perturbation-optimized, polynomial, rational maps, Kleinian groups
+**Artistic & Experimental (25+):** Buddhabrot, Biomorphs, Popcorn, Hopalong, Pickover Stalks, Celtic variations
 
-**Custom:** User-defined formulas via scripting language
+**Research & Hybrid Fractals (20+):** Perturbation-optimized, bifurcation hybrids, mutant Mandelbrot, rational maps
 
 ---
 
@@ -430,7 +430,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 **v1.0 (2026)** - Educational fork release
 - Modern WinUI 3 interface with MVVM architecture
 - Complete integration of Paul de Leeuw's native engine
-- Extended from 246 to 300 fractal types (54 new implementations)
+- Extended from 246 to 316 fractal types (70 new implementations)
 - Comprehensive fractal metadata system
 - Animation rendering with FFmpeg
 - Theme system and accessibility features
@@ -442,3 +442,406 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 - BLA acceleration algorithms
 - Formula parser and 246 fractal implementations
 - Arbitrary-precision arithmetic integration
+
+---
+
+## Appendix: Complete Fractal Catalog
+
+ManpLab includes **316 unique fractals** organized into 42 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
+
+### 3D Attractors (8)
+
+- Aizawa Attractor
+- Arneodo Attractor
+- Chen-Lee Attractor
+- Chua's Circuit
+- Gingerbread Man
+- Hénon Attractor
+- Lorenz Attractor
+- Rössler Attractor
+
+### Barnsley Fractals (7)
+
+- Barnsley Fern (IFS)
+- Barnsley J1
+- Barnsley J2
+- Barnsley J3
+- Barnsley M1
+- Barnsley M2
+- Barnsley M3
+
+### Bifurcation Diagrams (4)
+
+- Bifurcation Diagram
+- Bifurcation-Mandel Hybrid
+- Mandelbrot Parameter Space
+- Mandelbrot-Lambda Space
+
+### Burning Ship Variants (8)
+
+- Bird of Prey
+- Buffalo Burning Ship
+- Burning Mandel Hybrid
+- Burning Ship
+- Burning Ship³ (Cubic)
+- Burning Ship⁴ (Quartic)
+- Celtic Burning Hybrid
+- Celtic Burning Ship
+
+### Chemical Engineering (4)
+
+- Arrhenius Kinetics (Thermal Activation)
+- Cahn-Hilliard Phase Separation
+- Gray-Scott Reaction-Diffusion
+- Langmuir-Hinshelwood Surface Catalysis
+
+### Classical Polynomials (3)
+
+- Chebyshev Polynomial
+- Hermite Polynomial
+- Legendre Polynomial
+
+### Classic Escape-Time (8)
+
+- Lambda Fractal
+- Magnet I
+- Magnet II
+- Manowar
+- Sierpinski
+- Spider
+- Tetrate
+- Unity
+
+### Complex Functions (8)
+
+- Exponential Power
+- Log Power
+- Power Exponential
+- Sinh Sinh
+- Square Root Trig
+- Trig Power
+- Trig Square Root
+- Trig Trig
+
+### Distance Estimation (4)
+
+- Burning Ship DEM
+- Distance Estimation (Standard)
+- Julia Set DEM
+- Tricorn DEM
+
+### Discrete Mathematics (3)
+
+- Chebyshev Polynomial
+- Combinatorial Mandelbrot
+- Inverse Combinatorial
+
+### Elliptic Functions (4)
+
+- Jacobi Elliptic sn
+- Weierstrass ℘-function
+- Weierstrass ζ-function
+- Weierstrass σ-function
+
+### Exotic Fractals (8)
+
+- Buffalo Mandelbrot
+- Celtic Mandelbrot
+- Heart Mandelbrot
+- Mandelbar
+- Perpendicular Buffalo
+- Perpendicular Celtic
+- Perpendicular Mandelbrot
+- Zubieta Fractal
+
+### Exponential & Logarithmic (10)
+
+- Complex Power
+- Exp-Mandel
+- Exponential Julia
+- Exponential Mandelbrot
+- Exp² Mandelbrot
+- Generalized Complex Power
+- Log-Julia
+- Logarithmic Mandelbrot
+- Power Tower (Tetration)
+- Zubieta Exponential
+
+### Fractal Hybrids (8)
+
+- Bifurcation-Mandel
+- Burning-Mandel
+- Celtic Hybrid
+- Exp-Mandel
+- Mutant Mandelbrot
+- Perturbed Newton-Mandel
+- Sierpinski-Mandel
+- Trig-Blend
+
+### Historical Fractals (8)
+
+- Biomorphs
+- Chip Map
+- Collatz Fractal
+- Duffing Map
+- Martin Map
+- Pickover Stalks
+- Quaternion Julia (2D Slice)
+- Sinusoidal Fractal
+
+### IFS Fractals (5)
+
+- Apollonius Gasket
+- Barnsley Fern (IFS)
+- Pascal Triangle Fractal
+- Sierpinski Carpet (IFS)
+- Sierpinski Triangle (IFS)
+
+### Iterative Maps (8)
+
+- Gingerbreadman Map
+- Hopalong Attractor
+- Icon Map
+- Ikeda Map
+- Martin Map
+- Popcorn
+- Sprott Map
+- Symmetric Icon Map
+
+### Julia Presets (23)
+
+- Julia - Airplane
+- Julia - Backbone
+- Julia - Cauliflower
+- Julia - Crystal
+- Julia - Dendrite
+- Julia - Double Spiral
+- Julia - Dragon
+- Julia - Eye of God
+- Julia - Feigenbaum
+- Julia - Flower
+- Julia - Fractal Tree
+- Julia - Fuzzy Blob
+- Julia - Galaxy
+- Julia - Golden Ratio
+- Julia - Heart
+- Julia - Lightning
+- Julia - Medusa
+- Julia - Neurons
+- Julia - Paisley
+- Julia - San Marco
+- Julia - Siegel Disk
+- Julia - Siegel Disk (Alt)
+- Julia - Sine
+- Julia - Spiral
+
+### Lambda Fractals (8)
+
+- Lambda Flip
+- Lambda Modified
+- Lambda Phoenix
+- Lambda Power 3
+- Lambda Power 4
+- Lambda Squared
+- Lambda Tan
+- Lambda Tanh
+
+### Magnet Fractals (4)
+
+- Magnet I Cubic
+- Magnet I Julia
+- Magnet II Cubic
+- Magnet II Julia
+
+### Mandelbrot Variants (27)
+
+- Burning Ship
+- Celtic Buffalo
+- Celtic Heart
+- Heart Mandelbrot (Sine)
+- Julia Power 4
+- Mandelbar
+- Mandelbar (Conjugate)
+- Mandelbrot Power 4
+- Mandelbrot-Lambda
+- Manowar
+- Marks Julia
+- Marks Mandelbrot
+- Marks Mandelbrot (Classic)
+- Multibrot (Power 6)
+- Multibrot (Power 7)
+- Multibrot (Power 8)
+- Multibrot⁴ (Quartic)
+- Multibrot⁵ (Quintic)
+- Multibrot³ (Cubic)
+- Perpendicular Mandelbrot (Abs First)
+- Shark Fin Mandelbrot
+- Spider
+- Spider Variant
+- Thorn
+- Thorn (Classic)
+- Tricorn (Mandelbar)
+- Wavy Mandelbrot
+
+### Mechanical Engineering (5)
+
+- Basquin Fatigue Power Law (S-N Curve)
+- Euler-Bernoulli Buckling (Beam Deflection)
+- Ramberg-Osgood Plastic Deformation (Malleability)
+- Stefan-Boltzmann Radiative Cooling (Heat Flow)
+- Torsional Twist (Angle of Twist)
+
+### Multibrot Powers (8)
+
+- Buffalo (Polynomial)
+- Multibrot-10 (Decic)
+- Multibrot-3 (Cubic)
+- Multibrot-4 (Quartic)
+- Multibrot-5 (Quintic)
+- Multibrot-6 (Sextic)
+- Multibrot-8 (Octic)
+- Tricorn (Polynomial)
+
+### Newton's Method (8)
+
+- Newton (z³-1)
+- Newton Basin (z³-1)
+- Newton Cosh
+- Newton Quartic (z⁴-1)
+- Newton Quintic (z⁵-1)
+- Newton Sextic (z⁶-1)
+- Newton Sine
+- Nova
+
+### Orbit Statistics (4)
+
+- Angle Average
+- Average Distance
+- Maximum Distance
+- Minimum Distance
+
+### Orbit Trap (4)
+
+- Orbit Trap (Circle)
+- Orbit Trap (Cross)
+- Orbit Trap (Point)
+- Orbit Trap (Square)
+
+### Orbital Advanced (10)
+
+- Circular Orbit Trap
+- Cross Orbit Trap
+- Delta Magnitude Tracking
+- Orbit Angle Accumulation
+- Orbital Curvature Tracking
+- Point-Line Orbit Trap
+- Smoothed Orbit (Running Average)
+- Stalks (Conditional)
+- Stripe Average Coloring
+- Triangle Orbit Trap
+
+### Phoenix Fractals (8)
+
+- Phoenix Complex Feedback
+- Phoenix Cosh
+- Phoenix Cubic
+- Phoenix Julia
+- Phoenix Lambda
+- Phoenix Mandelbrot
+- Phoenix Quartic
+- Phoenix Sine
+
+### Polynomial Variants (8)
+
+- Biomorph
+- Cubic Mandelbrot
+- Polynomial z⁴+z³+c
+- Polynomial z³-z+c
+- Quartic Mandelbrot
+- Quintic Mandelbrot
+- Rational R1
+- Sextic Mandelbrot
+
+### Rational Function Fractals (8)
+
+- Halley's Method z³-1
+- Möbius Fractal
+- Newton z⁴-1
+- Newton z⁵-1
+- Newton z³-1
+- Rational (z²+c)/(z²-c)
+- Rational z²/(z³+c)
+- Rational z³/(z³+c)
+
+### Special (6)
+
+- 2-D Hailstone Trajectory
+- Buddhabrot
+- Hailstone Sequence
+- Lyapunov
+- NumFractal
+- Tetration (Classic)
+
+### Special Function Fractals (15)
+
+- Bessel-like Oscillatory
+- Bose-Einstein Distribution
+- Continued Fraction Fractal
+- Damped Harmonic Oscillator
+- Digamma Function ψ(z)
+- Error Function (erf) Fractal
+- Fermi-Dirac Distribution
+- Gamma Function Fractal
+- Hyperbolic Combination
+- Lambert W Function
+- Planck Distribution
+- RLC Circuit Resonance
+- Root Locus (Control Systems)
+- Tetration (Power Tower)
+- Trigamma Function ψ'(z)
+
+### Strange Attractors (6)
+
+- Bedhead Attractor
+- Clifford Attractor
+- De Jong Attractor
+- Duffing Attractor
+- Svensson Attractor
+- Tinkerbell Attractor
+
+### Tricorn Family (2)
+
+- Tricorn (Power 3)
+- Tricorn (Power 4)
+
+### Trigonometric (8)
+
+- Cosecant Mandelbrot
+- Cosh Mandelbrot
+- Cotangent Mandelbrot
+- Mandel Trig
+- Secant Mandelbrot
+- Sech Mandelbrot
+- Sinh Mandelbrot
+- Tanh Mandelbrot
+
+### Trigonometric Fractals (12)
+
+- Cos(z) + c
+- Lambda Lambda Cosh
+- Lambda Lambda Cosine
+- Lambda Lambda Sine
+- Lambda Lambda Sinh
+- Lambda Mandel Cosh
+- Lambda Mandel Cosine
+- Lambda Mandel Sine
+- Lambda Mandel Sinh
+- Mandelbrot Trig
+- Sin(z) + c
+- Sine Fractal
+
+---
+
+**Categories:** 42 families | **Total Fractals:** 316
+
+*This catalog represents the current state of ManpLab v1.0, combining Paul de Leeuw's original 246 fractals with 70 new implementations spanning mathematical functions, physical systems, and experimental variations.*
