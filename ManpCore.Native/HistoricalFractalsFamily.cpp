@@ -312,34 +312,36 @@ namespace Native
 
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
                 {
-                    // Quaternion as (w, x, y, z) - we'll use (0, c.real, c.imag, 0) for initial
-                    double w = 0.0, x = c.real, y = c.imag, z = 0.0;
-                    ComplexD constant = isJulia ? juliaC : c;
-                    double cw = 0.0, cx = constant.real, cy = constant.imag, cz = 0.0;
+                    // A classic constant for Quaternion Julia sets
+                    double cx = -0.1, cy = -0.75, cz = 0.3, cw = -0.1;
+
+                    // Map the 2D screen coordinates to a 4D slice.
+                    // q = (w, x, y, z)
+                    double w = c.real;
+                    double x = c.imag;
+                    double y = 0.0;
+                    double z = 0.0;
 
                     for (int i = 0; i < maxIter; ++i)
                     {
-                        // Quaternion multiplication: q²
-                        // (w,x,y,z)² = (w²-x²-y²-z², 2wx, 2wy, 2wz)
-                        double w2 = w * w - x * x - y * y - z * z;
-                        double x2 = 2.0 * w * x;
-                        double y2 = 2.0 * w * y;
-                        double z2 = 2.0 * w * z;
+                        // Full quaternion multiplication: q' = q*q + C
+                        double w_new = w * w - x * x - y * y - z * z + cw;
+                        double x_new = 2.0 * w * x + cx;
+                        double y_new = 2.0 * w * y + cy;
+                        double z_new = 2.0 * w * z + cz;
 
-                        // Add c
-                        w = w2 + cw;
-                        x = x2 + cx;
-                        y = y2 + cy;
-                        z = z2 + cz;
+                        w = w_new;
+                        x = x_new;
+                        y = y_new;
+                        z = z_new;
 
-                        // Quaternion magnitude
+                        // Check magnitude for escape
                         double mag2 = w * w + x * x + y * y + z * z;
-
                         if (mag2 > 256.0)
                         {
                             double log_zn = std::log(mag2) / 2.0;
                             double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                            return i + 1.0 - nu;
+                            return static_cast<double>(i) + 1.0 - nu;
                         }
                     }
 

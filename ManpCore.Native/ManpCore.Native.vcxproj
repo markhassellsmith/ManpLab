@@ -110,6 +110,7 @@
     <ClCompile Include="ComplexFunctionsFamily.cpp" />
     <ClCompile Include="DiscreteMathematicsFamily.cpp" />
     <ClCompile Include="DistanceEstimatorFamily.cpp" />
+    <ClCompile Include="EllipticFunctionsFamily.cpp" />
     <ClCompile Include="EnhancedJuliaPresetsFamily.cpp" />
     <ClCompile Include="ExoticFormulasFamily.cpp" />
     <ClCompile Include="ExponentialLogarithmicFamily.cpp" />

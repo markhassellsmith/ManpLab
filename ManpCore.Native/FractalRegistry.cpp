@@ -187,6 +187,7 @@ extern void RegisterPoleFunctionFamily();       // Digamma, Trigamma, Fermi-Dira
 extern void RegisterChemicalEngineeringFamily(); // Chemical Engineering = 4
 extern void RegisterMechanicalEngineeringFamily(); // Mechanical Engineering = 5
 extern void RegisterDiscreteMathematicsFamily(); // Discrete Mathematics = 3
+extern void RegisterEllipticFunctionsFamily(); // Elliptic Functions = 4
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -222,7 +223,7 @@ void FractalRegistry::InitializeBuiltins()
     RegisterExoticFormulasFamily();     // Exotic formulas: Celtic, Buffalo, Heart, etc. = 8
     RegisterOrbitalFractalsFamily();    // Orbit trap and modification = 8
     RegisterPolynomialVariantsFamily(); // Polynomial variants: Cubic, Quartic, Rational, etc. = 8
-    RegisterTrigonometricExtendedFamily(); // Extended trig functions = 8
+    RegisterTrigonometricExtendedFamily(); // Extended trig functions = 6
     RegisterJuliaVariantsFamily();      // Julia set variations = 8
     RegisterStrangeAttractorsExtendedFamily(); // Extended strange attractors = 6
     RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buffalo = 8
@@ -238,7 +239,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterChemicalEngineeringFamily(); // Chemical Engineering = 4
     RegisterMechanicalEngineeringFamily(); // Mechanical Engineering = 5
     RegisterDiscreteMathematicsFamily(); // Discrete Mathematics = 3
-    // Total: 312 fractals 🎯
+    RegisterEllipticFunctionsFamily(); // Elliptic Functions = 4
+    // Total: 316 fractals 🎯
 
     s_initialized = true;
 }
