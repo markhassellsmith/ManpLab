@@ -11,10 +11,10 @@ namespace ManpWinUI.Models;
 public class FractalMetadata
 {
     [JsonPropertyName("software")]
-    public string Software { get; set; } = "ManpWinUI";
+    public string Software { get; set; } = "ManpLab";
 
     [JsonPropertyName("version")]
-    public string Version { get; set; } = "1.0";
+    public string Version { get; set; } = "1.5.2";
 
     [JsonPropertyName("fractalType")]
     public string FractalType { get; set; } = "Mandelbrot";
@@ -99,7 +99,7 @@ public class FractalMetadata
             ImageWidth = imageWidth,
             ImageHeight = imageHeight,
             AutoScaleIterations = autoScaleIterations,
-            JuliaC = (juliaCX.HasValue && juliaCY.HasValue) 
+            JuliaC = (juliaCX.HasValue && juliaCY.HasValue)
                 ? new JuliaParameters { Real = juliaCX.Value, Imaginary = juliaCY.Value }
                 : null,
             Hailstone = hailstone,
