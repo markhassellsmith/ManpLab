@@ -7,6 +7,7 @@ namespace Native
 {
     void RegisterRationalFunctionFamily()
     {
+        FractalSpec spec;
         InitialConditions ic;  // Declare ONCE at the top
 
         // ═══════════════════════════════════════════════════════════════════════════════
@@ -17,7 +18,6 @@ namespace Native
         // Newton z³-1 (Classic Newton Fractal)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "NewtonCubic";
             spec.displayName = "Newton z³-1";
             spec.category = "Rational Function Fractals";
@@ -94,7 +94,6 @@ namespace Native
         // Newton z⁴-1
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "NewtonQuarticRational";
             spec.displayName = "Newton z⁴-1";
             spec.category = "Rational Function Fractals";
@@ -170,7 +169,6 @@ namespace Native
         // Newton z⁵-1
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "NewtonQuinticRational";
             spec.displayName = "Newton z⁵-1";
             spec.category = "Rational Function Fractals";
@@ -243,7 +241,6 @@ namespace Native
         // Rational Map: z²/(z³+c)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "RationalZ2Z3";
             spec.displayName = "Rational z²/(z³+c)";
             spec.category = "Rational Function Fractals";
@@ -318,7 +315,6 @@ namespace Native
         // Rational Map: (z²+c)/(z²-c)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "RationalSymmetric";
             spec.displayName = "Rational (z²+c)/(z²-c)";
             spec.category = "Rational Function Fractals";
@@ -392,7 +388,6 @@ namespace Native
         // Halley's Method for z³-1
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "HalleyCubic";
             spec.displayName = "Halley's Method z³-1";
             spec.category = "Rational Function Fractals";
@@ -485,7 +480,6 @@ namespace Native
         // Möbius Transformation Fractal
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "Mobius";
             spec.displayName = "Möbius Fractal";
             spec.category = "Rational Function Fractals";
@@ -552,7 +546,6 @@ namespace Native
         // Rational Power Map: z^n / (z^n + c)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "RationalPower";
             spec.displayName = "Rational z³/(z³+c)";
             spec.category = "Rational Function Fractals";

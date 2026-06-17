@@ -19,10 +19,10 @@ namespace Native
         // Exponential Mandelbrot
         // ───────────────────────────────────────────────────────────────────────────────
 
+        FractalSpec spec;
         InitialConditions ic;  // Declare ONCE at the top
 
         {
-            FractalSpec spec;
 
             spec.name = "ExponentialLogarithmic";
             spec.displayName = "Exponential Logarithmic";
@@ -78,7 +78,6 @@ namespace Native
         // Logarithmic Mandelbrot
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "Logarithmic";
             spec.displayName = "Logarithmic Mandelbrot";
             spec.category = "Exponential Fractals";
@@ -154,7 +153,6 @@ namespace Native
         // Exponential Square (exp(z²) + c)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ExpSquare";
             spec.displayName = "Exponential Square";
             spec.category = "Exponential Fractals";
@@ -215,7 +213,6 @@ namespace Native
         // Power Tower (z^z + c)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "PowerTower";
             spec.displayName = "Power Tower (z^z)";
             spec.category = "Exponential Fractals";
@@ -287,7 +284,6 @@ namespace Native
         // Complex Power (z^c + c)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ComplexPower";
             spec.displayName = "Complex Power";
             spec.category = "Exponential Fractals";
@@ -357,7 +353,6 @@ namespace Native
         // Exponential Julia (c*exp(z) + z)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ExponentialJulia";
             spec.displayName = "Exponential Julia";
             spec.category = "Exponential Fractals";

@@ -7,11 +7,13 @@ namespace Native {
 
     void RegisterDiscreteMathematicsFamily()
     {
+        FractalSpec spec;
+        InitialConditions ic;
+
         // ───────────────────────────────────────────────────────────────────────────────
         // Combinatorial Mandelbrot: z^4 - z + c (polynomial blend)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "CombinatorialMandelbrot";
             spec.displayName = "Combinatorial Mandelbrot z⁴ - z + c";
             spec.category = "Discrete Mathematics";
@@ -25,7 +27,7 @@ namespace Native {
             spec.discoveredBy = "Polynomial iteration (dynamical systems, exploration)";
             spec.computationalNotes = "The quartic term dominates at large |z|, while the linear term creates competing attractors and escape pathways. The balance yields rich detail across the parameter space.";
 
-            auto ic = InitialConditionsService::Get("CombinatorialMandelbrot");
+            ic = InitialConditionsService::Get("CombinatorialMandelbrot");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.6;
@@ -71,7 +73,6 @@ namespace Native {
         // Inverse Combinatorial: z^(-2) + c (reciprocal mapping)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "InverseCombinatorial";
             spec.displayName = "Inverse Combinatorial 1/z² + c";
             spec.category = "Discrete Mathematics";
@@ -85,7 +86,7 @@ namespace Native {
             spec.discoveredBy = "Inversive geometry and reciprocal iteration";
             spec.computationalNotes = "Division by zero is avoided by checking for small |z| and damping the reciprocal magnitude. Points with |z| < 0.01 are treated as near-singular; their reciprocal is clamped to prevent runaway behavior.";
 
-            auto ic = InitialConditionsService::Get("InverseCombinatorial");
+            ic = InitialConditionsService::Get("InverseCombinatorial");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.5;
@@ -140,7 +141,6 @@ namespace Native {
         // Chebyshev Polynomial: T_3(z) = 4z^3 - 3z + c
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ChebyshevPolynomial";
             spec.displayName = "Chebyshev Polynomial T₃(z) = 4z³ - 3z + c";
             spec.category = "Discrete Mathematics";
@@ -154,7 +154,7 @@ namespace Native {
             spec.discoveredBy = "Chebyshev polynomials (approximation theory, Chebyshev)";
             spec.computationalNotes = "T_3(z) = 4z³ - 3z is derived from the trigonometric identity cos(3θ) = 4cos³(θ) - 3cos(θ). The iterative form exhibits three competing attractors, creating a three-way bifurcation landscape.";
 
-            auto ic = InitialConditionsService::Get("ChebyshevPolynomial");
+            ic = InitialConditionsService::Get("ChebyshevPolynomial");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.7;

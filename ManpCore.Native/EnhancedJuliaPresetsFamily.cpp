@@ -7,6 +7,7 @@ namespace Native
 {
     void RegisterEnhancedJuliaPresetsFamily()
     {
+        FractalSpec spec;
         InitialConditions ic;  // Declare ONCE at the top
 
         // ═══════════════════════════════════════════════════════════════════════════════
@@ -44,7 +45,6 @@ namespace Native
         // Julia: Golden Ratio
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaGoldenRatio";
             spec.displayName = "Julia - Golden Ratio";
             spec.category = "Julia Presets";
@@ -83,7 +83,6 @@ namespace Native
         // Julia: Dendrite
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaDendritePreset";
             spec.displayName = "Julia - Dendrite (Preset)";
             spec.category = "Julia Presets";
@@ -120,7 +119,6 @@ namespace Native
         // Julia: Spiral
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaSpiralPreset";
             spec.displayName = "Julia - Spiral (Preset)";
             spec.category = "Julia Presets";
@@ -157,7 +155,6 @@ namespace Native
         // Julia: Dragon
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaDragonPreset";
             spec.displayName = "Julia - Dragon (Preset)";
             spec.category = "Julia Presets";
@@ -194,7 +191,6 @@ namespace Native
         // Julia: Cauliflower
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaCauliflower";
             spec.displayName = "Julia - Cauliflower";
             spec.category = "Julia Presets";
@@ -231,7 +227,6 @@ namespace Native
         // Julia: Seahorse Valley
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaSeahorse";
             spec.displayName = "Julia - Seahorse Valley";
             spec.category = "Julia Presets";
@@ -268,7 +263,6 @@ namespace Native
         // Julia: Airplane
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaAirplane";
             spec.displayName = "Julia - Airplane";
             spec.category = "Julia Presets";
@@ -305,7 +299,6 @@ namespace Native
         // Julia: Lightning
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaLightning";
             spec.displayName = "Julia - Lightning";
             spec.category = "Julia Presets";
@@ -342,7 +335,6 @@ namespace Native
         // Julia: Snowflake
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaSnowflake";
             spec.displayName = "Julia - Snowflake";
             spec.category = "Julia Presets";
@@ -379,7 +371,6 @@ namespace Native
         // Julia: Flower
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaFlower";
             spec.displayName = "Julia - Flower";
             spec.category = "Julia Presets";
@@ -416,7 +407,6 @@ namespace Native
         // Julia: Feigenbaum Point
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaFeigenbaum";
             spec.displayName = "Julia - Feigenbaum Point";
             spec.category = "Julia Presets";
@@ -453,7 +443,6 @@ namespace Native
         // Julia: Twisted Cross
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaTwistedCross";
             spec.displayName = "Julia - Twisted Cross";
             spec.category = "Julia Presets";
@@ -490,7 +479,6 @@ namespace Native
         // Julia: Backbone
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaBackbone";
             spec.displayName = "Julia - Backbone";
             spec.category = "Julia Presets";
@@ -527,7 +515,6 @@ namespace Native
         // Julia: Spiral Galaxy
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaSpiralGalaxy";
             spec.displayName = "Julia - Spiral Galaxy";
             spec.category = "Julia Presets";
@@ -564,7 +551,6 @@ namespace Native
         // Julia: Medusa
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaMedusa";
             spec.displayName = "Julia - Medusa";
             spec.category = "Julia Presets";
@@ -601,7 +587,6 @@ namespace Native
         // Julia: Crystal
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaCrystal";
             spec.displayName = "Julia - Crystal";
             spec.category = "Julia Presets";
@@ -638,7 +623,6 @@ namespace Native
         // Julia: Paisley
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaPaisley";
             spec.displayName = "Julia - Paisley";
             spec.category = "Julia Presets";
@@ -675,7 +659,6 @@ namespace Native
         // Julia: Fuzzy Blob
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaFuzzyBlob";
             spec.displayName = "Julia - Fuzzy Blob";
             spec.category = "Julia Presets";
@@ -712,7 +695,6 @@ namespace Native
         // Julia: Eye
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaEye";
             spec.displayName = "Julia - Eye";
             spec.category = "Julia Presets";
@@ -749,7 +731,6 @@ namespace Native
         // Julia: Triple Spiral
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaTripleSpiral";
             spec.displayName = "Julia - Triple Spiral";
             spec.category = "Julia Presets";
@@ -786,7 +767,6 @@ namespace Native
         // Julia: Heart
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaHeart";
             spec.displayName = "Julia - Heart";
             spec.category = "Julia Presets";
@@ -823,7 +803,6 @@ namespace Native
         // Julia: Neurons
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaNeurons";
             spec.displayName = "Julia - Neurons";
             spec.category = "Julia Presets";
@@ -860,7 +839,6 @@ namespace Native
         // Julia: Fractal Tree
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "JuliaFractalTree";
             spec.displayName = "Julia - Fractal Tree";
             spec.category = "Julia Presets";

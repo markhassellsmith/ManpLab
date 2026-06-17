@@ -7,6 +7,7 @@ namespace Native
 {
     void RegisterHistoricalFractalsFamily()
     {
+        FractalSpec spec;
         InitialConditions ic;  // Declare ONCE at the top
 
         // ═══════════════════════════════════════════════════════════════════════════════
@@ -18,7 +19,6 @@ namespace Native
         // Pickover Biomorphs
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "Biomorphs";
             spec.displayName = "Pickover Biomorphs";
             spec.category = "Historical Fractals";
@@ -86,7 +86,6 @@ namespace Native
         // Pickover Stalks (Biomorph variant)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "PickoverStalks";
             spec.displayName = "Pickover Stalks";
             spec.category = "Historical Fractals";
@@ -151,7 +150,6 @@ namespace Native
         // Martin Map (Hopalong variant) - 2D discrete map with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "MartinMap";
             spec.displayName = "Martin Map";
             spec.category = "Historical Fractals";
@@ -222,7 +220,6 @@ namespace Native
         // Chip Map (Clifford Pickover)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ChipMap";
             spec.displayName = "Chip Map";
             spec.category = "Historical Fractals";
@@ -285,7 +282,6 @@ namespace Native
         // Quaternion Julia (2D Projection)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "QuaternionJulia2D";
             spec.displayName = "Quaternion Julia (2D slice)";
             spec.category = "Historical Fractals";
@@ -355,7 +351,6 @@ namespace Native
         // Collatz Fractal
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "CollatzFractal";
             spec.displayName = "Collatz Fractal";
             spec.category = "Historical Fractals";
@@ -421,7 +416,6 @@ namespace Native
         // Duffing Map - 2D discrete map with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "DuffingMap";
             spec.displayName = "Duffing Map";
             spec.category = "Historical Fractals";
@@ -490,7 +484,6 @@ namespace Native
         // Sinusoidal Fractal (Early sine-based)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "SinusoidalFractal";
             spec.displayName = "Sinusoidal Fractal";
             spec.category = "Historical Fractals";
