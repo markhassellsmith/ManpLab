@@ -22,6 +22,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 - 📚 **Fractal Browser** - Metadata, formulas, bookmarks, navigation history
 - 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
 - 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
+- 💾 **Rich Image Metadata** - PNG/JPEG exports embed complete fractal parameters ([View metadata guide →](../docs/ImageMetadataGuide.md))
 - ⌨️ [Full Keyboard Shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
 
 🔗 **[Get Started with ManpWinUI →](ManpWinUI/README.md)**
@@ -197,6 +198,18 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 - Fractal metadata browser with favorites
 - Animation timeline editor
 - Keyboard shortcuts for power users
+
+#### Image Export with Embedded Metadata
+
+ManpLab embeds comprehensive metadata into every exported PNG and JPEG image, enabling:
+- **Exact reproduction** of any fractal render from saved files
+- **Sharing parameters** without manual copying
+- **Archival preservation** of exploration history
+- **Open-source attribution** with automatic GitHub links
+
+**📖 [Complete Image Metadata Guide →](../docs/ImageMetadataGuide.md)**
+
+Metadata includes fractal family, mathematical parameters (center, zoom, iterations), rendering details (color palette, render time), and a full JSON blob for programmatic access. View metadata using ExifTool, XnView, or standard image properties in Windows/macOS.
 
 ---
 
