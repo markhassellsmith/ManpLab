@@ -22,7 +22,7 @@ BoseEinsteinFractal,0.34,0.02,3.87E-01
 Buddhabrot,-0.33,0.03,0.8
 Buffalo,0,0,6.25E-02
 BuffaloBurningShip,0.03,0.44,6.03E-01
-BuffaloPolynomial,-0.21,-0.58,0.7
+BuffaloPolynomial,-0.410087845,-0.532667338,0.664342903
 BurningMandel,-0.473321343,-0.238625766,0.790660112
 BurningShip,-0.501647949,-0.574157715,0.711111111
 BurningShip3,0.08,0.15,5.95E-01
@@ -197,7 +197,7 @@ Multibrot6,0,0,0.75
 Multibrot-6,-0.01,-0.04,0.718412383
 Multibrot7,0,0,0.724452246
 Multibrot8,0,0,0.75
-Multibrot-8,0,0,0.750241424
+Multibrot-8,0.00,0.00,7.5024142400E-01
 MultiPowerCycle,0,0,0.615572204
 MutantMandelbrot,-0.5,0,0.790041316
 Newton,0,0,1
@@ -210,7 +210,7 @@ NewtonQuarticRational,0,0,0.6
 NewtonQuintic,0,0,1
 NewtonQuinticRational,0,0,0.6
 NewtonSextic,0,0,1
-NewtonSin,0,0,0.03125
+NewtonSin,0,0,0.0078125
 Nova,-0.55,0.03,1.350873221
 NumFractal,0,0,0.615572207
 OrbitAngleAccum,0,0,0.2
@@ -294,7 +294,7 @@ Tricorn3,0,0,0.6
 Tricorn4,0,0,0.6
 TricornDEM,0,0,0.30354872
 TricornPhoenixHybrid,-0.58,-0.11,0.61430912
-Tricorn-Poly,0,0,0.45471497
+Tricorn-Poly,0.00,0.00,0.45471497
 TrigammaFractal,-0.253437722,0.002855142,0.325449642
 TrigMandelBlend,-0.876375321,-0.007468123,0.462848386
 TrigPlusTrig,1.52,0.06,2.87E-01
