@@ -23,8 +23,11 @@ public enum FractalCategory
     /// <summary>Monte Carlo path accumulation (Buddhabrot, Anti-Buddhabrot) - requires special rendering</summary>
     BuddhabrotBased = 4,
 
+    /// <summary>Column-based parameter sweep with multi-point vertical plotting (bifurcation diagrams)</summary>
+    BifurcationDiagram = 5,
+
     /// <summary>Special renderers (perturbation, custom algorithms) - custom metrics</summary>
-    Special = 5
+    Special = 6
 }
 
 /// <summary>

@@ -132,6 +132,7 @@ enum class FractalCategory
     AttractorBased3D,       // Lorenz, Rössler, etc. (legacy per-pixel - use HistogramBased for proper rendering)
     HistogramBased,         // Orbit accumulation rendering (strange attractors, IFS)
     BuddhabrotBased,        // Monte Carlo path accumulation (Buddhabrot, Anti-Buddhabrot)
+    BifurcationDiagram,     // Column-based parameter sweep with multi-point vertical plotting
     Special                 // Perturbation, custom renderers, etc.
 };
 
@@ -154,6 +155,20 @@ typedef std::function<double(ComplexD c, int maxIter, bool isJulia, ComplexD jul
 typedef std::function<void(double& x, double& y, double& z, const ParamMap& params)>
     OrbitIterator;
 
+// Bifurcation diagram calculator signature
+// Given a parameter value, returns vector of attractor points to plot vertically
+// Used for traditional bifurcation diagrams (one column = one parameter value)
+// - parameter: Parameter value for this column (e.g., r for logistic map)
+// - transient: Number of iterations to skip before sampling (settle to attractor)
+// - samples: Number of attractor points to collect and return
+// - params: Additional custom parameters
+typedef std::function<std::vector<double>(
+    double parameter,
+    int transient,
+    int samples,
+    const ParamMap& params
+)> BifurcationCalculator;
+
 //=============================================================================
 // Fractal Specification
 //=============================================================================
@@ -167,6 +182,7 @@ struct FractalSpec
 
     FractalCalculator calculator;   // Calculation function (for escape-time fractals)
     OrbitIterator orbitIterator;    // Orbit iteration function (for histogram-based fractals)
+    BifurcationCalculator bifurcationCalculator;  // Bifurcation diagram calculator (returns attractor points)
 
     std::vector<ParameterSpec> parameters;  // Custom parameters
 
