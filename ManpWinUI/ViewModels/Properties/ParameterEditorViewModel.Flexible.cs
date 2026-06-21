@@ -111,13 +111,25 @@ namespace ManpWinUI.ViewModels.Properties
                 _ => descriptor.DefaultValue?.ToString() ?? string.Empty
             };
 
+            // Add UI hint for numeric parameters that require focus loss to commit
+            string description = descriptor.Description ?? string.Empty;
+            if (descriptor.IsEditable && 
+                (descriptor.Type == Models.Parameters.ParameterType.Integer || 
+                 descriptor.Type == Models.Parameters.ParameterType.Double ||
+                 descriptor.Type == Models.Parameters.ParameterType.Complex))
+            {
+                description = string.IsNullOrEmpty(description) 
+                    ? "(tab out to accept)"
+                    : $"{description} (tab out to accept)";
+            }
+
             var paramItem = new ParameterItem
             {
                 Name = descriptor.Name,
                 Value = valueStr,
                 DefaultValue = defaultStr,
                 Type = uiType,
-                Description = descriptor.Description ?? string.Empty,
+                Description = description,
                 IsReadOnly = !descriptor.IsEditable,
                 IsViewportParameter = descriptor.IsViewportParameter,
                 MinValue = descriptor.MinValue as double? ?? double.MinValue,
@@ -150,16 +162,29 @@ namespace ManpWinUI.ViewModels.Properties
         /// </summary>
         public void SyncParameterToSystem(ParameterItem paramItem, FractalParameterSet? parameterSet)
         {
+            System.Diagnostics.Debug.WriteLine($"[SyncParameterToSystem] Called for item: Name={paramItem.Name}, Value={paramItem.Value}, Tag={paramItem.Tag}");
+
             if (parameterSet == null || paramItem.Tag == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[SyncParameterToSystem] SKIPPED: parameterSet={parameterSet != null}, Tag={paramItem.Tag != null}");
                 return;
+            }
 
             var key = paramItem.Tag.ToString();
             if (string.IsNullOrEmpty(key))
+            {
+                System.Diagnostics.Debug.WriteLine($"[SyncParameterToSystem] SKIPPED: Empty key");
                 return;
+            }
 
             var descriptor = parameterSet.GetDescriptor(key);
             if (descriptor == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"[SyncParameterToSystem] SKIPPED: No descriptor found for key '{key}'");
                 return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[SyncParameterToSystem] Found descriptor: Key={key}, Type={descriptor.Type}, CurrentValue={parameterSet.GetValue(key)}");
 
             // Convert UI value string to typed value
             object? typedValue = descriptor.Type switch
@@ -173,8 +198,13 @@ namespace ManpWinUI.ViewModels.Properties
 
             if (typedValue != null)
             {
+                var oldValue = parameterSet.GetValue(key);
                 parameterSet.SetValue(key, typedValue);
-                System.Diagnostics.Debug.WriteLine($"[ParameterEditorViewModel] Synced '{key}' = {typedValue} to parameter system");
+                System.Diagnostics.Debug.WriteLine($"[SyncParameterToSystem] ✓ SYNCED '{key}': {oldValue} → {typedValue}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[SyncParameterToSystem] FAILED: Could not parse '{paramItem.Value}' as {descriptor.Type}");
             }
         }
 

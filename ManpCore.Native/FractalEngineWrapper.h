@@ -29,8 +29,11 @@ namespace Native {
         /// <summary>Column-based parameter sweep with multi-point vertical plotting (bifurcation diagrams)</summary>
         BifurcationDiagram = 5,
 
+        /// <summary>Lindenmayer systems - turtle graphics rendered in managed layer (C#)</summary>
+        LSystem = 6,
+
         /// <summary>Special renderers (perturbation, custom algorithms) - custom metrics</summary>
-        Special = 6
+        Special = 7
     };
 
     /// <summary>

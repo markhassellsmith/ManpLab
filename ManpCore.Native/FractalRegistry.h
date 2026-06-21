@@ -133,6 +133,7 @@ enum class FractalCategory
     HistogramBased,         // Orbit accumulation rendering (strange attractors, IFS)
     BuddhabrotBased,        // Monte Carlo path accumulation (Buddhabrot, Anti-Buddhabrot)
     BifurcationDiagram,     // Column-based parameter sweep with multi-point vertical plotting
+    LSystem,                // Lindenmayer systems - turtle graphics rendered in managed layer
     Special                 // Perturbation, custom renderers, etc.
 };
 

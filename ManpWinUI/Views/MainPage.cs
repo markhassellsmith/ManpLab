@@ -251,27 +251,50 @@ namespace ManpWinUI.Views
         /// </summary>
         private void OnParameterChanged(object? sender, EventArgs e)
         {
-            Debug.WriteLine($"[MainPage] Parameter changed, syncing to ViewModel and re-rendering");
+            Debug.WriteLine($"[MainPage.OnParameterChanged] ══════════════════════════════════════");
+            Debug.WriteLine($"[MainPage.OnParameterChanged] Event fired! Syncing parameters...");
 
-            // Sync editable parameters from ParameterEditor to MainViewModel
-            var centerX = ParameterEditorViewModel.GetParameterValue("Center X");
-            if (centerX != null && double.TryParse(centerX, out var x))
-                ViewModel.CenterX = x;
+            // TASK 7: Sync all changed parameters to flexible parameter system
+            if (ViewModel.CurrentParameters != null)
+            {
+                Debug.WriteLine($"[MainPage.OnParameterChanged] Using FLEXIBLE parameter system");
 
-            var centerY = ParameterEditorViewModel.GetParameterValue("Center Y");
-            if (centerY != null && double.TryParse(centerY, out var y))
-                ViewModel.CenterY = y;
+                // Sync all editable parameters from UI back to parameter set
+                int syncCount = 0;
+                foreach (var paramItem in ParameterEditorViewModel.Parameters.Where(p => !p.IsReadOnly && p.Tag != null))
+                {
+                    Debug.WriteLine($"[MainPage.OnParameterChanged] Syncing parameter: {paramItem.Name} = {paramItem.Value}");
+                    ParameterEditorViewModel.SyncParameterToSystem(paramItem, ViewModel.CurrentParameters);
+                    syncCount++;
+                }
+                Debug.WriteLine($"[MainPage.OnParameterChanged] Synced {syncCount} parameters to flexible system");
+            }
+            else
+            {
+                Debug.WriteLine($"[MainPage.OnParameterChanged] Using LEGACY parameter system");
 
-            var zoom = ParameterEditorViewModel.GetParameterValue("Zoom");
-            if (zoom != null && double.TryParse(zoom, out var z))
-                ViewModel.Zoom = z;
+                // Legacy path: Sync specific viewport parameters to ViewModel
+                var centerX = ParameterEditorViewModel.GetParameterValue("Center X");
+                if (centerX != null && double.TryParse(centerX, out var x))
+                    ViewModel.CenterX = x;
 
-            var maxIterations = ParameterEditorViewModel.GetParameterValue("Max Iterations");
-            if (maxIterations != null && int.TryParse(maxIterations, out var iter))
-                ViewModel.MaxIterations = iter;
+                var centerY = ParameterEditorViewModel.GetParameterValue("Center Y");
+                if (centerY != null && double.TryParse(centerY, out var y))
+                    ViewModel.CenterY = y;
 
-            // Trigger re-render with updated parameters
-            _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
+                var zoom = ParameterEditorViewModel.GetParameterValue("Zoom");
+                if (zoom != null && double.TryParse(zoom, out var z))
+                    ViewModel.Zoom = z;
+
+                var maxIterations = ParameterEditorViewModel.GetParameterValue("Max Iterations");
+                if (maxIterations != null && int.TryParse(maxIterations, out var iter))
+                    ViewModel.MaxIterations = iter;
+
+                // Trigger re-render with updated parameters (legacy)
+                _ = ViewModel.RenderMandelbrotCommand.ExecuteAsync(null);
+            }
+
+            Debug.WriteLine($"[MainPage.OnParameterChanged] ══════════════════════════════════════");
         }
 
         /// <summary>
@@ -282,10 +305,8 @@ namespace ManpWinUI.Views
         {
             Debug.WriteLine($"[MainPage] Flexible parameter '{e.ParameterKey}' changed: {e.OldValue} → {e.NewValue}");
 
-            // Parameter system already updated MainViewModel properties via bidirectional sync
-            // No need to manually sync - just refresh parameter editor display if needed
-
-            // Future: Could implement real-time UI updates here if ParameterEditor needs refresh
+            // This event is for ParameterSet → UI sync (e.g., loading saved parameters)
+            // User must click Render button to apply changes
         }
 
         /// <summary>

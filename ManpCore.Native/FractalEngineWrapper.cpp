@@ -1499,6 +1499,26 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
             return result;
         }
 
+        // ═════════════════════════════════════════════════════════════════════════
+        // L-System Rendering
+        // ═════════════════════════════════════════════════════════════════════════
+        if (spec->type == ::Native::FractalCategory::LSystem)
+        {
+            Debug::WriteLine("Native Calculate: L-SYSTEM fractal detected");
+            Debug::WriteLine("  L-Systems are rendered in the managed (C#) layer");
+            Debug::WriteLine("  Returning empty result - managed LSystemRenderService will handle rendering");
+
+            // Return empty result with metadata - C# layer will render
+            stopwatch->Stop();
+            result->RenderTime = stopwatch->Elapsed;
+            result->IterationCount = 0;  // Not applicable for L-Systems
+            result->EscapedPixelCount = 0;  // Not applicable
+            result->Category = FractalCategory::LSystem;
+
+            Debug::WriteLine("Native Calculate: L-System routing complete, returning empty result to C# layer");
+            return result;
+        }
+
         // Prepare parameter map from CustomParameters dictionary
         ::Native::ParamMap customParams;
         if (parameters->CustomParameters != nullptr)

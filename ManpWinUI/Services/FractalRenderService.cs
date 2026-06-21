@@ -1,4 +1,5 @@
 using ManpCore.Native;
+using ManpWinUI.Models.LSystem;
 using ManpWinUI.Models.Parameters;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -15,11 +16,13 @@ public class FractalRenderService : IFractalRenderService
 {
     private readonly ILogger<FractalRenderService> _logger;
     private readonly FractalEngineWrapper _engine;
+    private readonly LSystemRenderService _lSystemRenderer;
 
     public FractalRenderService(ILogger<FractalRenderService> logger)
     {
         _logger = logger;
         _engine = new FractalEngineWrapper();
+        _lSystemRenderer = new LSystemRenderService();
         _logger.LogInformation("FractalRenderService initialized");
     }
 
@@ -226,11 +229,70 @@ public class FractalRenderService : IFractalRenderService
                         _engine.ProgressChanged -= progressHandler;
                     }
 
-                    _logger.LogInformation(
-                        "Mandelbrot render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations, {Escaped}/{Total} pixels escaped ({Percent:F1}%)",
-                        result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount, 
-                        result.EscapedPixelCount, result.Width * result.Height, 
-                        (double)result.EscapedPixelCount / (result.Width * result.Height) * 100.0);
+                    // ═══════════════════════════════════════════════════════════════════
+                    // L-SYSTEM SPECIAL RENDERING
+                    // ═══════════════════════════════════════════════════════════════════
+                    // Native layer returns empty result with category = LSystem
+                    // Managed layer performs grammar expansion and turtle graphics rendering
+                    if (result.Category == ManpCore.Native.FractalCategory.LSystem)
+                    {
+                        _logger.LogInformation("L-System fractal detected - performing managed rendering");
+
+                        // Get L-System preset by fractal type name
+                        var lSystemDef = LSystemPresets.GetPresetByName(fractalType);
+                        if (lSystemDef == null)
+                        {
+                            throw new InvalidOperationException(
+                                $"L-System preset '{fractalType}' not found. Available presets: " +
+                                string.Join(", ", LSystemPresets.GetAllPresets().Select(p => p.Name)));
+                        }
+
+                        // Extract generation count from extended parameters (default to preset default)
+                        int generations = lSystemDef.DefaultGenerations;
+                        if (extendedParameters?.ContainsKey("generations") == true)
+                        {
+                            generations = Convert.ToInt32(extendedParameters["generations"]);
+                            generations = Math.Clamp(generations, 0, lSystemDef.MaxGenerations);
+                        }
+
+                        _logger.LogInformation(
+                            "Rendering L-System '{Name}' with {Generations} generations (max: {Max})",
+                            lSystemDef.Name, generations, lSystemDef.MaxGenerations);
+
+                        // Expand L-System grammar
+                        var expandedString = _lSystemRenderer.ExpandLSystem(lSystemDef, generations);
+
+                        // Render to pixel buffer
+                        _lSystemRenderer.RenderToPixelBuffer(
+                            expandedString,
+                            lSystemDef,
+                            result.PixelData,
+                            width,
+                            height,
+                            0xFFFFFFFF); // White line color
+
+                        _logger.LogInformation(
+                            "L-System rendering complete: {Width}x{Height}, string length: {Length}",
+                            width, height, expandedString.Length);
+
+                        result.RenderTime = TimeSpan.FromMilliseconds(1); // Minimal time for L-System
+                    }
+
+                    // Log completion with category-appropriate details
+                    if (result.Category == ManpCore.Native.FractalCategory.LSystem)
+                    {
+                        _logger.LogInformation(
+                            "{FractalType} render complete: {Width}x{Height} in {RenderTime}ms",
+                            fractalType, result.Width, result.Height, result.RenderTime.TotalMilliseconds);
+                    }
+                    else
+                    {
+                        _logger.LogInformation(
+                            "{FractalType} render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations, {Escaped}/{Total} pixels escaped ({Percent:F1}%)",
+                            fractalType, result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount, 
+                            result.EscapedPixelCount, result.Width * result.Height, 
+                            (double)result.EscapedPixelCount / (result.Width * result.Height) * 100.0);
+                    }
 
                     return new FractalRenderResult
                     {
@@ -411,6 +473,15 @@ public class FractalRenderService : IFractalRenderService
         _logger.LogInformation(
             "RenderFractalAsync (Parameter System): {FractalType}, center=({CenterX}, {CenterY}), zoom={Zoom}",
             parameters.FractalType, parameters.CenterX, parameters.CenterY, parameters.Zoom);
+
+        // Log extended parameters for debugging (especially L-system generations)
+        if (parameters.ExtendedParameters != null && parameters.ExtendedParameters.Count > 0)
+        {
+            _logger.LogInformation(
+                "Extended parameters ({Count}): {Parameters}",
+                parameters.ExtendedParameters.Count,
+                string.Join(", ", parameters.ExtendedParameters.Select(kvp => $"{kvp.Key}={kvp.Value}")));
+        }
 
         // Delegate to RenderMandelbrotAsync with ExtendedParameters for custom parameter support
         return await RenderMandelbrotAsync(

@@ -169,6 +169,37 @@ public class FractalParameterService : IFractalParameterService
     }
 
     /// <summary>
+    /// Helper: Create an L-System parameter template with generation count control.
+    /// L-Systems don't use view parameters (zoom/center) or iteration controls.
+    /// They only need a generation count slider to control grammar expansion depth.
+    /// </summary>
+    private FractalParameterSet CreateLSystemTemplate(string fractalType, int defaultGenerations)
+    {
+        var paramSet = new FractalParameterSet(fractalType);
+
+        // Get the L-System preset to extract max generations
+        var preset = ManpWinUI.Models.LSystem.LSystemPresets.GetPresetByName(fractalType);
+        int maxGenerations = preset?.MaxGenerations ?? 15;
+
+        paramSet.AddParameter(new FractalParameterDescriptor
+        {
+            Key = "generations",
+            Name = "Generations",
+            Type = ParameterType.Integer,
+            Category = ParameterCategory.FractalSpecific,
+            DefaultValue = defaultGenerations,
+            MinValue = 0,
+            MaxValue = maxGenerations,
+            StepSize = 1,
+            FormatString = "F0",
+            Description = $"Number of grammar expansion iterations (0-{maxGenerations})",
+            DisplayOrder = 1
+        });
+
+        return paramSet;
+    }
+
+    /// <summary>
     /// Register built-in parameter templates for known fractal families.
     /// This is the 80/20 solution: covers most fractals with standard templates.
     /// </summary>
@@ -1128,6 +1159,21 @@ public class FractalParameterService : IFractalParameterService
         // Pre-set Julia constant (Douady's rabbit), no Julia toggle
         // Formula: z² + c where c is fixed at Douady rabbit value
         RegisterTemplate("JuliaDouadyRabbit", () => CreateStandardTemplate("JuliaDouadyRabbit"));
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // L-SYSTEMS (TURTLE GRAPHICS) - 7 fractals
+        // ═══════════════════════════════════════════════════════════════════════════
+        // L-Systems are rendered in managed C# using grammar expansion and turtle graphics.
+        // They only need generation count control - no view parameters (zoom/center are unused).
+        // Grammar rules and turn angles are hardcoded in LSystemPresets.cs.
+
+        RegisterTemplate("KochSnowflake", () => CreateLSystemTemplate("KochSnowflake", 4));
+        RegisterTemplate("DragonCurve", () => CreateLSystemTemplate("DragonCurve", 12));
+        RegisterTemplate("SierpinskiTriangle", () => CreateLSystemTemplate("SierpinskiTriangle", 7));
+        RegisterTemplate("HilbertCurve", () => CreateLSystemTemplate("HilbertCurve", 6));
+        RegisterTemplate("FractalPlant", () => CreateLSystemTemplate("FractalPlant", 6));
+        RegisterTemplate("KochCurve", () => CreateLSystemTemplate("KochCurve", 4));
+        RegisterTemplate("PeanoCurve", () => CreateLSystemTemplate("PeanoCurve", 4));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals
