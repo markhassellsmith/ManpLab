@@ -16,10 +16,10 @@ namespace Native
         // Burning Ship + Mandelbrot Hybrid
         // ───────────────────────────────────────────────────────────────────────────────
 
+        FractalSpec spec;
         InitialConditions ic;  // Declare ONCE at the top
 
         {
-            FractalSpec spec;
 
             spec.name = "BurningMandel";
             spec.displayName = "Burning Mandelbrot Hybrid";
@@ -86,7 +86,6 @@ namespace Native
         // Exponential Mandelbrot Hybrid
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ExpMandelHybrid";
             spec.displayName = "Exponential-Mandelbrot Hybrid";
             spec.category = "Hybrid Fractals";
@@ -155,7 +154,6 @@ namespace Native
         // Mutant Mandelbrot (Varying Power)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "MutantMandelbrot";
             spec.displayName = "Mutant Mandelbrot (Power Evolution)";
             spec.category = "Hybrid Fractals";
@@ -219,7 +217,6 @@ namespace Native
         // Trigonometric Mandelbrot Blend
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "TrigMandelBlend";
             spec.displayName = "Trig-Mandelbrot Blend";
             spec.category = "Hybrid Fractals";
@@ -286,7 +283,6 @@ namespace Native
         // Sierpinski-Mandelbrot Cross
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "SierpinskiMandel";
             spec.displayName = "Sierpinski-Mandelbrot Cross";
             spec.category = "Hybrid Fractals";
@@ -356,7 +352,6 @@ namespace Native
         // Perturbed Newton
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "PerturbedNewton";
             spec.displayName = "Perturbed Newton";
             spec.category = "Hybrid Fractals";
@@ -441,7 +436,6 @@ namespace Native
         // Bifurcation Mandelbrot
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "BifurcationMandel";
             spec.displayName = "Bifurcation-Mandelbrot";
             spec.category = "Hybrid Fractals";
@@ -499,7 +493,6 @@ namespace Native
         // Celtic Mandelbrot
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "CelticMandelbrot";
             spec.displayName = "Celtic Mandelbrot (Hybrid)";
             spec.category = "Hybrid Fractals";

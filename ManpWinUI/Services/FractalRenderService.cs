@@ -1,4 +1,5 @@
 using ManpCore.Native;
+using ManpWinUI.Models.LSystem;
 using ManpWinUI.Models.Parameters;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
@@ -15,11 +16,13 @@ public class FractalRenderService : IFractalRenderService
 {
     private readonly ILogger<FractalRenderService> _logger;
     private readonly FractalEngineWrapper _engine;
+    private readonly LSystemRenderService _lSystemRenderer;
 
     public FractalRenderService(ILogger<FractalRenderService> logger)
     {
         _logger = logger;
         _engine = new FractalEngineWrapper();
+        _lSystemRenderer = new LSystemRenderService();
         _logger.LogInformation("FractalRenderService initialized");
     }
 
@@ -41,7 +44,8 @@ public class FractalRenderService : IFractalRenderService
         bool useSmoothColoring = false,
         bool useDeepZoom = false,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        Dictionary<string, object>? extendedParameters = null)
     {
         var displayType = isJuliaMode ? $"{fractalType} Julia" : fractalType;
         _logger.LogInformation(
@@ -114,6 +118,20 @@ public class FractalRenderService : IFractalRenderService
                         RenderMode = renderMode,
                         UseSmoothColoring = useSmoothColoring
                     };
+
+                    // Populate CustomParameters from ExtendedParameters (for bifurcation diagrams and other special fractals)
+                    if (extendedParameters != null && extendedParameters.Count > 0)
+                    {
+                        var numericParams = ConvertToNumericParameters(extendedParameters);
+                        foreach (var kvp in numericParams)
+                        {
+                            parameters.CustomParameters[kvp.Key] = kvp.Value;
+                        }
+
+                        _logger.LogDebug(
+                            "Populated {Count} custom parameters for {FractalType}",
+                            numericParams.Count, fractalType);
+                    }
 
                     // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
                     // Phase 1 Complete: Now using perturbation theory for true deep zoom support
@@ -211,11 +229,70 @@ public class FractalRenderService : IFractalRenderService
                         _engine.ProgressChanged -= progressHandler;
                     }
 
-                    _logger.LogInformation(
-                        "Mandelbrot render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations, {Escaped}/{Total} pixels escaped ({Percent:F1}%)",
-                        result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount, 
-                        result.EscapedPixelCount, result.Width * result.Height, 
-                        (double)result.EscapedPixelCount / (result.Width * result.Height) * 100.0);
+                    // ═══════════════════════════════════════════════════════════════════
+                    // L-SYSTEM SPECIAL RENDERING
+                    // ═══════════════════════════════════════════════════════════════════
+                    // Native layer returns empty result with category = LSystem
+                    // Managed layer performs grammar expansion and turtle graphics rendering
+                    if (result.Category == ManpCore.Native.FractalCategory.LSystem)
+                    {
+                        _logger.LogInformation("L-System fractal detected - performing managed rendering");
+
+                        // Get L-System preset by fractal type name
+                        var lSystemDef = LSystemPresets.GetPresetByName(fractalType);
+                        if (lSystemDef == null)
+                        {
+                            throw new InvalidOperationException(
+                                $"L-System preset '{fractalType}' not found. Available presets: " +
+                                string.Join(", ", LSystemPresets.GetAllPresets().Select(p => p.Name)));
+                        }
+
+                        // Extract generation count from extended parameters (default to preset default)
+                        int generations = lSystemDef.DefaultGenerations;
+                        if (extendedParameters?.ContainsKey("generations") == true)
+                        {
+                            generations = Convert.ToInt32(extendedParameters["generations"]);
+                            generations = Math.Clamp(generations, 0, lSystemDef.MaxGenerations);
+                        }
+
+                        _logger.LogInformation(
+                            "Rendering L-System '{Name}' with {Generations} generations (max: {Max})",
+                            lSystemDef.Name, generations, lSystemDef.MaxGenerations);
+
+                        // Expand L-System grammar
+                        var expandedString = _lSystemRenderer.ExpandLSystem(lSystemDef, generations);
+
+                        // Render to pixel buffer
+                        _lSystemRenderer.RenderToPixelBuffer(
+                            expandedString,
+                            lSystemDef,
+                            result.PixelData,
+                            width,
+                            height,
+                            0xFFFFFFFF); // White line color
+
+                        _logger.LogInformation(
+                            "L-System rendering complete: {Width}x{Height}, string length: {Length}",
+                            width, height, expandedString.Length);
+
+                        result.RenderTime = TimeSpan.FromMilliseconds(1); // Minimal time for L-System
+                    }
+
+                    // Log completion with category-appropriate details
+                    if (result.Category == ManpCore.Native.FractalCategory.LSystem)
+                    {
+                        _logger.LogInformation(
+                            "{FractalType} render complete: {Width}x{Height} in {RenderTime}ms",
+                            fractalType, result.Width, result.Height, result.RenderTime.TotalMilliseconds);
+                    }
+                    else
+                    {
+                        _logger.LogInformation(
+                            "{FractalType} render complete: {Width}x{Height} in {RenderTime}ms, {Iterations} total iterations, {Escaped}/{Total} pixels escaped ({Percent:F1}%)",
+                            fractalType, result.Width, result.Height, result.RenderTime.TotalMilliseconds, result.IterationCount, 
+                            result.EscapedPixelCount, result.Width * result.Height, 
+                            (double)result.EscapedPixelCount / (result.Width * result.Height) * 100.0);
+                    }
 
                     return new FractalRenderResult
                     {
@@ -257,7 +334,8 @@ public class FractalRenderService : IFractalRenderService
         bool useSmoothColoring = false,
         bool useDeepZoom = false,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        Dictionary<string, object>? extendedParameters = null)
     {
         _logger.LogInformation(
             "Rendering Julia: c=({CReal}, {CImaginary}), center=({CenterX}, {CenterY}), zoom={Zoom}, size={Width}x{Height}",
@@ -295,6 +373,20 @@ public class FractalRenderService : IFractalRenderService
                     Palette = paletteEnum,
                     ColorOffset = colorOffset  // Apply color offset for palette rotation
                 };
+
+                // Populate CustomParameters from ExtendedParameters (for special Julia variants)
+                if (extendedParameters != null && extendedParameters.Count > 0)
+                {
+                    var numericParams = ConvertToNumericParameters(extendedParameters);
+                    foreach (var kvp in numericParams)
+                    {
+                        parameters.CustomParameters[kvp.Key] = kvp.Value;
+                    }
+
+                    _logger.LogDebug(
+                        "Populated {Count} custom parameters for Julia set",
+                        numericParams.Count);
+                }
 
                 // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
                 if (useDeepZoom)
@@ -382,8 +474,16 @@ public class FractalRenderService : IFractalRenderService
             "RenderFractalAsync (Parameter System): {FractalType}, center=({CenterX}, {CenterY}), zoom={Zoom}",
             parameters.FractalType, parameters.CenterX, parameters.CenterY, parameters.Zoom);
 
-        // For now, delegate to existing RenderMandelbrotAsync
-        // Future: Once native layer accepts structured parameters, call native directly
+        // Log extended parameters for debugging (especially L-system generations)
+        if (parameters.ExtendedParameters != null && parameters.ExtendedParameters.Count > 0)
+        {
+            _logger.LogInformation(
+                "Extended parameters ({Count}): {Parameters}",
+                parameters.ExtendedParameters.Count,
+                string.Join(", ", parameters.ExtendedParameters.Select(kvp => $"{kvp.Key}={kvp.Value}")));
+        }
+
+        // Delegate to RenderMandelbrotAsync with ExtendedParameters for custom parameter support
         return await RenderMandelbrotAsync(
             parameters.CenterX,
             parameters.CenterY,
@@ -402,7 +502,8 @@ public class FractalRenderService : IFractalRenderService
             parameters.UseSmoothColoring,
             parameters.UseDeepZoom,
             progress,
-            cancellationToken);
+            cancellationToken,
+            parameters.ExtendedParameters);  // Pass custom parameters (e.g., bifurcation minY/maxY/transient/samples)
     }
 
     private ColorPalette ParsePalette(string paletteName)
@@ -419,5 +520,37 @@ public class FractalRenderService : IFractalRenderService
             "Neon" => ColorPalette.Neon,
             _ => ColorPalette.Classic // Default fallback
         };
+    }
+
+    /// <summary>
+    /// Convert ExtendedParameters (Dictionary&lt;string, object&gt;) to native CustomParameters (Dictionary&lt;string, double&gt;).
+    /// Safely handles type conversion with logging for invalid/non-numeric values.
+    /// </summary>
+    private Dictionary<string, double> ConvertToNumericParameters(Dictionary<string, object> extendedParameters)
+    {
+        var numericParams = new Dictionary<string, double>();
+
+        foreach (var kvp in extendedParameters)
+        {
+            try
+            {
+                // Attempt conversion to double
+                double value = Convert.ToDouble(kvp.Value);
+                numericParams[kvp.Key] = value;
+
+                _logger.LogDebug(
+                    "Converted parameter '{Key}' = {Value} (type: {Type})",
+                    kvp.Key, value, kvp.Value?.GetType().Name ?? "null");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Skipping non-numeric parameter '{Key}' with value '{Value}' (type: {Type})",
+                    kvp.Key, kvp.Value, kvp.Value?.GetType().Name ?? "null");
+            }
+        }
+
+        return numericParams;
     }
 }

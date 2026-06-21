@@ -7,11 +7,13 @@ namespace Native {
 
     void RegisterMechanicalEngineeringFamily()
     {
+        FractalSpec spec;
+        InitialConditions ic;
+
         // ───────────────────────────────────────────────────────────────────────────────
         // Stefan-Boltzmann Radiative Cooling (Heat Flow)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "StefanBoltzmann";
             spec.displayName = "Stefan-Boltzmann Radiative Cooling (Heat Flow)";
             spec.category = "Mechanical Engineering";
@@ -25,7 +27,7 @@ namespace Native {
             spec.discoveredBy = "Stefan-Boltzmann Law (Stefan 1879, Boltzmann 1884)";
             spec.computationalNotes = "Relaxation form of dT/dt = -k(T^4 - T_env^4). The cooling rate k = 0.25 controls how aggressively each step relaxes toward the radiative equilibrium c.";
 
-            auto ic = InitialConditionsService::Get("StefanBoltzmann");
+            ic = InitialConditionsService::Get("StefanBoltzmann");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.7;
@@ -76,7 +78,6 @@ namespace Native {
         // Euler-Bernoulli Buckling (Beam Deflection)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "EulerBuckling";
             spec.displayName = "Euler-Bernoulli Buckling (Beam Deflection)";
             spec.category = "Mechanical Engineering";
@@ -90,7 +91,7 @@ namespace Native {
             spec.discoveredBy = "Euler (1744) elastica & Euler-Bernoulli beam theory";
             spec.computationalNotes = "The restoring coefficient k = 1.0 is the critical-load factor and the cubic z^3 is the fundamental-mode geometric stiffening. The added quintic term mu*z^5 (mu = 0.5) is the second symmetric buckling eigenmode; using only odd powers keeps the map odd, so the set retains its point symmetry about the origin.";
 
-            auto ic = InitialConditionsService::Get("EulerBuckling");
+            ic = InitialConditionsService::Get("EulerBuckling");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.6;
@@ -146,7 +147,6 @@ namespace Native {
         // Ramberg-Osgood Plastic Deformation (Malleability)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "RambergOsgood";
             spec.displayName = "Ramberg-Osgood Plastic Deformation (Malleability)";
             spec.category = "Mechanical Engineering";
@@ -160,7 +160,7 @@ namespace Native {
             spec.discoveredBy = "Ramberg & Osgood (1943) stress-strain relation";
             spec.computationalNotes = "Elastic modulus E = 2.0 sets the recoverable linear response; hardening coefficient K = 1.0 with exponent n = 3 models plastic strain accumulation.";
 
-            auto ic = InitialConditionsService::Get("RambergOsgood");
+            ic = InitialConditionsService::Get("RambergOsgood");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.6;
@@ -208,7 +208,6 @@ namespace Native {
         // Basquin Fatigue Power Law (Metal Fatigue / S-N Curve)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "BasquinFatigue";
             spec.displayName = "Basquin Fatigue Power Law (S-N Curve)";
             spec.category = "Mechanical Engineering";
@@ -222,7 +221,7 @@ namespace Native {
             spec.discoveredBy = "Basquin (1910) S-N fatigue power law";
             spec.computationalNotes = "Uses the complex power z^p = r^p * (cos(p*theta) + i sin(p*theta)) with p = 2.5 representing the fatigue power-law exponent. Branch cut handled via atan2.";
 
-            auto ic = InitialConditionsService::Get("BasquinFatigue");
+            ic = InitialConditionsService::Get("BasquinFatigue");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.5;
@@ -273,7 +272,6 @@ namespace Native {
         // Torsional Twist (Contorsion / Angle of Twist)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "TorsionalTwist";
             spec.displayName = "Torsional Twist (Angle of Twist)";
             spec.category = "Mechanical Engineering";
@@ -287,7 +285,7 @@ namespace Native {
             spec.discoveredBy = "Classical torsion theory (Coulomb 1784, Saint-Venant)";
             spec.computationalNotes = "Twist rate theta = 0.5 rad represents T/(GJ). z^2 is rotated by exp(i*theta) = cos(theta) + i sin(theta) before adding c.";
 
-            auto ic = InitialConditionsService::Get("TorsionalTwist");
+            ic = InitialConditionsService::Get("TorsionalTwist");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 1.0;

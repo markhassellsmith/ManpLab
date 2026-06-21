@@ -347,9 +347,12 @@ public partial class FractalParameterSet : ObservableObject
                 if (value != null)
                 {
                     renderParams.ExtendedParameters[descriptor.Key] = value;
+                    System.Diagnostics.Debug.WriteLine($"[ToStructuredRenderParameters] Added extended param: {descriptor.Key} = {value}");
                 }
             }
         }
+
+        System.Diagnostics.Debug.WriteLine($"[ToStructuredRenderParameters] Total extended parameters: {renderParams.ExtendedParameters.Count}");
 
         return renderParams;
     }

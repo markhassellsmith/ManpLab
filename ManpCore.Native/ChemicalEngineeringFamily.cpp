@@ -7,11 +7,13 @@ namespace Native {
 
     void RegisterChemicalEngineeringFamily()
     {
+        FractalSpec spec;
+        InitialConditions ic;  // Declare ONCE at function scope
+
         // ───────────────────────────────────────────────────────────────────────────────
         // Cahn-Hilliard Map (Phase Separation / Spinodal Decomposition)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "CahnHilliard";
             spec.displayName = "Cahn-Hilliard Map (Phase Separation)";
             spec.category = "Chemical Engineering";
@@ -25,7 +27,7 @@ namespace Native {
             spec.discoveredBy = "Chemical Thermodynamics (Cahn-Hilliard 1958 equation transposed)";
             spec.computationalNotes = "Classic double-well free energy mapped into complex plane iterations.";
 
-            auto ic = InitialConditionsService::Get("CahnHilliard");
+            ic = InitialConditionsService::Get("CahnHilliard");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.8;
@@ -65,7 +67,6 @@ namespace Native {
         // Gray-Scott Autocatalysis Map (Reaction-Diffusion)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "GrayScott";
             spec.displayName = "Gray-Scott Autocatalysis (Reaction-Diffusion)";
             spec.category = "Chemical Engineering";
@@ -79,7 +80,7 @@ namespace Native {
             spec.discoveredBy = "Gray-Scott (1983) oscillating system interpretation";
             spec.computationalNotes = "Directly mimics the kinetic rate term U + 2V -> 3V mapped as a discrete escape-time system.";
 
-            auto ic = InitialConditionsService::Get("GrayScott");
+            ic = InitialConditionsService::Get("GrayScott");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 0.8;
@@ -122,7 +123,6 @@ namespace Native {
         // Langmuir-Hinshelwood Isotherm (Surface Catalysis)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "LangmuirIsotherm";
             spec.displayName = "Langmuir-Hinshelwood Isotherm";
             spec.category = "Chemical Engineering";
@@ -136,7 +136,7 @@ namespace Native {
             spec.discoveredBy = "Langmuir (1918) & Hinshelwood (1926) Reaction Kinetics";
             spec.computationalNotes = "Complex rational division handles ±i singularities dynamically.";
 
-            auto ic = InitialConditionsService::Get("LangmuirIsotherm");
+            ic = InitialConditionsService::Get("LangmuirIsotherm");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 1.0;
@@ -186,7 +186,6 @@ namespace Native {
         // Arrhenius Kinetics Map (Thermal Activation)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ArrheniusKinetics";
             spec.displayName = "Arrhenius Kinetics Map (Thermal Activation)";
             spec.category = "Chemical Engineering";
@@ -200,7 +199,7 @@ namespace Native {
             spec.discoveredBy = "Svante Arrhenius (1889) Equation";
             spec.computationalNotes = "Uses w = -1/z^2, then e^w. Extremely chaotic near the origin due to the essential singularity.";
 
-            auto ic = InitialConditionsService::Get("ArrheniusKinetics");
+            ic = InitialConditionsService::Get("ArrheniusKinetics");
             spec.defaultCenterX = ic.centerX;
             spec.defaultCenterY = ic.centerY;
             spec.defaultZoom = ic.zoom != 0 ? ic.zoom : 1.0;

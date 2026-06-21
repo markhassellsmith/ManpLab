@@ -17,11 +17,17 @@ public enum FractalCategory
     /// <summary>Legacy 3D attractor rendering (deprecated - use HistogramBased instead)</summary>
     AttractorBased3D = 2,
 
-    /// <summary>Histogram/orbit accumulation rendering (attractors, flame fractals) - escape percentage not meaningful</summary>
+    /// <summary>Histogram/orbit accumulation rendering (attractors, IFS) - escape percentage not meaningful</summary>
     HistogramBased = 3,
 
-    /// <summary>Special renderers (Buddhabrot, perturbation) - custom metrics</summary>
-    Special = 4
+    /// <summary>Monte Carlo path accumulation (Buddhabrot, Anti-Buddhabrot) - requires special rendering</summary>
+    BuddhabrotBased = 4,
+
+    /// <summary>Column-based parameter sweep with multi-point vertical plotting (bifurcation diagrams)</summary>
+    BifurcationDiagram = 5,
+
+    /// <summary>Special renderers (perturbation, custom algorithms) - custom metrics</summary>
+    Special = 6
 }
 
 /// <summary>

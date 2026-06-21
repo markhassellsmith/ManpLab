@@ -297,6 +297,121 @@ public static partial class StandardParameterTemplates
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════
+    // BIFURCATION DIAGRAM PARAMETERS
+    // ═══════════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Standard bifurcation diagram parameters: minY, maxY, transient, samples.
+    /// Used by bifurcation diagrams (Logistic, Lambda, Henon).
+    /// </summary>
+    public static IEnumerable<FractalParameterDescriptor> BifurcationParameters(
+        double defaultMinY = -1.0,
+        double defaultMaxY = 1.0,
+        int defaultTransient = 100,
+        int defaultSamples = 200)
+    {
+        yield return new FractalParameterDescriptor
+        {
+            Key = "minY",
+            Name = "Min Y",
+            Type = ParameterType.Double,
+            Category = ParameterCategory.FractalSpecific,
+            DefaultValue = defaultMinY,
+            MinValue = -10.0,
+            MaxValue = 10.0,
+            StepSize = 0.1,
+            FormatString = "F3",
+            Description = "Minimum vertical axis value for bifurcation plot",
+            DisplayOrder = 1
+        };
+
+        yield return new FractalParameterDescriptor
+        {
+            Key = "maxY",
+            Name = "Max Y",
+            Type = ParameterType.Double,
+            Category = ParameterCategory.FractalSpecific,
+            DefaultValue = defaultMaxY,
+            MinValue = -10.0,
+            MaxValue = 10.0,
+            StepSize = 0.1,
+            FormatString = "F3",
+            Description = "Maximum vertical axis value for bifurcation plot",
+            DisplayOrder = 2
+        };
+
+        yield return new FractalParameterDescriptor
+        {
+            Key = "transient",
+            Name = "Transient",
+            Type = ParameterType.Integer,
+            Category = ParameterCategory.Algorithm,
+            DefaultValue = defaultTransient,
+            MinValue = 0,
+            MaxValue = 10000,
+            StepSize = 10,
+            Description = "Number of initial iterations to discard before sampling",
+            DisplayOrder = 3
+        };
+
+        yield return new FractalParameterDescriptor
+        {
+            Key = "samples",
+            Name = "Samples",
+            Type = ParameterType.Integer,
+            Category = ParameterCategory.Algorithm,
+            DefaultValue = defaultSamples,
+            MinValue = 10,
+            MaxValue = 10000,
+            StepSize = 10,
+            Description = "Number of iterations to sample after transient period",
+            DisplayOrder = 4
+        };
+    }
+
+    /// <summary>
+    /// Henon bifurcation diagram additional parameter (henonB).
+    /// </summary>
+    public static FractalParameterDescriptor HenonBParameter(double defaultValue = 0.3)
+    {
+        return new FractalParameterDescriptor
+        {
+            Key = "henonB",
+            Name = "B Parameter",
+            Type = ParameterType.Double,
+            Category = ParameterCategory.FractalSpecific,
+            DefaultValue = defaultValue,
+            MinValue = 0.0,
+            MaxValue = 1.0,
+            StepSize = 0.01,
+            FormatString = "F3",
+            Description = "Henon map B parameter (controls contraction)",
+            DisplayOrder = 5
+        };
+    }
+
+    /// <summary>
+    /// Lambda bifurcation diagram additional parameter (lambdaIm).
+    /// </summary>
+    public static FractalParameterDescriptor LambdaImParameter(double defaultValue = 0.0)
+    {
+        return new FractalParameterDescriptor
+        {
+            Key = "lambdaIm",
+            Name = "Lambda (Imaginary)",
+            Type = ParameterType.Double,
+            Category = ParameterCategory.FractalSpecific,
+            DefaultValue = defaultValue,
+            MinValue = -2.0,
+            MaxValue = 2.0,
+            StepSize = 0.01,
+            FormatString = "F3",
+            Description = "Imaginary part of lambda parameter",
+            DisplayOrder = 6
+        };
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════════
     // CONVENIENCE BUILDERS
     // ═══════════════════════════════════════════════════════════════════════════════
 

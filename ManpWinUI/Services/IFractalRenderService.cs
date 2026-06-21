@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ManpWinUI.Models.Parameters;
@@ -31,6 +32,7 @@ public interface IFractalRenderService
     /// <param name="useDeepZoom">Enable arbitrary-precision math for extreme zoom levels</param>
     /// <param name="progress">Progress callback (0.0 to 1.0)</param>
     /// <param name="cancellationToken">Cancellation token</param>
+    /// <param name="extendedParameters">Optional fractal-specific parameters (e.g., bifurcation minY/maxY)</param>
     /// <returns>Rendered fractal with diagnostic information</returns>
     Task<FractalRenderResult> RenderMandelbrotAsync(
         double centerX,
@@ -50,11 +52,13 @@ public interface IFractalRenderService
         bool useSmoothColoring = false,
         bool useDeepZoom = false,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default,
+        Dictionary<string, object>? extendedParameters = null);
 
     /// <summary>
     /// Renders the Julia set with the specified parameters.
     /// </summary>
+    /// <param name="extendedParameters">Optional fractal-specific parameters</param>
     Task<FractalRenderResult> RenderJuliaAsync(
         double cReal,
         double cImaginary,
@@ -70,7 +74,8 @@ public interface IFractalRenderService
         bool useSmoothColoring = false,
         bool useDeepZoom = false,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default,
+        Dictionary<string, object>? extendedParameters = null);
 
     /// <summary>
     /// Gets available color palette names.

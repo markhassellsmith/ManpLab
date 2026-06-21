@@ -24,10 +24,18 @@ void FractalRegistry::Register(const FractalSpec& spec)
     if (spec.name.empty())
         throw std::invalid_argument("Fractal name cannot be empty");
 
-    // Calculator is required for non-histogram fractals
-    // Histogram fractals use orbitIterator instead
-    if (!spec.calculator && spec.type != FractalCategory::HistogramBased)
-        throw std::invalid_argument("Fractal calculator function is required for non-histogram fractals");
+    // Calculator is required for standard escape-time fractals
+    // Special rendering types use alternative function pointers:
+    // - HistogramBased uses orbitIterator
+    // - BuddhabrotBased uses special path accumulation renderer
+    // - BifurcationDiagram uses bifurcationCalculator
+    // - LSystem uses managed C# turtle graphics renderer
+    if (!spec.calculator && 
+        spec.type != FractalCategory::HistogramBased && 
+        spec.type != FractalCategory::BuddhabrotBased &&
+        spec.type != FractalCategory::BifurcationDiagram &&
+        spec.type != FractalCategory::LSystem)
+        throw std::invalid_argument("Fractal calculator function is required for standard escape-time fractals");
 
     auto& registry = GetRegistry();
     registry[spec.name] = spec;
@@ -188,6 +196,7 @@ extern void RegisterChemicalEngineeringFamily(); // Chemical Engineering = 4
 extern void RegisterMechanicalEngineeringFamily(); // Mechanical Engineering = 5
 extern void RegisterDiscreteMathematicsFamily(); // Discrete Mathematics = 3
 extern void RegisterEllipticFunctionsFamily(); // Elliptic Functions = 4
+extern void RegisterLSystemFamily();            // L-System (Lindenmayer) turtle graphics = 7
 
 void FractalRegistry::InitializeBuiltins()
 {
@@ -240,7 +249,8 @@ void FractalRegistry::InitializeBuiltins()
     RegisterMechanicalEngineeringFamily(); // Mechanical Engineering = 5
     RegisterDiscreteMathematicsFamily(); // Discrete Mathematics = 3
     RegisterEllipticFunctionsFamily(); // Elliptic Functions = 4
-    // Total: 316 fractals 🎯
+    RegisterLSystemFamily();            // L-Systems = 7
+    // Total: 323 fractals 🎯
 
     s_initialized = true;
 }

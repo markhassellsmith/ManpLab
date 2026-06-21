@@ -120,6 +120,7 @@
     <ClCompile Include="IFSFamily.cpp" />
     <ClCompile Include="JuliaVariantsFamily.cpp" />
     <ClCompile Include="LambdaExtendedFamily.cpp" />
+    <ClCompile Include="LSystemFamily.cpp" />
     <ClCompile Include="MandelVariantsFamily.cpp" />
     <ClCompile Include="MechanicalEngineeringFamily.cpp" />
     <ClCompile Include="OrbitalFractalsFamily.cpp" />

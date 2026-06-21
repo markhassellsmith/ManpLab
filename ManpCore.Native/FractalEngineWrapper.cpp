@@ -13,6 +13,7 @@
 #include "../ManpWIN64/BigDouble.h"
 #include "../ManpWIN64/BigComplex.h"
 #include "../ManpWIN64/PertEngine.h"  // Perturbation theory engine
+#include <msclr/marshal_cppstd.h>  // For marshal_as<std::string>
 #include <string>
 
 using namespace System;
@@ -304,7 +305,7 @@ static void RenderHistogramFractal(
     double minX = 1e10, maxX = -1e10;
     double minY = 1e10, maxY = -1e10;
 
-    // Empty parameter map for now
+    // Empty parameter map for now (TODO: pass custom parameters from caller)
     ::Native::ParamMap customParams;
 
     // Phase 1: Iterate to find actual attractor bounds
@@ -455,6 +456,631 @@ static void RenderHistogramFractal(
     }
 
     Debug::WriteLine("RenderHistogramFractal: Rendering complete");
+}
+
+//=============================================================================
+// Buddhabrot Rendering (Monte Carlo Path Accumulation)
+//=============================================================================
+
+/// <summary>
+/// Test if a point escapes and return the escape iteration count.
+/// Used for Nebulabrot to filter points by escape-time range before tracking paths.
+/// </summary>
+/// <param name="cx">Real part of complex constant c</param>
+/// <param name="cy">Imaginary part of complex constant c</param>
+/// <param name="maxThreshold">Maximum iterations to test</param>
+/// <returns>Escape iteration (0 to maxThreshold), or maxThreshold+1 if point never escapes</returns>
+static int TestEscapeIteration(double cx, double cy, int maxThreshold)
+{
+    double zr = 0.0, zi = 0.0;
+
+    for (int n = 0; n <= maxThreshold; n++)
+    {
+        double zr2 = zr * zr;
+        double zi2 = zi * zi;
+
+        if (zr2 + zi2 > 4.0) {
+            return n;  // Escaped at iteration n
+        }
+
+        double temp = zr2 - zi2 + cx;
+        zi = 2.0 * zr * zi + cy;
+        zr = temp;
+    }
+
+    return maxThreshold + 1;  // Never escaped
+}
+
+/// <summary>
+/// Track Mandelbrot orbit path and accumulate into SINGLE channel histogram.
+/// Used for Nebulabrot RGB separation: each channel tracks different escape-time ranges.
+/// </summary>
+/// <param name="channelCount">Single channel histogram to accumulate into</param>
+static void DrawPathForChannel(
+    double cx, double cy,
+    const ::Native::MandelbrotParams& params,
+    int width, int height,
+    int escapeIteration,  // Known escape iteration from prior test
+    std::vector<long>& channelCount)
+{
+    double zr = 0.0, zi = 0.0;
+
+    // Track path up to escape iteration
+    for (int n = 0; n <= escapeIteration; n++)
+    {
+        // Map orbit point to pixel coordinates
+        int px = (int)((zr - (params.centerX - params.viewWidth / 2.0)) / params.viewWidth * width);
+        int py = (int)((zi - (params.centerY - params.viewHeight / 2.0)) / params.viewHeight * height);
+
+        if (px >= 0 && px < width && py >= 0 && py < height)
+        {
+            int index = py * width + px;
+            channelCount[index]++;
+        }
+
+        // Advance orbit
+        double zr2 = zr * zr;
+        double zi2 = zi * zi;
+        double temp = zr2 - zi2 + cx;
+        zi = 2.0 * zr * zi + cy;
+        zr = temp;
+    }
+}
+
+/// <summary>
+/// Track Mandelbrot orbit path and accumulate histogram.
+/// Matches original BuddhaBrot.cpp algorithm: accumulate ALL orbit points into ALL channels.
+/// Color separation comes from different multipliers (0.09 red, 0.11 green, 0.18 blue).
+/// </summary>
+static void DrawPath(
+    double cx, double cy,
+    const ::Native::MandelbrotParams& params,
+    int width, int height, int threshold,
+    std::vector<long>& redCount,
+    std::vector<long>& greenCount,
+    std::vector<long>& blueCount)
+{
+    double zr = 0.0, zi = 0.0;
+
+    for (int n = 0; n <= threshold; n++)
+    {
+        double zr2 = zr * zr;
+        double zi2 = zi * zi;
+
+        if (zr2 + zi2 > 4.0) return;
+
+        // Map orbit point to pixel coordinates
+        int px = (int)((zr - (params.centerX - params.viewWidth / 2.0)) / params.viewWidth * width);
+        int py = (int)((zi - (params.centerY - params.viewHeight / 2.0)) / params.viewHeight * height);
+
+        if (px >= 0 && px < width && py >= 0 && py < height)
+        {
+            int index = py * width + px;
+
+            // Accumulate into ALL three channels (original algorithm)
+            // Color separation comes from different brightness multipliers
+            redCount[index]++;
+            greenCount[index]++;
+            blueCount[index]++;
+        }
+
+        double temp = zr2 - zi2 + cx;
+        zi = 2.0 * zr * zi + cy;
+        zr = temp;
+    }
+}
+
+/// <summary>
+/// Map density value [0, 1] to heat spectrum color.
+/// Black → Blue → Cyan → Green → Yellow → Orange → Red → White
+/// </summary>
+static void MapDensityToColor(double density, unsigned char& r, unsigned char& g, unsigned char& b)
+{
+    if (density <= 0.0) {
+        r = g = b = 0;
+        return;
+    }
+
+    // Clamp to [0, 1]
+    density = (std::min)(1.0, density);
+
+    // Inverted scale: low density = dark, high density = bright/hot
+    if (density < 0.25) {
+        // Black → Dark Blue
+        double t = density / 0.25;
+        r = 0;
+        g = 0;
+        b = static_cast<unsigned char>(t * 128);
+    }
+    else if (density < 0.4) {
+        // Dark Blue → Cyan
+        double t = (density - 0.25) / 0.15;
+        r = 0;
+        g = static_cast<unsigned char>(t * 255);
+        b = static_cast<unsigned char>(128 + t * 127);
+    }
+    else if (density < 0.55) {
+        // Cyan → Green
+        double t = (density - 0.4) / 0.15;
+        r = 0;
+        g = 255;
+        b = static_cast<unsigned char>((1.0 - t) * 255);
+    }
+    else if (density < 0.7) {
+        // Green → Yellow
+        double t = (density - 0.55) / 0.15;
+        r = static_cast<unsigned char>(t * 255);
+        g = 255;
+        b = 0;
+    }
+    else if (density < 0.85) {
+        // Yellow → Orange
+        double t = (density - 0.7) / 0.15;
+        r = 255;
+        g = static_cast<unsigned char>((1.0 - t * 0.4) * 255);
+        b = 0;
+    }
+    else if (density < 0.95) {
+        // Orange → Red
+        double t = (density - 0.85) / 0.1;
+        r = 255;
+        g = static_cast<unsigned char>((1.0 - t) * 153);
+        b = 0;
+    }
+    else {
+        // Red → White (hot spots)
+        double t = (density - 0.95) / 0.05;
+        r = 255;
+        g = static_cast<unsigned char>(t * 255);
+        b = static_cast<unsigned char>(t * 255);
+    }
+}
+
+/// <summary>
+/// Convert accumulated histogram to RGB pixels using color spectrum mapping.
+/// </summary>
+/// <summary>
+/// Convert accumulated histogram to RGB pixels.
+/// Supports two modes:
+/// - Buddhabrot: All channels normalized together for subtle color variation
+/// - Nebulabrot: Each channel normalized independently for dramatic RGB separation
+/// </summary>
+static void ConvertHistogramToPixels(
+    FractalResult^ result,
+    int width, int height,
+    const std::vector<long>& redCount,
+    const std::vector<long>& greenCount,
+    const std::vector<long>& blueCount,
+    double brightness,
+    ::Native::PaletteType palette,
+    int colorOffset,
+    bool isNebulabrot)
+{
+    if (isNebulabrot)
+    {
+        //=====================================================================
+        // NEBULABROT: Independent channel normalization for dramatic colors
+        //=====================================================================
+        Debug::WriteLine("  Converting histogram: NEBULABROT mode (independent RGB normalization)");
+
+        // Find max value in EACH channel independently
+        long maxRed = 0, maxGreen = 0, maxBlue = 0;
+        for (int i = 0; i < width * height; i++)
+        {
+            if (redCount[i] > maxRed) maxRed = redCount[i];
+            if (greenCount[i] > maxGreen) maxGreen = greenCount[i];
+            if (blueCount[i] > maxBlue) maxBlue = blueCount[i];
+        }
+
+        // Prevent division by zero
+        if (maxRed == 0) maxRed = 1;
+        if (maxGreen == 0) maxGreen = 1;
+        if (maxBlue == 0) maxBlue = 1;
+
+        Debug::WriteLine(String::Format("  Max densities: R={0}, G={1}, B={2}", maxRed, maxGreen, maxBlue));
+
+        // Logarithmic normalization per channel
+        double logMaxRed = std::log(1.0 + (double)maxRed);
+        double logMaxGreen = std::log(1.0 + (double)maxGreen);
+        double logMaxBlue = std::log(1.0 + (double)maxBlue);
+
+        for (int i = 0; i < width * height; i++)
+        {
+            // Normalize each channel independently (key to dramatic separation!)
+            double redDensity = (redCount[i] > 0) ? std::log(1.0 + (double)redCount[i]) / logMaxRed : 0.0;
+            double greenDensity = (greenCount[i] > 0) ? std::log(1.0 + (double)greenCount[i]) / logMaxGreen : 0.0;
+            double blueDensity = (blueCount[i] > 0) ? std::log(1.0 + (double)blueCount[i]) / logMaxBlue : 0.0;
+
+            // Apply brightness and gamma correction with channel-specific boosts
+            // Boost red and green more aggressively to balance against dominant blue
+            double gamma = 0.4;  // Lower gamma = more contrast
+            double redBoost = 1.5;    // Amplify red channel
+            double greenBoost = 1.3;  // Amplify green channel
+            double blueBoost = 1.0;   // Keep blue as baseline
+
+            double rVal = 255.0 * std::pow(redDensity * brightness * redBoost, gamma);
+            double gVal = 255.0 * std::pow(greenDensity * brightness * greenBoost, gamma);
+            double bVal = 255.0 * std::pow(blueDensity * brightness * blueBoost, gamma);
+
+            unsigned char r = static_cast<unsigned char>(rVal > 255.0 ? 255.0 : rVal);
+            unsigned char g = static_cast<unsigned char>(gVal > 255.0 ? 255.0 : gVal);
+            unsigned char b = static_cast<unsigned char>(bVal > 255.0 ? 255.0 : bVal);
+
+            // Write BGRA format
+            int pixelIndex = i * 4;
+            result->PixelData[pixelIndex + 0] = b;
+            result->PixelData[pixelIndex + 1] = g;
+            result->PixelData[pixelIndex + 2] = r;
+            result->PixelData[pixelIndex + 3] = 255;
+        }
+    }
+    else
+    {
+        //=====================================================================
+        // BUDDHABROT: Shared normalization for subtle color variation
+        //=====================================================================
+        Debug::WriteLine("  Converting histogram: BUDDHABROT mode (shared normalization)");
+
+        // Find max histogram value for normalization
+        long maxCount = 0;
+        for (int i = 0; i < width * height; i++)
+        {
+            long totalCount = redCount[i] + greenCount[i] + blueCount[i];
+            if (totalCount > maxCount) maxCount = totalCount;
+        }
+
+        if (maxCount == 0) maxCount = 1; // Prevent division by zero
+
+        Debug::WriteLine(String::Format("  Max density: {0}", maxCount));
+
+        // Use logarithmic normalization for wide dynamic range
+        double logMax = std::log(1.0 + (double)maxCount);
+
+        for (int i = 0; i < width * height; i++)
+        {
+            // Sum all channels for total density
+            long totalCount = redCount[i] + greenCount[i] + blueCount[i];
+
+            if (totalCount == 0)
+            {
+                // Black background
+                int pixelIndex = i * 4;
+                result->PixelData[pixelIndex + 0] = 0;
+                result->PixelData[pixelIndex + 1] = 0;
+                result->PixelData[pixelIndex + 2] = 0;
+                result->PixelData[pixelIndex + 3] = 255;
+                continue;
+            }
+
+            // Logarithmic compression to handle wide dynamic range
+            double logDensity = std::log(1.0 + (double)totalCount);
+            double density = logDensity / logMax;
+
+            // Apply brightness boost
+            density = (std::min)(1.0, density * brightness * 2.0);
+
+            // Map density to color spectrum
+            unsigned char r, g, b;
+            MapDensityToColor(density, r, g, b);
+
+            // Write BGRA format
+            int pixelIndex = i * 4;
+            result->PixelData[pixelIndex + 0] = b;
+            result->PixelData[pixelIndex + 1] = g;
+            result->PixelData[pixelIndex + 2] = r;
+            result->PixelData[pixelIndex + 3] = 255;
+        }
+    }
+}
+
+/// <summary>
+/// Render Buddhabrot using Monte Carlo path accumulation.
+/// Samples millions of starting points, tracks escape orbits, accumulates RGB histogram.
+/// </summary>
+static void RenderBuddhabrotFractal(
+    FractalResult^ result,
+    const ::Native::MandelbrotParams& params,
+    int width,
+    int height,
+    ::Native::PaletteType palette,
+    int colorOffset,
+    FractalEngineWrapper^ engine,
+    bool isNebulabrot)
+{
+    if (isNebulabrot)
+    {
+        Debug::WriteLine("RenderBuddhabrotFractal: Starting NEBULABROT mode (3-pass RGB separation)");
+        Debug::WriteLine("  WARNING: Nebulabrot is 3× more expensive than standard Buddhabrot");
+    }
+    else
+    {
+        Debug::WriteLine("RenderBuddhabrotFractal: Starting BUDDHABROT mode (single-pass subtle colors)");
+    }
+
+    // Use maxIterations from params as threshold
+    // TODO: Extract custom brightness parameter when parameter system is integrated
+    double brightness = 1.0;
+    int threshold = params.maxIterations;
+
+    Debug::WriteLine(String::Format("  Brightness: {0}, Threshold: {1}", brightness, threshold));
+
+    // Allocate three histograms (RGB channels)
+    std::vector<long> redCount(width * height, 0);
+    std::vector<long> greenCount(width * height, 0);
+    std::vector<long> blueCount(width * height, 0);
+
+    // Sampling grid (10x denser than output resolution)
+    const int SOURCE_COLUMNS = width * 10;
+    const int SOURCE_ROWS = height * 10;
+
+    double x_jump = params.viewWidth / SOURCE_COLUMNS;
+    double y_jump = params.viewHeight / SOURCE_ROWS;
+
+    Debug::WriteLine(String::Format("  Sampling grid: {0}x{1} ({2} total points)", 
+                                    SOURCE_COLUMNS, SOURCE_ROWS, 
+                                    (long long)SOURCE_COLUMNS * SOURCE_ROWS));
+
+    //=========================================================================
+    // MODE SELECTION: Buddhabrot (single-pass) vs Nebulabrot (three-pass)
+    //=========================================================================
+
+    if (isNebulabrot)
+    {
+        //=====================================================================
+        // NEBULABROT MODE: Three separate passes with RGB threshold separation
+        //=====================================================================
+
+        // Define iteration ranges ADAPTIVELY based on maxIterations
+        // Blue = fast escapers (first 20% of iteration range)
+        // Green = medium escapers (middle 30-60% of iteration range)  
+        // Red = slow escapers (last 40% of iteration range)
+
+        const int BLUE_MIN = (int)(threshold * 0.05);   // Start at 5% (avoid very fast escapers)
+        const int BLUE_MAX = (int)(threshold * 0.25);   // End at 25%
+        const int GREEN_MIN = (int)(threshold * 0.30);  // Start at 30%
+        const int GREEN_MAX = (int)(threshold * 0.65);  // End at 65%
+        const int RED_MIN = (int)(threshold * 0.70);    // Start at 70%
+        const int RED_MAX = threshold;                   // End at 100%
+
+        Debug::WriteLine(String::Format("  Adaptive threshold ranges (maxIter={0}):", threshold));
+        Debug::WriteLine(String::Format("    Blue channel: {0}-{1} iterations ({2}% - {3}%)", 
+                                        BLUE_MIN, BLUE_MAX, 5, 25));
+        Debug::WriteLine(String::Format("    Green channel: {0}-{1} iterations ({2}% - {3}%)", 
+                                        GREEN_MIN, GREEN_MAX, 30, 65));
+        Debug::WriteLine(String::Format("    Red channel: {0}-{1} iterations ({2}% - {3}%)", 
+                                        RED_MIN, RED_MAX, 70, 100));
+
+        int lastReportedPercent = -1;
+        const int TOTAL_PASSES = 3;
+
+        // PASS 1: BLUE CHANNEL (fast escapers)
+        Debug::WriteLine("  === PASS 1/3: BLUE CHANNEL (fast escapers) ===");
+        double y = params.centerY + params.viewHeight / 2.0;
+
+        for (int source_row = SOURCE_ROWS - 1; source_row >= 0; source_row--, y -= y_jump)
+        {
+            // Progress: Pass 1 contributes 0-33%
+            int currentPercent = (int)(((SOURCE_ROWS - source_row) * 33.0) / SOURCE_ROWS);
+            if (currentPercent != lastReportedPercent && currentPercent % 1 == 0)
+            {
+                lastReportedPercent = currentPercent;
+                if (engine != nullptr)
+                {
+                    auto args = gcnew ProgressEventArgs();
+                    args->Percentage = currentPercent;
+                    args->CurrentLine = SOURCE_ROWS - source_row;
+                    args->TotalLines = SOURCE_ROWS;
+                    args->StatusMessage = String::Format("Nebulabrot Pass 1/3 (BLUE): row {0}/{1} ({2}%)", 
+                                                         SOURCE_ROWS - source_row, SOURCE_ROWS, currentPercent);
+                    engine->ProgressChanged(engine, args);
+                }
+            }
+
+            double x = params.centerX - params.viewWidth / 2.0;
+            for (int source_column = 0; source_column < SOURCE_COLUMNS; source_column++, x += x_jump)
+            {
+                // Skip Mandelbrot body optimization
+                if ((x > -1.2 && x <= -1.1 && y > -0.1 && y < 0.1) ||
+                    (x > -1.1 && x <= -0.9 && y > -0.2 && y < 0.2) ||
+                    (x > -0.9 && x <= -0.8 && y > -0.1 && y < 0.1) ||
+                    (x > -0.69 && x <= -0.61 && y > -0.277 && y < -0.193) ||
+                    (x > -0.55 && x <= -0.5 && y > 0.47 && y < 0.51) ||
+                    (x > -0.55 && x <= -0.5 && y > -0.51 && y < -0.47) ||
+                    (x > 0.27 && x <= 0.31 && y > 0.004 && y < 0.026) ||
+                    (x > 0.27 && x <= 0.31 && y > -0.026 && y < -0.004))
+                    continue;
+
+                // Test escape iteration
+                int escapeIter = TestEscapeIteration(x, y, BLUE_MAX);
+
+                // Filter: Only track if escaped in blue range
+                if (escapeIter >= BLUE_MIN && escapeIter <= BLUE_MAX)
+                {
+                    DrawPathForChannel(x, y, params, width, height, escapeIter, blueCount);
+                }
+            }
+        }
+
+        // PASS 2: GREEN CHANNEL (medium escapers)
+        Debug::WriteLine("  === PASS 2/3: GREEN CHANNEL (medium escapers) ===");
+        y = params.centerY + params.viewHeight / 2.0;
+
+        for (int source_row = SOURCE_ROWS - 1; source_row >= 0; source_row--, y -= y_jump)
+        {
+            // Progress: Pass 2 contributes 33-66%
+            int currentPercent = 33 + (int)(((SOURCE_ROWS - source_row) * 33.0) / SOURCE_ROWS);
+            if (currentPercent != lastReportedPercent && currentPercent % 1 == 0)
+            {
+                lastReportedPercent = currentPercent;
+                if (engine != nullptr)
+                {
+                    auto args = gcnew ProgressEventArgs();
+                    args->Percentage = currentPercent;
+                    args->CurrentLine = SOURCE_ROWS - source_row;
+                    args->TotalLines = SOURCE_ROWS;
+                    args->StatusMessage = String::Format("Nebulabrot Pass 2/3 (GREEN): row {0}/{1} ({2}%)", 
+                                                         SOURCE_ROWS - source_row, SOURCE_ROWS, currentPercent);
+                    engine->ProgressChanged(engine, args);
+                }
+            }
+
+            double x = params.centerX - params.viewWidth / 2.0;
+            for (int source_column = 0; source_column < SOURCE_COLUMNS; source_column++, x += x_jump)
+            {
+                // Skip Mandelbrot body optimization
+                if ((x > -1.2 && x <= -1.1 && y > -0.1 && y < 0.1) ||
+                    (x > -1.1 && x <= -0.9 && y > -0.2 && y < 0.2) ||
+                    (x > -0.9 && x <= -0.8 && y > -0.1 && y < 0.1) ||
+                    (x > -0.69 && x <= -0.61 && y > -0.277 && y < -0.193) ||
+                    (x > -0.55 && x <= -0.5 && y > 0.47 && y < 0.51) ||
+                    (x > -0.55 && x <= -0.5 && y > -0.51 && y < -0.47) ||
+                    (x > 0.27 && x <= 0.31 && y > 0.004 && y < 0.026) ||
+                    (x > 0.27 && x <= 0.31 && y > -0.026 && y < -0.004))
+                    continue;
+
+                // Test escape iteration
+                int escapeIter = TestEscapeIteration(x, y, GREEN_MAX);
+
+                // Filter: Only track if escaped in green range
+                if (escapeIter >= GREEN_MIN && escapeIter <= GREEN_MAX)
+                {
+                    DrawPathForChannel(x, y, params, width, height, escapeIter, greenCount);
+                }
+            }
+        }
+
+        // PASS 3: RED CHANNEL (slow escapers)
+        Debug::WriteLine("  === PASS 3/3: RED CHANNEL (slow escapers) ===");
+        y = params.centerY + params.viewHeight / 2.0;
+
+        for (int source_row = SOURCE_ROWS - 1; source_row >= 0; source_row--, y -= y_jump)
+        {
+            // Progress: Pass 3 contributes 66-100%
+            int currentPercent = 66 + (int)(((SOURCE_ROWS - source_row) * 34.0) / SOURCE_ROWS);
+            if (currentPercent != lastReportedPercent && currentPercent % 1 == 0)
+            {
+                lastReportedPercent = currentPercent;
+                if (engine != nullptr)
+                {
+                    auto args = gcnew ProgressEventArgs();
+                    args->Percentage = currentPercent;
+                    args->CurrentLine = SOURCE_ROWS - source_row;
+                    args->TotalLines = SOURCE_ROWS;
+                    args->StatusMessage = String::Format("Nebulabrot Pass 3/3 (RED): row {0}/{1} ({2}%)", 
+                                                         SOURCE_ROWS - source_row, SOURCE_ROWS, currentPercent);
+                    engine->ProgressChanged(engine, args);
+                }
+            }
+
+            double x = params.centerX - params.viewWidth / 2.0;
+            for (int source_column = 0; source_column < SOURCE_COLUMNS; source_column++, x += x_jump)
+            {
+                // Skip Mandelbrot body optimization
+                if ((x > -1.2 && x <= -1.1 && y > -0.1 && y < 0.1) ||
+                    (x > -1.1 && x <= -0.9 && y > -0.2 && y < 0.2) ||
+                    (x > -0.9 && x <= -0.8 && y > -0.1 && y < 0.1) ||
+                    (x > -0.69 && x <= -0.61 && y > -0.277 && y < -0.193) ||
+                    (x > -0.55 && x <= -0.5 && y > 0.47 && y < 0.51) ||
+                    (x > -0.55 && x <= -0.5 && y > -0.51 && y < -0.47) ||
+                    (x > 0.27 && x <= 0.31 && y > 0.004 && y < 0.026) ||
+                    (x > 0.27 && x <= 0.31 && y > -0.026 && y < -0.004))
+                    continue;
+
+                // Test escape iteration
+                int escapeIter = TestEscapeIteration(x, y, RED_MAX);
+
+                // Filter: Only track if escaped in red range
+                if (escapeIter >= RED_MIN && escapeIter <= RED_MAX)
+                {
+                    DrawPathForChannel(x, y, params, width, height, escapeIter, redCount);
+                }
+            }
+        }
+
+        Debug::WriteLine("  Nebulabrot three-pass sampling complete");
+    }
+    else
+    {
+        //=====================================================================
+        // BUDDHABROT MODE: Single-pass with subtle color separation
+        //=====================================================================
+
+        int lastReportedPercent = -1;
+        double y = params.centerY + params.viewHeight / 2.0;
+
+        for (int source_row = SOURCE_ROWS - 1; source_row >= 0; source_row--, y -= y_jump)
+    {
+        // Report progress every 1%
+        int currentPercent = (int)(((SOURCE_ROWS - source_row) * 100.0) / SOURCE_ROWS);
+        if (currentPercent != lastReportedPercent && currentPercent % 1 == 0)
+        {
+            lastReportedPercent = currentPercent;
+
+            // Fire progress event for UI updates
+            if (engine != nullptr)
+            {
+                auto args = gcnew ProgressEventArgs();
+                args->Percentage = currentPercent;
+                args->CurrentLine = SOURCE_ROWS - source_row;
+                args->TotalLines = SOURCE_ROWS;
+                args->StatusMessage = String::Format("Sampling row {0} of {1} ({2}%)", 
+                                                     SOURCE_ROWS - source_row, 
+                                                     SOURCE_ROWS, 
+                                                     currentPercent);
+                engine->ProgressChanged(engine, args);
+            }
+        }
+
+        double x = params.centerX - params.viewWidth / 2.0;
+        for (int source_column = 0; source_column < SOURCE_COLUMNS; source_column++, x += x_jump)
+        {
+            // Optimization: Skip main Mandelbrot body (reduces wasted iterations)
+            if ((x > -1.2 && x <= -1.1 && y > -0.1 && y < 0.1) ||
+                (x > -1.1 && x <= -0.9 && y > -0.2 && y < 0.2) ||
+                (x > -0.9 && x <= -0.8 && y > -0.1 && y < 0.1) ||
+                (x > -0.69 && x <= -0.61 && y > -0.277 && y < -0.193) ||
+                (x > -0.55 && x <= -0.5 && y > 0.47 && y < 0.51) ||
+                (x > -0.55 && x <= -0.5 && y > -0.51 && y < -0.47) ||
+                (x > 0.27 && x <= 0.31 && y > 0.004 && y < 0.026) ||
+                (x > 0.27 && x <= 0.31 && y > -0.026 && y < -0.004))
+                continue;
+
+            // Test if point escapes
+            double zr = 0.0, zi = 0.0;
+            bool escapes = false;
+            for (int n = 0; n <= threshold; n++)
+            {
+                double zr2 = zr * zr;
+                double zi2 = zi * zi;
+                if (zr2 + zi2 > 4.0) {
+                    escapes = true;
+                    break;
+                }
+                double temp = zr2 - zi2 + x;
+                zi = 2.0 * zr * zi + y;
+                zr = temp;
+            }
+
+            // If escapes, track path and accumulate histogram
+            if (escapes)
+            {
+                DrawPath(x, y, params, width, height, threshold,
+                    redCount, greenCount, blueCount);
+            }
+        }
+    }
+
+        Debug::WriteLine("  Buddhabrot single-pass sampling complete");
+    }
+
+    Debug::WriteLine("RenderBuddhabrotFractal: Converting histogram to pixels");
+
+    // Convert histogram to pixel colors (mode-specific normalization)
+    ConvertHistogramToPixels(result, width, height,
+        redCount, greenCount, blueCount,
+        brightness, palette, colorOffset, isNebulabrot);
+
+    Debug::WriteLine("RenderBuddhabrotFractal: Rendering complete");
 }
 
 // Calculate fractal
@@ -650,8 +1276,260 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
             return result;
         }
 
-        // Prepare parameter map for extensibility (currently empty, but ready for custom params)
+        // Check if this fractal requires Buddhabrot rendering
+        if (spec->type == ::Native::FractalCategory::BuddhabrotBased)
+        {
+            // Detect Nebulabrot variant by name
+            bool isNebulabrot = (fractalType == "Nebulabrot");
+
+            if (isNebulabrot)
+            {
+                Debug::WriteLine("Native Calculate: NEBULABROT-based fractal detected");
+                Debug::WriteLine("  Calling RenderBuddhabrotFractal in NEBULABROT mode (3-pass RGB separation)");
+                Debug::WriteLine("  WARNING: Nebulabrot requires 3× the computation time of standard Buddhabrot");
+            }
+            else
+            {
+                Debug::WriteLine("Native Calculate: BUDDHABROT-based fractal detected");
+                Debug::WriteLine("  Calling RenderBuddhabrotFractal in BUDDHABROT mode (single-pass subtle colors)");
+            }
+
+            // Convert managed palette enum to native
+            ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
+
+            // Call Buddhabrot renderer with mode flag
+            RenderBuddhabrotFractal(result, nativeParams, width, height, nativePalette, parameters->ColorOffset, this, isNebulabrot);
+
+            // Set statistics and timing
+            stopwatch->Stop();
+            result->RenderTime = stopwatch->Elapsed;
+            result->IterationCount = 0;  // Not applicable for Buddhabrot/Nebulabrot
+            result->EscapedPixelCount = 0;  // Not meaningful for Buddhabrot/Nebulabrot
+            result->Category = FractalCategory::BuddhabrotBased;
+
+            Debug::WriteLine(String::Format("Native Calculate: {0} rendering complete in {1}ms", 
+                                            isNebulabrot ? "Nebulabrot" : "Buddhabrot",
+                                            stopwatch->ElapsedMilliseconds));
+            return result;
+        }
+
+        // ═════════════════════════════════════════════════════════════════════════
+        // Bifurcation Diagram Rendering
+        // ═════════════════════════════════════════════════════════════════════════
+        if (spec->type == ::Native::FractalCategory::BifurcationDiagram)
+        {
+            Debug::WriteLine("Native Calculate: BIFURCATION DIAGRAM fractal detected");
+            Debug::WriteLine("  Using column-based parameter sweep rendering");
+
+            if (!spec->bifurcationCalculator)
+            {
+                throw gcnew InvalidOperationException(
+                    String::Format("Fractal '{0}' has type BifurcationDiagram but no bifurcationCalculator defined",
+                                  gcnew String(fractalType.c_str())));
+            }
+
+            stopwatch->Start();
+
+            // Prepare parameter map from CustomParameters dictionary
+            ::Native::ParamMap customParams;
+            if (parameters->CustomParameters != nullptr)
+            {
+                for each (auto kvp in parameters->CustomParameters)
+                {
+                    // Convert managed String^ to std::string
+                    std::string key = msclr::interop::marshal_as<std::string>(kvp.Key);
+                    customParams[key] = kvp.Value;
+                }
+            }
+
+            // Get vertical range from custom parameters or use defaults
+            double minY = 0.0;
+            double maxY = 1.0;
+            auto it = customParams.find("minY");
+            if (it != customParams.end()) minY = it->second;
+            it = customParams.find("maxY");
+            if (it != customParams.end()) maxY = it->second;
+
+            // Transient and sample counts
+            int transient = 200;
+            int samples = 100;
+            it = customParams.find("transient");
+            if (it != customParams.end()) transient = (int)it->second;
+            it = customParams.find("samples");
+            if (it != customParams.end()) samples = (int)it->second;
+
+            Debug::WriteLine(String::Format(
+                "  Bifurcation params: transient={0}, samples={1}, yRange=[{2}, {3}]",
+                transient, samples, minY, maxY));
+
+            // Calculate parameter range based on viewport
+            // X-axis represents parameter value
+            double paramMin = nativeParams.centerX - (nativeParams.viewWidth / 2.0);
+            double paramMax = nativeParams.centerX + (nativeParams.viewWidth / 2.0);
+            double paramStep = nativeParams.viewWidth / width;
+
+            Debug::WriteLine(String::Format(
+                "  Parameter range: [{0}, {1}], step={2}",
+                paramMin, paramMax, paramStep));
+
+            // Initialize image to black
+            for (int i = 0; i < width * height * 4; i += 4)
+            {
+                result->PixelData[i + 0] = 0;    // B
+                result->PixelData[i + 1] = 0;    // G
+                result->PixelData[i + 2] = 0;    // R
+                result->PixelData[i + 3] = 255;  // A
+            }
+
+            // Allocate histogram for density-based coloring
+            std::vector<int> histogram(width * height, 0);
+            int maxDensity = 0;
+
+            // First pass: accumulate visit counts
+            int lastReportedPercent = -1;
+            for (int col = 0; col < width; col++)
+            {
+                // Report progress every 10 columns
+                if (col % 10 == 0)
+                {
+                    int percentComplete = (col * 100) / width;
+                    if (percentComplete != lastReportedPercent && m_progressChangedDelegate != nullptr)
+                    {
+                        auto progressArgs = gcnew ProgressEventArgs();
+                        progressArgs->Percentage = (double)percentComplete;
+                        progressArgs->CurrentLine = col;
+                        progressArgs->TotalLines = width;
+                        progressArgs->StatusMessage = String::Format(
+                            "Calculating parameter {0} of {1}", col, width);
+                        ProgressChanged(this, progressArgs);
+                        lastReportedPercent = percentComplete;
+                    }
+                }
+
+                // Check for cancellation
+                if (m_cancelled)
+                {
+                    Debug::WriteLine("Bifurcation rendering cancelled by user");
+                    throw gcnew OperationCanceledException("Calculation cancelled by user");
+                }
+
+                // Calculate parameter for this column
+                double parameter = paramMin + (col * paramStep);
+
+                // Get attractor points for this parameter
+                std::vector<double> points;
+                try
+                {
+                    points = spec->bifurcationCalculator(parameter, transient, samples, customParams);
+                }
+                catch (const std::exception& ex)
+                {
+                    Debug::WriteLine(String::Format(
+                        "  Bifurcation calculator failed for parameter {0}: {1}",
+                        parameter, gcnew String(ex.what())));
+                    continue;
+                }
+
+                // Accumulate visit counts for density coloring
+                for (double yValue : points)
+                {
+                    // Skip out-of-range values
+                    if (yValue < minY || yValue > maxY || std::isnan(yValue) || std::isinf(yValue))
+                        continue;
+
+                    // Map y-value to pixel row (flip y-axis: top = maxY, bottom = minY)
+                    int row = (int)((maxY - yValue) / (maxY - minY) * height);
+
+                    // Clamp to valid range
+                    if (row < 0) row = 0;
+                    if (row >= height) row = height - 1;
+
+                    // Increment histogram
+                    int histogramIndex = row * width + col;
+                    histogram[histogramIndex]++;
+                    if (histogram[histogramIndex] > maxDensity)
+                        maxDensity = histogram[histogramIndex];
+                }
+            }
+
+            Debug::WriteLine(String::Format("  Max density: {0} visits per pixel", maxDensity));
+
+            // Second pass: convert histogram to colored pixels using palette
+            ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
+            int colorOffset = parameters->ColorOffset;
+
+            for (int i = 0; i < width * height; i++)
+            {
+                int density = histogram[i];
+                if (density == 0)
+                    continue;  // Leave black
+
+                // Log-scale mapping for better dynamic range
+                // Map [1, maxDensity] to iteration range [0, 255]
+                double normalizedDensity = std::log(1.0 + (double)density) / std::log(1.0 + (double)maxDensity);
+                double iterationValue = normalizedDensity * 255.0;
+
+                // Get color from palette using the same coloring system as standard fractals
+                ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
+                    iterationValue,
+                    256,  // Use 256 as "max iterations" for full palette range
+                    nativePalette,
+                    colorOffset
+                );
+
+                // Write BGRA pixel
+                int pixelIndex = i * 4;
+                result->PixelData[pixelIndex + 0] = color.b;
+                result->PixelData[pixelIndex + 1] = color.g;
+                result->PixelData[pixelIndex + 2] = color.r;
+                result->PixelData[pixelIndex + 3] = 255;
+            }
+
+            stopwatch->Stop();
+
+            result->RenderTime = stopwatch->Elapsed;
+            result->IterationCount = 0;  // Not applicable for bifurcation diagrams
+            result->EscapedPixelCount = 0;  // Not applicable
+            result->Category = FractalCategory::BifurcationDiagram;
+
+            Debug::WriteLine(String::Format(
+                "Native Calculate: Bifurcation diagram rendering complete in {0}ms",
+                stopwatch->ElapsedMilliseconds));
+
+            return result;
+        }
+
+        // ═════════════════════════════════════════════════════════════════════════
+        // L-System Rendering
+        // ═════════════════════════════════════════════════════════════════════════
+        if (spec->type == ::Native::FractalCategory::LSystem)
+        {
+            Debug::WriteLine("Native Calculate: L-SYSTEM fractal detected");
+            Debug::WriteLine("  L-Systems are rendered in the managed (C#) layer");
+            Debug::WriteLine("  Returning empty result - managed LSystemRenderService will handle rendering");
+
+            // Return empty result with metadata - C# layer will render
+            stopwatch->Stop();
+            result->RenderTime = stopwatch->Elapsed;
+            result->IterationCount = 0;  // Not applicable for L-Systems
+            result->EscapedPixelCount = 0;  // Not applicable
+            result->Category = FractalCategory::LSystem;
+
+            Debug::WriteLine("Native Calculate: L-System routing complete, returning empty result to C# layer");
+            return result;
+        }
+
+        // Prepare parameter map from CustomParameters dictionary
         ::Native::ParamMap customParams;
+        if (parameters->CustomParameters != nullptr)
+        {
+            for each (auto kvp in parameters->CustomParameters)
+            {
+                // Convert managed String^ to std::string
+                std::string key = msclr::interop::marshal_as<std::string>(kvp.Key);
+                customParams[key] = kvp.Value;
+            }
+        }
 
         long long totalIterations = 0;
         int escapedPixels = 0;
@@ -898,6 +1776,47 @@ int FractalEngineWrapper::GetFractalTypeCount()
 {
     ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
     return static_cast<int>(::Native::FractalRegistry::GetCount());
+}
+
+// Get parameter specifications for a fractal type
+array<FractalParameterSpec^>^ FractalEngineWrapper::GetFractalParameterSpecs(String^ fractalType)
+{
+    ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
+
+    // Query native spec
+    std::string nativeName = ManagedToStdString(fractalType);
+    const ::Native::FractalSpec* spec = ::Native::FractalRegistry::GetSpec(nativeName);
+
+    if (!spec || spec->parameters.empty())
+    {
+        // Return empty array if no parameters
+        return gcnew array<FractalParameterSpec^>(0);
+    }
+
+    // Convert native parameters to managed specs
+    array<FractalParameterSpec^>^ managedParams = gcnew array<FractalParameterSpec^>(
+        static_cast<int>(spec->parameters.size()));
+
+    for (size_t i = 0; i < spec->parameters.size(); i++)
+    {
+        const ::Native::ParameterSpec& nativeParam = spec->parameters[i];
+        FractalParameterSpec^ managedParam = gcnew FractalParameterSpec();
+
+        managedParam->Name = StdStringToManaged(nativeParam.name);
+        managedParam->DisplayName = StdStringToManaged(nativeParam.displayName);
+        managedParam->Description = StdStringToManaged(nativeParam.description);
+        managedParam->DefaultValue = StdStringToManaged(nativeParam.defaultValue);
+        managedParam->MinValue = nativeParam.minValue;
+        managedParam->MaxValue = nativeParam.maxValue;
+        managedParam->Step = nativeParam.step;
+        managedParam->IsAdvanced = nativeParam.isAdvanced;
+        managedParam->IsReadOnly = nativeParam.isReadOnly;
+        managedParam->Unit = StdStringToManaged(nativeParam.unit);
+
+        managedParams[static_cast<int>(i)] = managedParam;
+    }
+
+    return managedParams;
 }
 
 // Run native baseline benchmark

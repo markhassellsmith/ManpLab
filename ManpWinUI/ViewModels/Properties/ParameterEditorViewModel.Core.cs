@@ -76,9 +76,14 @@ namespace ManpWinUI.ViewModels.Properties
                     : value.ToString("F6");
                 if (_value != newValue)
                 {
+                    System.Diagnostics.Debug.WriteLine($"[ParameterItem.ValueAsDouble] '{Name}' changed: {_value} → {newValue}");
                     _value = newValue;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ValueAsDouble)));
+
+                    // Week 6 Task 5: Notify parent that parameter changed
+                    System.Diagnostics.Debug.WriteLine($"[ParameterItem.ValueAsDouble] Firing ValueChanged event for '{Name}'");
+                    ValueChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -98,6 +103,9 @@ namespace ManpWinUI.ViewModels.Properties
                     _value = newValue;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ValueAsBoolean)));
+
+                    // Week 6 Task 5: Notify parent that parameter changed
+                    ValueChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -123,6 +131,9 @@ namespace ManpWinUI.ViewModels.Properties
                     _value = newValue;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ComplexReal)));
+
+                    // Week 6 Task 5: Notify parent that parameter changed
+                    ValueChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -148,6 +159,9 @@ namespace ManpWinUI.ViewModels.Properties
                     _value = newValue;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ComplexImaginary)));
+
+                    // Week 6 Task 5: Notify parent that parameter changed
+                    ValueChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -277,6 +291,8 @@ namespace ManpWinUI.ViewModels.Properties
         /// </summary>
         protected void OnParameterValueChanged(object? sender, EventArgs e)
         {
+            var paramItem = sender as ParameterItem;
+            System.Diagnostics.Debug.WriteLine($"[OnParameterValueChanged] Parameter '{paramItem?.Name}' changed, firing ParameterChanged event");
             ParameterChanged?.Invoke(this, EventArgs.Empty);
         }
 

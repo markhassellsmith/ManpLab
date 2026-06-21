@@ -7,6 +7,7 @@ namespace Native
 {
     void RegisterChaoticMapsFamily()
     {
+        FractalSpec spec;
         InitialConditions ic;  // Declare ONCE at the top
 
         // ═══════════════════════════════════════════════════════════════════════════════
@@ -38,7 +39,6 @@ namespace Native
         // Liu-Chen Attractor - Four-wing butterfly structure with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
 
             spec.name = "LiuChen";
             spec.displayName = "Liu-Chen Attractor";
@@ -98,7 +98,6 @@ namespace Native
         // Rabinovich-Fabrikant Attractor - Complex 3D attractor with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "RabinovichFabrikant";
             spec.displayName = "Rabinovich-Fabrikant Attractor";
             spec.category = "Chaotic Maps";
@@ -146,7 +145,6 @@ namespace Native
         // Arneodo Attractor - Ribbon-like structure with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "Arneodo";
             spec.displayName = "Arneodo Attractor";
             spec.category = "Chaotic Maps";
@@ -206,7 +204,6 @@ namespace Native
         // Sprott B Attractor - Minimalist elegant loop with histogram rendering
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "SprottB";
             spec.displayName = "Sprott B Attractor";
             spec.category = "Chaotic Maps";

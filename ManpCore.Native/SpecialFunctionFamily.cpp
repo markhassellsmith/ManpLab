@@ -58,6 +58,7 @@ namespace Native
 
     void RegisterSpecialFunctionFamily()
     {
+        FractalSpec spec;
         InitialConditions ic;  // Declare ONCE at the top
 
         // ═══════════════════════════════════════════════════════════════════════════════
@@ -69,7 +70,6 @@ namespace Native
         // Gamma Function Fractal
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "GammaFractal";
             spec.displayName = "Gamma Function Fractal";
             spec.category = "Special Function Fractals";
@@ -136,7 +136,6 @@ namespace Native
         // Error Function Fractal
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ErrorFunctionFractal";
             spec.displayName = "Error Function (erf) Fractal";
             spec.category = "Special Function Fractals";
@@ -194,7 +193,6 @@ namespace Native
         // Bessel-like Oscillatory Fractal
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "BesselLikeFractal";
             spec.displayName = "Bessel-like Oscillatory";
             spec.category = "Special Function Fractals";
@@ -272,7 +270,6 @@ namespace Native
         // Continued Fraction Fractal
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "ContinuedFraction";
             spec.displayName = "Continued Fraction Fractal";
             spec.category = "Special Function Fractals";
@@ -336,7 +333,6 @@ namespace Native
         // Tetration Fractal (Infinite Power Tower)
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "TetrationPowerTower";
             spec.displayName = "Tetration (Power Tower)";
             spec.category = "Special Function Fractals";
@@ -406,7 +402,6 @@ namespace Native
         // Lambert W Function Fractal
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "LambertW";
             spec.displayName = "Lambert W Function";
             spec.category = "Special Function Fractals";
@@ -494,7 +489,6 @@ namespace Native
         // Hyperbolic Sine Combo
         // ───────────────────────────────────────────────────────────────────────────────
         {
-            FractalSpec spec;
             spec.name = "HyperbolicCombo";
             spec.displayName = "Hyperbolic Combination";
             spec.category = "Special Function Fractals";
