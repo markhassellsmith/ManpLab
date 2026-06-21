@@ -24,10 +24,16 @@ void FractalRegistry::Register(const FractalSpec& spec)
     if (spec.name.empty())
         throw std::invalid_argument("Fractal name cannot be empty");
 
-    // Calculator is required for non-histogram fractals
-    // Histogram fractals use orbitIterator instead
-    if (!spec.calculator && spec.type != FractalCategory::HistogramBased)
-        throw std::invalid_argument("Fractal calculator function is required for non-histogram fractals");
+    // Calculator is required for standard escape-time fractals
+    // Special rendering types use alternative function pointers:
+    // - HistogramBased uses orbitIterator
+    // - BuddhabrotBased uses special path accumulation renderer
+    // - BifurcationDiagram uses bifurcationCalculator
+    if (!spec.calculator && 
+        spec.type != FractalCategory::HistogramBased && 
+        spec.type != FractalCategory::BuddhabrotBased &&
+        spec.type != FractalCategory::BifurcationDiagram)
+        throw std::invalid_argument("Fractal calculator function is required for standard escape-time fractals");
 
     auto& registry = GetRegistry();
     registry[spec.name] = spec;

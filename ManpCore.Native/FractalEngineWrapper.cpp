@@ -1312,6 +1312,183 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
             return result;
         }
 
+        // ═════════════════════════════════════════════════════════════════════════
+        // Bifurcation Diagram Rendering
+        // ═════════════════════════════════════════════════════════════════════════
+        if (spec->type == ::Native::FractalCategory::BifurcationDiagram)
+        {
+            Debug::WriteLine("Native Calculate: BIFURCATION DIAGRAM fractal detected");
+            Debug::WriteLine("  Using column-based parameter sweep rendering");
+
+            if (!spec->bifurcationCalculator)
+            {
+                throw gcnew InvalidOperationException(
+                    String::Format("Fractal '{0}' has type BifurcationDiagram but no bifurcationCalculator defined",
+                                  gcnew String(fractalType.c_str())));
+            }
+
+            stopwatch->Start();
+
+            // Prepare parameter map
+            ::Native::ParamMap customParams;
+
+            // Get vertical range from custom parameters or use defaults
+            double minY = 0.0;
+            double maxY = 1.0;
+            auto it = customParams.find("minY");
+            if (it != customParams.end()) minY = it->second;
+            it = customParams.find("maxY");
+            if (it != customParams.end()) maxY = it->second;
+
+            // Transient and sample counts
+            int transient = 200;
+            int samples = 100;
+            it = customParams.find("transient");
+            if (it != customParams.end()) transient = (int)it->second;
+            it = customParams.find("samples");
+            if (it != customParams.end()) samples = (int)it->second;
+
+            Debug::WriteLine(String::Format(
+                "  Bifurcation params: transient={0}, samples={1}, yRange=[{2}, {3}]",
+                transient, samples, minY, maxY));
+
+            // Calculate parameter range based on viewport
+            // X-axis represents parameter value
+            double paramMin = nativeParams.centerX - (nativeParams.viewWidth / 2.0);
+            double paramMax = nativeParams.centerX + (nativeParams.viewWidth / 2.0);
+            double paramStep = nativeParams.viewWidth / width;
+
+            Debug::WriteLine(String::Format(
+                "  Parameter range: [{0}, {1}], step={2}",
+                paramMin, paramMax, paramStep));
+
+            // Initialize image to black
+            for (int i = 0; i < width * height * 4; i += 4)
+            {
+                result->PixelData[i + 0] = 0;    // B
+                result->PixelData[i + 1] = 0;    // G
+                result->PixelData[i + 2] = 0;    // R
+                result->PixelData[i + 3] = 255;  // A
+            }
+
+            // Allocate histogram for density-based coloring
+            std::vector<int> histogram(width * height, 0);
+            int maxDensity = 0;
+
+            // First pass: accumulate visit counts
+            int lastReportedPercent = -1;
+            for (int col = 0; col < width; col++)
+            {
+                // Report progress every 10 columns
+                if (col % 10 == 0)
+                {
+                    int percentComplete = (col * 100) / width;
+                    if (percentComplete != lastReportedPercent && m_progressChangedDelegate != nullptr)
+                    {
+                        auto progressArgs = gcnew ProgressEventArgs();
+                        progressArgs->Percentage = (double)percentComplete;
+                        progressArgs->CurrentLine = col;
+                        progressArgs->TotalLines = width;
+                        progressArgs->StatusMessage = String::Format(
+                            "Calculating parameter {0} of {1}", col, width);
+                        ProgressChanged(this, progressArgs);
+                        lastReportedPercent = percentComplete;
+                    }
+                }
+
+                // Check for cancellation
+                if (m_cancelled)
+                {
+                    Debug::WriteLine("Bifurcation rendering cancelled by user");
+                    throw gcnew OperationCanceledException("Calculation cancelled by user");
+                }
+
+                // Calculate parameter for this column
+                double parameter = paramMin + (col * paramStep);
+
+                // Get attractor points for this parameter
+                std::vector<double> points;
+                try
+                {
+                    points = spec->bifurcationCalculator(parameter, transient, samples, customParams);
+                }
+                catch (const std::exception& ex)
+                {
+                    Debug::WriteLine(String::Format(
+                        "  Bifurcation calculator failed for parameter {0}: {1}",
+                        parameter, gcnew String(ex.what())));
+                    continue;
+                }
+
+                // Accumulate visit counts for density coloring
+                for (double yValue : points)
+                {
+                    // Skip out-of-range values
+                    if (yValue < minY || yValue > maxY || std::isnan(yValue) || std::isinf(yValue))
+                        continue;
+
+                    // Map y-value to pixel row (flip y-axis: top = maxY, bottom = minY)
+                    int row = (int)((maxY - yValue) / (maxY - minY) * height);
+
+                    // Clamp to valid range
+                    if (row < 0) row = 0;
+                    if (row >= height) row = height - 1;
+
+                    // Increment histogram
+                    int histogramIndex = row * width + col;
+                    histogram[histogramIndex]++;
+                    if (histogram[histogramIndex] > maxDensity)
+                        maxDensity = histogram[histogramIndex];
+                }
+            }
+
+            Debug::WriteLine(String::Format("  Max density: {0} visits per pixel", maxDensity));
+
+            // Second pass: convert histogram to colored pixels using palette
+            ::Native::PaletteType nativePalette = static_cast<::Native::PaletteType>((int)parameters->Palette);
+            int colorOffset = parameters->ColorOffset;
+
+            for (int i = 0; i < width * height; i++)
+            {
+                int density = histogram[i];
+                if (density == 0)
+                    continue;  // Leave black
+
+                // Log-scale mapping for better dynamic range
+                // Map [1, maxDensity] to iteration range [0, 255]
+                double normalizedDensity = std::log(1.0 + (double)density) / std::log(1.0 + (double)maxDensity);
+                double iterationValue = normalizedDensity * 255.0;
+
+                // Get color from palette using the same coloring system as standard fractals
+                ::Native::ColorRGB color = ::Native::MandelbrotCalculator::IterationToColor(
+                    iterationValue,
+                    256,  // Use 256 as "max iterations" for full palette range
+                    nativePalette,
+                    colorOffset
+                );
+
+                // Write BGRA pixel
+                int pixelIndex = i * 4;
+                result->PixelData[pixelIndex + 0] = color.b;
+                result->PixelData[pixelIndex + 1] = color.g;
+                result->PixelData[pixelIndex + 2] = color.r;
+                result->PixelData[pixelIndex + 3] = 255;
+            }
+
+            stopwatch->Stop();
+
+            result->RenderTime = stopwatch->Elapsed;
+            result->IterationCount = 0;  // Not applicable for bifurcation diagrams
+            result->EscapedPixelCount = 0;  // Not applicable
+            result->Category = FractalCategory::BifurcationDiagram;
+
+            Debug::WriteLine(String::Format(
+                "Native Calculate: Bifurcation diagram rendering complete in {0}ms",
+                stopwatch->ElapsedMilliseconds));
+
+            return result;
+        }
+
         // Prepare parameter map for extensibility (currently empty, but ready for custom params)
         ::Native::ParamMap customParams;
 
