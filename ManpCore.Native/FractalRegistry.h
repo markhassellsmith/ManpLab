@@ -130,8 +130,9 @@ enum class FractalCategory
     EscapeTime2D,           // Standard 2D escape-time fractals
     Sequence2D,             // Hailstone, bifurcation, etc.
     AttractorBased3D,       // Lorenz, Rössler, etc. (legacy per-pixel - use HistogramBased for proper rendering)
-    HistogramBased,         // Orbit accumulation rendering (strange attractors, flame fractals, Buddhabrot)
-    Special                 // Perturbation, Buddhabrot, etc.
+    HistogramBased,         // Orbit accumulation rendering (strange attractors, IFS)
+    BuddhabrotBased,        // Monte Carlo path accumulation (Buddhabrot, Anti-Buddhabrot)
+    Special                 // Perturbation, custom renderers, etc.
 };
 
 //=============================================================================
