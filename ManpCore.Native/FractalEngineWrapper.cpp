@@ -13,6 +13,7 @@
 #include "../ManpWIN64/BigDouble.h"
 #include "../ManpWIN64/BigComplex.h"
 #include "../ManpWIN64/PertEngine.h"  // Perturbation theory engine
+#include <msclr/marshal_cppstd.h>  // For marshal_as<std::string>
 #include <string>
 
 using namespace System;
@@ -304,7 +305,7 @@ static void RenderHistogramFractal(
     double minX = 1e10, maxX = -1e10;
     double minY = 1e10, maxY = -1e10;
 
-    // Empty parameter map for now
+    // Empty parameter map for now (TODO: pass custom parameters from caller)
     ::Native::ParamMap customParams;
 
     // Phase 1: Iterate to find actual attractor bounds
@@ -1329,8 +1330,17 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
 
             stopwatch->Start();
 
-            // Prepare parameter map
+            // Prepare parameter map from CustomParameters dictionary
             ::Native::ParamMap customParams;
+            if (parameters->CustomParameters != nullptr)
+            {
+                for each (auto kvp in parameters->CustomParameters)
+                {
+                    // Convert managed String^ to std::string
+                    std::string key = msclr::interop::marshal_as<std::string>(kvp.Key);
+                    customParams[key] = kvp.Value;
+                }
+            }
 
             // Get vertical range from custom parameters or use defaults
             double minY = 0.0;
@@ -1489,8 +1499,17 @@ FractalResult^ FractalEngineWrapper::Calculate(FractalParameters^ parameters)
             return result;
         }
 
-        // Prepare parameter map for extensibility (currently empty, but ready for custom params)
+        // Prepare parameter map from CustomParameters dictionary
         ::Native::ParamMap customParams;
+        if (parameters->CustomParameters != nullptr)
+        {
+            for each (auto kvp in parameters->CustomParameters)
+            {
+                // Convert managed String^ to std::string
+                std::string key = msclr::interop::marshal_as<std::string>(kvp.Key);
+                customParams[key] = kvp.Value;
+            }
+        }
 
         long long totalIterations = 0;
         int escapedPixels = 0;
@@ -1737,6 +1756,47 @@ int FractalEngineWrapper::GetFractalTypeCount()
 {
     ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
     return static_cast<int>(::Native::FractalRegistry::GetCount());
+}
+
+// Get parameter specifications for a fractal type
+array<FractalParameterSpec^>^ FractalEngineWrapper::GetFractalParameterSpecs(String^ fractalType)
+{
+    ::Native::FractalRegistry::InitializeBuiltins();  // Ensure registry is initialized
+
+    // Query native spec
+    std::string nativeName = ManagedToStdString(fractalType);
+    const ::Native::FractalSpec* spec = ::Native::FractalRegistry::GetSpec(nativeName);
+
+    if (!spec || spec->parameters.empty())
+    {
+        // Return empty array if no parameters
+        return gcnew array<FractalParameterSpec^>(0);
+    }
+
+    // Convert native parameters to managed specs
+    array<FractalParameterSpec^>^ managedParams = gcnew array<FractalParameterSpec^>(
+        static_cast<int>(spec->parameters.size()));
+
+    for (size_t i = 0; i < spec->parameters.size(); i++)
+    {
+        const ::Native::ParameterSpec& nativeParam = spec->parameters[i];
+        FractalParameterSpec^ managedParam = gcnew FractalParameterSpec();
+
+        managedParam->Name = StdStringToManaged(nativeParam.name);
+        managedParam->DisplayName = StdStringToManaged(nativeParam.displayName);
+        managedParam->Description = StdStringToManaged(nativeParam.description);
+        managedParam->DefaultValue = StdStringToManaged(nativeParam.defaultValue);
+        managedParam->MinValue = nativeParam.minValue;
+        managedParam->MaxValue = nativeParam.maxValue;
+        managedParam->Step = nativeParam.step;
+        managedParam->IsAdvanced = nativeParam.isAdvanced;
+        managedParam->IsReadOnly = nativeParam.isReadOnly;
+        managedParam->Unit = StdStringToManaged(nativeParam.unit);
+
+        managedParams[static_cast<int>(i)] = managedParam;
+    }
+
+    return managedParams;
 }
 
 // Run native baseline benchmark

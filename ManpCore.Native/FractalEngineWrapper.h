@@ -453,6 +453,16 @@ namespace Native {
         property bool UseSmoothColoring;
 
         /// <summary>
+        /// Custom parameters for fractal-specific configuration (e.g., bifurcation minY/maxY, transient/samples).
+        /// </summary>
+        /// <value>Dictionary mapping parameter names to numeric values</value>
+        /// <remarks>
+        /// Used to pass fractal-specific parameters to native calculators (e.g., for bifurcation diagrams).
+        /// Example keys: "minY", "maxY", "transient", "samples", "henonB", "lambdaIm"
+        /// </remarks>
+        property System::Collections::Generic::Dictionary<String^, double>^ CustomParameters;
+
+        /// <summary>
         /// Creates FractalParameters with default Mandelbrot set values.
         /// </summary>
         /// <remarks>
@@ -477,6 +487,7 @@ namespace Native {
             RenderMode = 0;  // Default to EscapeTime
             UseSmoothColoring = true;  // Default to smooth (anti-banding ON)
             Precision = 50;  // Default MPFR precision for deep zoom
+            CustomParameters = gcnew System::Collections::Generic::Dictionary<String^, double>();  // Empty dictionary by default
         }
     };
 
@@ -650,6 +661,24 @@ namespace Native {
         /// Optional: Can bind directly to UI StatusBar or ignore if using Percentage for ProgressBar.
         /// </remarks>
         property String^ StatusMessage;
+    };
+
+    /// <summary>
+    /// Managed wrapper for native ParameterSpec (fractal parameter metadata).
+    /// </summary>
+    public ref class FractalParameterSpec
+    {
+    public:
+        property String^ Name;
+        property String^ DisplayName;
+        property String^ Description;
+        property String^ DefaultValue;
+        property double MinValue;
+        property double MaxValue;
+        property double Step;
+        property bool IsAdvanced;
+        property bool IsReadOnly;
+        property String^ Unit;
     };
 
     /// <summary>
@@ -828,6 +857,17 @@ namespace Native {
         /// <para>Count reflects the total after InitializeBuiltins() is called.</para>
         /// </remarks>
         int GetFractalTypeCount();
+
+        /// <summary>
+        /// Get parameter specifications for a specific fractal type.
+        /// </summary>
+        /// <param name="fractalType">Fractal type name (e.g., "LogisticBifurcation")</param>
+        /// <returns>Array of parameter specs, or empty array if fractal has no custom parameters</returns>
+        /// <remarks>
+        /// <para>Returns parameter metadata for building UI controls.</para>
+        /// <para>Use to expose fractal-specific parameters (bifurcation ranges, function parameters, etc.).</para>
+        /// </remarks>
+        array<FractalParameterSpec^>^ GetFractalParameterSpecs(String^ fractalType);
 
         /// <summary>
         /// Run pure native C++ benchmark without C++/CLI wrapper overhead (for performance analysis).

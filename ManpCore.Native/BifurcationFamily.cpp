@@ -300,8 +300,17 @@ namespace Native {
         spec.defaultBailout = 0.0;  // Not applicable
         spec.hasSymmetry = false;
 
-        // Custom parameters will be added in future iteration
-        spec.parameters = {};
+        // Custom parameters for bifurcation rendering
+        spec.parameters = {
+            ParameterSpec("minY", "Min Y Value", "Minimum vertical (attractor) value to display",
+                          ParameterType::Float, ParameterCategory::View, "0.0", 0.0, 2.0, 0.01),
+            ParameterSpec("maxY", "Max Y Value", "Maximum vertical (attractor) value to display",
+                          ParameterType::Float, ParameterCategory::View, "1.0", 0.0, 2.0, 0.01),
+            ParameterSpec("transient", "Transient Iterations", "Number of iterations to skip before sampling (settle to attractor)",
+                          ParameterType::Integer, ParameterCategory::Calculation, "200", 0.0, 1000.0, 10.0),
+            ParameterSpec("samples", "Sample Count", "Number of attractor points to collect per parameter value",
+                          ParameterType::Integer, ParameterCategory::Calculation, "100", 10.0, 500.0, 10.0)
+        };
 
         FractalRegistry::Register(spec);
 
@@ -374,7 +383,19 @@ namespace Native {
         spec.defaultBailout = 0.0;
         spec.hasSymmetry = false;
 
-        spec.parameters = {};
+        // Custom parameters for Lambda bifurcation rendering
+        spec.parameters = {
+            ParameterSpec("lambdaIm", "Lambda Imaginary", "Imaginary part of lambda parameter (real part is X-axis)",
+                          ParameterType::Float, ParameterCategory::Calculation, "0.0", -5.0, 5.0, 0.01),
+            ParameterSpec("minY", "Min Y Value", "Minimum vertical (attractor magnitude) value to display",
+                          ParameterType::Float, ParameterCategory::View, "0.0", 0.0, 10.0, 0.1),
+            ParameterSpec("maxY", "Max Y Value", "Maximum vertical (attractor magnitude) value to display",
+                          ParameterType::Float, ParameterCategory::View, "3.0", 0.0, 10.0, 0.1),
+            ParameterSpec("transient", "Transient Iterations", "Number of iterations to skip before sampling (settle to attractor)",
+                          ParameterType::Integer, ParameterCategory::Calculation, "200", 0.0, 1000.0, 10.0),
+            ParameterSpec("samples", "Sample Count", "Number of attractor points to collect per parameter value",
+                          ParameterType::Integer, ParameterCategory::Calculation, "100", 10.0, 500.0, 10.0)
+        };
 
         FractalRegistry::Register(spec);
 
@@ -456,7 +477,19 @@ namespace Native {
         spec.defaultBailout = 0.0;
         spec.hasSymmetry = false;
 
-        spec.parameters = {};
+        // Custom parameters for Henon bifurcation rendering
+        spec.parameters = {
+            ParameterSpec("henonB", "Henon B Parameter", "Second parameter b in Hénon map (classic value = 0.3)",
+                          ParameterType::Float, ParameterCategory::Calculation, "0.3", -2.0, 2.0, 0.01),
+            ParameterSpec("minY", "Min Y Value", "Minimum vertical (attractor x-coordinate) value to display",
+                          ParameterType::Float, ParameterCategory::View, "-2.0", -10.0, 10.0, 0.1),
+            ParameterSpec("maxY", "Max Y Value", "Maximum vertical (attractor x-coordinate) value to display",
+                          ParameterType::Float, ParameterCategory::View, "2.0", -10.0, 10.0, 0.1),
+            ParameterSpec("transient", "Transient Iterations", "Number of iterations to skip before sampling (settle to attractor)",
+                          ParameterType::Integer, ParameterCategory::Calculation, "200", 0.0, 1000.0, 10.0),
+            ParameterSpec("samples", "Sample Count", "Number of attractor points to collect per parameter value",
+                          ParameterType::Integer, ParameterCategory::Calculation, "100", 10.0, 500.0, 10.0)
+        };
 
         FractalRegistry::Register(spec);
 

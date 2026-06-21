@@ -432,10 +432,11 @@ spec.parameters = {
 ## Known Limitations
 
 1. ✅ ~~**No density coloring yet**~~ — **IMPLEMENTED:** Full palette support with log-scale histogram coloring
-2. **Hardcoded sampling parameters** — Cannot adjust transient/samples via UI (uses transient=200, samples=100)
-3. **No y-axis zoom control** — Viewport height controls parameter range, not attractor range
-4. **Single-threaded** — Column computation is serial
-5. **No anti-aliasing** — Point plotting is nearest-neighbor (histogram accumulation provides some smoothing)
+2. ✅ ~~**Hardcoded sampling parameters**~~ — **IMPLEMENTED:** Parameter system integration complete (native layer)
+3. **No UI controls yet** — Parameter metadata registered, but UI parameter panel not yet wired
+4. **No y-axis zoom control** — Viewport height controls parameter range, not attractor range
+5. **Single-threaded** — Column computation is serial
+6. **No anti-aliasing** — Point plotting is nearest-neighbor (histogram accumulation provides some smoothing)
 
 ---
 
@@ -444,14 +445,46 @@ spec.parameters = {
 ### Phase 2: Density Coloring ✅ **COMPLETED**
 Implemented two-pass histogram rendering with log-scale color mapping. All standard palettes (Classic, Fire, Ocean, Spectrum, Neon, etc.) now work with bifurcation diagrams.
 
-### Phase 3: Custom Parameters (Priority HIGH)
-Implement `ParameterSpec` initializer-list constructor and wire UI sliders for:
-- Transient iterations (currently hardcoded to 200)
-- Sample count (currently hardcoded to 100)
-- Y-axis range (minY, maxY)
+### Phase 3: Parameter System Integration ✅ **COMPLETED (Native Layer)**
+**Status:** Native implementation complete, UI wiring pending
+
+**What Was Implemented:**
+1. ✅ Added `ParameterSpec` metadata to all bifurcation registrations:
+   - **Logistic:** minY, maxY, transient, samples
+   - **Lambda:** lambdaIm, minY, maxY, transient, samples
+   - **Henon:** henonB, minY, maxY, transient, samples
+
+2. ✅ Extended `FractalParameters` C++/CLI class with `CustomParameters` Dictionary<String^, double>^
+
+3. ✅ Wired bifurcation renderer to extract `CustomParameters` into native `ParamMap`:
+   ```cpp
+   ::Native::ParamMap customParams;
+   if (parameters->CustomParameters != nullptr) {
+       for each (auto kvp in parameters->CustomParameters) {
+           std::string key = msclr::interop::marshal_as<std::string>(kvp.Key);
+           customParams[key] = kvp.Value;
+       }
+   }
+   ```
+
+4. ✅ Bifurcation calculators already consume `ParamMap` — parameter flow complete
+
+**What Remains (UI Layer):**
+- Wire managed parameter system to populate `FractalParameters.CustomParameters` from UI controls
+- Expose parameter panel in bifurcation view (leverage existing `FractalParameterSet` infrastructure)
+
+**Location:** `ManpCore.Native/BifurcationFamily.cpp`, `FractalEngineWrapper.h`, `FractalEngineWrapper.cpp`
+
+### Phase 4: UI Parameter Controls (Priority NEXT)
+Expose parameter sliders for:
+- Transient iterations (default 200, range 0-1000)
+- Sample count (default 100, range 10-500)
+- Y-axis range (minY, maxY) for attractor bounds
 - System-specific parameters (lambdaIm, henonB)
 
-### Phase 4: GPU Acceleration
+Leverage existing `FractalParameterService` and `StandardParameterTemplates` to auto-generate UI from `ParameterSpec` metadata.
+
+### Phase 5: GPU Acceleration
 Port column loop to compute shader:
 ```hlsl
 [numthreads(1, 1, 1)]
@@ -467,6 +500,91 @@ void BifurcationColumn(uint columnId : SV_DispatchThreadID)
 - Tent map: `x_{n+1} = r·min(x_n, 1-x_n)`
 - Gauss map: `x_{n+1} = exp(-α·x_n^2) + β`
 - Ikeda map (2D complex)
+
+---
+
+## Parameter System Integration ✅ **COMPLETED**
+
+### Parameter Flow Architecture
+
+```
+UI Parameter Controls
+    ↓
+RenderParameters.ExtendedParameters (Dictionary<string, object>)
+    ↓
+FractalRenderService.ConvertToNumericParameters()
+    ↓
+FractalParameters.CustomParameters (Dictionary<string, double>)
+    ↓
+FractalEngineWrapper.cpp (C++/CLI bridge)
+    ↓ msclr::interop::marshal_as<std::string>
+Native::ParamMap (std::map<std::string, double>)
+    ↓
+BifurcationCalculator (lambda in BifurcationFamily.cpp)
+```
+
+### Implementation Details
+
+**Managed Layer** (`ManpWinUI/Services/FractalRenderService.cs`):
+- `ConvertToNumericParameters()` safely converts `Dictionary<string, object>` to `Dictionary<string, double>`
+- Type conversion uses `Convert.ToDouble()` with try-catch for robustness
+- Non-numeric values logged as warnings and skipped
+- Both `RenderMandelbrotAsync` and `RenderJuliaAsync` accept optional `extendedParameters`
+- `RenderFractalAsync` passes `RenderParameters.ExtendedParameters` through
+
+**Native Bridge** (`ManpCore.Native/FractalEngineWrapper.cpp`):
+```cpp
+::Native::ParamMap customParams;
+if (parameters->CustomParameters != nullptr) {
+    for each (auto kvp in parameters->CustomParameters) {
+        std::string key = msclr::interop::marshal_as<std::string>(kvp.Key);
+        customParams[key] = kvp.Value;
+    }
+}
+```
+
+**Bifurcation Calculators** (`ManpCore.Native/BifurcationFamily.cpp`):
+```cpp
+// Extract parameters with fallback defaults
+double minY = 0.0;
+auto it = params.find("minY");
+if (it != params.end()) minY = it->second;
+```
+
+### Supported Parameters
+
+| Parameter | Type | Default | Range | Fractal | Description |
+|-----------|------|---------|-------|---------|-------------|
+| `minY` | double | 0.0 | 0.0-10.0 | All | Minimum vertical (attractor) value |
+| `maxY` | double | 1.0-3.0 | 0.0-10.0 | All | Maximum vertical (attractor) value |
+| `transient` | int | 200 | 0-1000 | All | Iterations to skip (settle to attractor) |
+| `samples` | int | 100 | 10-500 | All | Number of attractor points to collect |
+| `lambdaIm` | double | 0.0 | -5.0-5.0 | Lambda | Imaginary part of λ parameter |
+| `henonB` | double | 0.3 | -2.0-2.0 | Henon | Second parameter b in Hénon map |
+
+### Usage Example
+
+```csharp
+var renderParams = new RenderParameters
+{
+    FractalType = "LogisticBifurcation",
+    CenterX = 3.0,
+    CenterY = 0.5,
+    Zoom = 1.0,
+    Width = 1920,
+    Height = 1080,
+    ExtendedParameters = new Dictionary<string, object>
+    {
+        { "minY", 0.0 },
+        { "maxY", 1.0 },
+        { "transient", 300 },
+        { "samples", 150 }
+    }
+};
+
+var result = await _fractalRenderService.RenderFractalAsync(
+    renderParams, progress, cancellationToken);
+```
 
 ---
 

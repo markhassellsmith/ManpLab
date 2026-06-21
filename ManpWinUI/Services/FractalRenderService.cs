@@ -41,7 +41,8 @@ public class FractalRenderService : IFractalRenderService
         bool useSmoothColoring = false,
         bool useDeepZoom = false,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        Dictionary<string, object>? extendedParameters = null)
     {
         var displayType = isJuliaMode ? $"{fractalType} Julia" : fractalType;
         _logger.LogInformation(
@@ -114,6 +115,20 @@ public class FractalRenderService : IFractalRenderService
                         RenderMode = renderMode,
                         UseSmoothColoring = useSmoothColoring
                     };
+
+                    // Populate CustomParameters from ExtendedParameters (for bifurcation diagrams and other special fractals)
+                    if (extendedParameters != null && extendedParameters.Count > 0)
+                    {
+                        var numericParams = ConvertToNumericParameters(extendedParameters);
+                        foreach (var kvp in numericParams)
+                        {
+                            parameters.CustomParameters[kvp.Key] = kvp.Value;
+                        }
+
+                        _logger.LogDebug(
+                            "Populated {Count} custom parameters for {FractalType}",
+                            numericParams.Count, fractalType);
+                    }
 
                     // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
                     // Phase 1 Complete: Now using perturbation theory for true deep zoom support
@@ -257,7 +272,8 @@ public class FractalRenderService : IFractalRenderService
         bool useSmoothColoring = false,
         bool useDeepZoom = false,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        Dictionary<string, object>? extendedParameters = null)
     {
         _logger.LogInformation(
             "Rendering Julia: c=({CReal}, {CImaginary}), center=({CenterX}, {CenterY}), zoom={Zoom}, size={Width}x{Height}",
@@ -295,6 +311,20 @@ public class FractalRenderService : IFractalRenderService
                     Palette = paletteEnum,
                     ColorOffset = colorOffset  // Apply color offset for palette rotation
                 };
+
+                // Populate CustomParameters from ExtendedParameters (for special Julia variants)
+                if (extendedParameters != null && extendedParameters.Count > 0)
+                {
+                    var numericParams = ConvertToNumericParameters(extendedParameters);
+                    foreach (var kvp in numericParams)
+                    {
+                        parameters.CustomParameters[kvp.Key] = kvp.Value;
+                    }
+
+                    _logger.LogDebug(
+                        "Populated {Count} custom parameters for Julia set",
+                        numericParams.Count);
+                }
 
                 // Week 9 Task 1: Enable deep zoom (arbitrary precision) if requested
                 if (useDeepZoom)
@@ -382,8 +412,7 @@ public class FractalRenderService : IFractalRenderService
             "RenderFractalAsync (Parameter System): {FractalType}, center=({CenterX}, {CenterY}), zoom={Zoom}",
             parameters.FractalType, parameters.CenterX, parameters.CenterY, parameters.Zoom);
 
-        // For now, delegate to existing RenderMandelbrotAsync
-        // Future: Once native layer accepts structured parameters, call native directly
+        // Delegate to RenderMandelbrotAsync with ExtendedParameters for custom parameter support
         return await RenderMandelbrotAsync(
             parameters.CenterX,
             parameters.CenterY,
@@ -402,7 +431,8 @@ public class FractalRenderService : IFractalRenderService
             parameters.UseSmoothColoring,
             parameters.UseDeepZoom,
             progress,
-            cancellationToken);
+            cancellationToken,
+            parameters.ExtendedParameters);  // Pass custom parameters (e.g., bifurcation minY/maxY/transient/samples)
     }
 
     private ColorPalette ParsePalette(string paletteName)
@@ -419,5 +449,37 @@ public class FractalRenderService : IFractalRenderService
             "Neon" => ColorPalette.Neon,
             _ => ColorPalette.Classic // Default fallback
         };
+    }
+
+    /// <summary>
+    /// Convert ExtendedParameters (Dictionary&lt;string, object&gt;) to native CustomParameters (Dictionary&lt;string, double&gt;).
+    /// Safely handles type conversion with logging for invalid/non-numeric values.
+    /// </summary>
+    private Dictionary<string, double> ConvertToNumericParameters(Dictionary<string, object> extendedParameters)
+    {
+        var numericParams = new Dictionary<string, double>();
+
+        foreach (var kvp in extendedParameters)
+        {
+            try
+            {
+                // Attempt conversion to double
+                double value = Convert.ToDouble(kvp.Value);
+                numericParams[kvp.Key] = value;
+
+                _logger.LogDebug(
+                    "Converted parameter '{Key}' = {Value} (type: {Type})",
+                    kvp.Key, value, kvp.Value?.GetType().Name ?? "null");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Skipping non-numeric parameter '{Key}' with value '{Value}' (type: {Type})",
+                    kvp.Key, kvp.Value, kvp.Value?.GetType().Name ?? "null");
+            }
+        }
+
+        return numericParams;
     }
 }

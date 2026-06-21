@@ -138,6 +138,37 @@ public class FractalParameterService : IFractalParameterService
     }
 
     /// <summary>
+    /// Helper: Create a bifurcation diagram template with standard parameters.
+    /// </summary>
+    private FractalParameterSet CreateBifurcationTemplate(string fractalType, double minY, double maxY)
+    {
+        var (cx, cy, z) = GetNativeViewportDefaults(fractalType);
+        var paramSet = StandardParameterTemplates.CreateStandardEscapeTime(fractalType, cx, cy, z);
+        paramSet.AddParameters(StandardParameterTemplates.BifurcationParameters(minY, maxY).ToArray());
+        return paramSet;
+    }
+
+    /// <summary>
+    /// Helper: Create a Lambda bifurcation diagram template with lambdaIm parameter.
+    /// </summary>
+    private FractalParameterSet CreateBifurcationTemplateWithLambdaIm(string fractalType, double minY, double maxY, double lambdaIm)
+    {
+        var paramSet = CreateBifurcationTemplate(fractalType, minY, maxY);
+        paramSet.AddParameter(StandardParameterTemplates.LambdaImParameter(lambdaIm));
+        return paramSet;
+    }
+
+    /// <summary>
+    /// Helper: Create a Henon bifurcation diagram template with henonB parameter.
+    /// </summary>
+    private FractalParameterSet CreateBifurcationTemplateWithHenonB(string fractalType, double minY, double maxY, double henonB)
+    {
+        var paramSet = CreateBifurcationTemplate(fractalType, minY, maxY);
+        paramSet.AddParameter(StandardParameterTemplates.HenonBParameter(henonB));
+        return paramSet;
+    }
+
+    /// <summary>
     /// Register built-in parameter templates for known fractal families.
     /// This is the 80/20 solution: covers most fractals with standard templates.
     /// </summary>
@@ -735,6 +766,12 @@ public class FractalParameterService : IFractalParameterService
 
         // LogisticParameterSpace: Parameter space for logistic map xₙ₊₁ = r·xₙ·(1-xₙ) (center 2,0; zoom 0.697)
         RegisterTemplate("LogisticParameterSpace", () => CreateStandardTemplate("LogisticParameterSpace"));
+
+        // Bifurcation Diagrams (specialized rendering with custom parameters)
+        // These diagrams use column-based parameter sweep rendering
+        RegisterTemplate("LogisticBifurcation", () => CreateBifurcationTemplate("LogisticBifurcation", -1.0, 1.0));
+        RegisterTemplate("LambdaBifurcation", () => CreateBifurcationTemplateWithLambdaIm("LambdaBifurcation", -1.0, 1.0, 0.0));
+        RegisterTemplate("HenonBifurcation", () => CreateBifurcationTemplateWithHenonB("HenonBifurcation", -1.5, 1.5, 0.3));
 
         // LambdaParameterSpace: Complex lambda map z = λ·z·(1-z) parameter space (center 1,0; zoom 0.536203)
         RegisterTemplate("LambdaParameterSpace", () => CreateStandardTemplate("LambdaParameterSpace"));
