@@ -509,16 +509,16 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 
 - Bird of Prey
 - Buffalo Burning Ship
+- Buffalo Burning Ship (Power 3)
 - Burning Ship (Quartic)
+- Burning-Mandel Hybrid
+- Celtic Burning Hybrid
 - Celtic Burning Ship
 - Partial Burning Ship
 - Perpendicular Burning Ship
 - Reverse Burning Ship
 - Shark Burning Ship
 - Vertical Burning Ship
-- Buffalo Burning Ship (Power 3)
-- Celtic Burning Hybrid
-- Burning-Mandel Hybrid
 
 ### Chaotic Maps (9)
 
@@ -541,8 +541,8 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 
 ### Classic Fractals (5)
 
-- Mandelbrot
 - Julia Classic
+- Mandelbrot
 - Manowar
 - Spider
 - Unity
@@ -596,24 +596,24 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 
 ### Exotic Fractals (3)
 
+- Celtic Heart
 - Mandelbar (Exotic)
 - Quasi-Perpendicular
-- Celtic Heart
 
 ### Exponential Fractals (12)
 
+- Complex Power
+- Exp² Mandelbrot
 - Exponential
 - Exponential Julia
 - Exponential Mandelbrot
-- Exp² Mandelbrot
+- Generalized Complex Power
 - Lambda Lambda Exp
 - Lambda Mandel Exp
-- Mandel Exp
-- Complex Power
-- Generalized Complex Power
 - Log-Julia
 - Logarithm
 - Logarithmic Mandelbrot
+- Mandel Exp
 
 ### Historical Fractals (8)
 
@@ -633,19 +633,19 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 - Celtic Hybrid
 - Exp-Mandel Hybrid
 - Magnet-Mandel Hybrid
+- Mandel Exp
 - Mandel-Burning Hybrid
+- Mandel-Lambda Classic
 - Mandel-Lambda Mix
+- Marks Mandelbrot (Placeholder)
+- Multi-Power Cycle
 - Mutant Mandelbrot
 - Newton-Mandel Blend
 - Perturbed Newton
 - Sierpinski-Mandel Hybrid
 - Sine-Mandel Hybrid
-- Trig-Mandel Blend
 - Tricorn-Phoenix Hybrid
-- Multi-Power Cycle
-- Mandel Exp
-- Mandel-Lambda Classic
-- Marks Mandelbrot (Placeholder)
+- Trig-Mandel Blend
 
 ### Iterated Function Systems (5)
 
@@ -703,9 +703,9 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 - Julia Phoenix
 - Julia Sine
 - Lambda Julia
+- Marks Julia
 - Multibrot 3 Julia
 - Multibrot 4 Julia
-- Marks Julia
 
 ### Lambda Fractals (8)
 
@@ -745,11 +745,16 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 
 ### Mandelbrot Variants (26)
 
+- Burning Ship
 - Celtic Buffalo
 - Heart Mandelbrot
 - Julia (Power 4)
+- Julia Classic
 - Mandelbar
 - Mandelbar (Conjugate)
+- Mandel Trig (Classic)
+- Mandel-Lambda
+- Mandelbrot
 - Mandelbrot (Power 4)
 - Mandelbrot-Lambda
 - Manowar
@@ -759,18 +764,13 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 - Multibrot (Power 7)
 - Perpendicular Mandelbrot
 - Shark Fin Mandelbrot
+- Spider
 - Spider Variant
+- Tetrate
 - Thorn
 - Tricorn (Mandelbar)
-- Wavy Mandelbrot
-- Tetrate
-- Mandel Trig (Classic)
-- Mandelbrot
-- Julia Classic
-- Burning Ship
-- Mandel-Lambda
-- Spider
 - Unity
+- Wavy Mandelbrot
 
 ### Multibrot Powers (8)
 
@@ -785,13 +785,13 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 
 ### Newton's Method (8)
 
-- Newton (z³-1)
-- Newton Basin (z³-1)
-- Newton Cosh
 - Newton (Cubic)
 - Newton (Quartic)
 - Newton (Quintic)
 - Newton (Sextic)
+- Newton (z³-1)
+- Newton Basin (z³-1)
+- Newton Cosh
 - Newton Sine
 - Nova
 
@@ -825,13 +825,13 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 ### Phoenix Fractals (8)
 
 - Phoenix
+- Phoenix (Cubic)
+- Phoenix (Quartic)
 - Phoenix Complex Feedback
 - Phoenix Cosh
-- Phoenix (Cubic)
 - Phoenix Julia
 - Phoenix Lambda
 - Phoenix Mandelbrot
-- Phoenix (Quartic)
 - Phoenix Sine
 
 ### Polynomial Variants (8)
@@ -853,10 +853,10 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 - Newton (Quintic Rational)
 - Newton (z³-1)
 - Rational (z²+c)/(z²-c)
-- Rational z²/(z³+c)
-- Rational z³/(z³+c)
 - Rational Power
 - Rational Symmetric
+- Rational z²/(z³+c)
+- Rational z³/(z³+c)
 
 ### Special (7)
 
@@ -902,10 +902,10 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 - Cotangent Mandelbrot
 - Mandel Trig
 - Secant Mandelbrot
+- Sech Mandelbrot
 - Sinh Mandelbrot
 - Tangent Mandelbrot
 - Tanh Mandelbrot
-- Sech Mandelbrot
 
 ### Trigonometric Fractals (12)
 
