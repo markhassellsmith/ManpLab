@@ -563,18 +563,18 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 - Trig Square Root
 - Trig x Trig
 
+### Discrete Mathematics (3)
+
+- Chebyshev Polynomial T₃(z) = 4z³ - 3z + c
+- Inverse Combinatorial 1/z² + c
+- Mandelbrot (Distance Estimator)
+
 ### Distance Estimator (4)
 
 - Burning Ship DEM
 - Julia DEM
 - Mandelbrot DEM
 - Tricorn DEM
-
-### Discrete Mathematics (3)
-
-- Chebyshev Polynomial T₃(z) = 4z³ - 3z + c
-- Inverse Combinatorial 1/z² + c
-- Mandelbrot (Distance Estimator)
 
 ### Elliptic Functions (4)
 
@@ -735,14 +735,6 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 - Magnet II
 - Magnet II (Power 3)
 
-### Mechanical Engineering (5)
-
-- Basquin Fatigue Power Law (S-N Curve)
-- Euler-Bernoulli Buckling (Beam Deflection)
-- Multibrot³ (Cubic)
-- Ramberg-Osgood Plastic Deformation (Malleability)
-- Torsional Twist (Angle of Twist)
-
 ### Mandelbrot Variants (26)
 
 - Burning Ship
@@ -771,6 +763,14 @@ ManpLab includes **325 unique fractals** organized into 40 categories. This comp
 - Tricorn (Mandelbar)
 - Unity
 - Wavy Mandelbrot
+
+### Mechanical Engineering (5)
+
+- Basquin Fatigue Power Law (S-N Curve)
+- Euler-Bernoulli Buckling (Beam Deflection)
+- Multibrot³ (Cubic)
+- Ramberg-Osgood Plastic Deformation (Malleability)
+- Torsional Twist (Angle of Twist)
 
 ### Multibrot Powers (8)
 
