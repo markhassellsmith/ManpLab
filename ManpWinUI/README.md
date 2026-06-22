@@ -20,7 +20,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 ### Key Features
 
 - ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
-- 🎨 **316 Fractal Types** - Extended from Paul's 246 originals with 70 new implementations ([See complete list →](#appendix-complete-fractal-catalog))
+- 🎨 **325 Fractal Types** - Extended from Paul's 246 originals with 79 new implementations ([See complete list →](#appendix-complete-fractal-catalog))
 - 🔬 **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
 - ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
 - 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
@@ -48,7 +48,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 │   • BLA Acceleration                    │
 │   • Arbitrary Precision (MPFR/QD)       │
 │   • 246 Original Fractal Types          │
-│   • Extended to 316 Types in ManpLab    │
+│   • Extended to 325 Types in ManpLab    │
 │   • Multithreaded Rendering             │
 └─────────────────────────────────────────┘
 ```
@@ -127,7 +127,7 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 ### Mathematics
 
 **Complex Dynamics & Numerical Analysis:**
-- 316 fractal types (246 from Paul de Leeuw, 70 new implementations): Mandelbrot, Julia sets, Newton fractals, exotic variants
+- 325 fractal types (246 from Paul de Leeuw, 79 new implementations): Mandelbrot, Julia sets, Newton fractals, exotic variants
 - Perturbation theory for studying chaotic systems at extreme scales
 - Deep zoom with magnifications exceeding 10^100
 - Arbitrary-precision arithmetic (MPFR, QD, DD libraries)
@@ -219,9 +219,9 @@ Metadata includes fractal family, mathematical parameters (center, zoom, iterati
 
 ---
 
-## Fractal Categories (34)
+## Fractal Categories (40)
 
-ManpLab features **316 unique fractals** across multiple specialized categories, from classic mathematical sets to cutting-edge physical simulations. [View complete catalog →](#appendix-complete-fractal-catalog)
+ManpLab features **325 unique fractals** across multiple specialized categories, from classic mathematical sets to cutting-edge physical simulations. [View complete catalog →](#appendix-complete-fractal-catalog)
 
 **Classic Fractals (30+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals, Barnsley systems
 
@@ -428,7 +428,7 @@ Contributions are welcome from students, educators, and researchers.
 
 **Paul de Leeuw (Paul the LionHeart)** - Native rendering engine with perturbation theory, BLA acceleration, and 246 original fractal implementations
 
-**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 70 new fractals, metadata system, and educational materials
+**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 79 new fractals, metadata system, and educational materials
 
 **GitHub Copilot** - Development assistance and documentation support
 
@@ -449,7 +449,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 **v1.0 (2026)** - Educational fork release
 - Modern WinUI 3 interface with MVVM architecture
 - Complete integration of Paul de Leeuw's native engine
-- Extended from 246 to 316 fractal types (70 new implementations)
+- Extended from 246 to 325 fractal types (79 new implementations)
 - Comprehensive fractal metadata system
 - Animation rendering with FFmpeg
 - Theme system and accessibility features
@@ -466,9 +466,9 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Appendix: Complete Fractal Catalog
 
-ManpLab includes **316 unique fractals** organized into multiple categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
+ManpLab includes **325 unique fractals** organized into 40 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
 
-**Note:** The detailed catalog below is based on a snapshot from May 2026 and is currently being updated to reflect all 316 fractals. The complete list is available in the application's Fractal Browser.
+**Note:** This catalog reflects the complete collection available in the Fractal Browser as of June 2026.
 
 ### Attractors (8)
 
@@ -532,6 +532,13 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Sprott B
 - Symmetric Icon
 
+### Chemical Engineering (4)
+
+- Arrhenius Kinetics Map (Thermal Activation)
+- Gray-Scott Autocatalysis (Reaction-Diffusion)
+- Lambda
+- Langmuir-Hinshelwood Isotherm
+
 ### Classic Fractals (5)
 
 - Mandelbrot
@@ -539,6 +546,11 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Manowar
 - Spider
 - Unity
+
+### Classical Polynomials (2)
+
+- Cotangent Mandelbrot
+- Sech Mandelbrot
 
 ### Complex Functions (8)
 
@@ -557,6 +569,19 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Julia DEM
 - Mandelbrot DEM
 - Tricorn DEM
+
+### Discrete Mathematics (3)
+
+- Chebyshev Polynomial T₃(z) = 4z³ - 3z + c
+- Inverse Combinatorial 1/z² + c
+- Mandelbrot (Distance Estimator)
+
+### Elliptic Functions (4)
+
+- Jacobi Elliptic sn
+- Julia - Golden Ratio
+- Weierstrass ζ-function
+- Weierstrass σ-function
 
 ### Exotic (8)
 
@@ -622,13 +647,13 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Mandel-Lambda Classic
 - Marks Mandelbrot (Placeholder)
 
-### IFS (5)
+### Iterated Function Systems (5)
 
-- Apollonius Gasket
-- Barnsley Fern
-- Pentagon IFS
-- Sierpinski IFS
-- Tree IFS
+- Dragon Curve (IFS)
+- Julia - Classic
+- Pentagon (IFS)
+- Sierpinski Triangle (IFS)
+- Tree (IFS)
 
 ### Julia Presets (23)
 
@@ -693,12 +718,30 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Lambda Tan
 - Lambda Tanh
 
+### L-Systems (7)
+
+- Dragon Curve
+- Fractal Plant
+- Hilbert Curve
+- Koch Curve
+- Magnet I Julia
+- Peano Curve
+- Sierpinski Triangle
+
 ### Magnet Fractals (4)
 
 - Magnet I
 - Magnet I (Power 3)
 - Magnet II
 - Magnet II (Power 3)
+
+### Mechanical Engineering (5)
+
+- Basquin Fatigue Power Law (S-N Curve)
+- Euler-Bernoulli Buckling (Beam Deflection)
+- Multibrot³ (Cubic)
+- Ramberg-Osgood Plastic Deformation (Malleability)
+- Torsional Twist (Angle of Twist)
 
 ### Mandelbrot Variants (26)
 
@@ -729,6 +772,17 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Spider
 - Unity
 
+### Multibrot Powers (8)
+
+- Buffalo (Polynomial)
+- Cubic Mandelbrot
+- Multibrot-10 (Decic)
+- Multibrot-4 (Quartic)
+- Multibrot-5 (Quintic)
+- Multibrot-6 (Sextic)
+- Multibrot-8 (Octic)
+- Tricorn (Polynomial)
+
 ### Newton's Method (8)
 
 - Newton (z³-1)
@@ -741,10 +795,10 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Newton Sine
 - Nova
 
-### Orbit Modification (4)
+### Orbit Statistics (4)
 
 - Angle Average
-- Average Distance
+- Circular Orbit Trap
 - Maximum Distance
 - Minimum Distance
 
@@ -755,13 +809,13 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Orbit Trap (Point)
 - Orbit Trap (Square)
 
-### Orbital Modifications (10)
+### Orbital Advanced (10)
 
-- Circular Orbit Trap
 - Cross Orbit Trap
 - Delta Magnitude Tracking
 - Orbit Angle Accumulation
 - Orbital Curvature Tracking
+- Phoenix Mandelbrot
 - Point-Line Orbit Trap
 - Smoothed Orbit (Running Average)
 - Stalks (Conditional)
@@ -780,27 +834,16 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 - Phoenix (Quartic)
 - Phoenix Sine
 
-### Polynomial (8)
+### Polynomial Variants (8)
 
 - Biomorph
-- Cubic Mandelbrot
+- Multibrot (Power 6)
 - Polynomial z⁴+z³+c
 - Polynomial z³-z+c
 - Quartic Mandelbrot
 - Quintic Mandelbrot
 - Rational R1
 - Sextic Mandelbrot
-
-### Polynomial Fractals (8)
-
-- Buffalo Fractal
-- Multibrot-10 (Decic)
-- Multibrot-3 (Cubic)
-- Multibrot-4 (Quartic)
-- Multibrot-5 (Quintic)
-- Multibrot-6 (Sextic)
-- Multibrot-8 (Octic)
-- Tricorn (Polynomial)
 
 ### Rational Function Fractals (8)
 
@@ -881,6 +924,6 @@ ManpLab includes **316 unique fractals** organized into multiple categories. Thi
 
 ---
 
-**Total Fractals:** 316 (70 new implementations beyond Paul de Leeuw's original 246)
+**Total Fractals:** 325 (79 new implementations beyond Paul de Leeuw's original 246)
 
-*This catalog represents ManpLab v1.0, spanning mathematical functions, physical systems, strange attractors, and experimental variations. For the complete up-to-date list, use the Fractal Browser in the application.*
+*This catalog represents ManpLab v1.0, spanning mathematical functions, physical systems, strange attractors, and experimental variations.*
