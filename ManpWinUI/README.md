@@ -11,6 +11,12 @@
 
 ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exceptional fractal rendering engine - featuring perturbation theory, BLA acceleration, and arbitrary-precision arithmetic for extreme deep zoom capabilities (magnification > 10^100).
 
+## Application Screenshot
+
+![ManpLab Application Screenshot](Documentation/images/ManpLab-Application-Screenshot.png)
+
+*ManpLab Application - Dark Theme - Screenshot (Above)*
+
 ### Key Features
 
 - ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
