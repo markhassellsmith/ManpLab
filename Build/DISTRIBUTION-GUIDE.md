@@ -141,7 +141,7 @@ A modern WinUI 3 fractal explorer powered by Paul de Leeuw's production-grade re
 
 ### Features
 
-- 🎨 300 fractal types (246 original + 54 new)
+- 🎨 316 fractal types (246 original + 70 new)
 - 🔬 Deep zoom with perturbation theory (10^100+ magnification)
 - ⚡ BLA acceleration for extreme performance
 - 🎬 Animation rendering with FFmpeg
@@ -153,7 +153,7 @@ A modern WinUI 3 fractal explorer powered by Paul de Leeuw's production-grade re
 - Initial educational fork release
 - Modern WinUI 3 interface
 - Complete integration of Paul de Leeuw's native engine
-- Extended from 246 to 300 fractal types
+- Extended from 246 to 316 fractal types
 - Comprehensive fractal metadata system
 - Self-contained portable distribution
 
@@ -190,7 +190,7 @@ Subject: ManpLab Fractal Explorer - Download Instructions
 Hello,
 
 ManpLab is now available for download. This is an educational fractal 
-exploration tool with 300 fractal types and deep zoom capabilities.
+exploration tool with 316 fractal types and deep zoom capabilities.
 
 DOWNLOAD (Recommended):
 1. Download: ManpLab-v1.0.0-Windows-x64-Portable.zip

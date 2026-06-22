@@ -15,7 +15,7 @@ This checks that everything is set up correctly.
 Open and skim: **`docs\FRACTAL_AUDIT_SUMMARY.md`**
 
 Key points:
-- 300 total fractals (don't panic!)
+- 316 total fractals (don't panic!)
 - Focus on **Tier 1** first (30 fractals)
 - Audit 5-10 at a time
 - Sessions should be 30-60 minutes
@@ -172,7 +172,7 @@ Update these in `docs\FRACTAL_AUDIT_SUMMARY.md` every few sessions.
 
 ## ❓ FAQ
 
-**Q: Do I have to audit all 300 fractals?**  
+**Q: Do I have to audit all 316 fractals?**
 A: No! Start with Tier 1 (30 fractals). That's the most important subset.
 
 **Q: How long will this take?**  
@@ -202,4 +202,4 @@ A: Yes! Split by category or tier. Just coordinate to avoid conflicts.
 
 ---
 
-**Remember:** Progress > Perfection. Better to audit 5 fractals well than to get overwhelmed by 300! 🎯
+**Remember:** Progress > Perfection. Better to audit 5 fractals well than to get overwhelmed by 316! 🎯
