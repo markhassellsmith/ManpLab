@@ -344,7 +344,7 @@ Before releasing, test:
 - [ ] Works without admin rights
 
 ### Both Versions
-- [ ] All 300 fractals load
+- [ ] All 316 fractals load
 - [ ] Rendering works correctly
 - [ ] Theme switching works
 - [ ] Color palettes apply

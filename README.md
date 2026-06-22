@@ -1,4 +1,4 @@
-﻿# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
+# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -21,7 +21,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 ### Key Features
 
 - ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
-- 🎨 **300 Fractal Types** - Extended from Paul's 246 originals with 54 new implementations
+- 🎨 **316 Fractal Types** - Extended from Paul's 246 originals with 70 new implementations
 - 🔬 **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
 - ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
 - 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
@@ -48,7 +48,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 │   • BLA Acceleration                    │
 │   • Arbitrary Precision (MPFR/QD)       │
 │   • 246 Original Fractal Types          │
-│   • Extended to 300 Types in ManpLab    │
+│   • Extended to 316 Types in ManpLab    │
 │   • Multithreaded Rendering             │
 └─────────────────────────────────────────┘
 ```
@@ -127,7 +127,7 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 ### Mathematics
 
 **Complex Dynamics & Numerical Analysis:**
-- 300 fractal types (246 from Paul de Leeuw, 54 new implementations): Mandelbrot, Julia sets, Newton fractals, exotic variants
+- 316 fractal types (246 from Paul de Leeuw, 70 new implementations): Mandelbrot, Julia sets, Newton fractals, exotic variants
 - Perturbation theory for studying chaotic systems at extreme scales
 - Deep zoom with magnifications exceeding 10^100
 - Arbitrary-precision arithmetic (MPFR, QD, DD libraries)
@@ -207,7 +207,7 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 
 ---
 
-## Fractal Categories (300 Types)
+## Fractal Categories (316 Types)
 
 **Classic Fractals (20+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals
 
@@ -416,7 +416,7 @@ Contributions are welcome from students, educators, and researchers.
 
 **Paul de Leeuw (Paul the LionHeart)** - Native rendering engine with perturbation theory, BLA acceleration, and 246 original fractal implementations
 
-**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 54 new fractals, metadata system, and educational materials
+**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 70 new fractals, metadata system, and educational materials
 
 **GitHub Copilot** - Development assistance and documentation support
 
@@ -437,7 +437,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 **v1.0 (2026)** - Educational fork release
 - Modern WinUI 3 interface with MVVM architecture
 - Complete integration of Paul de Leeuw's native engine
-- Extended from 246 to 300 fractal types (54 new implementations)
+- Extended from 246 to 316 fractal types (70 new implementations)
 - Comprehensive fractal metadata system
 - Animation rendering with FFmpeg
 - Theme system and accessibility features

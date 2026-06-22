@@ -17,7 +17,7 @@
 
 ## Overview
 
-This project contains **300 fractals** organized into multiple categories. Rather than auditing all at once, we use a **tiered priority system** and **category-based approach**.
+This project contains **316 fractals** organized into multiple categories. Rather than auditing all at once, we use a **tiered priority system** and **category-based approach**.
 
 ---
 

@@ -9,7 +9,7 @@
 
 **Actual native codebase contains 279 unique fractals** (after deduplication of aliases like "Logarithm"/"Logarithmic" and "PowerTower"/"ZToTheZ")
 
-**Original tactical plan estimated: 300 fractals**  
+**Original tactical plan estimated: 316 fractals (actual count from InitialConditions.csv)**
 **Actual count: 279 fractals**  
 **Difference: -21 fractals (overestimated)**
 

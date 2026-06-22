@@ -3,10 +3,10 @@
 ## Executive Summary
 
 **Current State (May 2026):**
-ManpLab has **300 registered fractals** with a **dual parameter system**:
+ManpLab has **316 registered fractals** with a **dual parameter system**:
 
 1. **🔧 LEGACY**: Hard-coded Parameter UI - Simple, working, but not scalable
-2. **🆕 FLEXIBLE**: Data-driven Parameter System - Powerful, but only 5% complete (~14/300 fractals)
+2. **🆕 FLEXIBLE**: Data-driven Parameter System - Powerful, but only 5% complete (~14/316 fractals)
 
 **The Core Question:** Is completing the flexible system worth 3-4 weeks of effort?
 
@@ -16,7 +16,7 @@ ManpLab has **300 registered fractals** with a **dual parameter system**:
 
 ### What Problem Does It Solve?
 
-The legacy system treats all 300 fractals as if they have identical parameters. The flexible system enables **fractal-specific configuration** with rich metadata.
+The legacy system treats all 316 fractals as if they have identical parameters. The flexible system enables **fractal-specific configuration** with rich metadata.
 
 **Example: Mandelbrot vs Newton Fractal**
 

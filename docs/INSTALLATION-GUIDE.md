@@ -92,7 +92,7 @@ The warning simply means Microsoft hasn't verified the publisher - it does **not
 After installation (either method), when you first launch ManpLab:
 
 1. **Initial Load**: The app may take 10-15 seconds to load on first run
-2. **Fractal Browser**: Opens with 300 fractals organized by category
+2. **Fractal Browser**: Opens with 316 fractals organized by category
 3. **Select a Fractal**: Click any fractal to render it
 4. **Explore**: Use mouse to zoom, arrow keys to pan
 
@@ -101,7 +101,7 @@ After installation (either method), when you first launch ManpLab:
 - **🖱️ Mouse**: Click and drag to pan, scroll to zoom
 - **⌨️ Keyboard**: Arrow keys to pan, +/- to zoom, Spacebar to reset
 - **🎨 Themes**: Try Light, Dark, or Ocean Blue themes from Settings
-- **📚 Browser**: Browse 300 fractals with descriptions and formulas
+- **📚 Browser**: Browse 316 fractals with descriptions and formulas
 - **🎬 Animation**: Create MP4 videos of fractal zooms
 
 Full keyboard shortcuts: Press `F1` or see [KEYBOARD_SHORTCUTS.md](ManpWinUI/KEYBOARD_SHORTCUTS.md)

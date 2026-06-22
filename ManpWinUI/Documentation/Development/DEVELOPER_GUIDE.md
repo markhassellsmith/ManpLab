@@ -480,4 +480,4 @@ When extending the codebase:
 
 ---
 
-*Last updated: May 2026 - Covers 300 fractal milestone, animation system, theme fixes, and complete architecture*
+*Last updated: June 2026 - Covers 316 fractal milestone, animation system, theme fixes, and complete architecture*

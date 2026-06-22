@@ -3,7 +3,7 @@
 ## Executive Summary - CORRECTED
 
 **Current Reality (May 2026):**
-ManpLab has **300 registered fractals** with a **dual parameter system** that was never fully migrated:
+ManpLab has **316 registered fractals** with a **dual parameter system** that was never fully migrated:
 
 1. **🆕 NEW: Flexible Parameter System** - Modern, data-driven architecture (Task 1-7) - **INCOMPLETE**
 2. **🔧 LEGACY: Hard-coded Parameter UI** - Original Week 6 implementation - **STILL IN USE**
@@ -35,17 +35,17 @@ ManpLab has **300 registered fractals** with a **dual parameter system** that wa
 - ✅ Auto-save/restore parameter values via LocalSettings
 
 **What Was NOT Completed:**
-- ❌ Parameter templates for all 300 fractals (only ~14 defined)
+- ❌ Parameter templates for all 316 fractals (only ~14 defined)
 - ❌ Removal of legacy hard-coded system
 - ❌ Toolbar updated to use flexible system
 - ❌ Sync bridge removed (still needed for dual system)
 - ❌ Testing with all fractal types
 
 **Why It Stopped:**
-1. **Scope explosion**: 14 fractals → 280 fractals → 300 fractals
+1. **Scope explosion**: 14 fractals → 280 fractals → 316 fractals
 2. **Priority shift**: Deep Zoom integration became urgent
 3. **Working code trap**: Legacy system works fine, no immediate pressure to migrate
-4. **Complexity underestimated**: Creating parameter templates for 300 unique fractals is non-trivial
+4. **Complexity underestimated**: Creating parameter templates for 316 unique fractals is non-trivial
 
 ---
 
@@ -56,7 +56,7 @@ ManpLab has **300 registered fractals** with a **dual parameter system** that wa
 **Legacy System (Active):**
 - ✅ Toolbar/Settings Flyout binds to `MainViewModel` properties
 - ✅ Parameters Tab falls back to legacy when flexible system has no template
-- ✅ All 300 fractals **can** render (using hard-coded defaults)
+- ✅ All 316 fractals **can** render (using hard-coded defaults)
 - ✅ Settings persist via flexible system (even if UI uses legacy)
 
 **Flexible System (Partial):**
@@ -67,7 +67,7 @@ ManpLab has **300 registered fractals** with a **dual parameter system** that wa
 
 ### What's Broken/Confusing
 
-1. **Incomplete Coverage:** Only ~14/300 fractals have parameter templates
+1. **Incomplete Coverage:** Only ~14/316 fractals have parameter templates
 2. **Code Duplication:** Same parameters defined twice (legacy + flexible)
 3. **Confusing UI:** Parameters appear in toolbar AND Parameters Tab
 4. **Technical Debt:** Sync bridge adds complexity and potential bugs
@@ -130,7 +130,7 @@ Display with category headers, tooltips, constraints
 - ✅ Per-fractal parameter sets
 - ✅ Rich metadata (min/max, units, descriptions, display order)
 - ✅ Category-based organization
-- ❌ **Only ~14 out of 300 fractals have templates defined**
+- ❌ **Only ~14 out of 316 fractals have templates defined**
 - ❌ **Incomplete implementation - never finished**
 
 ---
@@ -142,7 +142,7 @@ The flexible parameter system **was never completed**. Here's what actually happ
 ### Original Plan (Tasks 1-7)
 1. ✅ Build flexible parameter architecture
 2. ✅ Create parameter templates for initial fractals
-3. ❌ **STOPPED HERE** - Create templates for all 300 fractals
+3. ❌ **STOPPED HERE** - Create templates for all 316 fractals
 4. ❌ Remove legacy system
 5. ❌ Update toolbar to use flexible system
 6. ❌ Final testing and cleanup
@@ -152,8 +152,8 @@ The flexible parameter system **was never completed**. Here's what actually happ
 **1. Fractal Library Explosion**
 - Original scope: 14 fractals (Week 6)
 - Task 1-7 scope: 240+ fractals
-- Actual registry: **300 fractals** (as of January 2026)
-- Creating 300 unique parameter templates is a **massive** undertaking
+- Actual registry: **316 fractals** (as of June 2026)
+- Creating 316 unique parameter templates is a **massive** undertaking
 
 **2. Priority Shifts**
 - Deep Zoom integration became urgent (Phase 3)
@@ -170,7 +170,7 @@ Each fractal needs:
 - Unit specifications
 - Testing with actual rendering
 
-**Estimated time for 300 fractals:** 3-4 weeks of focused work
+**Estimated time for 316 fractals:** 3-4 weeks of focused work
 
 **4. Working Code Trap**
 - Legacy system works perfectly for current UI
@@ -189,7 +189,7 @@ You're right to question this - **the architecture was supposed to be finished**
 **Effort:** High
 
 **Work Required:**
-1. **Create parameter templates for all 300 fractals** (2-3 weeks)
+1. **Create parameter templates for all 316 fractals** (2-3 weeks)
    - Research default values for each fractal
    - Define min/max constraints
    - Organize into categories
@@ -205,7 +205,7 @@ You're right to question this - **the architecture was supposed to be finished**
    - Single source of truth: `FractalParameterSet`
 
 4. **Testing** (2-3 days)
-   - Test all 300 fractals
+   - Test all 316 fractals
    - Verify parameter persistence
    - Validate toolbar and Parameters tab sync
 
@@ -325,7 +325,7 @@ You're right to question this - **the architecture was supposed to be finished**
 4. Remove sync bridge
 
 ### Phase 3: Testing & Polish (2-3 days)
-1. Test all 300 fractals
+1. Test all 316 fractals
 2. Fix any missing/incorrect parameters
 3. Verify persistence
 4. Update documentation
@@ -335,9 +335,9 @@ You're right to question this - **the architecture was supposed to be finished**
 ## Summary
 
 **Current Reality:**
-- ✅ 300 fractals registered and working
+- ✅ 316 fractals registered and working
 - ✅ Legacy parameter system fully functional
-- ⚠️ Flexible parameter system **incomplete** (~14/300 fractals)
+- ⚠️ Flexible parameter system **incomplete** (~14/316 fractals)
 - ⚠️ Migration **abandoned**, not "in progress"
 - ⚠️ Dual system is **technical debt**, not intentional design
 
@@ -351,4 +351,4 @@ Either commit to completing the migration (3-4 weeks) or formally document that 
 
 **Document updated:** May 2026  
 **Status:** Accurate reflection of current state  
-**Fractal count:** 300 (verified from `FractalRegistry.cpp` line 233)
+**Fractal count:** 316 (verified from InitialConditions.csv)
