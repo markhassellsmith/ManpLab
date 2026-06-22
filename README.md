@@ -207,7 +207,7 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 
 ---
 
-## Fractal Categories (316 Types)
+## Fractal Categories (34 Types)
 
 **Classic Fractals (20+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals
 
@@ -454,7 +454,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Appendix: Complete Fractal Catalog
 
-ManpLab includes **316 unique fractals** organized into 42 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
+ManpLab includes **316 unique fractals** organized into 34 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
 
 ### 3D Attractors (8)
 
@@ -849,7 +849,7 @@ ManpLab includes **316 unique fractals** organized into 42 categories. This comp
 
 ---
 
-**Categories:** 42 families | **Total Fractals:** 316
+**Categories:** 34 families | **Total Fractals:** 316
 
 *This catalog represents the current state of ManpLab v1.0, combining Paul de Leeuw's original 246 fractals with 70 new implementations spanning mathematical functions, physical systems, and experimental variations.*
 
