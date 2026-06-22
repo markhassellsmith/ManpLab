@@ -219,7 +219,7 @@ Metadata includes fractal family, mathematical parameters (center, zoom, iterati
 
 ---
 
-## Fractal Categories
+## Fractal Categories (34)
 
 ManpLab features **316 unique fractals** across multiple specialized categories, from classic mathematical sets to cutting-edge physical simulations. [View complete catalog →](#appendix-complete-fractal-catalog)
 
