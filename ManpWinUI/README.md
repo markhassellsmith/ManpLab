@@ -122,92 +122,44 @@ All dependencies are included. The project builds without additional configurati
 
 ## Educational Applications
 
-ManpLab serves as a comprehensive platform for studying fractals, numerical methods, and computational mathematics across multiple disciplines, combining modern software engineering with advanced mathematical algorithms.
+ManpLab serves as a comprehensive platform for studying fractals, numerical methods, and computational mathematics:
 
 ### Mathematics
-
-**Complex Dynamics & Numerical Analysis:**
-- 324 fractal types (246 from Paul de Leeuw, 78 new implementations): Mandelbrot, Julia sets, Newton fractals, exotic variants
-- Perturbation theory for studying chaotic systems at extreme scales
-- Deep zoom with magnifications exceeding 10^100
+- Complex dynamics: 324 fractal types including Mandelbrot, Julia sets, Newton fractals
+- Perturbation theory and BLA series approximation
 - Arbitrary-precision arithmetic (MPFR, QD, DD libraries)
-- Numerical stability demonstrations and precision management
-
-**Advanced Algorithms:**
-- BLA (Bilinear Approximation) series approximation
-- Perturbation algorithm with reference orbits
-- Newton-Raphson root finding for fractal boundaries
-- Analytical derivative calculations for distance estimation
+- Newton-Raphson root finding and analytical derivatives
 
 ### Computer Science
-
-**Modern Software Architecture:**
-- WinUI 3 application with MVVM pattern
-- C++/WinRT native-managed interop
+- WinUI 3 with MVVM pattern and C++/WinRT interop
 - Large-scale C++ engine (156 source files, 6 CMake subprojects)
-- Template metaprogramming with generic numeric types
-- Service-oriented architecture with dependency injection
-
-**Performance Engineering:**
-- Multithreaded rendering engine (utilizes all CPU cores)
-- Cache optimization techniques
-- Memory management with smart pointers
-- Vectorization-ready code structure
-- Progressive rendering with cancellation support
+- Multithreaded rendering with progressive cancellation
+- Template metaprogramming and cache optimization
 
 ### Physics & Engineering
-
-**Applications Across Disciplines:**
 - **Electrical:** Chua's circuit, fractal antennas, chaos-based encryption
 - **Mechanical:** Turbulent flow, nonlinear oscillators, fracture mechanics
-- **General:** Strange attractors (Lorenz, Rössler, Hénon), bifurcation analysis, orbit traps, Lyapunov exponents
+- **General:** Strange attractors (Lorenz, Rössler, Hénon), bifurcation analysis, Lyapunov exponents
 
 ---
 
 ## Technical Features
 
-### Native C++ Rendering Engine (Paul de Leeuw's Implementation)
+### Native C++ Rendering Engine
+- **Deep Zoom:** Perturbation theory, BLA series expansion, arbitrary precision (MPFR), FloatExp extended exponent range
+- **Rendering:** Multiple modes (escape-time, slope/derivative, distance estimation), orbit traps, biomorph coloring, 24-bit true color, bump mapping
+- **Performance:** Multithreaded (all CPU cores), boundary tracing, progressive rendering, dynamic task distribution
+- **Formula System:** Custom scripting language, VM bytecode execution, 100+ functions, Fractint compatibility
 
-#### Deep Zoom Technology
-- Perturbation theory for efficient extreme magnification
-- BLA series expansion to skip hundreds of iterations
-- Arbitrary precision (MPFR) up to thousands of decimal places
-- FloatExp extended exponent range for ultra-deep zooms
-- Automatic precision scaling based on zoom level
-
-#### Rendering Capabilities
-- Multiple render modes: escape-time, slope/derivative shading, distance estimation
-- Potential field, orbit trap, and biomorph coloring
-- 24-bit true color with smooth gradients
-- Bump mapping and animated color cycling
-- Fractint .map palette support
-
-#### Performance Optimizations
-- Multithreaded engine utilizing all CPU cores
-- Solid guessing and boundary tracing algorithms
-- Progressive rendering with cancellation
-- Dynamic task distribution
-- Memory-mapped file support for large datasets
-
-#### Formula System
-- Custom scripting language for fractal definitions
-- Virtual machine bytecode execution
-- 100+ built-in mathematical functions
-- Fractint formula compatibility
-
-### Modern WinUI 3 Interface
-
-- Responsive, touch-friendly design
+### WinUI 3 Interface
 - MVVM architecture with data binding
 - Theme support (Light, Dark, Ocean Blue, System)
-- Real-time parameter updates
 - Fractal metadata browser with favorites
 - Animation timeline editor
-- Keyboard shortcuts for power users
 
 ---
 
-## Fractal Categories (34 Types)
+## Fractal Categories (39 Categories)
 
 **Classic Fractals (20+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals
 
@@ -312,48 +264,23 @@ ManpLab/
 
 ## Build Instructions
 
-### Visual Studio (Recommended)
+**Requirements:** Visual Studio 2022, C++ and .NET workloads, .NET 10 SDK
 
-1. Install Visual Studio 2022 with:
-   - "Desktop development with C++" workload
-   - ".NET desktop development" workload
-   - .NET 10 SDK
-2. Clone repository: `git clone https://github.com/markhassellsmith/ManpLab.git`
-3. Open `ManpLab.sln`
-4. Build (F5) - ManpWinUI will be set as startup project
+1. Clone: `git clone https://github.com/markhassellsmith/ManpLab.git`
+2. Open `ManpLab.sln` in Visual Studio 2022
+3. Build (F5)
 
-### Command Line
-
-```bash
-git clone https://github.com/markhassellsmith/ManpLab.git
-cd ManpLab
-# Build native engine
-cmake -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Release
-# Build WinUI app
-dotnet build ManpWinUI/ManpWinUI.csproj -c Release
-```
+All dependencies included - builds without additional configuration.
 
 ---
 
 ## Troubleshooting
 
-**Build Issues:**
-- Ensure C++ and .NET workloads are installed
-- Verify .NET 10 SDK is present
-- Clean and rebuild if linker errors occur
-- Check that all NuGet packages restore successfully
+**Build Issues:** Ensure C++ and .NET workloads installed, verify .NET 10 SDK, clean and rebuild if needed
 
-**Runtime Issues:**
-- Use Release build for production (Debug is significantly slower)
-- Ensure native dependencies (MPFR, GMP) are in output directory
-- Check Windows 10/11 is up to date for WinUI 3 support
+**Runtime:** Use Release build (Debug is slower), ensure dependencies (MPFR, GMP) in output directory
 
-**Performance:**
-- Deep zoom automatically enables BLA and perturbation theory
-- Reduce max iterations for initial exploration
-- Multithreading is automatic (uses all CPU cores)
-- Use "Progressive rendering" for interactive feedback
+**Performance:** Deep zoom auto-enables BLA/perturbation, reduce iterations for exploration, use progressive rendering
 
 ---
 
@@ -434,27 +361,15 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Version History
 
-**v1.0 (2026)** - Educational fork release
-- Modern WinUI 3 interface with MVVM architecture
-- Complete integration of Paul de Leeuw's native engine
-- Extended from 246 to 324 fractal types (78 new implementations)
-- Comprehensive fractal metadata system
-- Animation rendering with FFmpeg
-- Theme system and accessibility features
-- Comprehensive documentation
-- Self-contained dependency management
+**v1.0 (2026)** - Educational fork with WinUI 3 interface, 324 fractal types (extended from Paul de Leeuw's 246), metadata system, animation rendering, theme system
 
-**Original ManpWIN** - Paul de Leeuw (multiple versions 1990s-2010s)
-- Deep zoom with perturbation theory
-- BLA acceleration algorithms
-- Formula parser and 246 fractal implementations
-- Arbitrary-precision arithmetic integration
+**Original ManpWIN** - Paul de Leeuw (1990s-2010s) - Deep zoom, perturbation theory, BLA acceleration, 246 fractals, arbitrary-precision arithmetic
 
 ---
 
 ## Appendix: Complete Fractal Catalog
 
-ManpLab includes **324 unique fractals** organized into 34 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
+ManpLab includes **324 unique fractals** organized into 39 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
 
 ### Attractors (7)
 
@@ -897,7 +812,7 @@ ManpLab includes **324 unique fractals** organized into 34 categories. This comp
 
 ---
 
-**Categories:** 34 families | **Total Fractals:** 324
+**Categories:** 39 families | **Total Fractals:** 324
 
-*This catalog represents the current state of ManpLab v1.0, combining Paul de Leeuw's original 246 fractals with 70 new implementations spanning mathematical functions, physical systems, and experimental variations.*
+*This catalog represents the current state of ManpLab v1.0, combining Paul de Leeuw's original 246 fractals with 78 new implementations spanning mathematical functions, physical systems, and experimental variations.*
 
