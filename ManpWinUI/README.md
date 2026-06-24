@@ -1,4 +1,4 @@
-# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
+# ManpLab - Modern Fractal Explorer - Release 1.5.1 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -14,7 +14,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 ### Application Screenshot
 ![ManpLab Application Screenshot](ManpWinUI/Documentation/images/ManpLab-Application-Screenshot.png)
 
-*ManpLab Application - Dark theme- Screenshot (above)*
+*ManpLab Application - Dark theme*
 
 
 
@@ -30,8 +30,6 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 - 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
 - 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
 - ⌨️ [Full Keyboard Shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
-
-🔗 **[Get Started with ManpWinUI →](ManpWinUI/README.md)**
 
 ### Architecture
 
@@ -62,22 +60,22 @@ This educational fork makes Paul DeLeeuw's well-engineered rendering technology 
 
 ![Mandelbrot Set rendered in the Spectrum palette](ManpWinUI/Documentation/images/Mandelbrot-in-Spectrum-palette.png)
 
-*Mandelbrot Set rendered in the Spectrum palette (above)*
+*Mandelbrot Set rendered in the Spectrum palette*
 
 
 ![Classic Julia Set rendered in the Fire palette](ManpWinUI/Documentation/images/JuliaClassic-in-Fire-palette.png)
 
-*Classic Julia Set rendered in the Fire palette (above)*
+*Classic Julia Set rendered in the Fire palette*
 
 
 ![Zoomed Tetrate rendered in the Psychedelic palette](ManpWinUI/Documentation/images/Tetrate-zoomed-in-Psychedelic-palette.png)
 
-*Zoomed Tetrate rendered in the Psychedelic palette (above)*
+*Zoomed Tetrate rendered in the Psychedelic palette*
 
 
 ![2-Dimensional Hailstone Sequence with segments and point labels](ManpWinUI/Documentation/images/Hailstone-sequence.png)
 
-*2-Dimensional Hailstone Sequence with segments and point labels (above)*
+*2-Dimensional Hailstone Sequence with segments and point labels*
 
 
 ---
@@ -361,7 +359,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Version History
 
-**v1.0 (2026)** - Educational fork with WinUI 3 interface, 324 fractal types (extended from Paul de Leeuw's 246), metadata system, animation rendering, theme system
+**v1.5.1 (2026)** - Educational fork with WinUI 3 interface, 324 fractal types (extended from Paul de Leeuw's 246), metadata system, animation rendering, theme system
 
 **Original ManpWIN** - Paul de Leeuw (1990s-2010s) - Deep zoom, perturbation theory, BLA acceleration, 246 fractals, arbitrary-precision arithmetic
 
@@ -438,7 +436,7 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 
 - Legendre Polynomial
 
-### Complex Functions (8)
+### Complex Functions (10)
 
 - 1/sin(z)²
 - cos(z)/tan(z)
