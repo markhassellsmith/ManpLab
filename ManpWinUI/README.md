@@ -746,7 +746,7 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 - Buddhabrot
 - Hailstone Sequence
 - Lyapunov
-- Nebulabrot (Dramatic RGB)
+- Nebulabrot
 - NumFractal
 - Tetration (Classic)
 
@@ -812,5 +812,5 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 
 **Categories:** 39 families | **Total Fractals:** 324
 
-*This catalog represents the current state of ManpLab v1.0, combining Paul de Leeuw's original 246 fractals with 78 new implementations spanning mathematical functions, physical systems, and experimental variations.*
+*This catalog represents the current state of ManpLab v1.5.1, combining Paul de Leeuw's original 246 fractals with 78 new implementations spanning mathematical functions, physical systems, and experimental variations.*
 
