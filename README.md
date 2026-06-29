@@ -1,4 +1,4 @@
-# ManpLab - Modern Fractal Explorer - Release 1.0 (Educational Fork)
+# ManpLab - Modern Fractal Explorer - Release 1.5.1 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -14,14 +14,14 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 ### Application Screenshot
 ![ManpLab Application Screenshot](ManpWinUI/Documentation/images/ManpLab-Application-Screenshot.png)
 
-*ManpLab Application - Dark theme- Screenshot (above)*
+*ManpLab Application - Dark theme*
 
 
 
 ### Key Features
 
 - ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
-- 🎨 **316 Fractal Types** - Extended from Paul's 246 originals with 70 new implementations
+- 🎨 **324 Fractal Types** - Extended from Paul's 246 originals with 78 new implementations
 - 🔬 **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
 - ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
 - 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
@@ -30,8 +30,6 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 - 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
 - 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
 - ⌨️ [Full Keyboard Shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
-
-🔗 **[Get Started with ManpWinUI →](ManpWinUI/README.md)**
 
 ### Architecture
 
@@ -48,7 +46,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 │   • BLA Acceleration                    │
 │   • Arbitrary Precision (MPFR/QD)       │
 │   • 246 Original Fractal Types          │
-│   • Extended to 316 Types in ManpLab    │
+│   • Extended to 324 Types in ManpLab    │
 │   • Multithreaded Rendering             │
 └─────────────────────────────────────────┘
 ```
@@ -62,22 +60,22 @@ This educational fork makes Paul DeLeeuw's well-engineered rendering technology 
 
 ![Mandelbrot Set rendered in the Spectrum palette](ManpWinUI/Documentation/images/Mandelbrot-in-Spectrum-palette.png)
 
-*Mandelbrot Set rendered in the Spectrum palette (above)*
+*Mandelbrot Set rendered in the Spectrum palette*
 
 
 ![Classic Julia Set rendered in the Fire palette](ManpWinUI/Documentation/images/JuliaClassic-in-Fire-palette.png)
 
-*Classic Julia Set rendered in the Fire palette (above)*
+*Classic Julia Set rendered in the Fire palette*
 
 
 ![Zoomed Tetrate rendered in the Psychedelic palette](ManpWinUI/Documentation/images/Tetrate-zoomed-in-Psychedelic-palette.png)
 
-*Zoomed Tetrate rendered in the Psychedelic palette (above)*
+*Zoomed Tetrate rendered in the Psychedelic palette*
 
 
 ![2-Dimensional Hailstone Sequence with segments and point labels](ManpWinUI/Documentation/images/Hailstone-sequence.png)
 
-*2-Dimensional Hailstone Sequence with segments and point labels (above)*
+*2-Dimensional Hailstone Sequence with segments and point labels*
 
 
 ---
@@ -122,92 +120,44 @@ All dependencies are included. The project builds without additional configurati
 
 ## Educational Applications
 
-ManpLab serves as a comprehensive platform for studying fractals, numerical methods, and computational mathematics across multiple disciplines, combining modern software engineering with advanced mathematical algorithms.
+ManpLab serves as a comprehensive platform for studying fractals, numerical methods, and computational mathematics:
 
 ### Mathematics
-
-**Complex Dynamics & Numerical Analysis:**
-- 316 fractal types (246 from Paul de Leeuw, 70 new implementations): Mandelbrot, Julia sets, Newton fractals, exotic variants
-- Perturbation theory for studying chaotic systems at extreme scales
-- Deep zoom with magnifications exceeding 10^100
+- Complex dynamics: 324 fractal types including Mandelbrot, Julia sets, Newton fractals
+- Perturbation theory and BLA series approximation
 - Arbitrary-precision arithmetic (MPFR, QD, DD libraries)
-- Numerical stability demonstrations and precision management
-
-**Advanced Algorithms:**
-- BLA (Bilinear Approximation) series approximation
-- Perturbation algorithm with reference orbits
-- Newton-Raphson root finding for fractal boundaries
-- Analytical derivative calculations for distance estimation
+- Newton-Raphson root finding and analytical derivatives
 
 ### Computer Science
-
-**Modern Software Architecture:**
-- WinUI 3 application with MVVM pattern
-- C++/WinRT native-managed interop
+- WinUI 3 with MVVM pattern and C++/WinRT interop
 - Large-scale C++ engine (156 source files, 6 CMake subprojects)
-- Template metaprogramming with generic numeric types
-- Service-oriented architecture with dependency injection
-
-**Performance Engineering:**
-- Multithreaded rendering engine (utilizes all CPU cores)
-- Cache optimization techniques
-- Memory management with smart pointers
-- Vectorization-ready code structure
-- Progressive rendering with cancellation support
+- Multithreaded rendering with progressive cancellation
+- Template metaprogramming and cache optimization
 
 ### Physics & Engineering
-
-**Applications Across Disciplines:**
 - **Electrical:** Chua's circuit, fractal antennas, chaos-based encryption
 - **Mechanical:** Turbulent flow, nonlinear oscillators, fracture mechanics
-- **General:** Strange attractors (Lorenz, Rössler, Hénon), bifurcation analysis, orbit traps, Lyapunov exponents
+- **General:** Strange attractors (Lorenz, Rössler, Hénon), bifurcation analysis, Lyapunov exponents
 
 ---
 
 ## Technical Features
 
-### Native C++ Rendering Engine (Paul de Leeuw's Implementation)
+### Native C++ Rendering Engine
+- **Deep Zoom:** Perturbation theory, BLA series expansion, arbitrary precision (MPFR), FloatExp extended exponent range
+- **Rendering:** Multiple modes (escape-time, slope/derivative, distance estimation), orbit traps, biomorph coloring, 24-bit true color, bump mapping
+- **Performance:** Multithreaded (all CPU cores), boundary tracing, progressive rendering, dynamic task distribution
+- **Formula System:** Custom scripting language, VM bytecode execution, 100+ functions, Fractint compatibility
 
-#### Deep Zoom Technology
-- Perturbation theory for efficient extreme magnification
-- BLA series expansion to skip hundreds of iterations
-- Arbitrary precision (MPFR) up to thousands of decimal places
-- FloatExp extended exponent range for ultra-deep zooms
-- Automatic precision scaling based on zoom level
-
-#### Rendering Capabilities
-- Multiple render modes: escape-time, slope/derivative shading, distance estimation
-- Potential field, orbit trap, and biomorph coloring
-- 24-bit true color with smooth gradients
-- Bump mapping and animated color cycling
-- Fractint .map palette support
-
-#### Performance Optimizations
-- Multithreaded engine utilizing all CPU cores
-- Solid guessing and boundary tracing algorithms
-- Progressive rendering with cancellation
-- Dynamic task distribution
-- Memory-mapped file support for large datasets
-
-#### Formula System
-- Custom scripting language for fractal definitions
-- Virtual machine bytecode execution
-- 100+ built-in mathematical functions
-- Fractint formula compatibility
-
-### Modern WinUI 3 Interface
-
-- Responsive, touch-friendly design
+### WinUI 3 Interface
 - MVVM architecture with data binding
 - Theme support (Light, Dark, Ocean Blue, System)
-- Real-time parameter updates
 - Fractal metadata browser with favorites
 - Animation timeline editor
-- Keyboard shortcuts for power users
 
 ---
 
-## Fractal Categories (34 Types)
+## Fractal Categories (39 Categories)
 
 **Classic Fractals (20+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals
 
@@ -312,48 +262,23 @@ ManpLab/
 
 ## Build Instructions
 
-### Visual Studio (Recommended)
+**Requirements:** Visual Studio 2022, C++ and .NET workloads, .NET 10 SDK
 
-1. Install Visual Studio 2022 with:
-   - "Desktop development with C++" workload
-   - ".NET desktop development" workload
-   - .NET 10 SDK
-2. Clone repository: `git clone https://github.com/markhassellsmith/ManpLab.git`
-3. Open `ManpLab.sln`
-4. Build (F5) - ManpWinUI will be set as startup project
+1. Clone: `git clone https://github.com/markhassellsmith/ManpLab.git`
+2. Open `ManpLab.sln` in Visual Studio 2022
+3. Build (F5)
 
-### Command Line
-
-```bash
-git clone https://github.com/markhassellsmith/ManpLab.git
-cd ManpLab
-# Build native engine
-cmake -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Release
-# Build WinUI app
-dotnet build ManpWinUI/ManpWinUI.csproj -c Release
-```
+All dependencies included - builds without additional configuration.
 
 ---
 
 ## Troubleshooting
 
-**Build Issues:**
-- Ensure C++ and .NET workloads are installed
-- Verify .NET 10 SDK is present
-- Clean and rebuild if linker errors occur
-- Check that all NuGet packages restore successfully
+**Build Issues:** Ensure C++ and .NET workloads installed, verify .NET 10 SDK, clean and rebuild if needed
 
-**Runtime Issues:**
-- Use Release build for production (Debug is significantly slower)
-- Ensure native dependencies (MPFR, GMP) are in output directory
-- Check Windows 10/11 is up to date for WinUI 3 support
+**Runtime:** Use Release build (Debug is slower), ensure dependencies (MPFR, GMP) in output directory
 
-**Performance:**
-- Deep zoom automatically enables BLA and perturbation theory
-- Reduce max iterations for initial exploration
-- Multithreading is automatic (uses all CPU cores)
-- Use "Progressive rendering" for interactive feedback
+**Performance:** Deep zoom auto-enables BLA/perturbation, reduce iterations for exploration, use progressive rendering
 
 ---
 
@@ -416,7 +341,7 @@ Contributions are welcome from students, educators, and researchers.
 
 **Paul de Leeuw (Paul the LionHeart)** - Native rendering engine with perturbation theory, BLA acceleration, and 246 original fractal implementations
 
-**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 70 new fractals, metadata system, and educational materials
+**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 78 new fractals, metadata system, and educational materials
 
 **GitHub Copilot** - Development assistance and documentation support
 
@@ -434,42 +359,28 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Version History
 
-**v1.0 (2026)** - Educational fork release
-- Modern WinUI 3 interface with MVVM architecture
-- Complete integration of Paul de Leeuw's native engine
-- Extended from 246 to 316 fractal types (70 new implementations)
-- Comprehensive fractal metadata system
-- Animation rendering with FFmpeg
-- Theme system and accessibility features
-- Comprehensive documentation
-- Self-contained dependency management
+**v1.5.1 (2026)** - Educational fork with WinUI 3 interface, 324 fractal types (extended from Paul de Leeuw's 246), metadata system, animation rendering, theme system
 
-**Original ManpWIN** - Paul de Leeuw (multiple versions 1990s-2010s)
-- Deep zoom with perturbation theory
-- BLA acceleration algorithms
-- Formula parser and 246 fractal implementations
-- Arbitrary-precision arithmetic integration
+**Original ManpWIN** - Paul de Leeuw (1990s-2010s) - Deep zoom, perturbation theory, BLA acceleration, 246 fractals, arbitrary-precision arithmetic
 
 ---
 
 ## Appendix: Complete Fractal Catalog
 
-ManpLab includes **316 unique fractals** organized into 34 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
+ManpLab includes **324 unique fractals** organized into 39 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
 
-### 3D Attractors (8)
+### Attractors (7)
 
 - Aizawa Attractor
-- Arneodo Attractor
 - Chen-Lee Attractor
-- Chua's Circuit
-- Gingerbread Man
-- Hénon Attractor
+- Dadras Attractor
+- Halvorsen Attractor
 - Lorenz Attractor
-- Rössler Attractor
+- Pickover Attractor
+- Thomas Attractor
 
-### Barnsley Fractals (7)
+### Barnsley (6)
 
-- Barnsley Fern (IFS)
 - Barnsley J1
 - Barnsley J2
 - Barnsley J3
@@ -477,23 +388,42 @@ ManpLab includes **316 unique fractals** organized into 34 categories. This comp
 - Barnsley M2
 - Barnsley M3
 
-### Bifurcation Diagrams (4)
+### Bifurcation (7)
 
-- Bifurcation Diagram
-- Bifurcation-Mandel Hybrid
+- Henon Bifurcation
+- Henon Parameter Space
+- Lambda Bifurcation
+- Lambda Parameter Space
+- Logistic Bifurcation
 - Mandelbrot Parameter Space
-- Mandelbrot-Lambda Space
+- Orbit Diagram
 
-### Burning Ship Variants (8)
+### Burning Ship Family (2)
+
+- Burning Ship (Power 3)
+- Burning Ship (Power 4)
+
+### Burning Ship Variants (12)
 
 - Bird of Prey
 - Buffalo Burning Ship
-- Burning Mandel Hybrid
-- Burning Ship
-- Burning Ship³ (Cubic)
-- Burning Ship⁴ (Quartic)
-- Celtic Burning Hybrid
+- Burning Ship Cubic
+- Burning Ship Quartic
+- Burning Ship Quintic
 - Celtic Burning Ship
+- Diagonal Burning Ship
+- Partial Burning Ship
+- Perpendicular Burning Ship
+- Reverse Burning Ship
+- Shark Burning Ship
+- Vertical Burning Ship
+
+### Chaotic Maps (4)
+
+- Arneodo Attractor
+- Liu-Chen Attractor
+- Rabinovich-Fabrikant Attractor
+- Sprott B Attractor
 
 ### Chemical Engineering (4)
 
@@ -502,40 +432,22 @@ ManpLab includes **316 unique fractals** organized into 34 categories. This comp
 - Gray-Scott Reaction-Diffusion
 - Langmuir-Hinshelwood Surface Catalysis
 
-### Classical Polynomials (3)
+### Classical Polynomials (1)
 
-- Chebyshev Polynomial
-- Hermite Polynomial
 - Legendre Polynomial
 
-### Classic Escape-Time (8)
+### Complex Functions (10)
 
-- Lambda Fractal
-- Magnet I
-- Magnet II
-- Manowar
-- Sierpinski
-- Spider
-- Tetrate
-- Unity
-
-### Complex Functions (8)
-
-- Exponential Power
-- Log Power
-- Power Exponential
-- Sinh Sinh
-- Square Root Trig
-- Trig Power
+- 1/sin(z)²
+- cos(z)/tan(z)
+- Square + Trig
+- Tetration (z^z)
+- Trig + Trig
+- Trig Squared
+- Trig × Trig
+- z·sin(z) + z
 - Trig Square Root
 - Trig Trig
-
-### Distance Estimation (4)
-
-- Burning Ship DEM
-- Distance Estimation (Standard)
-- Julia Set DEM
-- Tricorn DEM
 
 ### Discrete Mathematics (3)
 
@@ -543,77 +455,92 @@ ManpLab includes **316 unique fractals** organized into 34 categories. This comp
 - Combinatorial Mandelbrot
 - Inverse Combinatorial
 
+### Distance Estimator (4)
+
+- Burning Ship (Distance Estimator)
+- Julia (Distance Estimator)
+- Mandelbrot (Distance Estimator)
+- Tricorn (Distance Estimator)
+
 ### Elliptic Functions (4)
 
 - Jacobi Elliptic sn
-- Weierstrass ℘-function
 - Weierstrass ζ-function
 - Weierstrass σ-function
+- Weierstrass ℘-function
 
-### Exotic Fractals (8)
+### Exotic (8)
 
-- Buffalo Mandelbrot
+- Buffalo Fractal
 - Celtic Mandelbrot
 - Heart Mandelbrot
-- Mandelbar
-- Perpendicular Buffalo
-- Perpendicular Celtic
 - Perpendicular Mandelbrot
-- Zubieta Fractal
+- Quasi-Perpendicular
+- Shark Fin
+- Wavy
+- Zubieta
 
-### Exponential & Logarithmic (10)
+### Exotic Fractals (3)
+
+- Magnet I
+- Magnet II
+- Phoenix Fractal
+
+### Exponential Fractals (12)
 
 - Complex Power
-- Exp-Mandel
+- Exponential Fractal
 - Exponential Julia
-- Exponential Mandelbrot
-- Exp² Mandelbrot
-- Generalized Complex Power
-- Log-Julia
+- Exponential Logarithmic
+- Exponential Square
+- Lambda Lambda Exponential
+- Lambda Mandel Exponential
+- Logarithm Fractal
 - Logarithmic Mandelbrot
-- Power Tower (Tetration)
-- Zubieta Exponential
+- Mandelbrot Exponential
+- Power Tower (z^z)
+- z^z + c
 
-### Fractal Hybrids (8)
-
-- Bifurcation-Mandel
-- Burning-Mandel
-- Celtic Hybrid
-- Exp-Mandel
-- Mutant Mandelbrot
-- Perturbed Newton-Mandel
-- Sierpinski-Mandel
-- Trig-Blend
 
 ### Historical Fractals (8)
 
-- Biomorphs
 - Chip Map
 - Collatz Fractal
 - Duffing Map
 - Martin Map
+- Pickover Biomorphs
 - Pickover Stalks
 - Quaternion Julia (2D Slice)
 - Sinusoidal Fractal
 
-### IFS Fractals (5)
+### Hybrid Fractals (18)
 
-- Apollonius Gasket
+- Bifurcation-Mandelbrot
+- Burning Mandelbrot Hybrid
+- Celtic Mandelbrot (Hybrid)
+- Celtic-Burning Ship Hybrid
+- Collatz-Style Hybrid
+- Exponential-Mandelbrot Blend
+- Exponential-Mandelbrot Hybrid
+- Magnet-Mandelbrot Hybrid
+- Mandelbrot-Burning Ship Hybrid
+- Mandelbrot-Lambda Mix
+- Multi-Power Cycle
+- Mutant Mandelbrot (Power Evolution)
+- Newton-Mandelbrot Blend
+- Perturbed Newton
+- Sierpinski-Mandelbrot Cross
+- Sine-Mandelbrot Hybrid
+- Tricorn-Phoenix Hybrid
+- Trig-Mandelbrot Blend
+
+### Iterated Function Systems (5)
+
 - Barnsley Fern (IFS)
-- Pascal Triangle Fractal
-- Sierpinski Carpet (IFS)
+- Dragon Curve (IFS)
+- Pentagon (IFS)
 - Sierpinski Triangle (IFS)
-
-### Iterative Maps (8)
-
-- Gingerbreadman Map
-- Hopalong Attractor
-- Icon Map
-- Ikeda Map
-- Martin Map
-- Popcorn
-- Sprott Map
-- Symmetric Icon Map
+- Tree (IFS)
 
 ### Julia Presets (23)
 
@@ -621,26 +548,59 @@ ManpLab includes **316 unique fractals** organized into 34 categories. This comp
 - Julia - Backbone
 - Julia - Cauliflower
 - Julia - Crystal
-- Julia - Dendrite
-- Julia - Double Spiral
-- Julia - Dragon
-- Julia - Eye of God
-- Julia - Feigenbaum
+- Julia - Dendrite (Preset)
+- Julia - Dragon (Preset)
+- Julia - Eye
+- Julia - Feigenbaum Point
 - Julia - Flower
 - Julia - Fractal Tree
 - Julia - Fuzzy Blob
-- Julia - Galaxy
 - Julia - Golden Ratio
 - Julia - Heart
 - Julia - Lightning
 - Julia - Medusa
 - Julia - Neurons
 - Julia - Paisley
+- Julia - Seahorse Valley
+- Julia - Snowflake
+- Julia - Spiral Galaxy
+- Julia - Spiral (Preset)
+- Julia - Triple Spiral
+- Julia - Twisted Cross
+
+### Julia Sets (21)
+
+- Julia - Burning Ship
+- Julia - Classic
+- Julia - Cubic
+- Julia - Custom
+- Julia - Dendrite
+- Julia - Douady Rabbit
+- Julia - Dragon
+- Julia - Exponential
+- Julia - Lambda
+- Julia - Lambda (Alt)
+- Julia - Magnet
+- Julia - Multibrot 3
+- Julia - Multibrot 4
+- Julia - Phoenix
+- Julia - Power 5
+- Julia - Power 6
 - Julia - San Marco
 - Julia - Siegel Disk
 - Julia - Siegel Disk (Alt)
 - Julia - Sine
 - Julia - Spiral
+
+### L-Systems (7)
+
+- Dragon Curve
+- Fractal Plant
+- Hilbert Curve
+- Koch Curve
+- Koch Snowflake
+- Peano Curve
+- Sierpinski Triangle
 
 ### Lambda Fractals (8)
 
@@ -773,19 +733,20 @@ ManpLab includes **316 unique fractals** organized into 34 categories. This comp
 
 - Halley's Method z³-1
 - Möbius Fractal
+- Newton z³-1
 - Newton z⁴-1
 - Newton z⁵-1
-- Newton z³-1
 - Rational (z²+c)/(z²-c)
 - Rational z²/(z³+c)
 - Rational z³/(z³+c)
 
-### Special (6)
+### Special (7)
 
 - 2-D Hailstone Trajectory
 - Buddhabrot
 - Hailstone Sequence
 - Lyapunov
+- Nebulabrot (Dramatic RGB)
 - NumFractal
 - Tetration (Classic)
 
@@ -849,7 +810,7 @@ ManpLab includes **316 unique fractals** organized into 34 categories. This comp
 
 ---
 
-**Categories:** 34 families | **Total Fractals:** 316
+**Categories:** 39 families | **Total Fractals:** 324
 
-*This catalog represents the current state of ManpLab v1.0, combining Paul de Leeuw's original 246 fractals with 70 new implementations spanning mathematical functions, physical systems, and experimental variations.*
+*This catalog represents the current state of ManpLab v1.5.1, combining Paul de Leeuw's original 246 fractals with 78 new implementations spanning mathematical functions, physical systems, and experimental variations.*
 
