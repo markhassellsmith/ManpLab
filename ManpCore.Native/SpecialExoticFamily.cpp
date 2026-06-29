@@ -219,15 +219,15 @@ namespace Native {
         FractalRegistry::Register(spec);
 
         //=========================================================================
-        // NEBULABROT (230) - Dramatic RGB-separated Buddhabrot variant
+        // NEBULABROT (230) - Monochromatic Buddhabrot variant
         //=========================================================================
         spec.name = "Nebulabrot";
-        spec.displayName = "Nebulabrot (Dramatic RGB)";
+        spec.displayName = "Nebulabrot";
         spec.category = "Special";
         spec.type = FractalCategory::BuddhabrotBased;  // Uses same path accumulation as Buddhabrot
-        spec.description = "DRAMATIC RGB-SEPARATED variant of Buddhabrot producing vivid, poster-worthy nebula imagery.\n\n"
-                          "ALGORITHM: THREE SEPARATE render passes with different iteration thresholds:\n"
-                          "- BLUE channel: Fast escapers (100-500 iterations) → bright core edges\n"
+        spec.description = "Monochromatic variant of Buddhabrot producing subtle nebula-like patterns.\n\n"
+                          "ALGORITHM: Path accumulation with single iteration threshold:\n"
+                          "- Creates ethereal, foggy wisps against dark background\n"
                           "- GREEN channel: Medium escapers (1000-5000 iterations) → spiraling tendrils\n"
                           "- RED channel: Slow escapers (5000-50000 iterations) → diffuse outer halo\n"
                           "Each channel is independently normalized for maximum contrast, producing vivid primaries "

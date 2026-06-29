@@ -245,28 +245,66 @@ void drawpath (double x, double y, double target_startx, double target_starty, d
 **************************************************************************/
 
 int drawbmp (void) 
-    {
-    int x, y;
-    int red, green, blue;
- 
-    for (y = 0; y < ydots; y++)
+	{
+	int x, y;
+	int red, green, blue;
+	double intensity, normalized;
+
+	for (y = 0; y < ydots; y++)
 	{
 	if (user_data(GlobalHwnd) == -1)				// user pressed a key?
-	    return -1;
+		return -1;
 	for (x = 0; x < xdots; x++)
-	    {
-	    red = (int)(reduce(redcount[(ydots - y - 1)*xdots+x] + COLOUR_OFFSET) * red_multiplier);
-	    green = (int)(reduce(greencount[(ydots - y - 1)*xdots+x] + COLOUR_OFFSET) * green_multiplier);
-	    blue = (int)(reduce(bluecount[(ydots - y - 1)*xdots+x] + COLOUR_OFFSET) * blue_multiplier);
+		{
+		// Calculate base intensity
+		intensity = reduce(redcount[(ydots - y - 1)*xdots+x] + COLOUR_OFFSET);
 
-	    if (red > 255) red = 255; if (red < 0) red = 0;
-	    if (green > 255) green = 255; if (green < 0) green = 0;
-	    if (blue > 255) blue = 255; if (blue < 0) blue = 0;
+		// Normalize to 0-1 range for color mapping
+		normalized = (intensity * red_multiplier) / 255.0;
+		if (normalized < 0) normalized = 0;
+		if (normalized > 1) normalized = 1;
 
-	    RGBPoint((WORD)x, (WORD)y, (BYTE)red, (BYTE)green, (BYTE)blue);
-	    }
+		// Enhanced color gradient: black -> deep red -> orange -> yellow -> white
+		// Expands the orange/red spectrum to show more detail
+		if (normalized < 0.25) {
+			// Black to deep red (0.0 - 0.25)
+			red = (int)(normalized * 4.0 * 200);
+			green = 0;
+			blue = 0;
+		}
+		else if (normalized < 0.5) {
+			// Deep red to bright red (0.25 - 0.5)
+			red = (int)(200 + (normalized - 0.25) * 4.0 * 55);
+			green = (int)((normalized - 0.25) * 4.0 * 40);
+			blue = 0;
+		}
+		else if (normalized < 0.7) {
+			// Bright red to orange (0.5 - 0.7)
+			red = 255;
+			green = (int)(40 + (normalized - 0.5) * 5.0 * 125);
+			blue = 0;
+		}
+		else if (normalized < 0.85) {
+			// Orange to yellow (0.7 - 0.85)
+			red = 255;
+			green = (int)(165 + (normalized - 0.7) * 6.67 * 90);
+			blue = (int)((normalized - 0.7) * 6.67 * 100);
+		}
+		else {
+			// Yellow to white (0.85 - 1.0)
+			red = 255;
+			green = 255;
+			blue = (int)(100 + (normalized - 0.85) * 6.67 * 155);
+		}
+
+		if (red > 255) red = 255; if (red < 0) red = 0;
+		if (green > 255) green = 255; if (green < 0) green = 0;
+		if (blue > 255) blue = 255; if (blue < 0) blue = 0;
+
+		RGBPoint((WORD)x, (WORD)y, (BYTE)red, (BYTE)green, (BYTE)blue);
+		}
 	}
-    return 0;
-    }
+	return 0;
+	}
 
 

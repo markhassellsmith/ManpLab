@@ -218,34 +218,7 @@ namespace Native {
         spec.formula = "dx/dt = y; dy/dt = -δ·y - α·x - β·x³ + γ·cos(ω·t)";
         spec.formulaLatex = R"(\frac{dx}{dt} = y, \; \frac{dy}{dt} = -\delta y - \alpha x - \beta x^3 + \gamma\cos(\omega t))";
 
-        spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double {
-            double x = 0.1;
-            double y = 0.1;
-            double t = 0.0;
-
-            // Duffing parameters
-            double alpha = -1.0;
-            double beta = 1.0;
-            double delta = 0.15;
-            double gamma = 0.3;
-            double omega = 1.0;
-            double dt = 0.05;
-
-            for (int i = 0; i < maxIter; ++i)
-            {
-                double dx = y;
-                double dy = -delta * y - alpha * x - beta * x * x * x + gamma * std::cos(omega * t);
-
-                x += dx * dt;
-                y += dy * dt;
-                t += dt;
-
-                if (std::abs(x) > 100.0 || std::abs(y) > 100.0)
-                    return static_cast<double>(i);
-            }
-
-            return std::sqrt(x * x + y * y) * 10.0;
-            };
+        spec.calculator = nullptr;  // Use histogram-based rendering only
 
         spec.orbitIterator = [](double& x, double& y, double& z, const ParamMap& params) {
             // Duffing oscillator with Euler integration
