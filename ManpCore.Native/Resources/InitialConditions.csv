@@ -1,5 +1,6 @@
 FractalName,CenterX,CenterY,Zoom
 Aizawa,0,0,5.00E-01
+AiryBi,0,0,0.125
 AngleAverage,0,0,0.5
 Arneodo,0,0,2.075
 ArrheniusKinetics,-0.71015625,-0.0140625,0.435275283
@@ -39,7 +40,6 @@ CelticHeart,-0.54,0.04,0.827423168
 CelticMandel,-0.758646461,0.028800335,0.464023276
 CelticMandelbrot,-0.75,0,4.72E-01
 ChebyshevPolynomial,-0.04,0,1.29E+00
-ChebyshevPolynomial,0,0,0.8
 ChenLee,-0.33,0.11,2.11E-02
 ChipMap,-0.111953433,0.038747867,0.722861842
 CircularOrbitTrap,-0.09,-0.02,0.719303323
@@ -60,9 +60,11 @@ CurvatureTracking,0,0,0.658872806
 Dadras,0,0,6.89E-02
 DampedOscillatorFractal,0,0,1.25E-01
 DeJong,0.17,0.07,0.375164763
+DedekindEta,-5.622377601,0.264027298,0.317754728
 DeltaMagnitude,-0.224699114,-0.114118896,0.621088281
 DiagonalBurningShip,0,-0.196875,1.00E+00
 DigammaFractal,0.752518562,-0.599211564,0.857840681
+DragonCurve,0,0,0.5
 DragonCurveIFS,0.46,0.18,1.477383268
 Duffing,0,0,0.342229114
 DuffingMap,0,0,0.443281392
@@ -75,6 +77,7 @@ ExponentialJulia,0,0,1
 ExponentialLogarithmic,-1,0,0.08038301
 ExpSquare,0,0,0.108067154
 FermiDiracFractal,-0.475222657,3.148505639,0.585162602
+FractalPlant,0,3,0.15
 GammaFractal,-1.13,-0.07,0.3
 GrayScott,0,0,0.4
 Hailstone,0.389235425,-0.436480978,0.02
@@ -85,9 +88,12 @@ HeartMandel,0,0,1
 HeartMandelbrot,-0.653242321,0.01945392,0.858565439
 HenonBifurcation,1.2,0,2
 HenonParameterSpace,0.51,-0.24,8.97E-01
+HilbertCurve,0,0,0.5
 HyperbolicCombo,-1.64,0.02,0.393574007
 InverseCombinatorial,-0.1,-0.1,5.00E-01
-JacobiSN,0,0.04,0.152613636
+JacobiCN,-0.154816954,1.372900629,1.349536479
+JacobiDN,-0.671196404,0.082662121,0.146580631
+JacobiSN,0.004322926,0.04,0.152613636
 Julia4,0,0,0.658872813
 Julia5,0,0,0.75
 Julia6,0,0,0.506554237
@@ -131,6 +137,8 @@ JuliaSpiralGalaxy,0.11,-0.03,0.750815217
 JuliaSpiralPreset,-0.04,-0.02,0.68834744
 JuliaTripleSpiral,0.02,0,0.754178273
 JuliaTwistedCross,-0.11,0,0.706304343
+KochCurve,0,0,0.5
+KochSnowflake,0,0,0.5
 Lambda,1,0,0.5
 LambdaBifurcation,2.6328125,0.60546875,1
 LambdaFlip,1,-0.01,0.5
@@ -227,6 +235,7 @@ OrbitTrapCross,-0.24,-0.003515625,0.901250465
 OrbitTrapPoint,-0.445731095,-0.011461657,0.920187652
 OrbitTrapSquare,-0.17,0,0.745558904
 PartialBurningShip,-0.37,0.07,6.13E-01
+PeanoCurve,0,0,0.5
 PentagonIFS,-0.002936009,-0.092484271,0.798277636
 PerpendicularBurningShip,-0.313411571,0.589989752,0.73186999
 PerpendicularMandel,0,0,1
@@ -269,6 +278,7 @@ SharkFin,-0.585512373,0.001018004,1.322323189
 SharkFinMandelbrot,0,0,6
 SierpinskiIFS,0.5,0.43,1.5
 SierpinskiMandel,0,0,0.4
+SierpinskiTriangle,0,0.5,0.25
 Sine,0.01,0.06,0.233258248
 SineMandelHybrid,0,0,0.1875
 SinhMandelbrot,0,0,0.1875

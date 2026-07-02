@@ -279,7 +279,7 @@ namespace Native {
             };
 
         spec.supportsJulia = false;
-        ic = InitialConditionsService::Get("Buddhabrot");  // Same default view as Buddhabrot
+        ic = InitialConditionsService::Get("Nebulabrot");
         spec.defaultCenterX = ic.centerX;
         spec.defaultCenterY = ic.centerY;
         spec.defaultZoom = ic.zoom;
