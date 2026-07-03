@@ -1,4 +1,5 @@
 #include "FractalRegistry.h"
+#include "InitialConditionsService.h"
 
 namespace Native {
 
@@ -10,6 +11,7 @@ namespace Native {
 void RegisterLSystemFamily()
 {
     FractalSpec spec;
+    InitialConditions ic;
 
     // ═════════════════════════════════════════════════════════════════════════
     // L-SYSTEM FRACTALS
@@ -43,9 +45,12 @@ void RegisterLSystemFamily()
     spec.category = "L-Systems";
     spec.type = FractalCategory::LSystem;
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+
+    ic = InitialConditionsService::Get("KochSnowflake");
+    spec.defaultCenterX = ic.centerX;
+    spec.defaultCenterY = ic.centerY;
+    spec.defaultZoom = ic.zoom;
+
     spec.calculator = nullptr;  // L-Systems are rendered in managed layer
     FractalRegistry::Register(spec);
 
@@ -61,9 +66,12 @@ void RegisterLSystemFamily()
     spec.category = "L-Systems";
     spec.type = FractalCategory::LSystem;
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+
+    ic = InitialConditionsService::Get("DragonCurve");
+    spec.defaultCenterX = ic.centerX;
+    spec.defaultCenterY = ic.centerY;
+    spec.defaultZoom = ic.zoom;
+
     spec.calculator = nullptr;
     FractalRegistry::Register(spec);
 
@@ -79,9 +87,12 @@ void RegisterLSystemFamily()
     spec.category = "L-Systems";
     spec.type = FractalCategory::LSystem;
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+
+    ic = InitialConditionsService::Get("SierpinskiTriangle");
+    spec.defaultCenterX = ic.centerX;
+    spec.defaultCenterY = ic.centerY;
+    spec.defaultZoom = ic.zoom;
+
     spec.calculator = nullptr;
     FractalRegistry::Register(spec);
 
@@ -97,9 +108,11 @@ void RegisterLSystemFamily()
     spec.category = "L-Systems";
     spec.type = FractalCategory::LSystem;
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+
+    ic = InitialConditionsService::Get("HilbertCurve");
+    spec.defaultCenterX = ic.centerX;
+    spec.defaultCenterY = ic.centerY;
+    spec.defaultZoom = ic.zoom;
     spec.calculator = nullptr;
     FractalRegistry::Register(spec);
 
@@ -115,9 +128,12 @@ void RegisterLSystemFamily()
     spec.category = "L-Systems";
     spec.type = FractalCategory::LSystem;
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+
+    ic = InitialConditionsService::Get("FractalPlant");
+    spec.defaultCenterX = ic.centerX;
+    spec.defaultCenterY = ic.centerY;
+    spec.defaultZoom = ic.zoom;
+
     spec.calculator = nullptr;
     FractalRegistry::Register(spec);
 
@@ -133,9 +149,12 @@ void RegisterLSystemFamily()
     spec.category = "L-Systems";
     spec.type = FractalCategory::LSystem;
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+
+    ic = InitialConditionsService::Get("KochCurve");
+    spec.defaultCenterX = ic.centerX;
+    spec.defaultCenterY = ic.centerY;
+    spec.defaultZoom = ic.zoom;
+
     spec.calculator = nullptr;
     FractalRegistry::Register(spec);
 
@@ -151,9 +170,12 @@ void RegisterLSystemFamily()
     spec.category = "L-Systems";
     spec.type = FractalCategory::LSystem;
     spec.supportsJulia = false;
-    spec.defaultCenterX = 0.0;
-    spec.defaultCenterY = 0.0;
-    spec.defaultZoom = 1.0;
+
+    ic = InitialConditionsService::Get("PeanoCurve");
+    spec.defaultCenterX = ic.centerX;
+    spec.defaultCenterY = ic.centerY;
+    spec.defaultZoom = ic.zoom;
+
     spec.calculator = nullptr;
     FractalRegistry::Register(spec);
 }

@@ -186,7 +186,7 @@ extern void RegisterPolynomialFamily();         // Multibrot 3-10, Tricorn, Buff
 extern void RegisterExponentialLogarithmicFamily(); // Exponential, Logarithmic, ExpSquare, PowerTower, ComplexPower, ExponentialJulia = 6
 extern void RegisterRationalFunctionFamily();   // Newton z³-1, z⁴-1, z⁵-1, Halley, Möbius, Rational maps = 8
 extern void RegisterHistoricalFractalsFamily(); // Biomorphs, Pickover Stalks, Martin, Chip, Quaternion2D, Collatz, Duffing, Sinusoidal = 8
-extern void RegisterSpecialFunctionFamily();    // Gamma, Error, Bessel-like, Continued Fraction, Tetration, Lambert W, Hyperbolic = 7
+extern void RegisterScienceAndEngineeringFamily();    // Gamma, Error, Bessel-like, Continued Fraction, Tetration, Lambert W, Hyperbolic = 7
 extern void RegisterChaoticMapsFamily();        // Clifford, De Jong, Tinkerbell, Bedhead, Svensson, SymmetricIcon, Gingerbreadman, Sprott = 8
 extern void RegisterFractalHybridsFamily();     // Burning-Mandel, Exp-Mandel, Mutant, Trig-Blend, Sierpinski-Mandel, Perturbed Newton, Bifurcation-Mandel, Celtic = 8
 extern void RegisterOrbitalModificationsFamily(); // Circular trap, Cross trap, Stalks, Smoothed, Angle, Triangle trap, Stripe, Curvature, Delta, Point-Line = 10
@@ -239,7 +239,7 @@ void FractalRegistry::InitializeBuiltins()
     RegisterExponentialLogarithmicFamily(); // Exponential/logarithmic variants = 6
     RegisterRationalFunctionFamily();   // Newton, Halley, Rational maps = 8
     RegisterHistoricalFractalsFamily(); // Historical fractals = 8
-    RegisterSpecialFunctionFamily();    // Special functions = 7
+    RegisterScienceAndEngineeringFamily();    // Special functions = 7
     RegisterChaoticMapsFamily();        // Chaotic maps = 8
     RegisterFractalHybridsFamily();     // Fractal hybrids = 8
     RegisterOrbitalModificationsFamily(); // Orbital modifications = 10

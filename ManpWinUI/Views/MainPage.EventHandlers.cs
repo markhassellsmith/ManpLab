@@ -388,6 +388,15 @@ namespace ManpWinUI.Views
         {
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var metadata = ViewModel.CreateMetadata();
+
+            // If we have a bookmark visualization name, use it as the base filename with "Bookmark_" prefix
+            if (!string.IsNullOrWhiteSpace(metadata.VisualizationName))
+            {
+                var bookmarkName = metadata.VisualizationName.Replace(" ", "");
+                return $"Bookmark_{bookmarkName}_{timestamp}";
+            }
+
+            // Otherwise, use standard fractal family/type naming
             var fractalFamily = metadata.FractalFamily.Replace(" ", "");
 
             // Get the full display name from the browser's selected fractal

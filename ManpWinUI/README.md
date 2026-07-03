@@ -21,7 +21,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 ### Key Features
 
 - ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
-- 🎨 **324 Fractal Types** - Extended from Paul's 246 originals with 78 new implementations
+- 🎨 **328 Fractal Types** - Extended from Paul's 246 originals with 82 new implementations
 - 🔬 **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
 - ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
 - 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
@@ -46,7 +46,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 │   • BLA Acceleration                    │
 │   • Arbitrary Precision (MPFR/QD)       │
 │   • 246 Original Fractal Types          │
-│   • Extended to 324 Types in ManpLab    │
+│   • Extended to 329 Types in ManpLab    │
 │   • Multithreaded Rendering             │
 └─────────────────────────────────────────┘
 ```
@@ -123,7 +123,7 @@ All dependencies are included. The project builds without additional configurati
 ManpLab serves as a comprehensive platform for studying fractals, numerical methods, and computational mathematics:
 
 ### Mathematics
-- Complex dynamics: 324 fractal types including Mandelbrot, Julia sets, Newton fractals
+- Complex dynamics: 328 fractal types including Mandelbrot, Julia sets, Newton fractals
 - Perturbation theory and BLA series approximation
 - Arbitrary-precision arithmetic (MPFR, QD, DD libraries)
 - Newton-Raphson root finding and analytical derivatives
@@ -157,7 +157,7 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 
 ---
 
-## Fractal Categories (39 Categories)
+## Fractal Categories (41 Categories)
 
 **Classic Fractals (20+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals
 
@@ -341,7 +341,7 @@ Contributions are welcome from students, educators, and researchers.
 
 **Paul de Leeuw (Paul the LionHeart)** - Native rendering engine with perturbation theory, BLA acceleration, and 246 original fractal implementations
 
-**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 78 new fractals, metadata system, and educational materials
+**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 82 new fractals, metadata system, and educational materials
 
 **GitHub Copilot** - Development assistance and documentation support
 
@@ -359,7 +359,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Version History
 
-**v1.5.1 (2026)** - Educational fork with WinUI 3 interface, 324 fractal types (extended from Paul de Leeuw's 246), metadata system, animation rendering, theme system
+**v1.5.1 (2026)** - Educational fork with WinUI 3 interface, 328 fractal types (extended from Paul de Leeuw's 246), metadata system, animation rendering, theme system
 
 **Original ManpWIN** - Paul de Leeuw (1990s-2010s) - Deep zoom, perturbation theory, BLA acceleration, 246 fractals, arbitrary-precision arithmetic
 
@@ -367,7 +367,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Appendix: Complete Fractal Catalog
 
-ManpLab includes **324 unique fractals** organized into 39 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
+ManpLab includes **328 unique fractals** organized into 41 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
 
 ### Attractors (7)
 
@@ -432,11 +432,18 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 - Gray-Scott Reaction-Diffusion
 - Langmuir-Hinshelwood Surface Catalysis
 
+### Classic Fractals (5)
+- Lambda
+- Mandel-Lambda
+- Mandelbrot Set
+- Tetrate
+- Unity
+
 ### Classical Polynomials (1)
 
 - Legendre Polynomial
 
-### Complex Functions (10)
+### Complex Functions (8)
 
 - 1/sin(z)²
 - cos(z)/tan(z)
@@ -446,8 +453,6 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 - Trig Squared
 - Trig × Trig
 - z·sin(z) + z
-- Trig Square Root
-- Trig Trig
 
 ### Discrete Mathematics (3)
 
@@ -462,8 +467,10 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 - Mandelbrot (Distance Estimator)
 - Tricorn (Distance Estimator)
 
-### Elliptic Functions (4)
+### Elliptic Functions (6)
 
+- Jacobi Elliptic cn
+- Jacobi Elliptic dn
 - Jacobi Elliptic sn
 - Weierstrass ζ-function
 - Weierstrass σ-function
@@ -740,6 +747,18 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 - Rational z²/(z³+c)
 - Rational z³/(z³+c)
 
+### Science and Engineering (9)
+
+- Airy Function (Bi)
+- Bessel-like Oscillatory
+- Continued Fraction Fractal
+- Dedekind Eta Function
+- Error Function (erf) Fractal
+- Gamma Function Fractal
+- Hyperbolic Combination
+- Lambert W Function
+- Tetration (Power Tower)
+
 ### Special (7)
 
 - 2-D Hailstone Trajectory
@@ -750,22 +769,15 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 - NumFractal
 - Tetration (Classic)
 
-### Special Function Fractals (15)
+### Special Function Fractals (8)
 
-- Bessel-like Oscillatory
 - Bose-Einstein Distribution
-- Continued Fraction Fractal
 - Damped Harmonic Oscillator
 - Digamma Function ψ(z)
-- Error Function (erf) Fractal
 - Fermi-Dirac Distribution
-- Gamma Function Fractal
-- Hyperbolic Combination
-- Lambert W Function
 - Planck Distribution
 - RLC Circuit Resonance
 - Root Locus (Control Systems)
-- Tetration (Power Tower)
 - Trigamma Function ψ'(z)
 
 ### Strange Attractors (6)
@@ -810,7 +822,7 @@ ManpLab includes **324 unique fractals** organized into 39 categories. This comp
 
 ---
 
-**Categories:** 39 families | **Total Fractals:** 324
+**Categories:** 41 families | **Total Fractals:** 328
 
 *This catalog represents the current state of ManpLab v1.5.1, combining Paul de Leeuw's original 246 fractals with 78 new implementations spanning mathematical functions, physical systems, and experimental variations.*
 

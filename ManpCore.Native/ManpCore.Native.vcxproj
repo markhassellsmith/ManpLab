@@ -131,7 +131,7 @@
     <ClCompile Include="PolynomialVariantsFamily.cpp" />
     <ClCompile Include="RationalFunctionFamily.cpp" />
     <ClCompile Include="SpecialExoticFamily.cpp" />
-    <ClCompile Include="SpecialFunctionFamily.cpp" />
+    <ClCompile Include="ScienceAndEngineeringFamily.cpp" />
     <ClCompile Include="Attractors3DFamily.cpp" />
     <ClCompile Include="ClassicEscapeTimeFamily.cpp" />
     <ClCompile Include="ChaoticMapsFamily.cpp" />
@@ -144,6 +144,7 @@
     <ClCompile Include="FractalRegistryWrapper.cpp" />
     <ClCompile Include="MandelbrotFamily.cpp" />
     <ClCompile Include="PhoenixFamily.cpp" />
+    <ClCompile Include="SpecialFunctionFamily.cpp" />
     <ClCompile Include="StrangeAttractorsExtendedFamily.cpp" />
     <ClCompile Include="TricornFamily.cpp" />
     <ClCompile Include="MultibrotFamily.cpp" />
@@ -175,7 +176,6 @@
     <ClCompile Include="ViewOptimizationDiagnostics.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="README_INITIAL_CONDITIONS_v2.md" />
     <None Include="Resources\InitialConditions.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
