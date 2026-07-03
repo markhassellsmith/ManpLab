@@ -348,6 +348,22 @@ public class ImageExportService : IImageExportService
     private string GenerateFileName(FractalMetadata metadata)
     {
         var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+        // If this is from a bookmark, use the bookmark name
+        if (!string.IsNullOrWhiteSpace(metadata.VisualizationName))
+        {
+            var bookmarkName = metadata.VisualizationName.Replace(" ", "_");
+            // Remove any characters that are invalid in filenames
+            var invalidChars = System.IO.Path.GetInvalidFileNameChars();
+            foreach (var c in invalidChars)
+            {
+                bookmarkName = bookmarkName.Replace(c.ToString(), "");
+            }
+
+            return $"Bookmark_{bookmarkName}_{timestamp}";
+        }
+
+        // Otherwise, use the standard fractal family/name format
         var fractalFamily = metadata.FractalFamily.Replace(" ", "");
         var fractalName = metadata.FractalType.Replace(" ", "");
         var mode = metadata.IterationMode == "Julia" ? "_Julia" : "";

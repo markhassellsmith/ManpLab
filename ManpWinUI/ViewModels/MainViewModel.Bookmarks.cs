@@ -121,6 +121,9 @@ public partial class MainViewModel
             JuliaCY = bookmark.JuliaC.Imaginary;
         }
 
+        // Update fractal info to match the loaded bookmark
+        UpdateSelectedFractalInfo(bookmark.FractalType);
+
         // Set the current visualization name to the bookmark name
         CurrentVisualizationName = bookmark.Name;
         StatusMessage = $"Loaded bookmark: {bookmark.Name}";
