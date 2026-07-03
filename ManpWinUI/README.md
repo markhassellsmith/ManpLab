@@ -367,7 +367,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Appendix: Complete Fractal Catalog
 
-ManpLab includes **328 unique fractals** organized into 40 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
+ManpLab includes **328 unique fractals** organized into 41 categories. This comprehensive catalog spans classic mathematical fractals, strange attractors, physical systems, and experimental variations.
 
 ### Attractors (7)
 
