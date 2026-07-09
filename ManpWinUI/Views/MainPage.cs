@@ -205,8 +205,8 @@ namespace ManpWinUI.Views
                 ViewModel.Zoom = metadata.DefaultZoom;
                 ViewModel.SelectedIterationMode = "Standard"; // Reset to standard mode when switching fractals
 
-                // Set the current visualization name from the browser
-                ViewModel.CurrentVisualizationName = metadata.DisplayName;
+                // Clear visualization name for browser-selected fractals (not bookmarks)
+                ViewModel.CurrentVisualizationName = null;
 
                 // Week 10: Update Info tab with selected fractal metadata
                 ViewModel.UpdateSelectedFractalInfo(e.Fractal.Name);
