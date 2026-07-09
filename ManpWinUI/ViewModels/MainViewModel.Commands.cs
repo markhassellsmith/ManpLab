@@ -280,6 +280,9 @@ public partial class MainViewModel
             {
                 LastRenderTime = renderTime;
 
+                // Get the fractal display name for the status message
+                string fractalDisplayName = SelectedFractalInfo?.DisplayName ?? SelectedFractalType;
+
                 // Build viewport info that appears in all status messages
                 // Include deep zoom indicator when arbitrary precision calculations were actually used
                 string deepZoomIndicator = shouldUseDeepZoom ? " - Deep Zoom mode" : "";
@@ -291,7 +294,7 @@ public partial class MainViewModel
                     case FractalCategory.HistogramBased:
                         // Histogram/orbit accumulation fractals (attractors, flame fractals)
                         // Escape percentage is not meaningful - show render time only
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s (orbit accumulation){viewInfo}";
+                        StatusMessage = $"{fractalDisplayName} - Rendered in {renderTime.TotalSeconds:F4} s (orbit accumulation){viewInfo}";
                         break;
 
                     case FractalCategory.EscapeTime2D:
@@ -299,36 +302,36 @@ public partial class MainViewModel
                         // Escape percentage is meaningful and helps guide exploration
                         if (escapePercent < 1.0)
                         {
-                            StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F2}% escaped - Inside the set!){viewInfo}";
+                            StatusMessage = $"{fractalDisplayName} - Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F2}% escaped - Inside the set!){viewInfo}";
                         }
                         else if (escapePercent < 10.0)
                         {
-                            StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped - Low detail){viewInfo}";
+                            StatusMessage = $"{fractalDisplayName} - Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped - Low detail){viewInfo}";
                         }
                         else
                         {
-                            StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped){viewInfo}";
+                            StatusMessage = $"{fractalDisplayName} - Rendered in {renderTime.TotalSeconds:F4} s ({escapePercent:F1}% escaped){viewInfo}";
                         }
                         break;
 
                     case FractalCategory.Sequence2D:
                         // Sequence-based fractals (Hailstone, bifurcation)
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s (sequence){viewInfo}";
+                        StatusMessage = $"{fractalDisplayName} - Rendered in {renderTime.TotalSeconds:F4} s (sequence){viewInfo}";
                         break;
 
                     case FractalCategory.AttractorBased3D:
                         // Legacy 3D attractor mode (deprecated)
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s (3D attractor){viewInfo}";
+                        StatusMessage = $"{fractalDisplayName} - Rendered in {renderTime.TotalSeconds:F4} s (3D attractor){viewInfo}";
                         break;
 
                     case FractalCategory.Special:
                         // Special renderers (Buddhabrot, perturbation)
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s (special renderer){viewInfo}";
+                        StatusMessage = $"{fractalDisplayName} - Rendered in {renderTime.TotalSeconds:F4} s (special renderer){viewInfo}";
                         break;
 
                     default:
                         // Fallback
-                        StatusMessage = $"Rendered in {renderTime.TotalSeconds:F4} s{viewInfo}";
+                        StatusMessage = $"{fractalDisplayName} - Rendered in {renderTime.TotalSeconds:F4} s{viewInfo}";
                         break;
                 }
 
