@@ -2,6 +2,18 @@
 
 This guide explains how to add new fractal types to ManpLab's registry-based system.
 
+---
+
+## 📚 Related Guides
+
+Before adding a new fractal, you may want to review:
+
+- **[Parameter Template Reference](PARAMETER_TEMPLATE_REFERENCE.md)** - Choose the right parameter template for your fractal type
+- **[Parameter System Architecture](../Architecture/PARAMETER_SYSTEM_ARCHITECTURE.md)** - Understand how the flexible parameter system works
+- **[Developer Guide](DEVELOPER_GUIDE.md)** - General development practices and workflows
+
+---
+
 ## Quick Start (5 Minutes)
 
 ### Step 1: Create Your Fractal Family File
@@ -82,7 +94,23 @@ Add to `ManpWinUI/Assets/FractalKnowledge/fractals.json`:
 }
 ```
 
-### Step 6: Build and Test
+### Step 6: Add Parameter Template (C# Side)
+
+Add to `ManpWinUI/Services/FractalParameterService.cs`:
+
+```csharp
+case "Sierpinski":
+    return StandardParameterTemplates.CreateStandardEscapeTime(
+        "Sierpinski",
+        defaultCenterX: 0.0,
+        defaultCenterY: 0.0,
+        defaultZoom: 1.0
+    );
+```
+
+> **💡 Tip**: See [Parameter Template Reference](PARAMETER_TEMPLATE_REFERENCE.md) to choose the right template for your fractal type.
+
+### Step 7: Build and Test
 
 ```bash
 # Build the solution
@@ -90,6 +118,7 @@ dotnet build
 
 # Your fractal should appear in the browser panel!
 ```
+
 
 ---
 
@@ -284,7 +313,11 @@ for (int iter = 0; iter < maxIter; iter++) {
 
 ---
 
-## Custom Parameters
+## Custom Parameters (C++ Native Side)
+
+> **💡 Modern Approach**: While you can define parameters in C++ using `ParameterSpec`, the **recommended approach** is to use the [flexible parameter template system](#adding-ui-parameters-c-side) on the C# side. It provides better UI integration, validation, and persistence.
+> 
+> Use native C++ parameters only when you need them accessible to the calculation engine directly.
 
 ### Defining Parameters
 
@@ -350,6 +383,123 @@ spec.calculator = [](ComplexD c, int maxIter, bool isJulia,
     }
 };
 ```
+
+---
+
+## Adding UI Parameters (C# Side)
+
+After implementing your fractal in C++ (native side), you need to add parameter templates so the UI can display and manage fractal-specific settings.
+
+### Step 1: Choose the Right Parameter Template
+
+**📖 See the [Parameter Template Reference](PARAMETER_TEMPLATE_REFERENCE.md) for a complete guide.**
+
+The template system provides reusable parameter sets for common fractal types. Quick decision guide:
+
+| Your Fractal Type | Template to Use | Example |
+|-------------------|----------------|---------|
+| Mandelbrot variant with power | `CreateMultibrot()` | Multibrot-3, Mandelbar |
+| Julia set with specific constant | `CreateJuliaPreset()` | Julia (Dragon), Julia (Classic) |
+| Standard escape-time with Julia | `CreateWithJulia()` | Most 2D escape-time fractals |
+| Bifurcation/parameter space | `BifurcationParameters()` | Logistic, Henon diagrams |
+| Phoenix-style | `PhoenixParameters()` | Phoenix variants |
+| Lambda-style | `LambdaParameters()` | Lambda variants |
+| Newton/root-finding | `CreateNewtonPolynomial()` | Newton-3, Nova-4 |
+| Attractor system | Custom parameters | Lorenz, Rössler |
+| Completely unique | `CreateStandardEscapeTime()` + custom | Experimental fractals |
+
+### Step 2: Add to FractalParameterService
+
+Edit `ManpWinUI/Services/FractalParameterService.cs` and add your case:
+
+**Example 1: Standard fractal with Julia support**
+```csharp
+case "MyNewFractal":
+    return StandardParameterTemplates.CreateWithJulia(
+        "MyNewFractal",
+        defaultCenterX: 0.0,
+        defaultCenterY: 0.0,
+        defaultZoom: 1.0
+    );
+```
+
+**Example 2: Multibrot-style with exponent**
+```csharp
+case "MyMultibrotVariant":
+    return StandardParameterTemplates.CreateMultibrot(
+        "MyMultibrotVariant",
+        defaultExponent: 4,
+        defaultCenterX: -0.5,
+        defaultCenterY: 0.0,
+        defaultZoom: 1.0
+    );
+```
+
+**Example 3: Julia preset**
+```csharp
+case "Julia (MyPreset)":
+    return StandardParameterTemplates.CreateJuliaPreset(
+        "Julia (MyPreset)",
+        juliaReal: -0.4,
+        juliaImag: 0.6,
+        centerX: 0.0,
+        centerY: 0.0,
+        zoom: 1.0
+    );
+```
+
+**Example 4: Custom parameters**
+```csharp
+case "MyExoticFractal":
+    var set = StandardParameterTemplates.CreateWithJulia("MyExoticFractal");
+
+    // Add custom parameter
+    set.AddParameter(new FractalParameterDescriptor
+    {
+        Key = "my_custom_param",
+        Name = "Custom Parameter",
+        Type = ParameterType.Double,
+        Category = ParameterCategory.FractalSpecific,
+        DefaultValue = 1.5,
+        MinValue = 0.0,
+        MaxValue = 10.0,
+        StepSize = 0.1,
+        FormatString = "F2",
+        Description = "Controls my custom behavior",
+        DisplayOrder = 1
+    });
+
+    return set;
+```
+
+### Step 3: Test Parameter UI
+
+1. Launch ManpWinUI
+2. Select your fractal from the browser
+3. Open the **Parameters tab** on the right panel
+4. Verify:
+   - ✅ Parameters appear correctly
+   - ✅ Default values are sensible
+   - ✅ Min/max constraints work
+   - ✅ Tooltips show descriptions
+   - ✅ Parameters are grouped by category
+   - ✅ Changing parameters triggers re-render
+
+### Parameter Categories
+
+Parameters are automatically grouped in the UI:
+
+- **View** - Viewport positioning (center_x, center_y, zoom)
+- **Algorithm** - Rendering settings (max_iterations, bailout, etc.)
+- **Julia** - Julia mode settings (julia_mode, julia_c_real, julia_c_imag)
+- **FractalSpecific** - Your custom parameters
+
+### Common Mistakes
+
+❌ **Forgetting to add the case** - Your fractal will fall back to legacy hard-coded parameters  
+❌ **Wrong internal name** - Use the exact `spec.name` from C++, not `displayName`  
+❌ **No min/max constraints** - Parameters should have sensible ranges  
+❌ **Missing descriptions** - Users won't know what parameters do  
 
 ---
 
@@ -650,6 +800,14 @@ RegisterMyFractalFamily();       // Call in InitializeBuiltins()
 
 // 4. Build and run!
 ```
+
+---
+
+## 📚 Additional Resources
+
+- **[Parameter Template Reference](PARAMETER_TEMPLATE_REFERENCE.md)** - Complete guide to parameter templates and fractal family groupings
+- **[Parameter System Architecture](../Architecture/PARAMETER_SYSTEM_ARCHITECTURE.md)** - Deep dive into the flexible parameter system
+- **[Parameter Template Strategy](../Analysis/PARAMETER_TEMPLATE_STRATEGY.md)** - Migration strategy and template efficiency analysis
 
 ---
 

@@ -81,8 +81,6 @@ public partial class FractalParameterSet : ObservableObject
         Parameters.Add(descriptor);
         _values[descriptor.Key] = descriptor.DefaultValue;
         _validationErrors[descriptor.Key] = null;
-
-        System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Added parameter '{descriptor.Key}' ({descriptor.Name}): Type={descriptor.Type}, DefaultValue={descriptor.DefaultValue} (type: {descriptor.DefaultValue?.GetType().Name ?? "null"}), MinValue={descriptor.MinValue} (type: {descriptor.MinValue?.GetType().Name ?? "null"}), MaxValue={descriptor.MaxValue} (type: {descriptor.MaxValue?.GetType().Name ?? "null"})");
     }
 
     /// <summary>
@@ -165,8 +163,6 @@ public partial class FractalParameterSet : ObservableObject
         // Notify observers
         ParameterChanged?.Invoke(this, new ParameterChangedEventArgs(key, oldValue, value));
         OnPropertyChanged(nameof(Parameters)); // Trigger UI update
-
-        System.Diagnostics.Debug.WriteLine($"[FractalParameterSet] Parameter '{key}' changed: {oldValue} → {value}");
 
         return true;
     }
@@ -306,10 +302,12 @@ public partial class FractalParameterSet : ObservableObject
 
         int maxIter = GetValue<int>("max_iterations");
         if (maxIter == 0) maxIter = GetValue<int>("maxIterations");
-        renderParams.MaxIterations = maxIter != 0 ? maxIter : 256;
+        renderParams.MaxIterations = maxIter != 0 ? maxIter : 512;  // Default to 512, not 256
 
-        double escapeRadius = GetValue<double>("escape_radius");
-        if (escapeRadius == 0.0) escapeRadius = GetValue<double>("bailout");
+        // For escape radius: Try bailout first (correct for most fractals),
+        // then fall back to escape_radius, then default to 256.0
+        double escapeRadius = GetValue<double>("bailout");
+        if (escapeRadius == 0.0) escapeRadius = GetValue<double>("escape_radius");
         renderParams.EscapeRadius = escapeRadius != 0.0 ? escapeRadius : 256.0;
 
         // Julia mode
@@ -324,8 +322,6 @@ public partial class FractalParameterSet : ObservableObject
         double juliaCImag = GetValue<double>("julia_c_imag");
         if (juliaCImag == 0.0) juliaCImag = GetValue<double>("juliaCImag");
         renderParams.JuliaCImaginary = juliaCImag;
-
-        System.Diagnostics.Debug.WriteLine($"[ToStructuredRenderParameters] FractalType={FractalType}, MaxIterations={renderParams.MaxIterations}, EscapeRadius={renderParams.EscapeRadius}");
 
         // Note: Color parameters are typically set at ViewModel level, not per-fractal
         // They're handled separately in the render command
@@ -347,12 +343,9 @@ public partial class FractalParameterSet : ObservableObject
                 if (value != null)
                 {
                     renderParams.ExtendedParameters[descriptor.Key] = value;
-                    System.Diagnostics.Debug.WriteLine($"[ToStructuredRenderParameters] Added extended param: {descriptor.Key} = {value}");
                 }
             }
         }
-
-        System.Diagnostics.Debug.WriteLine($"[ToStructuredRenderParameters] Total extended parameters: {renderParams.ExtendedParameters.Count}");
 
         return renderParams;
     }
@@ -500,8 +493,9 @@ public partial class FractalParameterSet : ObservableObject
 
                 if (value != null)
                 {
-                    SetValue(kvp.Key, value);
+                    SetValue(descriptor.Key, value);
                     restoredCount++;
+                    System.Diagnostics.Debug.WriteLine($"[FractalParameterSet.LoadFromSettings] Restored '{descriptor.Key}' = {value}");
                 }
             }
 

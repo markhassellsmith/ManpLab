@@ -225,6 +225,30 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("z7", () => CreateMultibrotTemplate("z7", 7));
         RegisterTemplate("z8", () => CreateMultibrotTemplate("z8", 8));
 
+        // Multibrot variants from registry (with dash notation)
+        RegisterTemplate("Multibrot-3", () => CreateMultibrotTemplate("Multibrot-3", 3));
+        RegisterTemplate("Multibrot-4", () => CreateMultibrotTemplate("Multibrot-4", 4));
+        RegisterTemplate("Multibrot-5", () => CreateMultibrotTemplate("Multibrot-5", 5));
+        RegisterTemplate("Multibrot-6", () => CreateMultibrotTemplate("Multibrot-6", 6));
+        RegisterTemplate("Multibrot-8", () => CreateMultibrotTemplate("Multibrot-8", 8));
+        RegisterTemplate("Multibrot-10", () => CreateMultibrotTemplate("Multibrot-10", 10));
+
+        // Multibrot variants from registry (no dash notation)
+        RegisterTemplate("Multibrot3", () => CreateMultibrotTemplate("Multibrot3", 3));
+        RegisterTemplate("Multibrot4", () => CreateMultibrotTemplate("Multibrot4", 4));
+        RegisterTemplate("Multibrot5", () => CreateMultibrotTemplate("Multibrot5", 5));
+        RegisterTemplate("Multibrot6", () => CreateMultibrotTemplate("Multibrot6", 6));
+        RegisterTemplate("Multibrot7", () => CreateMultibrotTemplate("Multibrot7", 7));
+        RegisterTemplate("Multibrot8", () => CreateMultibrotTemplate("Multibrot8", 8));
+
+        // Mandelbrot/Julia power variants
+        RegisterTemplate("Mandel4", () => CreateMultibrotTemplate("Mandel4", 4));
+        RegisterTemplate("Julia4", () => CreateMultibrotTemplate("Julia4", 4));
+
+        // Polynomial variants
+        RegisterTemplate("BuffaloPolynomial", () => CreateMultibrotTemplate("BuffaloPolynomial", 3));
+        RegisterTemplate("Tricorn-Poly", () => CreateMultibrotTemplate("Tricorn-Poly", 3));
+
         // ═══════════════════════════════════════════════════════════════════════════
         // COMPLEX EXPONENT FAMILY
         // ═══════════════════════════════════════════════════════════════════════════
@@ -402,6 +426,11 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("JuliaHeart", () => CreateStandardTemplate("JuliaHeart"));
         RegisterTemplate("JuliaNeurons", () => CreateStandardTemplate("JuliaNeurons"));
         RegisterTemplate("JuliaFractalTree", () => CreateStandardTemplate("JuliaFractalTree"));
+
+        // Julia preset variants with "(Preset)" suffix in registry
+        RegisterTemplate("JuliaDendritePreset", () => CreateStandardTemplate("JuliaDendritePreset"));
+        RegisterTemplate("JuliaDragonPreset", () => CreateStandardTemplate("JuliaDragonPreset"));
+        RegisterTemplate("JuliaSpiralPreset", () => CreateStandardTemplate("JuliaSpiralPreset"));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // BURNING SHIP FAMILY POWER VARIANTS
@@ -603,12 +632,6 @@ public class FractalParameterService : IFractalParameterService
         // Core Mandelbrot variations with different powers and modifications
         // ═══════════════════════════════════════════════════════════════════════════
 
-        // Mandel4: z⁴ + c quartic Mandelbrot
-        RegisterTemplate("Mandel4", () => CreateJuliaTemplate("Mandel4"));
-
-        // Julia4: z⁴ + c Julia preset
-        RegisterTemplate("Julia4", () => CreateStandardTemplate("Julia4"));
-
         // MandelLambda: z² + c*z*(1-z) hybrid formula
         RegisterTemplate("MandelLambda", () => CreateJuliaTemplate("MandelLambda"));
 
@@ -621,20 +644,10 @@ public class FractalParameterService : IFractalParameterService
         // Thorn: z/c + z² + c unique formula
         RegisterTemplate("Thorn", () => CreateJuliaTemplate("Thorn"));
 
-        // Multibrot3, 4, 5: Separate registrations for z³, z⁴, z⁵ (distinct from our z3, z4, z5 aliases)
-        RegisterTemplate("Multibrot3", () => CreateMultibrotTemplate("Multibrot3", 3));
-        RegisterTemplate("Multibrot4", () => CreateMultibrotTemplate("Multibrot4", 4));
-        RegisterTemplate("Multibrot5", () => CreateMultibrotTemplate("Multibrot5", 5));
-
         // ═══════════════════════════════════════════════════════════════════════════
         // PHASE 4 PRIORITY 1: POWER VARIANTS (9 fractals)
         // Higher-power variations of Mandelbrot, Julia, Burning Ship, and Tricorn
         // ═══════════════════════════════════════════════════════════════════════════
-
-        // Multibrot6, 7, 8: z⁶ + c, z⁷ + c, z⁸ + c (separate from z6/z7/z8 aliases)
-        RegisterTemplate("Multibrot6", () => CreateMultibrotTemplate("Multibrot6", 6));
-        RegisterTemplate("Multibrot7", () => CreateMultibrotTemplate("Multibrot7", 7));
-        RegisterTemplate("Multibrot8", () => CreateMultibrotTemplate("Multibrot8", 8));
 
         // Julia5, Julia6: z⁵ + c and z⁶ + c Julia preset fractals
         RegisterTemplate("Julia5", () => CreateStandardTemplate("Julia5"));
@@ -1001,9 +1014,9 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("Multibrot3Julia", () => CreateJuliaTemplate("Multibrot3Julia"));
 
         // Multibrot4Julia: z⁴ + c Julia set (center 0,0; zoom 1.5)
-        // Quartic power Julia variant, Julia-enabled
-        // Formula: z(n+1) = z⁴ + c
-        RegisterTemplate("Multibrot4Julia", () => CreateJuliaTemplate("Multibrot4Julia"));
+        // Pure Julia preset with fixed c=(0.484, 0.467), no Julia toggle
+        // Formula: z(n+1) = z⁴ + (0.484 + 0.467i)
+        RegisterTemplate("Multibrot4Julia", () => CreateStandardTemplate("Multibrot4Julia"));
 
         // ═══════════════════════════════════════════════════════════════════════════
         // PHASE 4 PRIORITY 12: ADVANCED TECHNIQUES & EXTENSIONS (19 fractals)
@@ -1145,11 +1158,6 @@ public class FractalParameterService : IFractalParameterService
         // FINAL RECONCILIATION: Last 3 fractals (279/279 complete)
         // ═══════════════════════════════════════════════════════════════════════════
 
-        // Multibrot-10: z¹⁰ + c decic polynomial (center 0,0; zoom 1.5)
-        // Tenth-order Mandelbrot variant with ten-fold rotational symmetry
-        // Formula: z(n+1) = z¹⁰ + c
-        RegisterTemplate("Multibrot-10", () => CreateJuliaTemplate("Multibrot-10"));
-
         // JuliaSanMarco: Named Julia preset with fixed c (center 0,0; zoom 0.5)
         // Pre-set Julia constant, no Julia toggle
         // Formula: z² + c where c is fixed at classic value
@@ -1174,6 +1182,92 @@ public class FractalParameterService : IFractalParameterService
         RegisterTemplate("FractalPlant", () => CreateLSystemTemplate("FractalPlant", 6));
         RegisterTemplate("KochCurve", () => CreateLSystemTemplate("KochCurve", 4));
         RegisterTemplate("PeanoCurve", () => CreateLSystemTemplate("PeanoCurve", 4));
+
+        // ═══════════════════════════════════════════════════════════════════════════
+        // PHASE 6: REMAINING FRACTALS (Engineering, Special Functions, Exotic, etc.)
+        // ═══════════════════════════════════════════════════════════════════════════
+
+        // Science & Engineering fractals
+        RegisterTemplate("ArrheniusKinetics", () => CreateStandardTemplate("ArrheniusKinetics"));
+        RegisterTemplate("BasquinFatigue", () => CreateStandardTemplate("BasquinFatigue"));
+        RegisterTemplate("EulerBuckling", () => CreateStandardTemplate("EulerBuckling"));
+        RegisterTemplate("LangmuirIsotherm", () => CreateStandardTemplate("LangmuirIsotherm"));
+        RegisterTemplate("RambergOsgood", () => CreateStandardTemplate("RambergOsgood"));
+        RegisterTemplate("TorsionalTwist", () => CreateStandardTemplate("TorsionalTwist"));
+        RegisterTemplate("RLCCircuitFractal", () => CreateStandardTemplate("RLCCircuitFractal"));
+        RegisterTemplate("DampedOscillatorFractal", () => CreateStandardTemplate("DampedOscillatorFractal"));
+        RegisterTemplate("RootLocusFractal", () => CreateStandardTemplate("RootLocusFractal"));
+
+        // Special mathematical functions (Airy, Bessel, Weierstrass, etc.)
+        RegisterTemplate("AiryBi", () => CreateJuliaTemplate("AiryBi"));
+        RegisterTemplate("WeierstrassP", () => CreateJuliaTemplate("WeierstrassP"));
+        RegisterTemplate("WeierstrassSigma", () => CreateJuliaTemplate("WeierstrassSigma"));
+        RegisterTemplate("WeierstrassZeta", () => CreateJuliaTemplate("WeierstrassZeta"));
+        RegisterTemplate("DedekindEta", () => CreateJuliaTemplate("DedekindEta"));
+        RegisterTemplate("DigammaFractal", () => CreateJuliaTemplate("DigammaFractal"));
+        RegisterTemplate("TrigammaFractal", () => CreateJuliaTemplate("TrigammaFractal"));
+
+        // Jacobi elliptic functions
+        RegisterTemplate("JacobiSN", () => CreateJuliaTemplate("JacobiSN"));
+        RegisterTemplate("JacobiCN", () => CreateJuliaTemplate("JacobiCN"));
+        RegisterTemplate("JacobiDN", () => CreateJuliaTemplate("JacobiDN"));
+
+        // Statistical/Quantum fractals
+        RegisterTemplate("BoseEinsteinFractal", () => CreateStandardTemplate("BoseEinsteinFractal"));
+        RegisterTemplate("FermiDiracFractal", () => CreateStandardTemplate("FermiDiracFractal"));
+        RegisterTemplate("PlanckFractal", () => CreateStandardTemplate("PlanckFractal"));
+
+        // Chebyshev and Legendre polynomials
+        RegisterTemplate("ChebyshevPolynomial", () => CreateStandardTemplate("ChebyshevPolynomial"));
+        RegisterTemplate("LegendrePolynomial", () => CreateStandardTemplate("LegendrePolynomial"));
+
+        // Chemical engineering
+        RegisterTemplate("CahnHilliard", () => CreateStandardTemplate("CahnHilliard"));
+        RegisterTemplate("GrayScott", () => CreateStandardTemplate("GrayScott"));
+
+        // Combinatorial fractals
+        RegisterTemplate("CombinatorialMandelbrot", () => CreateJuliaTemplate("CombinatorialMandelbrot"));
+        RegisterTemplate("InverseCombinatorial", () => CreateJuliaTemplate("InverseCombinatorial"));
+        RegisterTemplate("CollatzFractal", () => CreateStandardTemplate("CollatzFractal"));
+
+        // Chaotic maps
+        RegisterTemplate("DuffingMap", () => CreateStandardTemplate("DuffingMap"));
+
+        // Tetration family
+        RegisterTemplate("TetrationClassic", () => CreateJuliaTemplate("TetrationClassic"));
+        RegisterTemplate("TetrationPowerTower", () => CreateJuliaTemplate("TetrationPowerTower"));
+        RegisterTemplate("TetrationZtoZ", () => CreateJuliaTemplate("TetrationZtoZ"));
+
+        // Magnet standard (non-Julia variants)
+        RegisterTemplate("Magnet1", () => CreateStandardTemplate("Magnet1"));
+        RegisterTemplate("Magnet2", () => CreateStandardTemplate("Magnet2"));
+
+        // Newton rational function variants
+        RegisterTemplate("NewtonQuarticRational", () => CreateStandardTemplate("NewtonQuarticRational"));
+        RegisterTemplate("NewtonQuinticRational", () => CreateStandardTemplate("NewtonQuinticRational"));
+
+        // Exotic / Experimental
+        RegisterTemplate("MandelbarExotic", () => CreateJuliaTemplate("MandelbarExotic"));
+        RegisterTemplate("SechMandel", () => CreateJuliaTemplate("SechMandel"));
+        RegisterTemplate("ExponentialLogarithmic", () => CreateJuliaTemplate("ExponentialLogarithmic"));
+        RegisterTemplate("Nebulabrot", () => CreateStandardTemplate("Nebulabrot"));
+        RegisterTemplate("JuliaSiegelDiskAlt", () => CreateStandardTemplate("JuliaSiegelDiskAlt"));
+
+        // Trigonometric variants
+        RegisterTemplate("TrigSqr", () => CreateJuliaTemplate("TrigSqr"));
+        RegisterTemplate("ZxTrigPlusZ", () => CreateJuliaTemplate("ZxTrigPlusZ"));
+
+        // Classic/Historical variants
+        RegisterTemplate("MandelLambdaClassic", () => CreateJuliaTemplate("MandelLambdaClassic"));
+        RegisterTemplate("MandelTrigClassic", () => CreateJuliaTemplate("MandelTrigClassic"));
+        RegisterTemplate("ThornClassic", () => CreateJuliaTemplate("ThornClassic"));
+
+        // Mandelbrot variants
+        RegisterTemplate("CelticBuffalo", () => CreateJuliaTemplate("CelticBuffalo"));
+
+        // Placeholder/compatibility
+        RegisterTemplate("MarksMandelPlaceholder", () => CreateJuliaTemplate("MarksMandelPlaceholder"));
+
 
         // ═══════════════════════════════════════════════════════════════════════════
         // FALLBACK: Generic escape-time template for unknown fractals

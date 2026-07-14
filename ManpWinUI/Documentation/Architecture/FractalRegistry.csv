@@ -1,297 +1,336 @@
-Index,Group Name,Fractal Name,Internal Name,Pass/Fail,Notes,Center X,Center Y,X Scale Width,Y Scale Width,Calculated Zoom,VP Tuning Status,Mark's Action?
-1,Attractors,Aizawa Attractor,Aizawa,Pass,,,,,,,,
-2,Attractors,Chen-Lee Attractor,ChenLee,Pass,,,,,,,,
-3,Attractors,Dadras Attractor,Dadras,Pass,,,,,,,,
-4,Attractors,Halvorsen Attractor,Halvorsen,Pass,,,,,,,,
-5,Attractors,Lorenz Attractor,Lorenz,Pass,,,,,,,,
-6,Attractors,Pickover Attractor,Pickover,Pass,,,,,,,,
-7,Attractors,Thomas Attractor,Thomas,Pass,,,,,,,,
-8,Barnsley,Barnsley J1,BarnsleyJ1,Pass,,,,,,,,
-9,Barnsley,Barnsley J2,BarnsleyJ2,Pass,,,,,,,,
-10,Barnsley,Barnsley J3,BarnsleyJ3,Pass,,,,,,,,
-11,Barnsley,Barnsley M1,BarnsleyM1,Pass,,,,,,,,
-12,Barnsley,Barnsley M2,BarnsleyM2,Pass,,,,,,,,
-13,Barnsley,Barnsley M3,BarnsleyM3,Pass,,,,,,,,
-14,Bifurcation,Henon Parameter Space,HenonParameterSpace,Pass,,,,,,,,
-15,Bifurcation,Lambda Parameter Space,LambdaParameterSpace,Pass,,,,,,,,
-16,Bifurcation,Logistic Parameter Space,LogisticParameterSpace,Pass,Vertical bands?  Check formulation,,,,,,,
-17,Bifurcation,Mandelbrot Parameter Space,MandelParameter,Pass,,,,,,,,
-18,Bifurcation,May-Lyapunov Reference,MayLyapunovRef,Pass,Vertical bands?  Check formulation,,,,,,,
-19,Bifurcation,Orbit Diagram,OrbitDiagram,Pass,,,,,,,,
-20,Burning Ship Family,Burning Ship (Power 3),BurningShip3,Pass,,,,,,,,
-21,Burning Ship Family,Burning Ship (Power 4),BurningShip4,Pass,,,,,,,,
-22,Burning Ship Variants,Bird of Prey,BirdofPrey,Pass,,,,,,,,
-23,Burning Ship Variants,Buffalo Burning Ship,BuffaloBurningShip,Pass,,,,,,,,
-24,Burning Ship Variants,Burning Ship Cubic,BurningShipCubic,Pass,,,,,,,,
-25,Burning Ship Variants,Burning Ship Quartic,BurningShipQuartic,Pass,,,,,,,,
-26,Burning Ship Variants,Burning Ship Quintic,BurningShipQuintic,Pass,,,,,,,,
-27,Burning Ship Variants,Celtic Burning Ship,CelticBurningShip,Pass,,,,,,,,
-28,Burning Ship Variants,Diagonal Burning Ship,DiagonalBurningShip,Pass,,,,,,,,
-29,Burning Ship Variants,Partial Burning Ship,PartialBurningShip,Pass,,,,,,,,
-30,Burning Ship Variants,Perpendicular Burning Ship,PerpendicularBurningShip,Pass,,,,,,,,
-31,Burning Ship Variants,Reverse Burning Ship,ReverseBurningShip,Pass,,,,,,,,
-32,Burning Ship Variants,Shark Burning Ship,SharkBurningShip,Pass,,,,,,,,
-33,Burning Ship Variants,Vertical Burning Ship,VerticalBurningShip,Pass,looks almost exactly like Bird Of Prey.  Check formula or introduce more vairation,,,,,,,
-34,Chaotic Maps,Arneodo Attractor,Arneodo,Pass,,0.00,0.00,1.4457831325E+00,8.1325301205E-01,,,
-35,Chaotic Maps,Liu-Chen Attractor,LiuChen,Pass,,0.00,0.00,1.5437862490E+02,8.6837976551E+01,,,
-36,Chaotic Maps,Rabinovich-Fabrikant Attractor,RabinovichFabrikant,Pass,,,,,,,,
-37,Chaotic Maps,Sprott B Attractor,SprottB,Pass,,,,,,,,
-38,Classic Fractals,Lambda,Lambda,Pass,,1.00,0.00,6.0000000000E+00,3.3750000000E+00,,,
-39,Classic Fractals,Mandelbrot Set,Mandelbrot,Pass,,,,,,,,
-40,Classic Fractals,Mandel-Lambda,MandelLambda,Pass,,0.86,-0.03,5.5981979492E+00,5.5981979492E+00,,,
-41,Classic Fractals,Tetrate,Tetrate,Pass,,-1.50,0.00,3.0000000000E+00,1.6875000000E+00,,,
-42,Classic Fractals,Unity,Unity,Pass,,,,,,,,
-43,Classical Polynomials,Chebyshev Polynomial,ChebyshevPolynomial,Pass,,(-0.8737499999999998,-0.01,1.2000000000E+00,6.7500000000E-01,,,
-44,Classical Polynomials,Legendre Polynomial,LegendrePolynomial,Pass,,,,,,,,
-45,Complex Functions,1/sin(z)²,Sqr1OverTrig,Pass,,,,,,,,
-46,Complex Functions,cos(z)/tan(z),CosTan,Pass,,,,,,,,
-47,Complex Functions,Square + Trig,SqrTrig,Pass,,,,,,,,
-48,Complex Functions,Tetration (z^z),TetrationZtoZ,Pass,,-1.12,0.18,3.7968605725E+01,2.1357340720E+01,,,
-49,Complex Functions,Trig + Trig,TrigPlusTrig,Pass,,,,,,,,
-50,Complex Functions,Trig × Trig,TrigXTrig,Pass,,,,,,,,
-51,Complex Functions,Trig Squared,TrigSqr,Pass,,,,,,,,
-52,Complex Functions,z·sin(z) + z,ZxTrigPlusZ,Pass,,,,,,,,
-53,Distance Estimator,Burning Ship (Distance Estimator),BurningShipDEM,Pass,,,,,,,,
-54,Distance Estimator,Julia (Distance Estimator),JuliaDEM,Pass,,,,,,,,
-55,Distance Estimator,Mandelbrot (Distance Estimator),MandelbrotDEM,Pass,,,,,,,,
-56,Distance Estimator,Tricorn (Distance Estimator),TricornDEM,Pass,,,,,,,,
-57,Elliptic Functions,Jacobi Elliptic sn,JacobiSN,Pass,,0.00,0.04,1.9657483302E+01,1.1057334357E+01,1.5261363593E-01,,
-58,Elliptic Functions,Weierstrauss p-function,WeierstrassP,Pass,,-7.08,0.15,1.5544412705E+01,8.7437321465E+00,1.9299539049E-01,,
-59,Exotic,Buffalo Fractal,Buffalo,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,5.0000000000E-01,,
-60,Exotic,Celtic Mandelbrot,CelticMandelbrot,Pass,,-0.50,0.00,3.0000000000E+00,1.6875000000E+00,1.0000000000E+00,,
-61,Exotic,Heart Mandelbrot,HeartMandelbrot,Pass,,-0.60,0.00,4.1636781890E+00,2.3420689813E+00,7.2051677959E-01,,
-62,Exotic,Perpendicular Mandelbrot,PerpendicularMandelbrot,Pass,,-0.40,-0.30,3.2776985730E+00,1.8436548223E+00,9.1527635418E-01,,
-63,Exotic,Quasi-Perpendicular,QuasiPerpendicular,Pass,,-0.80,-0.50,4.1439368853E+00,2.3309644980E+00,7.2394924996E-01,,
-64,Exotic,Shark Fin,SharkFin,Pass,,-0.50,0.00,2.6060913706E+00,1.4659263959E+00,1.1511492014E+00,,
-65,Exotic,Wavy,Wavy,Pass,looks like a plain Mandelbrot;  what is supposed to be unique about this fractal?  Perhaps introduce more fine structure or variation,,,,,,,
-66,Exotic,Zubieta,Zubieta,Pass,,0.00,0.00,5.1202902653E-01,2.8801632742E-01,,,
-67,Exotic Fractals,Magnet I,Magnet1,Pass,,-0.50,0.00,2.6060913706E+00,1.4659263959E+00,,,
-68,Exotic Fractals,Magnet II,Magnet2,Pass,,,,,,,,
-69,Exotic Fractals,Phoenix Fractal,Phoenix,Pass,,-0.50,0.00,4.2624553487E+00,2.3976311330E+00,,,
-70,Exponential Fractals,Complex Power,ComplexPower,Pass,,0.50,0.00,3.0000000000E+00,1.6875000000E+00,,,
-71,Exponential Fractals,Exponential Fractal,Exponential,Pass,,-1.00,0.00,1.5000000000E+01,8.4375000000E+00,,,
-72,Exponential Fractals,Exponential Julia,ExponentialJulia,Pass,,,,,,,,
-73,Exponential Fractals,Exponential Mandelbrot,ExponentialLogarithmic,Pass,,-1.00,0.00,2.0000000000E+01,1.1250000000E+01,,,
-74,Exponential Fractals,Exponential Square,ExpSquare,Pass,,,,,,,,
-75,Exponential Fractals,Lambda Lambda Exponential,LLambdaExp,Pass,,-2.50,0.00,1.2000000000E+01,6.7500000000E+00,,,
-76,Exponential Fractals,Lambda Mandel Exponential,LMandelExp,Pass,,0.00,0.00,3.7377883029E+01,2.1025059204E+01,,,
-77,Exponential Fractals,Logarithm Fractal,Logarithm,Pass,,0.88,0.00,3.7500000000E-01,2.1093750000E-01,,,
-78,Exponential Fractals,Logarithmic Mandelbrot,Logarithmic,Pass,,0.24,-0.30,1.9350213898E+00,1.0884495317E+00,,,
-79,Exponential Fractals,Mandelbrot Exponential,MandelExp,Pass,,-1.75,0.00,3.0000000000E+00,1.6875000000E+00,,,
-80,Exponential Fractals,Power Tower (z^z),PowerTower,Pass,,0.75,0.00,2.6095097916E+00,1.4678492578E+00,,,
-81,Exponential Fractals,z^z + c,ZToTheZ,Pass,,0.50,0.00,1.5000000000E+00,8.4375000000E-01,,,
-82,Historical Fractals,Chip Map,ChipMap,Pass,,,,,,,,
-83,Historical Fractals,Collatz Fractal,CollatzFractal,Pass,,,,,,,,
-84,Historical Fractals,Duffing Map,DuffingMap,Pass,,0.00,0.00,6.7677102075E+00,3.8068369917E+00,,,
-85,Historical Fractals,Martin Map,MartinMap,Pass,,0.00,0.00,4.4266476250E+02,2.4899892891E+02,,,
-86,Historical Fractals,Pickover Biomorphs,Biomorphs,Pass,yet another Mandelbrot; so what's unique about this?  Or introduce more fine structure or variation,,,,,,,
-87,Historical Fractals,Pickover Stalks,PickoverStalks,Pass,,-0.75,0.00,3.9272543838E+00,2.2090805910E+00,,,
-88,Historical Fractals,Quaternion Julia (2D slice),QuaternionJulia2D,Pass,,,,,,,,
-89,Historical Fractals,Sinusoidal Fractal,SinusoidalFractal,Pass,,,,,,,,
-90,Hybrid Fractals,Bifurcation-Mandelbrot,BifurcationMandel,Pass,,1.00,0.00,6.6504798243E+00,3.7408990110E+00,,,
-91,Hybrid Fractals,Burning Mandelbrot Hybrid,BurningMandel,Pass,,-0.50,0.00,3.7942978950E+00,2.1342925659E+00,,,
-92,Hybrid Fractals,Celtic Mandelbrot (Hybrid),CelticMandelbrot,Pass,,-0.75,0.00,4.2857142857E+00,2.4107142857E+00,,,
-93,Hybrid Fractals,Celtic-Burning Ship Hybrid,CelticBurningHybrid,Pass,,-0.50,0.00,4.1877356095E+00,2.3556012803E+00,,,
-94,Hybrid Fractals,Collatz-Style Hybrid,CollatzHybrid,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,,
-95,Hybrid Fractals,Exponential-Mandelbrot Blend,ExpMandelBlend,Pass,,-1.40,0.00,3.0000000000E+00,1.6875000000E+00,,,
-96,Hybrid Fractals,Exponential-Mandelbrot Hybrid,ExpMandelHybrid,Pass,,-1.40,0.00,5.6960146866E+00,3.2040082612E+00,,,
-97,Hybrid Fractals,Magnet-Mandelbrot Hybrid,MagnetMandelHybrid,Pass,,-2.00,0.00,1.9878954426E+01,1.1181911864E+01,,,
-98,Hybrid Fractals,Mandelbrot-Burning Ship Hybrid,MandelBurningHybrid,Pass,,0.00,0.00,4.5202694987E+00,2.5426515930E+00,,,
-99,Hybrid Fractals,Mandelbrot-Lambda Mix,MandelLambdaMix,Pass,,-0.75,0.00,8.3170035400E+00,4.6783144913E+00,,,
-100,Hybrid Fractals,Multi-Power Cycle,MultiPowerCycle,Pass,,,,,,,,
-101,Hybrid Fractals,Mutant Mandelbrot (Power Evolution),MutantMandelbrot,Pass,,-0.50,0.00,3.0000000000E+00,1.6875000000E+00,,,
-102,Hybrid Fractals,Newton-Mandelbrot Blend,NewtonMandelBlend,Pass,,-0.75,0.00,1.0867649184E+01,6.1130526661E+00,,,
-103,Hybrid Fractals,Perturbed Newton,PerturbedNewton,Pass,,0.00,0.00,2.0000000000E+01,1.1250000000E+01,,,
-104,Hybrid Fractals,Sierpinski-Mandelbrot Cross,SierpinskiMandel,Pass,,0.00,0.00,7.5000000000E+00,4.2187500000E+00,,,
-105,Hybrid Fractals,Sine-Mandelbrot Hybrid,SineMandelHybrid,Pass,,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,,
-106,Hybrid Fractals,Tricorn-Phoenix Hybrid,TricornPhoenixHybrid,Pass,,-0.58,-0.11,1.8124306326E+00,1.0194922309E+00,,,
-107,Hybrid Fractals,Trig-Mandelbrot Blend,TrigMandelBlend,Pass,,-0.37,-0.01,4.1593292609E+00,2.3396227093E+00,,,
-108,Iterated Function Systems,Barnsley Fern (IFS),BarnsleyFern,Pass,,0.00,5.75,1.9607041454E+01,1.1028960818E+01,,,
-109,Iterated Function Systems,Dragon Curve (IFS),DragonCurveIFS,Pass,,0.46,0.18,2.0306172840E+00,1.1422222222E+00,,,
-110,Iterated Function Systems,Pentagon (IFS),PentagonIFS,Pass,,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,,
-111,Iterated Function Systems,Sierpinski Triangle (IFS),SierpinskiIFS,Pass,,0.50,0.43,2.0000000000E+00,1.1250000000E+00,,,
-112,Iterated Function Systems,Tree (IFS),TreeIFS,Pass,,-0.01,1.03,1.4744156379E+00,8.2935879630E-01,,,
-113,Julia Presets,Julia - Airplane,JuliaAirplane,Pass,,0.03,-0.02,4.4267667292E+00,2.4900562852E+00,,,
-114,Julia Presets,Julia - Backbone,JuliaBackbone,Pass,,-0.08,0.01,4.0145090682E+00,2.2581613508E+00,,,
-115,Julia Presets,Julia - Cauliflower,JuliaCauliflower,Pass,,-0.04,-0.01,5.2552845528E+00,2.9560975610E+00,,,
-116,Julia Presets,Julia - Crystal,JuliaCrystal,Pass,,0.20,-0.02,4.3163112451E+00,2.4279250753E+00,,,
-117,Julia Presets,Julia - Dendrite (Preset),JuliaDendritePreset,Pass,,,,,,,,
-118,Julia Presets,Julia - Dragon (Preset),JuliaDragonPreset,Pass,,-0.04,-0.01,4.2906945562E+00,2.4135156879E+00,,,
-119,Julia Presets,Julia - Eye,JuliaEye,Pass,,0.04,-0.01,3.9351034249E+00,2.2134956765E+00,,,
-120,Julia Presets,Julia - Feigenbaum Point,JuliaFeigenbaum,Pass,,-0.01,-0.09,4.4701327434E+00,2.5144496681E+00,,,
-121,Julia Presets,Julia - Flower,JuliaFlower,Pass,,-0.05,-0.03,4.2812281926E+00,2.4081908583E+00,,,
-122,Julia Presets,Julia - Fractal Tree,JuliaFractalTree,Pass,,0.05,0.03,3.4213639189E+00,1.9245172044E+00,,,
-123,Julia Presets,Julia - Fuzzy Blob,JuliaFuzzyBlob,Pass,,0.06,-0.02,3.9862084307E+00,2.2422422422E+00,,,
-124,Julia Presets,Julia - Golden Ratio,JuliaGoldenRatio,Pass,,0.00,0.01,4.2807017544E+00,2.4078947368E+00,,,
-125,Julia Presets,Julia - Heart,JuliaHeart,Pass,,-0.08,-0.03,3.5530932595E+00,1.9986149584E+00,,,
-126,Julia Presets,Julia - Lightning,JuliaLightning,Pass,,0.15,-0.02,4.0217155266E+00,2.2622149837E+00,,,
-127,Julia Presets,Julia - Medusa,JuliaMedusa,Pass,,0.29,0.00,4.1346362981E+00,2.3257329177E+00,,,
-128,Julia Presets,Julia - Neurons,JuliaNeurons,Pass,,0.05,-0.01,3.6395223910E+00,2.0472313449E+00,,,
-129,Julia Presets,Julia - Paisley,JuliaPaisley,Pass,,0.25,-0.05,4.3257328990E+00,2.4332247557E+00,,,
-130,Julia Presets,Julia - Seahorse Valley,JuliaSeahorse,Pass,,0.03,0.00,3.2650046168E+00,1.8365650970E+00,,,
-131,Julia Presets,Julia - Snowflake,JuliaSnowflake,Pass,,-0.22,0.01,4.2216066482E+00,2.3746537396E+00,,,
-132,Julia Presets,Julia - Spiral (Preset),JuliaSpiralPreset,Pass,,-0.04,-0.02,4.3582641940E+00,2.4515236091E+00,,,
-133,Julia Presets,Julia - Spiral Galaxy,JuliaSpiralGalaxy,Pass,,0.11,-0.03,3.9956568947E+00,2.2475570033E+00,,,
-134,Julia Presets,Julia - Triple Spiral,JuliaTripleSpiral,Pass,,0.02,0.00,3.9778393352E+00,2.2375346260E+00,,,
-135,Julia Presets,Julia - Twisted Cross,JuliaTwistedCross,Pass,,-0.11,0.00,4.2474607853E+00,2.3891966918E+00,,,
-136,Julia Sets,Julia - Burning Ship,JuliaBurningShip,Pass,,,,,,,,
-137,Julia Sets,Julia - Classic,JuliaClassic,Pass,,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,,
-138,Julia Sets,Julia - Cubic,JuliaCubic,Pass,,0.00,0.16,4.0000000000E+00,2.2500000000E+00,,,
-139,Julia Sets,Julia - Custom,JuliaCustom,Pass,,,,,,,,
-140,Julia Sets,Julia - Dendrite,JuliaDendrite,Pass,,0.00,0.00,4.4535706105E+00,2.5051334684E+00,,,
-141,Julia Sets,Julia - Douady Rabbit,JuliaDouadyRabbit,Pass,,0.00,0.00,3.9585237323E+00,2.2266695994E+00,,,
-142,Julia Sets,Julia - Dragon,JuliaDragon,Pass,,,,,,,,
-143,Julia Sets,Julia - Exponential,Exponential,Pass,,0.22,0.04,3.8438438438E+01,2.1621621622E+01,,,
-144,Julia Sets,Julia - Lambda,JuliaLambda,Pass,black screen no structure at any zoom,0.50,0.00,6.0000000000E+00,3.3750000000E+00,,,
-145,Julia Sets,Julia - Lambda (Alt),LambdaJulia,Pass,"another boring black hole, where's the lambda in the formula?",0.45,-0.04,6.0000000000E+00,3.3750000000E+00,,,
-146,Julia Sets,Julia - Magnet,JuliaMagnet,Pass,,-0.54,-0.02,1.6000000000E+01,9.0000000000E+00,,,
-147,Julia Sets,Julia - Multibrot 3,Multibrot3,Pass,,0.00,0.00,4.2870938501E+00,2.4114902907E+00,,,
-148,Julia Sets,Julia - Multibrot 4,Multibrot4,Pass,boring black square; still boring,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,,
-149,Julia Sets,Julia - Phoenix,JuliaPhoenix,Pass,,0.11,0.04,5.9223668113E+00,3.3313313313E+00,,,
-150,Julia Sets,Julia - Power 5,Julia5,Pass,boring black pentagon - still boring,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,,
-151,Julia Sets,Julia - Power 6,Julia6,Pass,boring black pentagon -  looks identical to Julia Power 5,0.00,0.00,5.9223668113E+00,3.3313313310E+00,,,
-152,Julia Sets,Julia - San Marco,JuliaSanMarco,Pass,,0.00,0.00,3.0000000000E+00,1.6875000000E+00,,,
-153,Julia Sets,Julia - Siegel Disk,JuliaSiegelDisk,Pass,,0.00,0.00,3.6934332400E+00,2.0775561975E+00,,,
-154,Julia Sets,Julia - Siegel Disk (Alt),JuliaSiegelDiskAlt,Pass,"looks identical or close to previous Siegal Disk, can you introduce much more difference in appearance or find structure",0.00,0.00,3.6934332400E+00,2.0775561975E+00,,,
-155,Julia Sets,Julia - Sine,JuliaSine,Pass,can you introduce more fine feathering or details,0.00,0.00,2.2392791797E+01,1.2595945386E+01,,,
-156,Julia Sets,Julia - Spiral,JuliaSpiral,Pass,,0.00,0.00,3.2153203876E+00,1.8086177180E+00,,,
-,,,,,,,,,,,,
-157,Lambda Fractals,Lambda Flip,LambdaFlip,Pass,double mandelbrot,1.00,-0.01,6.0000000000E+00,3.3750000000E+00,,APPLIED,"Do not resubmit, action finished"
-158,Lambda Fractals,Lambda Modified,LambdaModified,Pass,,0.00,0.01,6.0000000000E+00,3.3750000000E+00,,FORMULA FIXED,Resubmit with NEW numbers; generated
-159,Lambda Fractals,Lambda Phoenix,LambdaPhoenix,Pass,,0.80,0.01,5.2233033798E+00,2.9381081511E+00,,FORMULA FIXED,Resubmit with NEW numbers; generated
-160,Lambda Fractals,Lambda Power 3,LambdaPower3,Pass,,0.50,0.00,2.5722563101E+01,1.4468941744E+01,,FORMULA FIXED,Resubmit with NEW numbers; generated
-161,Lambda Fractals,Lambda Power 4,LambdaPower4,Pass,,0.50,0.00,5.5137521040E+01,3.1014855585E+01,,FORMULA FIXED,Resubmit with NEW numbers; generated
-162,Lambda Fractals,Lambda Squared,LambdaSquared,Pass,,-0.07,0.09,1.2000000000E+01,6.7500000000E+00,,FORMULA FIXED,Resubmit with NEW numbers; generated
-163,Lambda Fractals,Lambda Tan,LambdaTan,Pass,,-0.05,0.04,2.6986537192E+00,1.5179927170E+01,,FORMULA FIXED,Resubmit with NEW numbers; generated
-164,Lambda Fractals,Lambda Tanh,LambdaTanh,Pass,,-0.05,0.03,2.9512516469E+01,1.6600790514E+01,,FORMULA FIXED,Resubmit with NEW numbers; generated
-165,Magnet Fractals,Magnet I Cubic,Magnet1Power3,Pass,,0.50,0.00,1.1708916568E+01,6.5862655690E+00,,NOT APPLIED,Resubmit with same numbers
-166,Magnet Fractals,Magnet I Julia,Magnet1J,Pass,,0.00,0.06,1.5913224864E+01,8.9511889862E+00,,NOT APPLIED,Resubmit with same numbers
-167,Magnet Fractals,Magnet II Cubic,Magnet2Power3,Pass,,-0.64,0.10,2.0325406911E+01,5.5349445397E-02,,NOT APPLIED,Resubmit with same numbers
-168,Magnet Fractals,Magnet II Julia,Magnet2J,Pass,,-2.05,-0.39,1.9784731066E+00,5.6862031443E-02,,NOT APPLIED,Resubmit with same numbers
-169,Mandelbrot Variants,Burning Ship,BurningShip,Pass,,-0.50,-0.50,2.1093750000E+00,1.0000000000E+00,,NOT APPLIED,Resubmit with same numbers
-170,Mandelbrot Variants,Celtic Buffalo,CelticBuffalo,Pass,,-0.29,-0.56,2.3864853865E+00,3.5355339059E-01,,NOT APPLIED,Resubmit with same numbers
-171,Mandelbrot Variants,Celtic Heart,CelticHeart,Pass,,-0.54,0.04,3.6257142857E+00,3.1028368794E-01,,NOT APPLIED,Resubmit with same numbers
-172,Mandelbrot Variants,Heart Mandelbrot (Sine),HeartMandelbrot,Pass,,-0.45,0.00,2.0000000000E+00,1.1250000000E+00,,NOT APPLIED,Resubmit with same numbers
-173,Mandelbrot Variants,Julia Power 4,Julia4,Pass,,0.00,0.00,4.9481546654E+00,2.7833369993E+00,,NOT APPLIED,Resubmit with same numbers
-174,Mandelbrot Variants,Mandelbar,Mandelbar,Pass,,0.00,0.00,7.9170474646E+00,4.4533391989E+00,,NOT APPLIED,Resubmit with same numbers
-175,Mandelbrot Variants,Mandelbar (Conjugate),Mandelbar,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,NOT APPLIED,Resubmit with same numbers
-176,Mandelbrot Variants,Mandelbrot Power 4,Mandel4,Pass,,0.00,0.00,4.0191504845E+00,2.2607721475E+00,,NOT APPLIED,Resubmit with same numbers
-177,Mandelbrot Variants,Mandelbrot-Lambda,MandelLambda,Pass,,1.00,0.01,6.0609152673E+00,3.4092648379E+00,,FORMULA FIXED,Resubmit with NEW numbers; generated
-178,Mandelbrot Variants,Manowar,Manowar,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-179,Mandelbrot Variants,Marks Julia,MarksJulia,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-180,Mandelbrot Variants,Marks Mandelbrot,MarksMandel,Pass,,-0.36,0.00,4.2426406871E+00,2.3864853865E+00,,NOT APPLIED,Resubmit with same numbers
-181,Mandelbrot Variants,Marks Mandelbrot (Classic),MarksMandelPlaceholder,Pass,no difference with previous?,-0.39,0.00,3.6934332400E+00,2.0775561975E+00,,IMPROVED + NOT APPLIED,Resubmit with NEW numbers; generated
-182,Mandelbrot Variants,Multibrot (Power 6),Multibrot6,Pass,,0.00,0.00,4.0000000000E+00,2.5000000000E+00,,NOT APPLIED,Resubmit with same numbers
-183,Mandelbrot Variants,Multibrot (Power 7),Multibrot7,Pass,,0.00,0.00,4.2870938501E+00,2.4114902907E+00,,NOT APPLIED,Resubmit with same numbers
-184,Mandelbrot Variants,Multibrot (Power 8),Multibrot8,Pass,,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,NOT APPLIED,Resubmit with same numbers
-185,Mandelbrot Variants,Multibrot³ (Cubic),Multibrot3,Pass,,-0.16,0.01,5.4524630517E+00,3.0670104666E+00,,NOT APPLIED,Resubmit with same numbers
-186,Mandelbrot Variants,Multibrot? (Quartic),Multibrot4,Pass,,0.00,0.00,4.2857142857E+00,2.4107142857E+00,,NOT APPLIED,Resubmit with same numbers
-187,Mandelbrot Variants,Multibrot? (Quintic),Multibrot5,Pass,,0.00,0.00,4.6153846154E+00,2.5961538462E+00,,NOT APPLIED,Resubmit with same numbers
-188,Mandelbrot Variants,Perpendicular Mandelbrot (Abs First),PerpendicularMandelbrot,Pass,,-0.15,0.63,4.5794579575E+00,2.5759451011E+00,,NOT APPLIED,Resubmit with same numbers
-189,Mandelbrot Variants,Shark Fin Mandelbrot,SharkFinMandelbrot,Pass,,0.00,0.00,5.0000000000E-01,2.8125000000E-01,,NOT APPLIED,Resubmit with same numbers
-190,Mandelbrot Variants,Spider,Spider,Pass,nice,-0.59,0.00,3.0000000000E+00,1.6875000000E+00,,NOT APPLIED,Resubmit with same numbers
-191,Mandelbrot Variants,Spider Variant,SpiderVariant,Pass,,-0.25,-0.02,4.8735143555E+00,2.7413518250E+00,,NOT APPLIED,Resubmit with same numbers
-192,Mandelbrot Variants,Thorn,Thorn,Pass,,-0.21,-0.02,6.0000000000E+00,3.3750000000E+00,,NOT APPLIED,Resubmit with same numbers
-193,Mandelbrot Variants,Thorn (Classic),ThornClassic,Pass,,0.00,0.00,8.7583915586E-01,4.9265952517E-01,,FORMULA FIXED,Resubmit with NEW numbers; generated
-194,Mandelbrot Variants,Tricorn (Mandelbar),Tricorn,Pass,,-0.25,0.04,6.9643507081E+00,3.9174472733E+00,,NOT APPLIED,Resubmit with same numbers
-195,Mandelbrot Variants,Wavy Mandelbrot,WavyMandelbrot,Pass,,-0.11,-0.04,5.7768613975E+00,3.2494845361E+00,,NOT APPLIED,Resubmit with same numbers
-196,Multibrot Powers,Buffalo (Polynomial),BuffaloPolynomial,Pass,,-0.21,-0.58,4.2857142857E+00,2.4107142857E+00,,NOT APPLIED,Resubmit with same numbers
-197,Multibrot Powers,Multibrot-10 (Decic),Multibrot-10,Pass,,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,NOT APPLIED,Resubmit with same numbers
-198,Multibrot Powers,Multibrot-3 (Cubic),Multibrot-3,Pass,,-0.19,0.02,5.4524630517E+00,3.0670104666E+00,,NOT APPLIED,Resubmit with same numbers
-199,Multibrot Powers,Multibrot-4 (Quartic),Multibrot-4,Pass,,-0.11,0.00,4.1530355097E+00,2.3360824742E+00,,NOT APPLIED,Resubmit with same numbers
-200,Multibrot Powers,Multibrot-5 (Quintic),Multibrot-5,Pass,,0.08,-0.02,3.9984726995E+00,2.2491408935E+00,,NOT APPLIED,Resubmit with same numbers
-201,Multibrot Powers,Multibrot-6 (Sextic),Multibrot-6,Pass,,-0.01,-0.04,4.1758745694E+00,2.3489294453E+00,,NOT APPLIED,Resubmit with same numbers
-202,Multibrot Powers,Multibrot-8 (Octic),Multibrot-8,Pass,,0.00,0.00,3.9987128209E+00,2.2492759617E+00,,NOT APPLIED,Resubmit with same numbers
-203,Multibrot Powers,Tricorn (Polynomial),Tricorn-Poly,Pass,,0.00,0.00,6.5975395539E+00,3.7111159990E+00,,NOT APPLIED,Resubmit with same numbers
-204,Newton's Method,Newton (z³-1),Newton,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-205,Newton's Method,Newton Basin (z³-1),NewtonBasin,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-206,Newton's Method,Newton Cosh,NewtonCosh,Pass,full screen coverage,0.00,0.00,2.0000000000E+01,1.1250000000E+01,,FORMULA FIXED,Resubmit with NEW numbers; generated
-207,Newton's Method,Newton Quartic (z?-1),NewtonQuartic,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-208,Newton's Method,Newton Quintic (z?-1),NewtonQuintic,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-209,Newton's Method,Newton Sextic (z?-1),NewtonSextic,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-210,Newton's Method,Newton Sine,NewtonSin,Pass,amazing full screen of texture,0.00,0.00,9.6000000000E+01,5.4000000000E+01,,APPLIED,"Do not resubmit, action finished"
-211,Newton's Method,Nova,Nova,Pass,,-0.55,0.03,2.2207857502E+00,1.2491919845E+00,,NOT APPLIED,Resubmit with same numbers
-212,Orbit Statistics,Angle Average,AngleAverage,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,NOT APPLIED,Resubmit with same numbers
-213,Orbit Statistics,Average Distance,AverageDistance,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,NOT APPLIED,Resubmit with same numbers
-214,Orbit Statistics,Maximum Distance,MaximumDistance,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,NOT APPLIED,Resubmit with same numbers
-215,Orbit Statistics,Minimum Distance,MinimumDistance,Pass,,-0.24,0.00,3.0000000000E+00,1.6875000000E+00,,FORMULA FIXED,Resubmit with NEW numbers; generated
-216,Orbit Trap,Orbit Trap (Circle),OrbitTrapCircle,Pass,,-0.38,-0.02,3.0000000000E+00,1.6875000000E+00,,NOT APPLIED,Resubmit with same numbers
-217,Orbit Trap,Orbit Trap (Cross),OrbitTrapCross,Pass,looks identical to Minimum Distance,-0.24,0.00,3.0000000000E+00,1.6875000000E+00,,FORMULA FIXED,Resubmit with NEW numbers; generated
-218,Orbit Trap,Orbit Trap (Point),OrbitTrapPoint,Pass,glowing green and blue Mandelbrot,0.00,0.00,3.0000000000E+00,1.6875000000E+00,,FORMULA FIXED,Resubmit with NEW numbers; generated
-219,Orbit Trap,Orbit Trap (Square),OrbitTrapSquare,Pass,,-0.17,0.00,4.0238269363E+00,2.2634026517E+00,,NOT APPLIED,Resubmit with same numbers
-220,Orbital Advanced,Circular Orbit Trap,CircularOrbitTrap,Pass,,-0.09,-0.02,4.1707022676E+00,2.3460200255E+00,,NOT APPLIED,Resubmit with same numbers
-221,Orbital Advanced,Cross Orbit Trap,CrossOrbitTrap,Pass,,0.00,0.00,1.5000000000E+01,8.4375000000E+00,,NOT APPLIED,Resubmit with same numbers
-222,Orbital Advanced,Delta Magnitude Tracking,DeltaMagnitude,Pass,,0.00,0.00,1.5000000000E+01,8.4375000000E+00,,NOT APPLIED,Resubmit with same numbers
-223,Orbital Advanced,Orbit Angle Accumulation,OrbitAngleAccum,Pass,,0.00,0.00,1.5000000000E+01,8.4375000000E+00,,NOT APPLIED,Resubmit with same numbers
-224,Orbital Advanced,Orbital Curvature Tracking,CurvatureTracking,Pass,,0.00,0.00,3.7500000000E+00,2.1093750000E+00,,NOT APPLIED,Resubmit with same numbers
-225,Orbital Advanced,Point-Line Orbit Trap,PointLineOrbitTrap,Pass,,0.00,0.00,3.7500000000E+00,2.1093750000E+00,,NOT APPLIED,Resubmit with same numbers
-226,Orbital Advanced,Smoothed Orbit (Running Average),SmoothedOrbit,Pass,,-0.25,-0.01,3.7500000000E+00,2.1093750000E+00,,NOT APPLIED,Resubmit with same numbers
-227,Orbital Advanced,Stalks (Conditional),StalksConditional,Pass,yet another mandelbrot,-0.15,-0.01,4.0779891940E+00,2.2938689218E+00,,NOT APPLIED,Resubmit with same numbers
-228,Orbital Advanced,Stripe Average Coloring,StripeAverage,Pass,,-0.18,0.00,3.7500000000E+00,2.1093750000E+00,,NOT APPLIED,Resubmit with same numbers
-229,Orbital Advanced,Triangle Orbit Trap,TriangleOrbitTrap,Pass,,-0.34,0.00,1.5000000000E+01,8.4375000000E+00,,NOT APPLIED,Resubmit with same numbers
-230,Phoenix Fractals,Phoenix Complex Feedback,PhoenixComplex,Pass,,-0.19,0.02,2.9396959630E+00,1.6535789792E+00,,NOT APPLIED,Resubmit with same numbers
-231,Phoenix Fractals,Phoenix Cosh,PhoenixCosh,Pass,,0.00,0.00,2.2973967100E+01,1.2922856494E+01,,NOT APPLIED,Resubmit with same numbers
-232,Phoenix Fractals,Phoenix Cubic,PhoenixPower3,Pass,,0.00,0.00,3.2645646124E+00,1.8363175945E+00,,NOT APPLIED,Resubmit with same numbers
-233,Phoenix Fractals,Phoenix Julia,PhoenixJ,Pass,,-0.17,0.07,5.6568542495E+00,3.1819805153E+00,,NOT APPLIED,Resubmit with same numbers
-234,Phoenix Fractals,Phoenix Lambda,PhoenixLambda,Pass,,0.60,0.00,4.8735143781E+00,2.7413518377E+00,,NOT APPLIED,Resubmit with same numbers
-235,Phoenix Fractals,Phoenix Mandelbrot,PhoenixM,Pass,,-0.19,0.00,4.3527528165E+00,2.4484234593E+00,,NOT APPLIED,Resubmit with same numbers
-236,Phoenix Fractals,Phoenix Quartic,PhoenixPower4,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-237,Phoenix Fractals,Phoenix Sine,PhoenixSin,Pass,,0.00,0.00,8.0000000000E+00,4.5000000000E+00,,NOT APPLIED,Resubmit with same numbers
-238,Polynomial Variants,Biomorph,Biomorph,Pass,,-0.57,0.03,3.6934332400E+00,2.0775561975E+00,,NOT APPLIED,Resubmit with same numbers
-239,Polynomial Variants,Cubic Mandelbrot,CubicMandel,Pass,,0.00,0.00,5.0000000000E+00,2.8125000000E+00,,NOT APPLIED,Resubmit with same numbers
-240,Polynomial Variants,Polynomial z³-z+c,PolyZ3MinusZ,Pass,,0.00,0.00,2.4622888267E+00,1.3850374650E+00,,NOT APPLIED,Resubmit with same numbers
-241,Polynomial Variants,Polynomial z?+z³+c,PolyZ4PlusZ3,Pass,,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,NOT APPLIED,Resubmit with same numbers
-242,Polynomial Variants,Quartic Mandelbrot,QuarticMandel,Pass,,0.00,0.00,4.3063061148E+00,2.4222971896E+00,,NOT APPLIED,Resubmit with same numbers
-243,Polynomial Variants,Quintic Mandelbrot,QuinticMandel,Pass,,-0.17,0.02,3.5586858811E+00,2.0017608081E+00,,NOT APPLIED,Resubmit with same numbers
-244,Polynomial Variants,Rational R1,RationalR1,Pass,,0.00,0.00,3.2000000000E+01,1.8000000000E+01,,NOT APPLIED,Resubmit with same numbers
-245,Polynomial Variants,Sextic Mandelbrot,SexticMandel,Pass,,0.00,0.00,4.0000000000E+00,2.2500000000E+00,,NOT APPLIED,Resubmit with same numbers
-246,Rational Function Fractals,Halley's Method z³-1,HalleyCubic,Pass,,0.00,0.00,8.0000000000E+01,4.5000000000E+01,,NOT APPLIED,Resubmit with same numbers
-247,Rational Function Fractals,Möbius Fractal,Mobius,Pass,,-2.36,0.01,7.3868664801E+00,4.1551123950E+00,,NOT APPLIED,Resubmit with same numbers
-248,Rational Function Fractals,Newton z³-1,NewtonCubic,Pass,,0.00,0.00,5.0000000000E+00,2.8125000000E+00,,NOT APPLIED,Resubmit with same numbers
-249,Rational Function Fractals,Newton z?-1,NewtonQuarticRational,Pass,,0.00,0.00,5.0000000000E+00,2.8125000000E+00,,NOT APPLIED,Resubmit with same numbers
-250,Rational Function Fractals,Newton z?-1,NewtonQuinticRational,Pass,,0.00,0.00,5.0000000000E+00,2.8125000000E+00,,NOT APPLIED,Resubmit with same numbers
-251,Rational Function Fractals,Rational (z²+c)/(z²-c),RationalSymmetric,Pass,,4.03,0.14,1.2000000000E+01,6.7500000000E+00,,NOT APPLIED,Resubmit with same numbers
-252,Rational Function Fractals,Rational z²/(z³+c),RationalZ2Z3,Pass,,-0.06,-0.13,3.0082887420E+00,1.6921624174E+00,,NOT APPLIED,Resubmit with same numbers
-253,Rational Function Fractals,Rational z³/(z³+c),RationalPower,Pass,,0.09,-0.17,1.8494037002E+00,1.0402895814E+00,,NOT APPLIED,Resubmit with same numbers
-254,Special,2-D Hailstone Trajectory,Hailstone2D,Pass,,,,,,,N/A (no coordinates),Do not resubmit or Take no action
-255,Special,Buddhabrot,Buddhabrot,Pass,"this is not the Buddahbrot shape.  It is the classic Mandelbrot shape, but's worth saving somehow",-0.33,0.03,3.7500000000E+00,2.1093750000E+00,,FORMULA FIXED,Resubmit with NEW numbers; generated
-256,Special,Hailstone Sequence,Hailstone,Pass,,0.39,-0.44,1.5000000000E+02,8.4375000000E+01,,FORMULA FIXED,Resubmit with NEW numbers; generated
-257,Special,Lyapunov,Lyapunov,Pass,,-0.01,0.00,1.9494057513E+01,1.0965407351E+01,,NOT APPLIED,Resubmit with same numbers
-258,Special,NumFractal,NumFractal,Pass,,0.00,0.00,4.8735143781E+00,2.7413518377E+00,,NOT APPLIED,Resubmit with same numbers
-259,Special,Tetration (Classic),TetrationClassic,Pass,,-0.22,0.05,1.2489770531E+01,7.0254959236E+00,,NOT APPLIED,Resubmit with same numbers
-260,Special Function Fractals,Bessel-like Oscillatory,BesselLikeFractal,Fail,check the computations; black disk with a green crescent edge.  No fine structure; original Bessel disk with waves and striations is gone,,,,,,IMPROVED + NOT APPLIED,Resubmit with NEW numbers
-261,Special Function Fractals,Continued Fraction Fractal,ContinuedFraction,Pass,,-3.65,-0.57,7.3108614232E+00,4.1123595506E+00,,NOT APPLIED,Resubmit with same numbers
-262,Special Function Fractals,Error Function (erf) Fractal,ErrorFunctionFractal,Pass,,0.00,0.05,3.7269492074E+01,2.0964089291E+01,,NOT APPLIED,Resubmit with same numbers
-263,Special Function Fractals,Gamma Function Fractal,GammaFractal,Pass,,-1.13,-0.07,1.0000000000E+01,5.6250000000E+00,,NOT APPLIED,Resubmit with same numbers
-264,Special Function Fractals,Hyperbolic Combination,HyperbolicCombo,Pass,,-1.64,0.02,7.6224545955E+00,4.2876307100E+00,,NOT APPLIED,Resubmit with same numbers
-265,Special Function Fractals,Lambert W Function,LambertW,Pass,,2.56,0.15,3.6376444689E+01,2.0461750138E+01,,NOT APPLIED,Resubmit with same numbers
-266,Special Function Fractals,Tetration (Power Tower),TetrationPowerTower,Pass,,1.00,0.00,3.7399899974E+01,2.1037443736E+01,,NOT APPLIED,Resubmit with same numbers
-,,,,,,,,,,,,
-267,Strange Attractors,Bedhead Attractor,Bedhead,Pass,,0.00,0.00,2.4000000000E+01,1.3500000000E+01,,,
-268,Strange Attractors,Clifford Attractor,Clifford,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,,
-269,Strange Attractors,De Jong Attractor,DeJong,Pass,,0.17,0.07,7.9964866052E+00,7.9964866052E+00,,,
-270,Strange Attractors,Duffing Attractor,Duffing,Pass,,1.00,0.00,7.1157376225E-02,4.0026024126E-02,,,
-271,Strange Attractors,Svensson Attractor,Svensson,Pass,,0.00,-0.01,1.6339920949E+01,9.1912055336E+00,,,
-272,Strange Attractors,Tinkerbell Attractor,Tinkerbell,Pass,,-0.45,-0.53,4.0000000000E+00,2.2500000000E+00,,,
-273,Tricorn Family,Tricorn (Power 3),Tricorn3,Pass,,0.00,0.00,5.0000000000E+00,2.8125000000E+00,,,
-274,Tricorn Family,Tricorn (Power 4),Tricorn4,Pass,,0.00,0.00,5.0000000000E+00,2.8125000000E+00,,,
-275,Trigonometric,Cosecant Mandelbrot,CscMandel,Pass,,-3.15,0.01,7.4642639323E+00,4.1986484619E+00,,,
-276,Trigonometric,Cosh Mandelbrot,CoshMandelbrot,Pass,,-0.83,1.59,1.1992388216E+01,6.7457183717E+00,,,
-277,Trigonometric,Cotangent Mandelbrot,CotMandel,Pass,,-3.18,-0.20,1.0202898551E+01,5.7391304348E+00,,,
-278,Trigonometric,Mandel Trig,MandelTrig,Pass,just another mandelbrot,-0.47,0.00,3.6934332400E+00,2.0775561975E+00,,,
-279,Trigonometric,Secant Mandelbrot,SecMandel,Pass,,1.54,0.02,6.4000000000E+01,3.6000000000E+01,,,
-280,Trigonmetric,Sech Mandelbrot,SechMandel,Pass,,-0.78,0.04,1.2000000000E+01,6.7500000000E+00,,,
-281,Trigonometric,Sinh Mandelbrot,SinhMandelbrot,Pass,,0.00,0.00,1.6000000000E+01,9.0000000000E+00,,,
-282,Trigonometric,Tanh Mandelbrot,TanhMandelbrot,Pass,pinnants,0.00,0.00,5.5715236051E+01,3.1339820279E+01,,,
-283,Trigonometric Fractals,Cos(z) + c,CosZ,Pass,,1.531554445,0.04,1.2861281550E+01,7.2344708721E+00,,,
-284,Trigonometric Fractals,Lambda Lambda Cosh,LLambdaCosh,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,,
-285,Trigonometric Fractals,Lambda Lambda Cosine,LLambdaCos,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,,
-286,Trigonometric Fractals,Lambda Lambda Sine,LLambdaSine,Pass,,-0.06,0.02,1.0106422018E+01,5.6848623853E+00,,,
-287,Trigonometric Fractals,Lambda Lambda Sinh,LLambdaSinh,Pass,,0.00,0.00,1.2000000000E+01,6.7500000000E+00,,,
-288,Trigonometric Fractals,Lambda Mandel Cosh,LMandelCosh,Pass,,0.00,0.00,4.8000000000E+01,2.7000000000E+01,,,
-289,Trigonometric Fractals,Lambda Mandel Cosine,LMandelCos,Pass,,0.00,0.00,1.2000000000E+01,6.7500000000E+00,,,
-290,Trigonometric Fractals,Lambda Mandel Sine,LMandelSine,Pass,,0.00,0.00,6.0000000000E+00,3.3750000000E+00,,,
-291,Trigonometric Fractals,Lambda Mandel Sinh,LMandelSinh,Pass,,0.00,0.00,1.0446606760E+01,5.8762163022E+00,,,
-292,Trigonometric Fractals,Mandelbrot Trig,MandelTrig,Pass,,-0.80,0.00,3.0000000000E+00,1.6875000000E+00,,,
-293,Trigonometric Fractals,Sin(z) + c,SinZ,Pass,,0.00,0.00,1.2861281550E+01,7.2344708721E+00,,,
-294,Trigonometric Fractals,Sine Fractal,Sine,Pass,,0.01,0.06,1.2861281550E+01,7.2344708721E+00,,,
+Index,Group Name,Group File,Fractal Name,Internal Name,P/F,Notes,Center X,Center Y,Reported Zoom,VP Tuning Status,Mark's Action?
+1,Attractors,Attractors3DFamily.cpp,Aizawa Attractor,Aizawa,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+2,Attractors,Attractors3DFamily.cpp,Chen-Lee Attractor,ChenLee,Pass,,-0.33,0.11,2.1050524498E-02,,MIGRATED TO IC SERVICE
+3,Attractors,Attractors3DFamily.cpp,Dadras Attractor,Dadras,Pass,,0.00,0.00,6.8869069593E-02,,MIGRATED TO IC SERVICE
+4,Attractors,Attractors3DFamily.cpp,Halvorsen Attractor,Halvorsen,Pass,,-3.29,-3.89,7.6946525476E-02,,MIGRATED TO IC SERVICE
+5,Attractors,Attractors3DFamily.cpp,Lorenz Attractor,Lorenz,Pass,,0.00,0.00,2.8955876983E-02,,MIGRATED TO IC SERVICE
+6,Attractors,Attractors3DFamily.cpp,Pickover Attractor,Pickover,Pass,,0.00,0.00,4.4135149254E-01,,MIGRATED TO IC SERVICE
+7,Attractors,Attractors3DFamily.cpp,Thomas Attractor,Thomas,Pass,,1.55,1.37,3.2759834899E-01,,MIGRATED TO IC SERVICE
+8,Barnsley,BarnsleyFamily.cpp,Barnsley J1,BarnsleyJ1,Pass,,0.09,0.07,4.2423100739E-01,Change,MIGRATED TO IC SERVICE
+9,Barnsley,BarnsleyFamily.cpp,Barnsley J2,BarnsleyJ2,Pass,,0.00,0.00,1.3869618369E-01,Change,MIGRATED TO IC SERVICE
+10,Barnsley,BarnsleyFamily.cpp,Barnsley J3,BarnsleyJ3,Pass,,-0.50,0.07,4.0330188389E-01,Change,MIGRATED TO IC SERVICE
+11,Barnsley,BarnsleyFamily.cpp,Barnsley M1,BarnsleyM1,Pass,,-1.25,-0.02,3.4868591399E-01,Change,MIGRATED TO IC SERVICE
+12,Barnsley,BarnsleyFamily.cpp,Barnsley M2,BarnsleyM2,Pass,,-0.02,0.04,4.4197418460E-01,Change,MIGRATED TO IC SERVICE
+13,Barnsley,BarnsleyFamily.cpp,Barnsley M3,BarnsleyM3,Pass,,-1.52,0.02,5.0000000000E-01,Change,MIGRATED TO IC SERVICE
+14,Bifurcation,BifurcationFamily.cpp,Henon Bifurcation,HenonBifurcation,Pass,,1.20,0.00,2.0000000000E+00,Change,MIGRATED TO IC SERVICE
+15,Bifurcation,BifurcationFamily.cpp,Henon Parameter Space,HenonParameterSpace,Pass,,0.51,-0.24,8.9730497543E-01,Change,
+16,Bifurcation,,Lambda Bifurcation,LambdaBifurcation,Pass,,2.63,0.61,1.0000000000E+00,,
+17,Bifurcation,BifurcationFamily.cpp,Lambda Parameter Space,LambdaParameterSpace,Pass,,1.00,0.01,5.8641747253E-01,Change,MIGRATED TO IC SERVICE
+18,Bifurcation,,Logistic Bifurcation,LogisticBifurcation,Pass,,3.40,0.50,2.0000000000E+00,,
+19,Bifurcation,BifurcationFamily.cpp,Mandelbrot Parameter Space,MandelParameter,Pass,,-0.26,0.02,7.6312960909E-01,,MIGRATED TO IC SERVICE
+20,Bifurcation,BifurcationFamily.cpp,Orbit Diagram,OrbitDiagram,Pass,,-0.26,0.02,7.6312960909E-01,,MIGRATED TO IC SERVICE
+21,Burning Ship Family,PowerVariantsFamily.cpp,Burning Ship (Power 3),BurningShip3,Pass,,0.08,0.15,5.9527811736E-01,,MIGRATED TO IC SERVICE
+22,Burning Ship Family,PowerVariantsFamily.cpp,Burning Ship (Power 4),BurningShip4,Pass,,-0.05,0.18,7.6322490338E-01,,MIGRATED TO IC SERVICE
+23,Burning Ship Variants,ClassicEscapeTimeFamily.cpp,Bird of Prey,BirdofPrey,Pass,,-0.53,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+24,Burning Ship Variants,BurningShipFamily.cpp,Buffalo Burning Ship,BuffaloBurningShip,Pass,,0.03,0.44,6.0290391132E-01,,MIGRATED TO IC SERVICE
+25,Burning Ship Variants,BurningShipFamily.cpp,Burning Ship Cubic,BurningShipCubic,Pass,,-0.01,0.11,5.3588673044E-01,,MIGRATED TO IC SERVICE
+26,Burning Ship Variants,BurningShipFamily.cpp,Burning Ship Quartic,BurningShipQuartic,Pass,,-0.03,0.13,6.2749677835E-01,,MIGRATED TO IC SERVICE
+27,Burning Ship Variants,BurningShipFamily.cpp,Burning Ship Quintic,BurningShipQuintic,Pass,,-0.07,-0.08,6.6340257476E-01,,MIGRATED TO IC SERVICE
+28,Burning Ship Variants,BurningShipFamily.cpp,Celtic Burning Ship,CelticBurningShip,Pass,,-0.75,0.03,4.7963206011E-01,,MIGRATED TO IC SERVICE
+29,Burning Ship Variants,BurningShipFamily.cpp,Diagonal Burning Ship,DiagonalBurningShip,Pass,,0.00,-0.196875,1.0000000000E+00,,MIGRATED TO IC SERVICE
+30,Burning Ship Variants,ClassicEscapeTimeFamily.cpp,Partial Burning Ship,PartialBurningShip,Pass,,-0.37,0.07,6.1275692114E-01,,MIGRATED TO IC SERVICE
+31,Burning Ship Variants,BurningShipFamily.cpp,Perpendicular Burning Ship,PerpendicularBurningShip,Pass,,-0.313411571,0.589989752,7.3186998998E-01,,MIGRATED TO IC SERVICE
+32,Burning Ship Variants,BurningShipFamily.cpp,Reverse Burning Ship,ReverseBurningShip,Pass,,-0.38,-0.04,7.0020057134E-01,,MIGRATED TO IC SERVICE
+33,Burning Ship Variants,BurningShipFamily.cpp,Shark Burning Ship,SharkBurningShip,Pass,,0.00,0.00,5.5124999603E+00,,MIGRATED TO IC SERVICE
+34,Burning Ship Variants,BurningShipFamily.cpp,Vertical Burning Ship,VerticalBurningShip,Pass,looks almost exactly like Bird Of Prey.  Check formula or introduce more vairation,-0.22,-0.44,8.2812500000E-01,,MIGRATED TO IC SERVICE
+35,Chaotic Maps,ChaoticMapsFamily.cpp,Arneodo Attractor,Arneodo,Pass,,0.00,0.00,2.0750000000E+00,,MIGRATED TO IC SERVICE
+36,Chaotic Maps,ChaoticMapsFamily.cpp,Liu-Chen Attractor,LiuChen,Pass,,0.00,0.00,1.9432742000E-02,,MIGRATED TO IC SERVICE
+37,Chaotic Maps,ChaoticMapsFamily.cpp,Rabinovich-Fabrikant Attractor,RabinovichFabrikant,Pass,,0.76,0.07,3.2376162907E-01,,MIGRATED TO IC SERVICE
+38,Chaotic Maps,ChaoticMapsFamily.cpp,Sprott B Attractor,SprottB,Pass,,0.00,0.00,2.5000000000E-01,,MIGRATED TO IC SERVICE
+39,Chemical Engineering,,Arrhenius Kinetics Map (Thermal Activation),ArrheniusKinetics,Pass,,-0.71,-0.01,4.3527528300E-01,,
+40,Chemical Engineering,,Cahn-Hilliard Map (Phase Separation),CahnHilliard,Pass,,0.00,0.00,8.0000000000E-01,,
+41,Chemical Engineering,,Gray-Scott Autocatalysis (Reaction-Diffusion),GrayScott,Pass,,0.00,0.00,4.0000000000E-01,,
+42,Chemical Engineering,,Langmuir-Hinshelwood Isotherm,LangmuirIsotherm,Pass,,-0.70,0.08,3.9806248785E-01,,
+43,Classic Fractals,ClassicEscapeTimeFamily.cpp,Lambda,Lambda,Pass,,1.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+44,Classic Fractals,ClassicEscapeTimeFamily.cpp,Mandel-Lambda,MandelLambdaClassic,Pass,,0.79,0.03,5.7038185626E-01,,MIGRATED TO IC SERVICE
+45,Classic Fractals,MandelbrotFamily.cpp,Mandelbrot Set,Mandelbrot,Pass,,-0.43,0.00,8.1790206223E-01,,
+46,Classic Fractals,ClassicEscapeTimeFamily.cpp,Tetrate,Tetrate,Pass,,0.61,0.10,5.1118878890E-02,,MIGRATED TO IC SERVICE
+47,Classic Fractals,ClassicEscapeTimeFamily.cpp,Unity,Unity,Pass,,1.21,-0.04,5.0000000000E-01,,MIGRATED TO IC SERVICE
+48,Classical Polynomials,TrigonmetricExtendedFamily.cpp,Legendre Polynomial,LegendrePolynomial,Pass,,0.00,0.00,1.4426771190E+00,,MIGRATED TO IC SERVICE
+49,Complex Functions,ComplexFunctionsFamily.cpp,1/sin(z)²,Sqr1OverTrig,Pass,,0.02,-0.01,2.5000000000E-01,,MIGRATED TO IC SERVICE
+50,Complex Functions,ComplexFunctionsFamily.cpp,cos(z)/tan(z),CosTan,Pass,,0.02,0.02,1.8815584462E-01,,
+51,Complex Functions,ComplexFunctionsFamily.cpp,Square + Trig,SqrTrig,Pass,,-0.71,0.01,1.0000000000E+00,,MIGRATED TO IC SERVICE
+52,Complex Functions,ComplexFunctionsFamily.cpp,Tetration (z^z),TetrationZtoZ,Pass,,-1.12,0.18,7.9012646000E-02,,MIGRATED TO IC SERVICE
+53,Complex Functions,ComplexFunctionsFamily.cpp,Trig + Trig,TrigPlusTrig,Pass,,1.52,0.06,2.8717458786E-01,,MIGRATED TO IC SERVICE
+54,Complex Functions,ComplexFunctionsFamily.cpp,Trig Squared,TrigSqr,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+55,Complex Functions,ComplexFunctionsFamily.cpp,Trig × Trig,TrigXTrig,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+56,Complex Functions,ComplexFunctionsFamily.cpp,z·sin(z) + z,ZxTrigPlusZ,Pass,,1.23,0.04,2.8717458741E-01,,MIGRATED TO IC SERVICE
+57,Discrete Mathematics,,Chebyshev Polynomial  T?(z) = 4z³ - 3z + c,ChebyshevPolynomial,Pass,,-0.04,0.00,1.2924528302E+00,,
+58,Discrete Mathematics,,Combinatorial Mandelbrot z? - z + c,CombinatorialMandelbrot,Pass,,0.00,0.00,8.1225240013E-01,,
+59,Discrete Mathematics,,Inverse Combinatorial,InverseCombinatorial,Pass,,-0.10,-0.10,5.0000000000E-01,,
+60,Distance Estimator,DistanceEstimatorFamily.cpp,Burning Ship (Distance Estimator),BurningShipDEM,Pass,,-0.32,-0.46,5.0000000000E-01,,MIGRATED TO IC SERVICE
+61,Distance Estimator,DistanceEstimatorFamily.cpp,Julia (Distance Estimator),JuliaDEM,Pass,,0.00,0.00,8.7055056599E-01,,MIGRATED TO IC SERVICE
+62,Distance Estimator,DistanceEstimatorFamily.cpp,Mandelbrot (Distance Estimator),MandelbrotDEM,Pass,,-0.71,0.01,6.6896378133E-01,,MIGRATED TO IC SERVICE
+63,Distance Estimator,DistanceEstimatorFamily.cpp,Tricorn (Distance Estimator),TricornDEM,Pass,,0.00,0.00,3.0354871978E-01,,MIGRATED TO IC SERVICE
+64,Elliptic Functions,,Jacobi Elliptic cn,JacobiCN,Pass,,-0.15,1.37,1.3495364793E+00,,
+65,Elliptic Functions,,Jacobi Elliptic dn,JacobiDN,Pass,,-0.67,0.08,1.4658063093E-01,,
+66,Elliptic Functions,TrigonmetricExtendedFamily.cpp,Jacobi Elliptic sn,JacobiSN,Pass,,0.00,0.04,1.5261363600E-01,,MIGRATED TO IC SERVICE
+67,Elliptic Functions,,Weierstrass ?-function,WeierstrassZeta,Pass,,0.07,1.64,1.4259546406E-01,,
+68,Elliptic Functions,,Weierstrass ?-function,WeierstrassSigma,Pass,,0.00,0.00,2.9118340465E-01,,
+69,Elliptic Functions,TrigonmetricExtendedFamily.cpp,Weierstrass p-function,WeierstrassP,Pass,,-7.08,0.15,1.9299539000E-01,,
+70,Exotic,ExoticForumulasFamily.cpp,Buffalo Fractal,Buffalo,Pass,,0.00,0.00,6.2500000000E-02,,MIGRATED TO IC SERVICE
+71,Exotic,ExoticForumulasFamily.cpp,Celtic Mandelbrot,CelticMandel,Pass,,-0.76,0.03,4.6402327582E-01,,MIGRATED TO IC SERVICE
+72,Exotic,ExoticForumulasFamily.cpp,Heart Mandelbrot,HeartMandelbrot,Pass,,-0.65,0.02,5.0000000000E-01,,MIGRATED TO IC SERVICE
+73,Exotic,ExoticForumulasFamily.cpp,Perpendicular Mandelbrot,PerpendicularMandelbrot,Pass,,-0.38,-0.60,6.1557220381E-01,,MIGRATED TO IC SERVICE
+74,Exotic,ExoticForumulasFamily.cpp,Quasi-Perpendicular,QuasiPerpendicular,Pass,,-0.78,-0.64,7.2394925000E-01,,MIGRATED TO IC SERVICE
+75,Exotic,ExoticForumulasFamily.cpp,Shark Fin,SharkFin,Pass,,-0.59,0.00,1.3223231894E+00,,MIGRATED TO IC SERVICE
+76,Exotic,ExoticForumulasFamily.cpp,Wavy,Wavy,Pass,looks like a plain Mandelbrot;  what is supposed to be unique about this fractal?  Perhaps introduce more fine structure or variation,-1.22,0.00,9.3952275052E-01,,MIGRATED TO IC SERVICE
+77,Exotic,ExoticForumulasFamily.cpp,Zubieta,Zubieta,Pass,,0.00,0.00,5.8590428370E+00,,MIGRATED TO IC SERVICE
+78,Exotic Fractals,MagnetFamily.cpp,Magnet I,Magnet1,Pass,,1.20,0.01,3.6426867103E-01,,MIGRATED TO IC SERVICE
+79,Exotic Fractals,,Magnet II,Magnet2,Pass,,0.716403584,-0.015206378,0.5,,MIGRATED TO IC SERVICE
+80,Exotic Fractals,PhoenixFamily.cpp,Phoenix Fractal,Phoenix,Pass,,-0.50,0.00,3.5190984450E-01,,MIGRATED TO IC SERVICE
+81,Exponential Fractals,ExponentialLogarithmicFamily.cpp,Complex Power,ComplexPower,Pass,,-0.02,1.88,9.0855359009E-02,,MIGRATED TO IC SERVICE
+82,Exponential Fractals,ExponentialFamily.cpp,Exponential Fractal,Exponential,Pass,,0.22,0.04,4.7711626247E-02,,MIGRATED TO IC SERVICE
+83,Exponential Fractals,ExponentialLogarithmicFamily.cpp,Exponential Julia,ExponentialJulia,Pass,,0.00,0.00,8.3042862854E-02,,MIGRATED TO IC SERVICE
+84,Exponential Fractals,ExponentialLogarithmicFamily.cpp,Exponential Logarithmic,ExponentialLogarithmic,Pass,,-1.00,0.00,8.0383009566E-02,,MIGRATED TO IC SERVICE
+85,Exponential Fractals,ExponentialLogarithmicFamily.cpp,Exponential Square,ExpSquare,Pass,,0.00,0.00,1.0806715427E-01,,MIGRATED TO IC SERVICE
+86,Exponential Fractals,ExponentialFamily.cpp,Lambda Lambda Exponential,LLambdaExp,Pass,,-2.50,0.00,1.4161048527E-01,,MIGRATED TO IC SERVICE
+87,Exponential Fractals,ExponentialFamily.cpp,Lambda Mandel Exponential,LMandelExp,Pass,,0.00,0.00,8.0261367000E-02,,MIGRATED TO IC SERVICE
+88,Exponential Fractals,ExponentialFamily.cpp,Logarithm Fractal,Logarithm,Pass,,0.99,0.00,1.6017725121E+02,,MIGRATED TO IC SERVICE
+89,Exponential Fractals,ExponentialLogarithmicFamily.cpp,Logarithmic Mandelbrot,Logarithmic,Pass,,-0.42,-0.24,7.8670083520E-01,,MIGRATED TO IC SERVICE
+90,Exponential Fractals,ExponentialFamily.cpp,Mandelbrot Exponential,MandelExp,Pass,,-1.75,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+91,Exponential Fractals,ExponentialLogarithmicFamily.cpp,Power Tower (z^z),PowerTower,Pass,,1.74,-0.09,2.3623130268E+01,,MIGRATED TO IC SERVICE
+92,Exponential Fractals,ExponentialFamily.cpp,z^z + c,ZToTheZ,Pass,,1.74,-0.08,1.5696428144E+01,,MIGRATED TO IC SERVICE
+93,Historical Fractals,HistoricalFractalsFamily.cpp,Chip Map,ChipMap,Pass,,-0.11,0.04,7.2286184211E-01,,MIGRATED TO IC SERVICE
+94,Historical Fractals,HistoricalFractalsFamily.cpp,Collatz Fractal,CollatzFractal,Pass,,0.00,0.00,2.5000000000E-01,,MIGRATED TO IC SERVICE
+95,Historical Fractals,HistoricalFractalsFamily.cpp,Duffing Map,DuffingMap,Pass,,0.00,0.00,4.4328139200E-01,,MIGRATED TO IC SERVICE
+96,Historical Fractals,HistoricalFractalsFamily.cpp,Martin Map,MartinMap,Pass,,0.00,0.00,6.7771380000E-03,,MIGRATED TO IC SERVICE
+97,Historical Fractals,HistoricalFractalsFamily.cpp,Pickover Biomorphs,Biomorphs,Pass,yet another Mandelbrot; so what's unique about this?  Or introduce more fine structure or variation,-0.28,-0.07,9.4605764790E-01,,
+98,Historical Fractals,HistoricalFractalsFamily.cpp,Pickover Stalks,PickoverStalks,Pass,,-0.75,0.00,7.6389245700E-01,,MIGRATED TO IC SERVICE
+99,Historical Fractals,HistoricalFractalsFamily.cpp,Quaternion Julia (2D slice),QuaternionJulia2D,Pass,,0.00,0.00,7.3204285308E-01,,MIGRATED TO IC SERVICE
+100,Historical Fractals,HistoricalFractalsFamily.cpp,Sinusoidal Fractal,SinusoidalFractal,Pass,,0.00,0.00,6.2500000000E-02,,MIGRATED TO IC SERVICE
+101,Hybrid Fractals,FractalHybridsFamily.cpp,Bifurcation-Mandelbrot,BifurcationMandel,Pass,,1.00,0.00,4.8347193978E-01,,MIGRATED TO IC SERVICE
+102,Hybrid Fractals,FractalHybridsFamily.cpp,Burning Mandelbrot Hybrid,BurningMandel,Pass,,-0.47,-0.24,7.9066011200E-01,,MIGRATED TO IC SERVICE
+103,Hybrid Fractals,FractalHybridsFamily.cpp,Celtic Mandelbrot (Hybrid),CelticMandelbrot,Pass,,-0.75,0.00,4.7153175607E-01,,
+104,Hybrid Fractals,HybridFamily.cpp,Celtic-Burning Ship Hybrid,CelticBurningHybrid,Pass,,-0.50,-0.04,7.1637760300E-01,,MIGRATED TO IC SERVICE
+105,Hybrid Fractals,HybridFamily.cpp,Collatz-Style Hybrid,CollatzHybrid,Pass,,0.00,0.00,5.7038185626E-01,,MIGRATED TO IC SERVICE
+106,Hybrid Fractals,HybridFamily.cpp,Exponential-Mandelbrot Blend,ExpMandelBlend,Pass,,-1.40,0.00,6.1132013610E-01,,MIGRATED TO IC SERVICE
+107,Hybrid Fractals,FractalHybridsFamily.cpp,Exponential-Mandelbrot Hybrid,ExpMandelHybrid,Pass,,-1.40,0.00,6.0500108273E-01,,MIGRATED TO IC SERVICE
+108,Hybrid Fractals,HybridFamily.cpp,Magnet-Mandelbrot Hybrid,MagnetMandelHybrid,Pass,,-2.00,0.00,1.5091337000E-01,,MIGRATED TO IC SERVICE
+109,Hybrid Fractals,HybridFamily.cpp,Mandelbrot-Burning Ship Hybrid,MandelBurningHybrid,Pass,,-0.22,-0.19,6.6367724300E-01,,MIGRATED TO IC SERVICE
+110,Hybrid Fractals,HybridFamily.cpp,Mandelbrot-Lambda Mix,MandelLambdaMix,Pass,,-0.75,0.00,3.6070683200E-01,,MIGRATED TO IC SERVICE
+111,Hybrid Fractals,HybridFamily.cpp,Multi-Power Cycle,MultiPowerCycle,Pass,,0.00,0.00,6.1557220381E-01,,MIGRATED TO IC SERVICE
+112,Hybrid Fractals,FractalHybridsFamily.cpp,Mutant Mandelbrot (Power Evolution),MutantMandelbrot,Pass,,-0.50,0.00,7.9004131603E-01,,MIGRATED TO IC SERVICE
+113,Hybrid Fractals,HybridFamily.cpp,Newton-Mandelbrot Blend,NewtonMandelBlend,Pass,,-0.75,0.00,3.5428799726E-01,,MIGRATED TO IC SERVICE
+114,Hybrid Fractals,FractalHybridsFamily.cpp,Perturbed Newton,PerturbedNewton,Pass,,-0.62,0.72,2.4142455875E-01,,MIGRATED TO IC SERVICE
+115,Hybrid Fractals,FractalHybridsFamily.cpp,Sierpinski-Mandelbrot Cross,SierpinskiMandel,Pass,,0.00,0.00,4.0000000000E-01,,MIGRATED TO IC SERVICE
+116,Hybrid Fractals,HybridFamily.cpp,Sine-Mandelbrot Hybrid,SineMandelHybrid,Pass,,0.00,0.00,1.8750000000E-01,,MIGRATED TO IC SERVICE
+117,Hybrid Fractals,HybridFamily.cpp,Tricorn-Phoenix Hybrid,TricornPhoenixHybrid,Pass,,-0.58,-0.11,6.1430912048E-01,,MIGRATED TO IC SERVICE
+118,Hybrid Fractals,FractalHybridsFamily.cpp,Trig-Mandelbrot Blend,TrigMandelBlend,Pass,,-0.88,-0.01,4.6284838583E-01,,MIGRATED TO IC SERVICE
+119,Iterated Function Systems,IFSFamily.cpp,Barnsley Fern (IFS),BarnsleyFern,Pass,,0.00,5.75,1.5300625600E-01,,MIGRATED TO IC SERVICE
+120,Iterated Function Systems,IFSFamily.cpp,Dragon Curve (IFS),DragonCurveIFS,Pass,,0.46,0.18,1.4773832680E+00,,MIGRATED TO IC SERVICE
+121,Iterated Function Systems,IFSFamily.cpp,Pentagon (IFS),PentagonIFS,Pass,,0.00,-0.09,7.9827763573E-01,,MIGRATED TO IC SERVICE
+122,Iterated Function Systems,IFSFamily.cpp,Sierpinski Triangle (IFS),SierpinskiIFS,Pass,,0.50,0.43,1.5000000000E+00,,MIGRATED TO IC SERVICE
+123,Iterated Function Systems,IFSFamily.cpp,Tree (IFS),TreeIFS,Pass,,-0.01,1.03,2.0347044100E+00,,MIGRATED TO IC SERVICE
+124,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Airplane,JuliaAirplane,Pass,,0.03,-0.02,6.7769552400E-01,,MIGRATED TO IC SERVICE
+125,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Backbone,JuliaBackbone,Pass,,-0.04,0.01,8.5841008115E-01,,MIGRATED TO IC SERVICE
+126,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Cauliflower,JuliaCauliflower,Pass,,-0.04,-0.01,6.6489277791E-01,,MIGRATED TO IC SERVICE
+127,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Crystal,JuliaCrystal,Pass,,-0.01,-0.04,8.4391148569E-01,,MIGRATED TO IC SERVICE
+128,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Dendrite (Preset),JuliaDendritePreset,Pass,,-0.03,-0.03,7.0013806287E-01,,MIGRATED TO IC SERVICE
+129,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Dragon (Preset),JuliaDragonPreset,Pass,,0.00,-0.01,9.0009638620E-01,,MIGRATED TO IC SERVICE
+130,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Eye,JuliaEye,Pass,,0.04,-0.01,9.1292037664E-01,,MIGRATED TO IC SERVICE
+131,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Feigenbaum Point,JuliaFeigenbaum,Pass,,-0.01,-0.089999999999999997),8.2053957434E-01,,MIGRATED TO IC SERVICE
+132,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Flower,JuliaFlower,Pass,,-0.05,-0.03,7.2544480881E-01,,MIGRATED TO IC SERVICE
+133,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Fractal Tree,JuliaFractalTree,Pass,,0.05,0.03,8.7684329100E-01,,MIGRATED TO IC SERVICE
+134,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Fuzzy Blob,JuliaFuzzyBlob,Pass,,0.06,-0.02,7.5259486600E-01,,MIGRATED TO IC SERVICE
+135,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Golden Ratio,JuliaGoldenRatio,Pass,,0.00,0.01,7.8846311614E-01,,MIGRATED TO IC SERVICE
+136,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Heart,JuliaHeart,Pass,,-0.08,-0.03,8.4433471900E-01,,MIGRATED TO IC SERVICE
+137,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Lightning,JuliaLightning,Pass,,0.15,-0.02,7.4595032400E-01,,MIGRATED TO IC SERVICE
+138,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Medusa,JuliaMedusa,Pass,,-0.06,-0.02,7.2557772500E-01,,MIGRATED TO IC SERVICE
+139,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Neurons,JuliaNeurons,Pass,,0.05,-0.01,8.2428398000E-01,,MIGRATED TO IC SERVICE
+140,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Paisley,JuliaPaisley,Pass,,0.25,-0.05,6.9352409600E-01,,MIGRATED TO IC SERVICE
+141,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Seahorse Valley,JuliaSeahorse,Pass,,0.03,0.00,9.1883484200E-01,,MIGRATED TO IC SERVICE
+142,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Snowflake,JuliaSnowflake,Pass,,-0.22,0.01,7.1062992100E-01,,MIGRATED TO IC SERVICE
+143,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Spiral Galaxy,JuliaSpiralGalaxy,Pass,,0.11,-0.03,7.5081521700E-01,,MIGRATED TO IC SERVICE
+144,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Spiral (Preset),JuliaSpiralPreset,Pass,,-0.04,-0.02,6.8834744000E-01,,MIGRATED TO IC SERVICE
+145,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Triple Spiral,JuliaTripleSpiral,Pass,,0.02,0.00,7.5417827300E-01,,MIGRATED TO IC SERVICE
+146,Julia Presets,EnhancedJuliaPresetsFamily.cpp,Julia - Twisted Cross,JuliaTwistedCross,Pass,,-0.11,0.00,7.0630434300E-01,,MIGRATED TO IC SERVICE
+147,Julia Sets,JuliaVariantsFamily.cpp,Julia - Burning Ship,JuliaBurningShip,Pass,,0.00,0.00,7.2196460302E-01,,MIGRATED TO IC SERVICE
+148,Julia Sets,JuliaVariantsFamily.cpp,Julia - Classic,JuliaClassic,Pass,,0.00,0.00,7.5000000000E-01,,MIGRATED TO IC SERVICE
+149,Julia Sets,JuliaVariantsFamily.cpp,Julia - Cubic,JuliaCubic,Pass,,0.00,0.16,7.5000000000E-01,,MIGRATED TO IC SERVICE
+150,Julia Sets,ExtendedJuliaFamily.cpp,Julia - Custom,JuliaCustom,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+151,Julia Sets,ExtendedJuliaFamily.cpp,Julia - Dendrite,JuliaDendrite,Pass,,0.00,0.00,6.7361680400E-01,,MIGRATED TO IC SERVICE
+152,Julia Sets,MandelbrotFamily.cpp,Julia - Douady Rabbit,JuliaDouadyRabbit,Pass,,0.00,0.00,7.5785828300E-01,,MIGRATED TO IC SERVICE
+153,Julia Sets,ExtendedJuliaFamily.cpp,Julia - Dragon,JuliaDragon,Pass,,0.00,0.00,9.5263799908E-01,,MIGRATED TO IC SERVICE
+154,Julia Sets,JuliaVariantsFamily.cpp,Julia - Exponential,JuliaExp,Pass,,0.00,0.44,3.3255144050E-01,,MIGRATED TO IC SERVICE
+155,Julia Sets,JuliaVariantsFamily.cpp,Julia - Lambda,JuliaLambda,Pass,black screen no structure at any zoom,0.50,-0.01,2.9375025361E+00,,MIGRATED TO IC SERVICE
+156,Julia Sets,,Julia - Lambda (Alt),LambdaJulia,Pass,,0.51,0.00,2.5071325872E+00,,
+157,Julia Sets,JuliaVariantsFamily.cpp,Julia - Magnet,JuliaMagnet,Pass,,-0.54,-0.02,1.8750000000E-01,,MIGRATED TO IC SERVICE
+158,Julia Sets,ExtendedJuliaFamily.cpp,Julia - Multibrot 3,Multibrot3Julia,Pass,,-0.02,0.09,6.8959205021E-01,,
+159,Julia Sets,ExtendedJuliaFamily.cpp,Julia - Multibrot 4,Multibrot4Julia,Pass,boring black square; still boring,0.00,0.00,7.4742462918E-01,,
+160,Julia Sets,JuliaVariantsFamily.cpp,Julia - Phoenix,JuliaPhoenix,Pass,,0.11,0.04,6.0239790044E-01,,MIGRATED TO IC SERVICE
+161,Julia Sets,PowerVariantsFamily.cpp,Julia - Power 5,Julia5,Pass,boring black pentagon - still boring,0.00,0.00,7.5000000000E-01,,
+162,Julia Sets,PowerVariantsFamily.cpp,Julia - Power 6,Julia6,Pass,boring black pentagon -  looks identical to Julia Power 5,0.00,0.00,5.0655423700E-01,,
+163,Julia Sets,MandelbrotFamily.cpp,Julia - San Marco,JuliaSanMarco,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+164,Julia Sets,ExtendedJuliaFamily.cpp,Julia - Siegel Disk,JuliaSiegelDisk,Pass,,0.00,0.00,8.1225239600E-01,,MIGRATED TO IC SERVICE
+165,Julia Sets,MandelbrotFamily.cpp,Julia - Siegel Disk (Alt),JuliaSiegelDiskAlt,Pass,"looks identical or close to previous Siegal Disk, can you introduce much more difference in appearance or find structure",0.00,0.00,8.1225239600E-01,,MIGRATED TO IC SERVICE
+166,Julia Sets,JuliaVariantsFamily.cpp,Julia - Sine,JuliaSine,Pass,can you introduce more fine feathering or details,0.00,0.00,1.3397168300E-01,,MIGRATED TO IC SERVICE
+167,Julia Sets,ExtendedJuliaFamily.cpp,Julia - Spiral,JuliaSpiral,Pass,,0.00,0.00,9.3303299200E-01,,MIGRATED TO IC SERVICE
+168,L-Systems,,Dragon Curve,DragonCurve,Pass,,0.00,0.00,5.0000000000E-01,,
+169,L-Systems,,Fractal Plant,FractalPlant,Pass,,0.00,3.00,1.5000000000E-01,,
+170,L-Systems,,Hilbert Curve,HilbertCurve,Pass,,0.00,0.00,5.0000000000E-01,,
+171,L-Systems,,Koch Curve,KochCurve,Pass,,0.00,0.00,5.0000000000E-01,,
+172,L-Systems,,Koch Snowflake,KochSnowflake,Pass,,0.00,0.00,5.0000000000E-01,,
+173,L-Systems,,Peano Curve,PeanoCurve,Pass,,0.00,0.00,5.0000000000E-01,,
+174,L-Systems,,Sierpinski Triangle,SierpinskiTriangle,Pass,0.5,0.00,0.50,2.5000000000E-01,,
+175,Lambda Fractals,LambdaExtendedFamily.cpp,Lambda Flip,LambdaFlip,Pass,double mandelbrot,1.00,-0.01,5.0000000000E-01,,MIGRATED TO IC SERVICE
+176,Lambda Fractals,LambdaExtendedFamily.cpp,Lambda Modified,LambdaModified,Pass,,0.00,0.01,5.0000000000E-01,,MIGRATED TO IC SERVICE
+177,Lambda Fractals,LambdaExtendedFamily.cpp,Lambda Phoenix,LambdaPhoenix,Pass,,0.91,-0.10,4.6401922358E-01,,MIGRATED TO IC SERVICE
+178,Lambda Fractals,LambdaExtendedFamily.cpp,Lambda Power 3,LambdaPower3,Pass,,3.47,-0.03,8.9622202185E-02,,MIGRATED TO IC SERVICE
+179,Lambda Fractals,LambdaExtendedFamily.cpp,Lambda Power 4,LambdaPower4,Pass,,0.50,0.00,4.4811101525E-02,,MIGRATED TO IC SERVICE
+180,Lambda Fractals,LambdaExtendedFamily.cpp,Lambda Squared,LambdaSquared,Pass,,-0.07,0.09,2.5000000000E-01,,MIGRATED TO IC SERVICE
+181,Lambda Fractals,LambdaExtendedFamily.cpp,Lambda Tan,LambdaTan,Pass,,-0.05,0.04,1.1524073062E-01,,MIGRATED TO IC SERVICE
+182,Lambda Fractals,LambdaExtendedFamily.cpp,Lambda Tanh,LambdaTanh,Pass,,-0.05,0.03,1.0165178600E-01,,MIGRATED TO IC SERVICE
+183,Magnet Fractals,MagnetExtendedFamily.cpp,Magnet I Cubic,Magnet1Power3,Pass,,0.50,0.00,2.5621499500E-01,,
+184,Magnet Fractals,MagnetExtendedFamily.cpp,Magnet I Julia,Magnet1J,Pass,,0.00,0.06,1.8852244100E-01,,MIGRATED TO IC SERVICE
+185,Magnet Fractals,MagnetExtendedFamily.cpp,Magnet II Cubic,Magnet2Power3,Pass,,0.82,-0.01,4.2284673011E-01,,
+186,Magnet Fractals,MagnetExtendedFamily.cpp,Magnet II Julia,Magnet2J,Pass,,-0.81,0.22,8.6603853290E-02,,MIGRATED TO IC SERVICE
+187,Mandelbrot Variants,BurningShipFamily.cpp,Burning Ship,BurningShip,Pass,,-0.50,-0.57,7.1111111100E-01,,MIGRATED TO IC SERVICE
+188,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Celtic Buffalo,CelticBuffalo,Pass,,-0.28,-0.60,7.5789767834E-01,,MIGRATED TO IC SERVICE
+189,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Celtic Heart,CelticHeart,Pass,,-0.54,0.04,8.2742316800E-01,,MIGRATED TO IC SERVICE
+190,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Heart Mandelbrot (Sine),HeartMandelbrot,Pass,,-0.65,0.02,8.5856543936E-01,,MIGRATED TO IC SERVICE
+191,Mandelbrot Variants,MandelVariantsFamily.cpp,Julia Power 4,Julia4,Pass,,0.00,0.00,6.5887281302E-01,,MIGRATED TO IC SERVICE
+192,Mandelbrot Variants,MandelVariantsFamily.cpp,Mandelbrot Power 4,Mandel4,Pass,,0.00,0.00,7.4642639300E-01,,MIGRATED TO IC SERVICE
+193,Mandelbrot Variants,MandelVariantsFamily.cpp,Mandelbar (Conjugate),Mandelbar,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+194,Mandelbrot Variants,SpecialExoticFamily.cpp,Mandelbar,MandelbarExotic,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+195,Mandelbrot Variants,MandelVariantsFamily.cpp,Mandelbrot-Lambda,MandelLambda,Pass,,1.00,0.01,4.9497474700E-01,,MIGRATED TO IC SERVICE
+196,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Manowar,Manowar,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+197,Mandelbrot Variants,MandelVariantsFamily.cpp,Marks Julia,MarksJulia,Pass,,0.00,0.00,9.7265494802E-01,,MIGRATED TO IC SERVICE
+198,Mandelbrot Variants,MandelVariantsFamily.cpp,Marks Mandelbrot,MarksMandel,Pass,,-0.36,0.00,7.0710678100E-01,,MIGRATED TO IC SERVICE
+199,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Marks Mandelbrot (Classic),MarksMandelPlaceholder,Pass,no difference with previous?,-0.39,0.00,8.1225239600E-01,,MIGRATED TO IC SERVICE
+200,Mandelbrot Variants,MultibrotFamily.cpp,Multibrot³ (Cubic),Multibrot3,Pass,,-0.16,0.01,5.7756467465E-01,,MIGRATED TO IC SERVICE
+201,Mandelbrot Variants,MultibrotFamily.cpp,Multibrot? (Quartic),Multibrot4,Pass,,0.00,0.00,7.0000000000E-01,,MIGRATED TO IC SERVICE
+202,Mandelbrot Variants,MultibrotFamily.cpp,Multibrot? (Quintic),Multibrot5,Pass,,0.00,0.00,8.3422682876E-01,,MIGRATED TO IC SERVICE
+203,Mandelbrot Variants,PowerVariantsFamily.cpp,Multibrot (Power 6),Multibrot6,Pass,,0.00,0.00,7.5000000000E-01,,MIGRATED TO IC SERVICE
+204,Mandelbrot Variants,PowerVariantsFamily.cpp,Multibrot (Power 7),Multibrot7,Pass,,0.00,0.00,7.2445224649E-01,,MIGRATED TO IC SERVICE
+205,Mandelbrot Variants,PowerVariantsFamily.cpp,Multibrot (Power 8),Multibrot8,Pass,,0.00,0.00,7.5000000000E-01,,MIGRATED TO IC SERVICE
+206,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Perpendicular Mandelbrot (Abs First),PerpendicularMandelbrot,Pass,,-0.40,0.46,6.4617641181E-01,,MIGRATED TO IC SERVICE
+207,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Shark Fin Mandelbrot,SharkFinMandelbrot,Pass,,0.00,0.00,6.0000000000E+00,,MIGRATED TO IC SERVICE
+208,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Spider,Spider,Pass,nice,-0.59,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+209,Mandelbrot Variants,MandelVariantsFamily.cpp,Spider Variant,SpiderVariant,Pass,,-0.25,-0.02,6.1557221000E-01,,MIGRATED TO IC SERVICE
+210,Mandelbrot Variants,MandelVariantsFamily.cpp,Thorn,Thorn,Pass,,-0.21,-0.02,5.0000000000E-01,,MIGRATED TO IC SERVICE
+211,Mandelbrot Variants,SpecialExoticFamily.cpp,Thorn (Classic),ThornClassic,Pass,,0.00,0.00,3.4252864580E+00,,MIGRATED TO IC SERVICE
+212,Mandelbrot Variants,TricornFamily.cpp,Tricorn (Mandelbar),Tricorn,Pass,,-0.25,0.04,4.3076521100E-01,,MIGRATED TO IC SERVICE
+213,Mandelbrot Variants,ClassicEscapeTimeFamily.cpp,Wavy Mandelbrot,WavyMandelbrot,Pass,,-0.11,-0.04,5.9241357984E-01,,MIGRATED TO IC SERVICE
+214,Mechanical Engineering,,Basquin Fatigue Power Law (S-N Curve),BasquinFatigue,Pass,,0.00,0.00,5.7434917700E-01,,
+215,Mechanical Engineering,,Euler-Bernoulli Buckling (Beam Deflection),EulerBuckling,Pass,,0.00,0.00,8.0900000000E-01,,
+216,Mechanical Engineering,,Ramberg-Osgood Plastic Deformation (Malleability),RambergOsgood,Pass,,0.00,0.00,5.4829886300E-01,,
+217,Mechanical Engineering,,Stefan-Boltzmann Radiative Cooling (Heat Flow),,Pass,,0.00,0.00,1.0800000000E-01,,
+218,Mechanical Engineering,,Torsional Twist (Angle of Twist),TorsionalTwist,Pass,,-0.32,0.03,7.3700000000E-01,,
+219,Multibrot Powers,PolynomialFamily.cpp,Buffalo (Polynomial),BuffaloPolynomial,Pass,,-0.41,-0.53,6.6434290283E-01,,MIGRATED TO IC SERVICE
+220,Multibrot Powers,PolynomialFamily.cpp,Multibrot-10 (Decic),Multibrot-10,Pass,,0.00,0.00,7.5000000000E-01,,MIGRATED TO IC SERVICE
+221,Multibrot Powers,PolynomialFamily.cpp,Multibrot-3 (Cubic),Multibrot-3,Pass,,-0.19,0.02,5.5021005600E-01,,MIGRATED TO IC SERVICE
+222,Multibrot Powers,PolynomialFamily.cpp,Multibrot-4 (Quartic),Multibrot-4,Pass,,-0.11,0.00,7.2236319500E-01,,MIGRATED TO IC SERVICE
+223,Multibrot Powers,PolynomialFamily.cpp,Multibrot-5 (Quintic),Multibrot-5,Pass,,0.08,-0.02,7.5028647800E-01,,MIGRATED TO IC SERVICE
+224,Multibrot Powers,PolynomialFamily.cpp,Multibrot-6 (Sextic),Multibrot-6,Pass,,-0.01,-0.04,7.1841238300E-01,,MIGRATED TO IC SERVICE
+225,Multibrot Powers,PolynomialFamily.cpp,Multibrot-8 (Octic),Multibrot-8,Pass,,0.00,0.00,7.5024142400E-01,,MIGRATED TO IC SERVICE
+226,Multibrot Powers,PolynomialFamily.cpp,Tricorn (Polynomial),Tricorn-Poly,Pass,,0.00,0.00,4.5471497000E-01,,MIGRATED TO IC SERVICE
+227,Newton's Method,NewtonFamily.cpp,Newton (z³-1),Newton,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+228,Newton's Method,NewtonExtendedFamily.cpp,Newton Basin (z³-1),NewtonBasin,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+229,Newton's Method,NewtonExtendedFamily.cpp,Newton Cosh,NewtonCosh,Pass,full screen coverage,0.00,0.00,1.5000000000E-01,,MIGRATED TO IC SERVICE
+230,Newton's Method,NewtonExtendedFamily.cpp,Newton Quartic (z?-1),NewtonQuartic,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+231,Newton's Method,NewtonExtendedFamily.cpp,Newton Quintic (z?-1),NewtonQuintic,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+232,Newton's Method,NewtonExtendedFamily.cpp,Newton Sextic (z?-1),NewtonSextic,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+233,Newton's Method,NewtonExtendedFamily.cpp,Newton Sine,NewtonSin,Pass,amazing full screen of texture,0.00,0.00,7.8125000000E-03,,MIGRATED TO IC SERVICE
+234,Newton's Method,NewtonFamily.cpp,Nova,Nova,Pass,,-0.55,0.03,1.3508732210E+00,,MIGRATED TO IC SERVICE
+235,Orbit Statistics,OrbitalFractalsFamily.cpp,Angle Average,AngleAverage,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+236,Orbit Statistics,OrbitalFractalsFamily.cpp,Average Distance,AverageDistance,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+237,Orbit Statistics,OrbitalFractalsFamily.cpp,Maximum Distance,MaximumDistance,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+238,Orbit Statistics,OrbitalFractalsFamily.cpp,Minimum Distance,MinimumDistance,Pass,,-0.24,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+239,Orbit Trap,OrbitalFractalsFamily.cpp,Orbit Trap (Circle),OrbitTrapCircle,Pass,,-0.38,-0.02,7.2698626384E-01,,MIGRATED TO IC SERVICE
+240,Orbit Trap,OrbitalFractalsFamily.cpp,Orbit Trap (Cross),OrbitTrapCross,Pass,looks identical to Minimum Distance,-0.24,0.00,9.0125046471E-01,,MIGRATED TO IC SERVICE
+241,Orbit Trap,OrbitalFractalsFamily.cpp,Orbit Trap (Point),OrbitTrapPoint,Pass,glowing green and blue Mandelbrot,-0.45,-0.01,9.2018765234E-01,,MIGRATED TO IC SERVICE
+242,Orbit Trap,OrbitalFractalsFamily.cpp,Orbit Trap (Square),OrbitTrapSquare,Pass,,-0.17,0.00,7.4555890400E-01,,MIGRATED TO IC SERVICE
+243,Orbital Advanced,OrbitalModificationsFamily.cpp,Circular Orbit Trap,CircularOrbitTrap,Pass,,-0.09,-0.02,7.1930332300E-01,,MIGRATED TO IC SERVICE
+244,Orbital Advanced,OrbitalModificationsFamily.cpp,Cross Orbit Trap,CrossOrbitTrap,Pass,,0.00,0.00,1.1566881801E-01,,MIGRATED TO IC SERVICE
+245,Orbital Advanced,OrbitalModificationsFamily.cpp,Orbital Curvature Tracking,CurvatureTracking,Pass,,0.00,0.00,6.5887280646E-01,,MIGRATED TO IC SERVICE
+246,Orbital Advanced,OrbitalModificationsFamily.cpp,Delta Magnitude Tracking,DeltaMagnitude,Pass,,-0.22,-0.11,6.2108828089E-01,,MIGRATED TO IC SERVICE
+247,Orbital Advanced,OrbitalModificationsFamily.cpp,Orbit Angle Accumulation,OrbitAngleAccum,Pass,,-0.52,-0.09,5.6369679707E-01,,MIGRATED TO IC SERVICE
+248,Orbital Advanced,OrbitalModificationsFamily.cpp,Point-Line Orbit Trap,PointLineOrbitTrap,Pass,,-0.57,0.00,6.8685235149E-01,,MIGRATED TO IC SERVICE
+249,Orbital Advanced,OrbitalModificationsFamily.cpp,Smoothed Orbit (Running Average),SmoothedOrbit,Pass,,-0.25,-0.01,8.0000000000E-01,,MIGRATED TO IC SERVICE
+250,Orbital Advanced,OrbitalModificationsFamily.cpp,Stalks (Conditional),StalksConditional,Pass,yet another mandelbrot,-0.15,-0.01,7.3565668200E-01,,MIGRATED TO IC SERVICE
+251,Orbital Advanced,OrbitalModificationsFamily.cpp,Stripe Average Coloring,StripeAverage,Pass,,-0.18,0.00,8.0000000000E-01,,MIGRATED TO IC SERVICE
+252,Orbital Advanced,OrbitalModificationsFamily.cpp,Triangle Orbit Trap,TriangleOrbitTrap,Pass,,-0.34,0.00,2.0000000000E-01,,MIGRATED TO IC SERVICE
+253,Phoenix Fractals,PhoenixExtendedFamily.cpp,Phoenix Complex Feedback,PhoenixComplex,Pass,,-0.19,0.02,1.0205136990E+00,,MIGRATED TO IC SERVICE
+254,Phoenix Fractals,PhoenixExtendedFamily.cpp,Phoenix Cosh,PhoenixCosh,Pass,,0.00,0.00,1.3058258400E-01,,MIGRATED TO IC SERVICE
+255,Phoenix Fractals,PhoenixExtendedFamily.cpp,Phoenix Cubic,PhoenixPower3,Pass,,0.00,0.00,9.1895868400E-01,,
+256,Phoenix Fractals,PhoenixExtendedFamily.cpp,Phoenix Julia,PhoenixJ,Pass,,-0.17,0.07,5.3033008600E-01,,MIGRATED TO IC SERVICE
+257,Phoenix Fractals,PhoenixExtendedFamily.cpp,Phoenix Lambda,PhoenixLambda,Pass,,0.60,0.00,6.1557220700E-01,,MIGRATED TO IC SERVICE
+258,Phoenix Fractals,PhoenixExtendedFamily.cpp,Phoenix Mandelbrot,PhoenixM,Pass,,-0.19,0.00,6.8921901300E-01,,MIGRATED TO IC SERVICE
+259,Phoenix Fractals,PhoenixExtendedFamily.cpp,Phoenix Quartic,PhoenixPower4,Pass,,0.00,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+260,Phoenix Fractals,PhoenixExtendedFamily.cpp,Phoenix Sine,PhoenixSin,Pass,,0.00,0.00,3.7500000000E-01,,MIGRATED TO IC SERVICE
+261,Polynomial Variants,PolynomialVariantsFamily.cpp,Biomorph,Biomorph,Pass,,-0.57,0.03,8.1225239600E-01,,MIGRATED TO IC SERVICE
+262,Polynomial Variants,PolynomialVariantsFamily.cpp,Cubic Mandelbrot,CubicMandel,Pass,,0.00,0.00,6.0000000000E-01,,MIGRATED TO IC SERVICE
+263,Polynomial Variants,PolynomialVariantsFamily.cpp,Polynomial z³-z+c,PolyZ3MinusZ,Pass,,0.00,0.00,1.2183785950E+00,,MIGRATED TO IC SERVICE
+264,Polynomial Variants,PolynomialVariantsFamily.cpp,Polynomial z?+z³+c,PolyZ4PlusZ3,Pass,,0.00,0.00,7.5000000000E-01,,MIGRATED TO IC SERVICE
+265,Polynomial Variants,PolynomialVariantsFamily.cpp,Quartic Mandelbrot,QuarticMandel,Pass,,0.00,0.00,6.9665275100E-01,,MIGRATED TO IC SERVICE
+266,Polynomial Variants,PolynomialVariantsFamily.cpp,Quintic Mandelbrot,QuinticMandel,Pass,,-0.17,0.02,8.4300781200E-01,,MIGRATED TO IC SERVICE
+267,Polynomial Variants,PolynomialVariantsFamily.cpp,Rational R1,RationalR1,Pass,,0.00,0.00,9.3750000000E-02,,MIGRATED TO IC SERVICE
+268,Polynomial Variants,PolynomialVariantsFamily.cpp,Sextic Mandelbrot,SexticMandel,Pass,,0.00,0.00,7.5000000000E-01,,MIGRATED TO IC SERVICE
+269,Rational Function Fractals,RationalFunctionFamily.cpp,Halley's Method z³-1,HalleyCubic,Pass,,0.00,0.00,3.7500000000E-02,,MIGRATED TO IC SERVICE
+270,Rational Function Fractals,RationalFunctionFamily.cpp,Möbius Fractal,Mobius,Pass,,-2.36,0.01,4.0612619800E-01,,MIGRATED TO IC SERVICE
+271,Rational Function Fractals,RationalFunctionFamily.cpp,Newton z³-1,NewtonCubic,Pass,,0.00,0.00,6.0000000000E-01,,MIGRATED TO IC SERVICE
+272,Rational Function Fractals,RationalFunctionFamily.cpp,Newton z?-1,NewtonQuarticRational,Pass,,0.00,0.00,6.0000000000E-01,,MIGRATED TO IC SERVICE
+273,Rational Function Fractals,RationalFunctionFamily.cpp,Newton z?-1,NewtonQuinticRational,Pass,,0.00,0.00,6.0000000000E-01,,MIGRATED TO IC SERVICE
+274,Rational Function Fractals,RationalFunctionFamily.cpp,Rational (z²+c)/(z²-c),RationalSymmetric,Pass,,4.03,0.14,2.5000000000E-01,,
+275,Rational Function Fractals,RationalFunctionFamily.cpp,Rational z²/(z³+c),RationalZ2Z3,Pass,,-0.06,-0.13,9.9724469900E-01,,
+276,Rational Function Fractals,RationalFunctionFamily.cpp,Rational z³/(z³+c),RationalPower,Pass,,0.09,-0.17,1.6221444780E+00,,MIGRATED TO IC SERVICE
+277,Science and Engineering,,Airy Function (Bi),AiryBi,Pass,,0.00,0.00,1.2500000000E-01,,
+278,Science and Engineering,SpecialFunctionFamily.cpp,Bessel-like Oscillatory,BesselLikeFractal,Pass,check the computations; black disk with a green crescent edge.  No fine structure; original Bessel disk with waves and striations is gone,-0.70,-0.57,1.5880767200E-01,,
+279,Science and Engineering,SpecialFunctionFamily.cpp,Continued Fraction Fractal,ContinuedFraction,Pass,,-3.65,-0.57,4.1034836100E-01,,
+280,Science and Engineering,,Dedekind Eta Function,DedekindEta,,,-5.62,0.26,3.1775472849E-01,,
+281,Science and Engineering,SpecialFunctionFamily.cpp,Error Function (erf) Fractal,ErrorFunctionFractal,Pass,,0.00,0.05,8.0494792000E-02,,
+282,Science and Engineering,SpecialFunctionFamily.cpp,Gamma Function Fractal,GammaFractal,Pass,,-1.13,-0.07,3.0000000000E-01,,
+283,Science and Engineering,SpecialFunctionFamily.cpp,Hyperbolic Combination,HyperbolicCombo,Pass,,-1.64,0.02,3.9357400700E-01,,
+284,Science and Engineering,SpecialFunctionFamily.cpp,Lambert W Function,LambertW,Pass,,2.56,0.15,8.2470951000E-02,,
+285,Science and Engineering,SpecialFunctionFamily.cpp,Tetration (Power Tower),TetrationPowerTower,Pass,,1.00,0.00,8.0214118000E-02,,
+286,Special,SpecialExoticFamily.cpp,2-D Hailstone Trajectory,Hailstone2D,Pass,,,,#REF!,,
+287,Special,SpecialExoticFamily.cpp,Buddhabrot,Buddhabrot,Pass,"this is not the Buddahbrot shape.  It is the classic Mandelbrot shape, but's worth saving somehow",-0.33,0.029999999999999999),8.0000000000E-01,,MIGRATED TO IC SERVICE
+288,Special,SpecialExoticFamily.cpp,Hailstone Sequence,Hailstone,Pass,,0.39,-0.44,2.0000000000E-02,,MIGRATED TO IC SERVICE
+289,Special,SpecialExoticFamily.cpp,Lyapunov,Lyapunov,Pass,,-0.01,0.00,1.5389305200E-01,,
+290,Special,,Nebulabrot,Nebulabrot,Pass,,-0.33,0.03,8.0000000000E-01,,
+291,Special,SpecialExoticFamily.cpp,NumFractal,NumFractal,Pass,,0.00,0.00,6.1557220700E-01,,MIGRATED TO IC SERVICE
+292,Special,SpecialExoticFamily.cpp,Tetration (Classic),TetrationClassic,Pass,,-0.22,0.05,2.4019656700E-01,,MIGRATED TO IC SERVICE
+293,Special Function Fractals,,Bose-Einstein Distribution,BoseEinsteinFractal,Pass,,0.34,0.02,3.8700000000E-01,,
+294,Special Function Fractals,,Damped Harmonic Oscillator,DampedOscillatorFractal,Pass,,0.00,0.00,1.2500000000E-01,,
+295,Special Function Fractals,,Digamma Function,DigammaFractal,Pass,,0.75,-0.60,8.5784068136E-01,,
+296,Special Function Fractals,,Fermi-Dirac Distribution,FermiDiracFractal,Pass,,-0.48,3.15,5.8516260200E-01,,
+297,Special Function Fractals,,Planck Distribution,PlanckFractal,Pass,,0.01,0.04,8.3042863000E-02,,
+298,Special Function Fractals,,RLC Circuit Resonance,RLCCircuitFractal,Pass,,-1.04,0.08,4.3500000000E-01,,
+299,Special Function Fractals,,Root Locus (Control Systems),RootLocusFractal,Pass,,0.08,-0.50,1.3200000000E+00,,
+300,Special Function Fractals,,Trigamma Function,TrigammaFractal,Pass,,-0.25,0.00,3.2544964200E-01,,
+301,Strange Attractors,StrangeAttractorsExtendedFamily.cpp,Bedhead Attractor,Bedhead,Pass,,0.00,0.00,1.2500000000E-01,,MIGRATED TO IC SERVICE
+302,Strange Attractors,StrangeAttractorsExtendedFamily.cpp,Clifford Attractor,Clifford,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+303,Strange Attractors,StrangeAttractorsExtendedFamily.cpp,De Jong Attractor,DeJong,Pass,,0.17,0.07,3.7516476300E-01,,MIGRATED TO IC SERVICE
+304,Strange Attractors,StrangeAttractorsExtendedFamily.cpp,Duffing Attractor,Duffing,Pass,,0.00,0.00,3.4222911375E-01,,MIGRATED TO IC SERVICE
+305,Strange Attractors,StrangeAttractorsExtendedFamily.cpp,Svensson Attractor,Svensson,Pass,,0.00,-0.01,1.8359941900E-01,,MIGRATED TO IC SERVICE
+306,Strange Attractors,StrangeAttractorsExtendedFamily.cpp,Tinkerbell Attractor,Tinkerbell,Pass,,-0.45,-0.53,-5.3000000000E-01,,MIGRATED TO IC SERVICE
+307,Tricorn Family,PowerVariantsFamily.cpp,Tricorn (Power 3),Tricorn3,Pass,,0.00,0.00,6.2115895382E-01,,MIGRATED TO IC SERVICE
+308,Tricorn Family,PowerVariantsFamily.cpp,Tricorn (Power 4),Tricorn4,Pass,,0.00,0.00,6.0000000000E-01,,MIGRATED TO IC SERVICE
+309,Trigonometric,TrigonmetricExtendedFamily.cpp,Cosecant Mandelbrot,CscMandel,Pass,,-3.15,0.01,4.0191504800E-01,,
+310,Trigonometric,ClassicEscapeTimeFamily.cpp,Cosh Mandelbrot,CoshMandelbrot,Pass,,-0.83,1.59,2.5015867900E-01,,
+311,Trigonometric,TrigonmetricExtendedFamily.cpp,Cotangent Mandelbrot,CotMandel,Pass,,-3.18,-0.20,2.9403409100E-01,,
+312,Trigonometric,ClassicEscapeTimeFamily.cpp,Mandel Trig,MandelTrigClassic,Pass,just another mandelbrot,-0.32,0.01,8.5263489481E-01,,
+313,Trigonometric,TrigonmetricExtendedFamily.cpp,Secant Mandelbrot,SecMandel,Pass,,1.54,0.02,4.6875000000E-02,,
+314,Trigonometric,TrigonmetricExtendedFamily.cpp,Sech Mandelbrot,SechMandel,Pass,,-0.78,0.04,2.5000000000E-01,,MIGRATED TO IC SERVICE
+315,Trigonometric,ClassicEscapeTimeFamily.cpp,Sinh Mandelbrot,SinhMandelbrot,Pass,,0.00,0.00,1.8750000000E-01,,MIGRATED TO IC SERVICE
+316,Trigonometric,ClassicEscapeTimeFamily.cpp,Tanh Mandelbrot,TanhMandelbrot,Pass,pinnants,0.00,0.00,5.3845235000E-02,,MIGRATED TO IC SERVICE
+317,Trigonometric Fractals,TrigonometricFamily.cpp,Cos(z) + c,CosZ,Pass,,1.53,0.04,2.3325824800E-01,,MIGRATED TO IC SERVICE
+318,Trigonometric Fractals,TrigonometricFamily.cpp,Lambda Lambda Cosh,LLambdaCosh,Pass,,0,0.00,5.0000000000E-01,,
+319,Trigonometric Fractals,TrigonometricFamily.cpp,Lambda Lambda Cosine,LLambdaCos,Pass,,0,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+320,Trigonometric Fractals,TrigonometricFamily.cpp,Lambda Lambda Sine,LLambdaSine,Pass,,-0.06,0.02,2.9684095900E-01,,MIGRATED TO IC SERVICE
+321,Trigonometric Fractals,TrigonometricFamily.cpp,Lambda Lambda Sinh,LLambdaSinh,Pass,,0.00,0.00,2.5000000000E-01,,MIGRATED TO IC SERVICE
+322,Trigonometric Fractals,TrigonometricFamily.cpp,Lambda Mandel Cosh,LMandelCosh,Pass,,0.00,0.00,6.2500000000E-02,,
+323,Trigonometric Fractals,TrigonometricFamily.cpp,Lambda Mandel Cosine,LMandelCos,Pass,,0.00,0.00,2.5000000000E-01,,MIGRATED TO IC SERVICE
+324,Trigonometric Fractals,TrigonometricFamily.cpp,Lambda Mandel Sine,LMandelSine,Pass,,0.00,0.00,5.0000000000E-01,,MIGRATED TO IC SERVICE
+325,Trigonometric Fractals,TrigonometricFamily.cpp,Lambda Mandel Sinh,LMandelSinh,Pass,,0.00,0.00,2.8717458900E-01,,MIGRATED TO IC SERVICE
+326,Trigonometric Fractals,TrigonometricFamily.cpp,Mandelbrot Trig,MandelTrig,Pass,,-0.80,0.00,1.0000000000E+00,,MIGRATED TO IC SERVICE
+327,Trigonometric Fractals,TrigonometricFamily.cpp,Sin(z) + c,SinZ,Pass,,0.00,0.00,2.3325824800E-01,,
+328,Trigonometric Fractals,TrigonometricFamily.cpp,Sine Fractal,Sine,Pass,,0.01,0.06,2.3325824800E-01,,MIGRATED TO IC SERVICE
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,50,,,,,
