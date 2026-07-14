@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ManpWinUI.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ManpWinUI.ViewModels;
 
@@ -70,6 +71,13 @@ public partial class MainViewModel
         if (IsHailstoneMode)
             return;
 
+        // Capture complete parameter snapshot for true "back" navigation
+        Dictionary<string, object>? parameterSnapshot = null;
+        if (CurrentParameters != null)
+        {
+            parameterSnapshot = CurrentParameters.ExportForSave();
+        }
+
         var entry = NavigationHistoryEntry.FromCurrentState(
             fractalType: SelectedFractalType,
             iterationMode: SelectedIterationMode,
@@ -80,7 +88,8 @@ public partial class MainViewModel
             colorPalette: SelectedPalette,
             juliaCX: IsJuliaMode ? JuliaCX : null,
             juliaCY: IsJuliaMode ? JuliaCY : null,
-            customDescription: customDescription
+            customDescription: customDescription,
+            parameters: parameterSnapshot
         );
 
         _navigationHistoryService.RecordState(entry);
@@ -112,6 +121,17 @@ public partial class MainViewModel
             {
                 JuliaCX = entry.JuliaC.Real;
                 JuliaCY = entry.JuliaC.Imaginary;
+            }
+
+            // IMPORTANT: Restore complete parameter snapshot for true "back" navigation
+            if (entry.Parameters != null && CurrentParameters != null)
+            {
+                var importCount = CurrentParameters.ImportValues(entry.Parameters);
+                Debug.WriteLine($"[MainViewModel.Navigation] Restored {importCount} parameters from history");
+            }
+            else
+            {
+                Debug.WriteLine("[MainViewModel.Navigation] No parameter snapshot in history (legacy entry)");
             }
 
             // Reset tracked center point since we explicitly changed the center

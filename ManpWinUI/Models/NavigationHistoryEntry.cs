@@ -76,6 +76,15 @@ public class NavigationHistoryEntry
     public JuliaParameters? JuliaC { get; set; }
 
     /// <summary>
+    /// Complete snapshot of flexible parameter system state.
+    /// Includes all quality parameters (bailout, escape_radius, exponent, etc.)
+    /// exported from FractalParameterSet at the time this state was recorded.
+    /// Ensures true "back" navigation including all parameter changes.
+    /// </summary>
+    [JsonPropertyName("parameters")]
+    public Dictionary<string, object>? Parameters { get; set; }
+
+    /// <summary>
     /// Gets a short coordinate display string.
     /// </summary>
     [JsonIgnore]
@@ -100,7 +109,8 @@ public class NavigationHistoryEntry
         string colorPalette,
         double? juliaCX = null,
         double? juliaCY = null,
-        string? customDescription = null)
+        string? customDescription = null,
+        Dictionary<string, object>? parameters = null)
     {
         var entry = new NavigationHistoryEntry
         {
@@ -113,7 +123,8 @@ public class NavigationHistoryEntry
             ColorPalette = colorPalette,
             JuliaC = (juliaCX.HasValue && juliaCY.HasValue)
                 ? new JuliaParameters { Real = juliaCX.Value, Imaginary = juliaCY.Value }
-                : null
+                : null,
+            Parameters = parameters
         };
 
         // Auto-generate description if not provided
