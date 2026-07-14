@@ -73,22 +73,10 @@ public partial class MainViewModel
 
             Debug.WriteLine($"[MainViewModel.Parameters] Loaded {paramSet.Parameters.Count} parameters for '{fractalType}'");
 
-            // TASK 6: Try to restore saved parameter values from LocalSettings
-            var restored = CurrentParameters.LoadFromSettings();
-            if (restored)
-            {
-                Debug.WriteLine($"[MainViewModel.Parameters] Restored saved parameter values for '{fractalType}'");
-
-                // PHASE 5: SyncParametersToProperties() removed - legacy properties no longer needed
-                Debug.WriteLine("[PHASE 5] Legacy property sync removed - UI binds directly to CurrentParameters");
-            }
-            else
-            {
-                Debug.WriteLine($"[MainViewModel.Parameters] No saved parameters found, using defaults for '{fractalType}'");
-
-                // PHASE 5: Legacy sync removed - flexible parameter system is now the single source of truth
-                Debug.WriteLine("[PHASE 5] SyncPropertiesToParameters() call removed - using parameter defaults");
-            }
+            // DESIGN DECISION: Rendering quality settings do NOT persist between sessions.
+            // Each session starts with application-selected defaults when a fractal is selected.
+            // Bookmarks preserve complete state for explicit resume scenarios.
+            Debug.WriteLine($"[MainViewModel.Parameters] Using application defaults for '{fractalType}' (session persistence disabled)");
         }
         catch (System.Exception ex)
         {
@@ -100,21 +88,16 @@ public partial class MainViewModel
     /// <summary>
     /// Handle parameter value changes from the flexible parameter system.
     /// This is called when parameters are modified via the new API.
-    /// TASK 6: Auto-saves parameters to LocalSettings on change (with debounce to avoid excessive saves).
+    /// DESIGN DECISION: Parameters are NOT auto-saved to LocalSettings.
+    /// Session state is ephemeral; bookmarks provide explicit persistence.
     /// </summary>
     private void OnParameterValueChanged(object? sender, ParameterChangedEventArgs e)
     {
         Debug.WriteLine($"[MainViewModel.Parameters] Parameter '{e.ParameterKey}' changed: {e.OldValue} → {e.NewValue}");
 
-        // PHASE 5: Legacy property sync removed - UI components bind directly to CurrentParameters
-        Debug.WriteLine("[PHASE 5] SyncParametersToProperties() call removed - parameter changes propagate via INotifyPropertyChanged");
-
-        // TASK 6: Auto-save parameters to LocalSettings
-        // Only save if not currently syncing (to avoid save loops during initialization)
-        if (CurrentParameters != null && UseParameterSystem)
-        {
-            CurrentParameters.SaveToSettings();
-        }
+        // DESIGN DECISION: Session persistence removed.
+        // Rendering quality settings now start fresh each session with application defaults.
+        // Users can save complete state via bookmarks for explicit resume scenarios.
 
         // Future: Trigger auto-render on parameter change
         // For now, keep existing behavior (user clicks Render button)
@@ -209,9 +192,6 @@ public partial class MainViewModel
                 CurrentParameters.SetValue(descriptor.Key, descriptor.DefaultValue);
             }
         }
-
-        // PHASE 5: Legacy property sync removed - parameter changes propagate automatically
-        Debug.WriteLine("[PHASE 5] SyncParametersToProperties() call removed - defaults applied directly to CurrentParameters");
 
         Debug.WriteLine($"[MainViewModel.Parameters] Parameters reset to defaults");
     }
