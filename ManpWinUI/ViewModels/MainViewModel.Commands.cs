@@ -128,8 +128,6 @@ public partial class MainViewModel
 
             if (CurrentParameters != null && UseParameterSystem)
             {
-                System.Diagnostics.Debug.WriteLine("[RenderCommand] Using PARAMETER SYSTEM for render");
-
                 // Create structured parameters from parameter set
                 var renderParams = CurrentParameters.ToStructuredRenderParameters(ImageWidth, ImageHeight);
 
@@ -174,12 +172,9 @@ public partial class MainViewModel
                 result = await _renderService.RenderFractalAsync(
                     renderParams,
                     progress);
-
-                System.Diagnostics.Debug.WriteLine("[RenderCommand] Parameter-based render completed");
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("[RenderCommand] Using LEGACY property-based render (fallback)");
 
                 // Week 9 Task 1: Deep zoom toggle with automatic optimization (legacy path)
                 // Deep zoom activates when viewport width requires arbitrary precision
@@ -202,7 +197,6 @@ public partial class MainViewModel
                 }
 
                 System.Diagnostics.Debug.WriteLine($"[RenderCommand] Deep Zoom Setting (Legacy): {shouldUseDeepZoom} (User requested: {userRequestedDeepZoom}, ViewWidth: {viewWidth:E2})");
-                System.Diagnostics.Debug.WriteLine($"[RenderCommand] RENDER SETTINGS: RenderMode={SelectedRenderMode} ({(int)SelectedRenderMode}), UseSmoothColoring={UseSmoothColoring}");
 
                 // Fallback: use old individual-property method
                 result = await _renderService.RenderMandelbrotAsync(
