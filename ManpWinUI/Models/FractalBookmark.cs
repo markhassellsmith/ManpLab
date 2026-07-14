@@ -42,6 +42,14 @@ public class FractalBookmark
     [JsonPropertyName("juliaC")]
     public JuliaParameters? JuliaC { get; set; }
 
+    /// <summary>
+    /// Complete snapshot of flexible parameter system state.
+    /// Includes all quality parameters (bailout, escape_radius, exponent, etc.)
+    /// exported from FractalParameterSet at the time the bookmark was created.
+    /// </summary>
+    [JsonPropertyName("parameters")]
+    public Dictionary<string, object>? Parameters { get; set; }
+
     [JsonPropertyName("dateCreated")]
     public DateTime DateCreated { get; set; } = DateTime.UtcNow;
 
@@ -66,7 +74,8 @@ public class FractalBookmark
         string colorPalette,
         double? juliaCX = null,
         double? juliaCY = null,
-        bool isFavorite = false)
+        bool isFavorite = false,
+        Dictionary<string, object>? parameters = null)
     {
         return new FractalBookmark
         {
@@ -82,6 +91,7 @@ public class FractalBookmark
             JuliaC = (juliaCX.HasValue && juliaCY.HasValue)
                 ? new JuliaParameters { Real = juliaCX.Value, Imaginary = juliaCY.Value }
                 : null,
+            Parameters = parameters,
             IsFavorite = isFavorite,
             IsPreset = false
         };

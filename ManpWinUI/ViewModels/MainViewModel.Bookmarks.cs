@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ManpWinUI.Models;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ManpWinUI.ViewModels;
@@ -124,6 +125,17 @@ public partial class MainViewModel
         // Update fractal info to match the loaded bookmark
         UpdateSelectedFractalInfo(bookmark.FractalType);
 
+        // IMPORTANT: Restore complete parameter snapshot if available
+        if (bookmark.Parameters != null && CurrentParameters != null)
+        {
+            var importCount = CurrentParameters.ImportValues(bookmark.Parameters);
+            Debug.WriteLine($"[MainViewModel.Bookmarks] Restored {importCount} parameters from bookmark");
+        }
+        else
+        {
+            Debug.WriteLine("[MainViewModel.Bookmarks] No parameter snapshot in bookmark (legacy bookmark format)");
+        }
+
         // Set the current visualization name to the bookmark name
         CurrentVisualizationName = bookmark.Name;
         StatusMessage = $"Loaded bookmark: {bookmark.Name}";
@@ -138,6 +150,7 @@ public partial class MainViewModel
 
     /// <summary>
     /// Saves current fractal view as a new bookmark.
+    /// Captures complete parameter snapshot for exact reproduction.
     /// </summary>
     [RelayCommand]
     private async Task SaveCurrentAsBookmarkAsync(string? bookmarkName)
@@ -146,6 +159,14 @@ public partial class MainViewModel
         {
             StatusMessage = "Please enter a bookmark name";
             return;
+        }
+
+        // Capture complete parameter snapshot from flexible parameter system
+        Dictionary<string, object>? parameterSnapshot = null;
+        if (CurrentParameters != null)
+        {
+            parameterSnapshot = CurrentParameters.ExportForSave();
+            Debug.WriteLine($"[MainViewModel.Bookmarks] Captured {parameterSnapshot.Count} parameters for bookmark");
         }
 
         var bookmark = FractalBookmark.FromCurrentState(
@@ -160,7 +181,8 @@ public partial class MainViewModel
             colorPalette: SelectedPalette,
             juliaCX: IsJuliaMode ? JuliaCX : null,
             juliaCY: IsJuliaMode ? JuliaCY : null,
-            isFavorite: false
+            isFavorite: false,
+            parameters: parameterSnapshot
         );
 
         await _bookmarkService.AddBookmarkAsync(bookmark);
