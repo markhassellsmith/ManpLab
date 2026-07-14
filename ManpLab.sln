@@ -26,7 +26,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManpCore.Services", "ManpCo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A420ACFB-B81F-4A12-BF3F-2C8F8A0029FC}"
 	ProjectSection(SolutionItems) = preProject
-		DebugOutput.txt = DebugOutput.txt
 		docs\FractalMetadataRecommendations.md = docs\FractalMetadataRecommendations.md
 		README.md = README.md
 	EndProjectSection
