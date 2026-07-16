@@ -223,18 +223,18 @@ namespace Native
         {
             FractalSpec spec;
             spec.name = "SmoothedOrbit";
-            spec.displayName = "Smoothed Orbit (Running Average)";
+            spec.displayName = "Smoothed Orbit (Deviation)";
             spec.category = "Orbital Advanced";
             spec.type = FractalCategory::EscapeTime2D;
-            spec.description = "Applies running average smoothing to orbit: z_avg = 0.9*z_avg + 0.1*z. Creates softer, blurred versions.";
-            spec.formula = "z' = 0.9*z_smooth + 0.1*z_new";
-            spec.formulaLatex = R"(z'_{n+1} = \alpha z'_n + (1-\alpha)(z_n^2 + c))";
+            spec.description = "Tracks cumulative deviation between actual orbit and smoothed orbit. Colors reveal where smoothing has the most impact - chaotic regions show high deviation (bright), stable regions show low deviation (dark).";
+            spec.formula = "Accumulate Σ|z - z_smooth|, where z_smooth = α*z_smooth + (1-α)*z";
+            spec.formulaLatex = R"(\text{color by } \sum |z_n - z'_n|, \; z'_{n+1} = \alpha z'_n + (1-\alpha)z_n)";
             spec.supportsJulia = true;
 
-            spec.visualCharacteristics = "Softened boundaries, gradient-like transitions";
-            spec.discoveredBy = "Orbit smoothing techniques";
+            spec.visualCharacteristics = "Reveals orbital chaos patterns - high contrast between stable and turbulent regions";
+            spec.discoveredBy = "Orbit deviation analysis";
             spec.discoveryYear = 1995;
-            spec.computationalNotes = "Exponential moving average on orbit points";
+            spec.computationalNotes = "Accumulates total deviation between raw and smoothed orbits";
 
             //spec.defaultCenterX = -0.25;
             //spec.defaultCenterY = -0.01;
@@ -246,36 +246,72 @@ namespace Native
             spec.defaultBailout = 256.0;
             spec.hasSymmetry = true;
 
+            // Custom parameters for smoothing control
+            spec.parameters = {
+                ParameterSpec("alpha", "Smoothing Factor", 
+                              "Orbit smoothing strength: higher values = more lag/smoothing. 0.0=no smooth (standard), 0.9=moderate, 0.99=extreme blur.",
+                              ParameterType::Float, ParameterCategory::Calculation, 
+                              "0.95", 0.0, 0.999, 0.01),
+                ParameterSpec("deviationScale", "Deviation Scale", 
+                              "Multiplier for deviation coloring. Higher = more dramatic contrast. Lower = subtler gradients.",
+                              ParameterType::Float, ParameterCategory::Color, 
+                              "50.0", 1.0, 200.0, 5.0)
+            };
+
             spec.calculator = [](ComplexD c, int maxIter, bool isJulia, ComplexD juliaC, const ParamMap& params) -> double
                 {
                     ComplexD z = isJulia ? c : ComplexD(0.0, 0.0);
                     ComplexD constant = isJulia ? juliaC : c;
                     ComplexD zSmooth(0.0, 0.0);
-                    double alpha = 0.9;
+
+                    // Get alpha from parameters (default 0.95 for dramatic effect)
+                    double alpha = 0.95;
+                    auto it = params.find("alpha");
+                    if (it != params.end()) alpha = it->second;
+
+                    // Get deviation scale from parameters
+                    double deviationScale = 50.0;
+                    it = params.find("deviationScale");
+                    if (it != params.end()) deviationScale = it->second;
+
+                    double totalDeviation = 0.0;
 
                     for (int i = 0; i < maxIter; ++i)
                     {
                         double x = z.real;
                         double y = z.imag;
 
+                        // Standard Mandelbrot iteration
                         z.real = x * x - y * y + constant.real;
                         z.imag = 2.0 * x * y + constant.imag;
 
-                        // Apply smoothing
+                        // Apply exponential moving average smoothing
                         zSmooth.real = alpha * zSmooth.real + (1.0 - alpha) * z.real;
                         zSmooth.imag = alpha * zSmooth.imag + (1.0 - alpha) * z.imag;
 
-                        double mag2 = zSmooth.real * zSmooth.real + zSmooth.imag * zSmooth.imag;
+                        // Calculate deviation (distance between actual and smoothed orbit)
+                        double dx = z.real - zSmooth.real;
+                        double dy = z.imag - zSmooth.imag;
+                        double deviation = std::sqrt(dx * dx + dy * dy);
+
+                        // Accumulate deviation (this reveals chaotic vs stable regions)
+                        totalDeviation += deviation;
+
+                        // Check for escape using actual orbit (not smoothed)
+                        double mag2 = z.real * z.real + z.imag * z.imag;
 
                         if (mag2 > 256.0)
                         {
-                            double log_zn = std::log(mag2) / 2.0;
-                            double nu = std::log(log_zn / std::log(2.0)) / std::log(2.0);
-                            return i + 1.0 - nu;
+                            // Return accumulated deviation scaled for coloring
+                            // High deviation = chaotic orbit = bright colors
+                            // Low deviation = smooth orbit = dark colors
+                            return totalDeviation * deviationScale;
                         }
                     }
 
-                    return static_cast<double>(maxIter);
+                    // Points in the set: return their accumulated internal deviation
+                    // This creates interesting internal structure!
+                    return totalDeviation * deviationScale * 0.5;  // Slightly dimmer for interior
                 };
 
             FractalRegistry::Register(spec);
