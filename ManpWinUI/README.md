@@ -1,4 +1,4 @@
-# ManpLab - Modern Fractal Explorer - Release 1.5.1 (Educational Fork)
+# ManpLab - Modern Fractal Explorer - Release 1.6.0 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -26,6 +26,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 - ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
 - 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
 - 🎬 **Animation Rendering** - Create MP4 videos with FFmpeg integration
+- 🎯 **Flexible Parameter System** - Template-based parameters for 328 diverse fractal types with consistent UI
 - 📚 **Fractal Browser** - Metadata, formulas, bookmarks, navigation history
 - 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
 - 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
@@ -46,7 +47,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 │   • BLA Acceleration                    │
 │   • Arbitrary Precision (MPFR/QD)       │
 │   • 246 Original Fractal Types          │
-│   • Extended to 329 Types in ManpLab    │
+│   • Extended to 328 Types in ManpLab    │
 │   • Multithreaded Rendering             │
 └─────────────────────────────────────────┘
 ```
@@ -55,8 +56,29 @@ This educational fork makes Paul DeLeeuw's well-engineered rendering technology 
 
 ---
 
+## 🎯 Flexible Parameter System
 
-## Fractal Samples
+The **Flexible Parameter System (FPS)** enables ManpLab to handle 328 diverse fractal types with elegance:
+
+1. **Uses templates** to accommodate the varying parameter requirements of many different fractal types
+2. **Provides a consistent user interface** for all those types
+
+### Key Benefits
+
+- **🔧 Flexibility**: Each of the 328 fractals can have its own unique set of parameters
+  - Newton fractals get polynomial degree controls
+  - Mandelbrot gets bailout settings
+  - Strange attractors get system parameters
+  - And more...
+
+- **🎨 Consistency**: Despite these differences, every fractal presents its parameters in the same organized, easy-to-use interface with:
+  - Categorized parameter groups
+  - Helpful tooltips and descriptions
+  - Built-in validation and constraints
+  - Unified editing experience
+
+
+## 📷 Fractal Samples
 
 ![Mandelbrot Set rendered in the Spectrum palette](ManpWinUI/Documentation/images/Mandelbrot-in-Spectrum-palette.png)
 

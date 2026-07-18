@@ -1,10 +1,10 @@
 # Parameter Template Migration Strategy
-## Efficient Grouping for 335 Fractals
+## Efficient Grouping for 328 Fractals
 
 **Date:** July 12, 2026  
 **Status:** ✅ **COMPLETED** — July 12, 2026  
-**Current Coverage:** 335/335 fractals (100%)  
-**Migration Complete:** All 335 fractals now use flexible parameter templates
+**Current Coverage:** 328/328 fractals (100%)  
+**Migration Complete:** All 328 fractals now use flexible parameter templates
 
 ---
 
@@ -12,7 +12,7 @@
 
 ### Final Results
 
-**Total fractals migrated:** 335  
+**Total fractals migrated:** 328  
 **Templates created:** Leveraged existing hierarchical template system  
 **Build status:** ✅ Successful  
 **Phases completed:** 6
@@ -29,8 +29,8 @@
 | 6 | Remaining Families | 50 | ✅ Complete | Engineering, Special Functions, Exotic, Combinatorial, etc. |
 
 **Total new registrations:** 69 fractals  
-**Previously registered:** 266 fractals  
-**Grand total:** 335 fractals fully templated
+**Previously registered:** 259 fractals  
+**Grand total:** 328 fractals fully templated
 
 ---
 
@@ -54,7 +54,7 @@ Rather than treating 314 fractals as individual work items, we grouped by parame
 
 ## Fractal Distribution Analysis
 
-### Category Breakdown (335 fractals - updated from stale CSV)
+### Category Breakdown (328 fractals - updated from stale CSV)
 
 | Category | Count | Parameter Similarity | Template Complexity |
 |----------|-------|---------------------|---------------------|
