@@ -1,4 +1,4 @@
-# ManpLab - Modern Fractal Explorer - Release 1.5.1 (Educational Fork)
+# ManpLab - Modern Fractal Explorer - Release 1.6.0 (Educational Fork)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 ![C++](https://img.shields.io/badge/C++-17-blue.svg)
@@ -21,11 +21,12 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 ### Key Features
 
 - ✨ **Modern WinUI 3 Interface** - Clean, responsive UI with MVVM architecture
-- 🎨 **324 Fractal Types** - Extended from Paul's 246 originals with 78 new implementations
+- 🎨 **328 Fractal Types** - Extended from Paul's 246 originals with 82 new implementations
 - 🔬 **Deep Zoom Technology** - Perturbation theory with magnifications exceeding 10^100
 - ⚡ **BLA Acceleration** - Series approximation for extreme performance at deep zoom levels
 - 🧮 **Arbitrary Precision** - MPFR, QD, and DD libraries for numerical accuracy
 - 🎬 **Animation Rendering** - Create MP4 videos with FFmpeg integration
+- 🎯 **Flexible Parameter System** - Template-based parameters for 328 diverse fractal types with consistent UI
 - 📚 **Fractal Browser** - Metadata, formulas, bookmarks, navigation history
 - 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
 - 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
@@ -55,8 +56,29 @@ This educational fork makes Paul DeLeeuw's well-engineered rendering technology 
 
 ---
 
+## 🎯 Flexible Parameter System
 
-## Fractal Samples
+The **Flexible Parameter System (FPS)** enables ManpLab to handle 328 diverse fractal types with elegance:
+
+1. **Uses templates** to accommodate the varying parameter requirements of many different fractal types
+2. **Provides a consistent user interface** for all those types
+
+### Key Benefits
+
+- **🔧 Flexibility**: Each of the 328 fractals can have its own unique set of parameters
+  - Newton fractals get polynomial degree controls
+  - Mandelbrot gets bailout settings
+  - Strange attractors get system parameters
+  - And more...
+
+- **🎨 Consistency**: Despite these differences, every fractal presents its parameters in the same organized, easy-to-use interface with:
+  - Categorized parameter groups
+  - Helpful tooltips and descriptions
+  - Built-in validation and constraints
+  - Unified editing experience
+
+
+## 📷 Fractal Samples
 
 ![Mandelbrot Set rendered in the Spectrum palette](ManpWinUI/Documentation/images/Mandelbrot-in-Spectrum-palette.png)
 
@@ -123,7 +145,7 @@ All dependencies are included. The project builds without additional configurati
 ManpLab serves as a comprehensive platform for studying fractals, numerical methods, and computational mathematics:
 
 ### Mathematics
-- Complex dynamics: 324 fractal types including Mandelbrot, Julia sets, Newton fractals
+- Complex dynamics: 328 fractal types including Mandelbrot, Julia sets, Newton fractals
 - Perturbation theory and BLA series approximation
 - Arbitrary-precision arithmetic (MPFR, QD, DD libraries)
 - Newton-Raphson root finding and analytical derivatives
@@ -157,7 +179,7 @@ ManpLab serves as a comprehensive platform for studying fractals, numerical meth
 
 ---
 
-## Fractal Categories (39 Categories)
+## Fractal Categories (41 Categories)
 
 **Classic Fractals (20+):** Mandelbrot variants, Julia sets, Burning Ship, Newton fractals, Magnet fractals
 
@@ -341,7 +363,7 @@ Contributions are welcome from students, educators, and researchers.
 
 **Paul de Leeuw (Paul the LionHeart)** - Native rendering engine with perturbation theory, BLA acceleration, and 246 original fractal implementations
 
-**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 78 new fractals, metadata system, and educational materials
+**Mark Hassell Smith** - Modern WinUI 3 interface, MVVM architecture, 82 new fractals, metadata system, and educational materials
 
 **GitHub Copilot** - Development assistance and documentation support
 
@@ -823,3 +845,6 @@ ManpLab includes **328 unique fractals** organized into 41 categories. This comp
 ---
 
 **Categories:** 41 families | **Total Fractals:** 328
+
+*This catalog represents the current state of ManpLab v1.5.1, combining Paul de Leeuw's original 246 fractals with 78 new implementations spanning mathematical functions, physical systems, and experimental variations.*
+
