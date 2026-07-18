@@ -29,6 +29,7 @@ namespace ManpWinUI.Views
             {
                 // F1: Show keyboard shortcuts help
                 case VirtualKey.F1:
+                    ViewModel.StatusMessage = "Opening keyboard shortcuts help...";
                     _ = ShowKeyboardShortcutsHelp();
                     e.Handled = true;
                     break;
@@ -304,16 +305,18 @@ namespace ManpWinUI.Views
         /// </summary>
         private async System.Threading.Tasks.Task ShowKeyboardShortcutsHelp()
         {
-            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+            try
             {
-                Title = "Keyboard Shortcuts",
-                CloseButtonText = "Close",
-                XamlRoot = this.XamlRoot,
-                Content = new Microsoft.UI.Xaml.Controls.ScrollViewer
+                var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
                 {
-                    Content = new Microsoft.UI.Xaml.Controls.TextBlock
+                    Title = "Keyboard Shortcuts",
+                    CloseButtonText = "Close",
+                    XamlRoot = this.XamlRoot,
+                    Content = new Microsoft.UI.Xaml.Controls.ScrollViewer
                     {
-                        Text = @"═══════════════════════════════════════
+                        Content = new Microsoft.UI.Xaml.Controls.TextBlock
+                        {
+                            Text = @"═══════════════════════════════════════
 RENDERING & VIEW
 ═══════════════════════════════════════
 F5, Ctrl+R         Render fractal
@@ -368,13 +371,18 @@ Ctrl+P             Toggle Properties panel
 HELP
 ═══════════════════════════════════════
 F1                 Show this help dialog",
-                        FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Consolas"),
-                        TextWrapping = Microsoft.UI.Xaml.TextWrapping.NoWrap
+                            FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Consolas"),
+                            TextWrapping = Microsoft.UI.Xaml.TextWrapping.NoWrap
+                        }
                     }
-                }
-            };
+                };
 
-            await dialog.ShowAsync();
+                await dialog.ShowAsync();
+            }
+            catch (System.Exception ex)
+            {
+                ViewModel.StatusMessage = $"Error showing help: {ex.Message}";
+            }
         }
     }
 }
