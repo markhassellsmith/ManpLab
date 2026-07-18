@@ -30,7 +30,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 - 📚 **Fractal Browser** - Metadata, formulas, bookmarks, navigation history
 - 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
 - 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
-- ⌨️ [Full Keyboard Shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
+- ⌨️ [Full Keyboard Shortcuts](ManpWinUI/Documentation/Development/KEYBOARD_SHORTCUTS.md)
 
 ### Architecture
 
