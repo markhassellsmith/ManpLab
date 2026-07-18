@@ -12,7 +12,7 @@
 ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exceptional fractal rendering engine - featuring perturbation theory, BLA acceleration, and arbitrary-precision arithmetic for extreme deep zoom capabilities (magnification > 10^100).
 
 ### Application Screenshot
-![ManpLab Application Screenshot](ManpWinUI/Documentation/images/ManpLab-Application-Screenshot.png)
+![ManpLab Application Screenshot](Documentation/images/ManpLab-Application-Screenshot.png)
 
 *ManpLab Application - Dark theme*
 
@@ -30,7 +30,7 @@ ManpLab combines a modern, intuitive WinUI 3 interface with Paul de Leeuw's exce
 - 📚 **Fractal Browser** - Metadata, formulas, bookmarks, navigation history
 - 🎨 **Theme System** - Light, Dark, Ocean Blue, and System themes
 - 🖱️ **Interactive Exploration** - Mouse, keyboard, and touch navigation
-- ⌨️ [Full Keyboard Shortcuts](ManpWinUI/KEYBOARD_SHORTCUTS.md)
+- ⌨️ [Full Keyboard Shortcuts](KEYBOARD_SHORTCUTS.md)
 
 ### Architecture
 
@@ -80,22 +80,22 @@ The **Flexible Parameter System (FPS)** enables ManpLab to handle 328 diverse fr
 
 ## 📷 Fractal Samples
 
-![Mandelbrot Set rendered in the Spectrum palette](ManpWinUI/Documentation/images/Mandelbrot-in-Spectrum-palette.png)
+![Mandelbrot Set rendered in the Spectrum palette](Documentation/images/Mandelbrot-in-Spectrum-palette.png)
 
 *Mandelbrot Set rendered in the Spectrum palette*
 
 
-![Classic Julia Set rendered in the Fire palette](ManpWinUI/Documentation/images/JuliaClassic-in-Fire-palette.png)
+![Classic Julia Set rendered in the Fire palette](Documentation/images/JuliaClassic-in-Fire-palette.png)
 
 *Classic Julia Set rendered in the Fire palette*
 
 
-![Zoomed Tetrate rendered in the Psychedelic palette](ManpWinUI/Documentation/images/Tetrate-zoomed-in-Psychedelic-palette.png)
+![Zoomed Tetrate rendered in the Psychedelic palette](Documentation/images/Tetrate-zoomed-in-Psychedelic-palette.png)
 
 *Zoomed Tetrate rendered in the Psychedelic palette*
 
 
-![2-Dimensional Hailstone Sequence with segments and point labels](ManpWinUI/Documentation/images/Hailstone-sequence.png)
+![2-Dimensional Hailstone Sequence with segments and point labels](Documentation/images/Hailstone-sequence.png)
 
 *2-Dimensional Hailstone Sequence with segments and point labels*
 
