@@ -12,7 +12,7 @@ Requirements to run the zip:
   Windows 10/11, 64-bit.
   Extract the ZIP and run ManpWinUI.exe.
 
-No installation required. No .NET installation required.No Visual Studio or developer tools required.
+No installation required. No .NET installation required.  No Visual Studio or developer tools required.
 
 ## 🚀 Overview
 
