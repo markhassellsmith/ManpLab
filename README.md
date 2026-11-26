@@ -388,7 +388,7 @@ This project includes third-party libraries with their own licenses (MPFR, GMP, 
 
 ## Version History
 
-**v1.5.1 (2026)** - Educational fork with WinUI 3 interface, 328 fractal types (extended from Paul de Leeuw's 246), metadata system, animation rendering, theme system
+**v1.6.0 (2026)** - Educational fork with WinUI 3 interface, 328 fractal types (extended from Paul de Leeuw's 246), metadata system, animation rendering, theme system
 
 **Original ManpWIN** - Paul de Leeuw (1990s-2010s) - Deep zoom, perturbation theory, BLA acceleration, 246 fractals, arbitrary-precision arithmetic
 
