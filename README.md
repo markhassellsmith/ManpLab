@@ -291,7 +291,7 @@ ManpLab/
 
 ## Build Instructions
 
-**Requirements:** Visual Studio 2022, C++ and .NET workloads, .NET 10 SDK
+**Requirements for Build:** Visual Studio 2022, C++ and .NET workloads, .NET 10 SDK
 
 1. Clone: `git clone https://github.com/markhassellsmith/ManpLab.git`
 2. Open `ManpLab.sln` in Visual Studio 2022
@@ -853,5 +853,5 @@ ManpLab includes **328 unique fractals** organized into 41 categories. This comp
 
 **Categories:** 41 families | **Total Fractals:** 328
 
-*This catalog represents the current state of ManpLab v1.5.1, combining Paul de Leeuw's original 246 fractals with 78 new implementations spanning mathematical functions, physical systems, and experimental variations.*
+*This catalog represents the current state of ManpLab v1.6.0, combining Paul de Leeuw's original 246 fractals with 78 new implementations spanning mathematical functions, physical systems, and experimental variations.*
 
