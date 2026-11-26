@@ -9,7 +9,8 @@
  
 **[Download Latest Release →](https://github.com/markhassellsmith/ManpLab/releases/latest)**
 
-Requirements: Windows 10/11 (64-bit).
+**Requirements:** Windows 10/11 (64-bit).
+
 Download and extract the ZIP, then run ManpWinUI.exe. 
 No installation, .NET runtime, or developer tools needed.
 
