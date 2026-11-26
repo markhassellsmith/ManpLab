@@ -8,11 +8,11 @@
 **A modern WinUI 3 fractal explorer powered by Paul de Leeuw's production-grade rendering engine**
  
 **[Download Latest Release →](https://github.com/markhassellsmith/ManpLab/releases/latest)**
-Requirements to run the zip: 
+Requirements to run the zip portable: 
   Windows 10/11, 64-bit.
   Extract the ZIP and run ManpWinUI.exe.
 
-No installation required. No .NET installation required.  No Visual Studio or developer tools required.
+No installation required to run the portable. No .NET installation required.  No Visual Studio or developer tools required.
 
 ## 🚀 Overview
 
